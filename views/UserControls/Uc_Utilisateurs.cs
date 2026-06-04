@@ -1,0 +1,339 @@
+﻿using System;
+using System.Linq;
+using System.Windows.Forms;
+using Pharmacie2.Models;
+
+namespace Pharmacie2.views.UserControls
+{
+    public partial class Uc_Utilisateurs : UserControl
+    {
+        private enum Mode { Aucun, Ajout, Modification }
+        private Mode _mode = Mode.Aucun;
+        private int _idEnCours = -1;
+
+        public Uc_Utilisateurs()
+        {
+            InitializeComponent();
+            this.Load += (s, e) => ChargerUtilisateurs();
+        }
+
+        // ─── Chargement grille ────────────────────────────────────────────
+
+        private void ChargerUtilisateurs(string recherche = "")
+        {
+            try
+            {
+                using (var ctx = new AppDbContext())
+                {
+                    var query = ctx.Users.AsQueryable();
+
+                    if (!string.IsNullOrWhiteSpace(recherche))
+                    {
+                        recherche = recherche.ToLower();
+                        query = query.Where(u =>
+                            u.Nom.ToLower().Contains(recherche) ||
+                            u.Prenom.ToLower().Contains(recherche) ||
+                            u.Login.ToLower().Contains(recherche) ||
+                            u.Role.ToLower().Contains(recherche));
+                    }
+
+                    // Mot de passe affiché - système local, admin gère tout
+                    var data = query
+                        .OrderBy(u => u.Nom)
+                        .Select(u => new
+                        {
+                            u.Id,
+                            u.Nom,
+                            u.Prenom,
+                            u.Login,
+                            u.MotDePasse,
+                            u.Role
+                        })
+                        .ToList();
+
+                    dgvUtilisateurs.DataSource = null;
+                    dgvUtilisateurs.DataSource = data;
+
+                    if (dgvUtilisateurs.Columns["Id"] != null)
+                        dgvUtilisateurs.Columns["Id"].Visible = false;
+
+                    SetHeader("Nom", "Nom");
+                    SetHeader("Prenom", "Prénom");
+                    SetHeader("Login", "Login");
+                    SetHeader("MotDePasse", "Mot de passe");
+                    SetHeader("Role", "Rôle");
+
+                    ColorerColonneRole();
+                    lblCompteur.Text = $"{data.Count} utilisateur(s)";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur chargement : " + ex.Message,
+                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetHeader(string col, string header)
+        {
+            if (dgvUtilisateurs.Columns[col] != null)
+                dgvUtilisateurs.Columns[col].HeaderText = header;
+        }
+
+        private void ColorerColonneRole()
+        {
+            foreach (DataGridViewRow row in dgvUtilisateurs.Rows)
+            {
+                if (row.Cells["Role"].Value == null) continue;
+                string role = row.Cells["Role"].Value.ToString();
+                row.Cells["Role"].Style.ForeColor = System.Drawing.Color.White;
+                row.Cells["Role"].Style.Font = new System.Drawing.Font(
+                    "Segoe UI", 8.5f, System.Drawing.FontStyle.Bold);
+
+                row.Cells["Role"].Style.BackColor = role switch
+                {
+                    "Administrateur" => System.Drawing.Color.FromArgb(46, 125, 50),
+                    "Pharmacien" => System.Drawing.Color.FromArgb(25, 118, 210),
+                    "Caissier" => System.Drawing.Color.FromArgb(230, 120, 0),
+                    _ => System.Drawing.Color.Gray
+                };
+            }
+        }
+
+        // ─── Recherche ────────────────────────────────────────────────────
+
+        private void txtRecherche_TextChanged(object sender, EventArgs e)
+            => ChargerUtilisateurs(txtRecherche.Text);
+
+        private void btnEffacerRecherche_Click(object sender, EventArgs e)
+        {
+            txtRecherche.Clear();
+            ChargerUtilisateurs();
+        }
+
+        // ─── Sélection dans la grille ─────────────────────────────────────
+
+        private void dgvUtilisateurs_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_mode != Mode.Aucun) return;
+            if (dgvUtilisateurs.SelectedRows.Count == 0) return;
+            AfficherDansFormulaire(dgvUtilisateurs.SelectedRows[0]);
+        }
+
+        private void AfficherDansFormulaire(DataGridViewRow row)
+        {
+            if (row == null) return;
+            int id = Convert.ToInt32(row.Cells["Id"].Value);
+
+            using (var ctx = new AppDbContext())
+            {
+                var u = ctx.Users.Find(id);
+                if (u == null) return;
+
+                txtNom.Text = u.Nom;
+                txtPrenom.Text = u.Prenom;
+                txtLogin.Text = u.Login;
+                txtMotDePasse.Text = u.MotDePasse;  // affiché en clair
+                cbRole.SelectedItem = u.Role;
+                _idEnCours = u.Id;
+            }
+        }
+
+        // ─── CRUD ─────────────────────────────────────────────────────────
+
+        private void btnNouvel_Click(object sender, EventArgs e)
+        {
+            _mode = Mode.Ajout;
+            _idEnCours = -1;
+            ViderFormulaire();
+            ActiverFormulaire(true);
+            MettreAJourBoutons();
+            txtNom.Focus();
+        }
+
+        private void btnModifier_Click(object sender, EventArgs e)
+        {
+            if (dgvUtilisateurs.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Sélectionnez un utilisateur à modifier.",
+                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            _mode = Mode.Modification;
+            AfficherDansFormulaire(dgvUtilisateurs.SelectedRows[0]);
+            ActiverFormulaire(true);
+            MettreAJourBoutons();
+            txtNom.Focus();
+        }
+
+        private void btnEnregistrer_Click(object sender, EventArgs e)
+        {
+            if (!ValiderFormulaire()) return;
+
+            try
+            {
+                using (var ctx = new AppDbContext())
+                {
+                    if (_mode == Mode.Ajout)
+                    {
+                        if (ctx.Users.Any(u => u.Login == txtLogin.Text.Trim()))
+                        {
+                            MessageBox.Show("Ce login est déjà utilisé.", "Doublon",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txtLogin.Focus();
+                            return;
+                        }
+
+                        ctx.Users.Add(new User
+                        {
+                            Nom = txtNom.Text.Trim(),
+                            Prenom = txtPrenom.Text.Trim(),
+                            Login = txtLogin.Text.Trim(),
+                            MotDePasse = txtMotDePasse.Text.Trim(),
+                            Role = cbRole.SelectedItem.ToString()
+                        });
+
+                        ctx.SaveChanges();
+                        MessageBox.Show("Utilisateur créé avec succès.", "Succès",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (_mode == Mode.Modification)
+                    {
+                        var u = ctx.Users.Find(_idEnCours);
+                        if (u == null)
+                        {
+                            MessageBox.Show("Utilisateur introuvable.", "Erreur",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        if (ctx.Users.Any(x => x.Login == txtLogin.Text.Trim() && x.Id != _idEnCours))
+                        {
+                            MessageBox.Show("Ce login est déjà utilisé.", "Doublon",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            txtLogin.Focus();
+                            return;
+                        }
+
+                        u.Nom = txtNom.Text.Trim();
+                        u.Prenom = txtPrenom.Text.Trim();
+                        u.Login = txtLogin.Text.Trim();
+                        u.MotDePasse = txtMotDePasse.Text.Trim(); // admin fixe le mdp
+                        u.Role = cbRole.SelectedItem.ToString();
+
+                        ctx.SaveChanges();
+                        MessageBox.Show("Utilisateur modifié avec succès.", "Succès",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+
+                AnnulerEdition();
+                ChargerUtilisateurs(txtRecherche.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnAnnuler_Click(object sender, EventArgs e)
+            => AnnulerEdition();
+
+        private void btnSupprimer_Click(object sender, EventArgs e)
+        {
+            if (dgvUtilisateurs.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Sélectionnez un utilisateur à supprimer.",
+                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int id = Convert.ToInt32(dgvUtilisateurs.SelectedRows[0].Cells["Id"].Value);
+            string nom = dgvUtilisateurs.SelectedRows[0].Cells["Nom"].Value?.ToString();
+            string prenom = dgvUtilisateurs.SelectedRows[0].Cells["Prenom"].Value?.ToString();
+
+            if (MessageBox.Show(
+                    $"Supprimer « {prenom} {nom} » ?\nCette action est irréversible.",
+                    "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                != DialogResult.Yes) return;
+
+            try
+            {
+                using (var ctx = new AppDbContext())
+                {
+                    var u = ctx.Users.Find(id);
+                    if (u != null) { ctx.Users.Remove(u); ctx.SaveChanges(); }
+                }
+
+                AnnulerEdition();
+                ChargerUtilisateurs(txtRecherche.Text);
+                MessageBox.Show("Utilisateur supprimé.", "Succès",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ─── Helpers ─────────────────────────────────────────────────────
+
+        private bool ValiderFormulaire()
+        {
+            if (string.IsNullOrWhiteSpace(txtNom.Text))
+            { MessageBox.Show("Nom obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtNom.Focus(); return false; }
+
+            if (string.IsNullOrWhiteSpace(txtPrenom.Text))
+            { MessageBox.Show("Prénom obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtPrenom.Focus(); return false; }
+
+            if (string.IsNullOrWhiteSpace(txtLogin.Text))
+            { MessageBox.Show("Login obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtLogin.Focus(); return false; }
+
+            if (string.IsNullOrWhiteSpace(txtMotDePasse.Text))
+            { MessageBox.Show("Mot de passe obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtMotDePasse.Focus(); return false; }
+
+            if (cbRole.SelectedIndex < 0)
+            { MessageBox.Show("Sélectionnez un rôle.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); cbRole.Focus(); return false; }
+
+            return true;
+        }
+
+        private void ViderFormulaire()
+        {
+            txtNom.Clear(); txtPrenom.Clear();
+            txtLogin.Clear(); txtMotDePasse.Clear();
+            cbRole.SelectedIndex = -1;
+            _idEnCours = -1;
+        }
+
+        private void ActiverFormulaire(bool actif)
+        {
+            txtNom.Enabled = actif;
+            txtPrenom.Enabled = actif;
+            txtLogin.Enabled = actif;
+            txtMotDePasse.Enabled = actif;
+            cbRole.Enabled = actif;
+            btnEnregistrer.Visible = actif;
+            btnAnnuler.Visible = actif;
+        }
+
+        private void AnnulerEdition()
+        {
+            _mode = Mode.Aucun;
+            _idEnCours = -1;
+            ViderFormulaire();
+            ActiverFormulaire(false);
+            MettreAJourBoutons();
+        }
+
+        private void MettreAJourBoutons()
+        {
+            bool enEdition = (_mode != Mode.Aucun);
+            btnNouvel.Enabled = !enEdition;
+            btnModifier.Enabled = !enEdition;
+            btnSupprimer.Enabled = !enEdition;
+        }
+    }
+}

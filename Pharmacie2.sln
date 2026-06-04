@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pharmacie2", "Pharmacie2.csproj", "{EE22A5FA-0DEA-449C-8046-552E452C684C}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PharmacieSetup", "..\PharmacieSetup\PharmacieSetup.vdproj", "{662E4F34-2958-48D4-841B-7AA38A7AB32F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE22A5FA-0DEA-449C-8046-552E452C684C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE22A5FA-0DEA-449C-8046-552E452C684C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE22A5FA-0DEA-449C-8046-552E452C684C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE22A5FA-0DEA-449C-8046-552E452C684C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{662E4F34-2958-48D4-841B-7AA38A7AB32F}.Debug|Any CPU.ActiveCfg = Debug
+		{662E4F34-2958-48D4-841B-7AA38A7AB32F}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
