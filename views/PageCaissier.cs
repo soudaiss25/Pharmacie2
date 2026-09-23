@@ -127,42 +127,135 @@ namespace Pharmacie2.views
 
                     foreach (var v in ventes)
                     {
+                        // Déterminer le libellé selon le type et l'état
+                        string typeLabel;
+                        if (v.Type == "Crédit")
+                        {
+                            if (v.MontantVerse > 0 && v.MontantRestant <= 0)
+                                typeLabel = "✅ CRÉDIT SOLDÉ";
+                            else if (v.MontantVerse > 0)
+                                typeLabel = "💰 CRÉDIT PARTIEL";
+                            else
+                                typeLabel = "📋 CRÉDIT";
+                        }
+                        else if (v.Type == "Mutuelle")
+                        {
+                            typeLabel = v.MutuelleReglee ? "✅ MUTUELLE RÉGLÉE" : "🏥 MUTUELLE";
+                        }
+                        else
+                        {
+                            typeLabel = v.MoyenPaiement.ToUpper();
+                        }
+
                         int idx = dgvVentes.Rows.Add(
                             v.IdVente,
                             v.numeroVente,
                             $"{v.PrenomClient} {v.NomClient}".Trim(),
                             v.DateVente.ToString("HH:mm"),
-                            v.MontantTotal.ToString("0.00"),
-                            v.MontantVerse.ToString("0.00"),
-                            v.MontantRestant.ToString("0.00"),
-                            v.MoyenPaiement,
+                            $"{v.MontantTotal:N0}",
+                            $"{v.MontantVerse:N0}",
+                            v.MontantRestant > 0 ? $"{v.MontantRestant:N0}" : "—",
+                            typeLabel,
                             v.Statut
                         );
 
-                        // Coloration lignes
+                        var row = dgvVentes.Rows[idx];
+
+                        // Coloration selon statut et type
                         if (v.Statut == "Annulée")
                         {
-                            dgvVentes.Rows[idx].DefaultCellStyle.BackColor =
-                                System.Drawing.Color.FromArgb(255, 235, 238);
-                            dgvVentes.Rows[idx].DefaultCellStyle.ForeColor =
-                                System.Drawing.Color.OrangeRed;
+                            row.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(255, 235, 238);
+                            row.DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
                         }
-                        else if (v.MontantRestant > 0)
+                        else if (v.Type == "Crédit" && v.MontantRestant > 0 && v.MontantVerse > 0)
                         {
-                            dgvVentes.Rows[idx].Cells["colRestant"].Style.ForeColor =
-                                System.Drawing.Color.OrangeRed;
+                            // Crédit partiel — orange clair
+                            row.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(255, 243, 205);
+                            row.Cells["colRestant"].Style.ForeColor = System.Drawing.Color.FromArgb(180, 80, 0);
+                            row.Cells["colRestant"].Style.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+                        }
+                        else if (v.Type == "Crédit" && v.MontantVerse == 0)
+                        {
+                            // Crédit total non payé — rouge clair
+                            row.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(255, 235, 238);
+                            row.Cells["colRestant"].Style.ForeColor = System.Drawing.Color.OrangeRed;
+                            row.Cells["colRestant"].Style.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+                        }
+                        else if (v.Type == "Mutuelle" && !v.MutuelleReglee)
+                        {
+                            // Mutuelle en attente — bleu clair
+                            row.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(227, 242, 253);
                         }
                     }
 
-                    // Stats de la session
+                    // ── Stats de la session ──────────────────────────────
                     var ventesActives = ventes.Where(v => v.Statut == "Active").ToList();
                     decimal totalSession = ventesActives.Sum(v => (decimal)v.MontantTotal);
                     int nbVentes = ventesActives.Count;
 
+                    // ── Ventilation par mode — montants RÉELLEMENT encaissés ──────
+                    // Comptant : tout le montant est reçu
+                    decimal totalEspeces = ventesActives
+                        .Where(v => v.Type == "Comptant")
+                        .Sum(v => (decimal)v.MontantTotal);
+
+                    // Chèque : tout reçu (à déposer en banque)
+                    decimal totalCheque = ventesActives
+                        .Where(v => v.Type == "Chèque")
+                        .Sum(v => (decimal)v.MontantTotal);
+
+                    // Digital CB/Mobile : tout reçu électroniquement
+                    decimal totalDigital = ventesActives
+                        .Where(v => v.Type == "Carte bancaire"
+                                 || v.Type == "Mvolo"
+                                 || v.Type == "Huri Money")
+                        .Sum(v => (decimal)v.MontantTotal);
+
+                    // Mutuelle : seulement la PART PATIENT est encaissée
+                    // La part entreprise (MontantMutuelle) est un crédit en attente
+                    decimal partPatientMutuelle = ventesActives
+                        .Where(v => v.Type == "Mutuelle")
+                        .Sum(v => (decimal)(v.MontantTotal - v.MontantMutuelle));
+                    decimal partEntrepriseMutuelle = ventesActives
+                        .Where(v => v.Type == "Mutuelle")
+                        .Sum(v => (decimal)v.MontantMutuelle);
+
+                    // Crédit : seulement ce qui a été versé (MontantVerse)
+                    // Le reste (MontantRestant) n'est pas encore encaissé
+                    decimal avancesCredit = ventesActives
+                        .Where(v => v.Type == "Crédit")
+                        .Sum(v => (decimal)v.MontantVerse);
+                    decimal resteCredit = ventesActives
+                        .Where(v => v.Type == "Crédit")
+                        .Sum(v => (decimal)v.MontantRestant);
+
+                    // Total réellement encaissé
+                    decimal totalEncaisse = totalEspeces + totalCheque + totalDigital
+                                          + partPatientMutuelle + avancesCredit;
+
+                    // Total paiements reçus sur ventes crédit (tous paiements confondus)
+                    var idsCredit = ventesActives
+                        .Where(v => v.Type == "Crédit")
+                        .Select(v => v.IdVente).ToHashSet();
+                    decimal totalPaiementsCredit = ctx.paiement
+                        .Where(p => idsCredit.Contains(p.VenteId)
+                                 && p.DatePaiement >= debut
+                                 && p.DatePaiement <= fin)
+                        .ToList()
+                        .Sum(p => (decimal)p.Montant);
+
                     lblStats.Text =
-                        $"Ventes de cette session : {nbVentes}  |  " +
-                        $"Total : {totalSession:N0} KMF  |  " +
-                        $"Session depuis : {debut:HH:mm}";
+                        $"Ventes : {nbVentes}  |  " +
+                        $"CA facturé : {totalSession:N0} KMF  |  " +
+                        $"✅ Encaissé : {totalEncaisse:N0} KMF  |  " +
+                        $"💵 Espèces : {totalEspeces:N0}  |  " +
+                        $"📄 Chèque : {totalCheque:N0}  |  " +
+                        $"💳 Digital : {totalDigital:N0}  |  " +
+                        $"🏥 Mutuelle patient : {partPatientMutuelle:N0} (ent. : {partEntrepriseMutuelle:N0})  |  " +
+                        $"📋 Crédit — facturé : {ventesActives.Where(v => v.Type == "Crédit").Sum(v => (decimal)v.MontantTotal):N0}  " +
+                        $"| reçu : {totalPaiementsCredit:N0}  " +
+                        $"| reste : {resteCredit:N0}  " +
+                        $"(KMF)  —  Depuis : {debut:HH:mm}";
                 }
             }
             catch (Exception ex)

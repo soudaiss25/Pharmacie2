@@ -25,16 +25,6 @@ namespace Pharmacie2.views.UserControls
             InitializeComponent();
             this.Load += (s, e) =>
             {
-                // SplitterDistance au Load — taille réelle connue à ce moment
-                try
-                {
-                    int dist = (int)(splitMensuel.Width * 0.65);
-                    if (dist > splitMensuel.Panel1MinSize &&
-                        dist < splitMensuel.Width - splitMensuel.Panel2MinSize)
-                        splitMensuel.SplitterDistance = dist;
-                }
-                catch { }
-
                 InitFiltres();
                 ChargerResultatMensuel();
                 ChargerResultatAnnuel();
@@ -104,9 +94,11 @@ namespace Pharmacie2.views.UserControls
                         .Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin)
                         .ToList();
 
+                    // Extraire les IDs en mémoire AVANT la requête SQLite
+                    var idsVentesMois = ventes.Select(v => v.IdVente).ToList();
                     var lignes = ctx.LigneVentes
                         .Include(l => l.Produit)
-                        .Where(l => ventes.Select(v => v.IdVente).Contains(l.VenteId))
+                        .Where(l => idsVentesMois.Contains(l.VenteId))
                         .ToList();
 
                     var depenses = ctx.DepensesAnnexes
@@ -255,9 +247,10 @@ namespace Pharmacie2.views.UserControls
 
                         decimal ca = ventes.Sum(v => (decimal)v.MontantTotal);
 
+                        var idsMois = ventes.Select(v => v.IdVente).ToList();
                         var lignes = ctx.LigneVentes
                             .Include(l => l.Produit)
-                            .Where(l => ventes.Select(v => v.IdVente).Contains(l.VenteId))
+                            .Where(l => idsMois.Contains(l.VenteId))
                             .ToList();
 
                         decimal cogs = lignes.Sum(l =>

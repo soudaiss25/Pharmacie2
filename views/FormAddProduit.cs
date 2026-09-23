@@ -55,10 +55,32 @@ namespace Pharmacie2.views
         {
             txtPrixAchat.TextChanged += RecalculerPrixVente;
             txtMarge.TextChanged += RecalculerPrixVente;
+            txtPrixVente.TextChanged += VerifierMarge;
             chkVenteDetail.CheckedChanged += chkVenteDetail_CheckedChanged;
             cmbUniteVente.SelectedIndexChanged += MettreAJourApercu;
             numNbUniteParBoite.ValueChanged += MettreAJourApercu;
             txtPrixVente.TextChanged += MettreAJourApercu;
+        }
+
+        /// <summary>Colore le champ prix vente en rouge si marge <= 0.</summary>
+        private void VerifierMarge(object sender, EventArgs e)
+        {
+            bool ok = decimal.TryParse(txtPrixAchat.Text,
+                          System.Globalization.NumberStyles.Any,
+                          System.Globalization.CultureInfo.InvariantCulture, out decimal achat)
+                   && decimal.TryParse(txtPrixVente.Text,
+                          System.Globalization.NumberStyles.Any,
+                          System.Globalization.CultureInfo.InvariantCulture, out decimal vente)
+                   && vente > achat && achat > 0;
+
+            txtPrixVente.BackColor = ok
+                ? System.Drawing.Color.LightGreen
+                : System.Drawing.Color.FromArgb(255, 200, 200);  // rouge clair si marge nulle
+
+            if (!ok && achat > 0)
+                lblMarge.Text = "⚠️ Marge (%) →";
+            else
+                lblMarge.Text = "Marge bénéfice (%) →";
         }
 
         // ── Pré-remplissage en mode modification ──────────────────────────
@@ -234,6 +256,22 @@ namespace Pharmacie2.views
                 MessageBox.Show("Prix de vente invalide.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtPrixVente.Focus(); return;
+            }
+
+            // ✅ Vérification marge obligatoire
+            if (prixVente <= prixAchat)
+            {
+                MessageBox.Show(
+                    $"Le prix de vente ({prixVente:N0} KMF) doit être supérieur au prix d'achat ({prixAchat:N0} KMF).\n\nAjustez la marge bénéficiaire.",
+                    "Marge invalide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtMarge.Focus(); return;
+            }
+
+            if (prixAchat <= 0)
+            {
+                MessageBox.Show("Le prix d'achat doit être supérieur à 0.",
+                    "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPrixAchat.Focus(); return;
             }
 
             // Vente en détail — vérification

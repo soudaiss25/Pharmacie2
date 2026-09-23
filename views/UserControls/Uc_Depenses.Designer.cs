@@ -25,11 +25,9 @@ namespace Pharmacie2.views.UserControls
         private ComboBox cbMois, cbAnnee;
         private Button btnActualiser, btnNouvelleDepense;
 
-        // Onglet mensuel — contenu (SplitContainer gauche/droite)
-        private SplitContainer splitMensuel;
-
-        // Panel gauche = Revenus + Charges empilés verticalement
-        private Panel pnlGauche;
+        // Onglet mensuel — deux panels côte à côte (pas de SplitContainer)
+        private Panel pnlGauche;   // Fill — Revenus + Charges
+        private Panel pnlDroite;   // Right — Résultat net
 
         // Revenus — labels
         private Label lblRevTitre;
@@ -84,7 +82,7 @@ namespace Pharmacie2.views.UserControls
             lblAnneeLabel = new Label(); cbAnnee = new ComboBox();
             lblPeriodeMensuel = new Label();
             btnActualiser = new Button(); btnNouvelleDepense = new Button();
-            splitMensuel = new SplitContainer();
+
             pnlGauche = new Panel();
 
             lblRevTitre = new Label();
@@ -128,9 +126,7 @@ namespace Pharmacie2.views.UserControls
             colHistMontant = new DataGridViewTextBoxColumn();
             colHistSaisi = new DataGridViewTextBoxColumn();
 
-            ((System.ComponentModel.ISupportInitialize)splitMensuel).BeginInit();
-            splitMensuel.Panel1.SuspendLayout();
-            splitMensuel.Panel2.SuspendLayout();
+
             ((System.ComponentModel.ISupportInitialize)dgvAnnuel).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvHistorique).BeginInit();
             tabMain.SuspendLayout();
@@ -213,12 +209,11 @@ namespace Pharmacie2.views.UserControls
                 lblMoisLabel, cbMois, lblAnneeLabel, cbAnnee,
                 btnActualiser, btnNouvelleDepense, lblPeriodeMensuel });
 
-            // SplitContainer : gauche = P&L, droite = résultat net
-            splitMensuel.Dock = DockStyle.Fill;
-            splitMensuel.Orientation = Orientation.Vertical;
-            splitMensuel.Panel1MinSize = 400;
-            splitMensuel.Panel2MinSize = 220;
-            // SplitterDistance défini au Load dans Uc_Depenses.cs
+            // Panel droit — résultat net (Dock Right, largeur fixe)
+            pnlDroite = new Panel();
+            pnlDroite.Dock = DockStyle.Right;
+            pnlDroite.Width = 280;
+            pnlDroite.BackColor = Color.FromArgb(245, 245, 245);
 
             // ── PANEL GAUCHE — lignes P&L avec Dock empilées ──────────────
             pnlGauche.Dock = DockStyle.Fill;
@@ -330,7 +325,7 @@ namespace Pharmacie2.views.UserControls
             pnlGauche.Controls.Add(MakeEspace(6));
             pnlGauche.Controls.Add(lblRevTitre);
 
-            splitMensuel.Panel1.Controls.Add(pnlGauche);
+
 
             // ── PANEL DROIT — Résultat net ────────────────────────────────
             pnlResultat.Dock = DockStyle.Fill;
@@ -366,12 +361,13 @@ namespace Pharmacie2.views.UserControls
             lblMarge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             // Ordre inverse pour Dock.Top
-            splitMensuel.Panel2.Controls.Add(lblMarge);
-            splitMensuel.Panel2.Controls.Add(lblBeneficeNet);
-            splitMensuel.Panel2.Controls.Add(lblBeneficeLabel);
-            splitMensuel.Panel2.Controls.Add(barreResultat);
+            pnlDroite.Controls.Add(lblMarge);
+            pnlDroite.Controls.Add(lblBeneficeNet);
+            pnlDroite.Controls.Add(lblBeneficeLabel);
+            pnlDroite.Controls.Add(barreResultat);
 
-            tabMensuel.Controls.Add(splitMensuel);
+            tabMensuel.Controls.Add(pnlGauche);
+            tabMensuel.Controls.Add(pnlDroite);
             tabMensuel.Controls.Add(pnlFiltreMensuel);
 
             // ══════════════════════════════════════════════════════════════
@@ -466,9 +462,7 @@ namespace Pharmacie2.views.UserControls
             Size = new Size(1200, 750);
             Name = "Uc_Depenses";
 
-            splitMensuel.Panel1.ResumeLayout(false);
-            splitMensuel.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)splitMensuel).EndInit();
+
             tabMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvAnnuel).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvHistorique).EndInit();

@@ -526,9 +526,12 @@ namespace Pharmacie2.views
                 using (var preview = new PrintPreviewDialog())
                 {
                     preview.Document = pd;
-                    preview.Width = 700;
-                    preview.Height = 950;
+                    preview.WindowState = System.Windows.Forms.FormWindowState.Maximized;
                     preview.Text = $"Facture — {vente.numeroVente}";
+
+                    // Zoom out pour voir toute la page A4 d'un coup
+                    preview.PrintPreviewControl.Zoom = 0.75;
+
                     preview.ShowDialog();
                 }
             }
@@ -544,178 +547,206 @@ namespace Pharmacie2.views
         /// </summary>
         private void DessinerFacture(Graphics g, Vente vente, List<LigneVente> lignes)
         {
-            float x = 40f;
-            float y = 30f;
-            float largeur = 500f;
+            // A4 : 827 × 1169 centièmes de pouce — on utilise toute la largeur
+            float marge = 40f;
+            float x = marge;
+            float y = marge;
+            float largeur = 827f - (marge * 2);  // 747 pts utiles
 
-            // ── Ressources graphiques ─────────────────────────────────────
-            using var penLigne = new Pen(Color.FromArgb(34, 85, 34), 1.2f);
-            using var penGris = new Pen(Color.FromArgb(200, 200, 200), 0.5f);
-            var brushBlanc = Brushes.White;
+            // ── Ressources ────────────────────────────────────────────────
+            using var penVert = new Pen(Color.FromArgb(20, 60, 20), 1.5f);
+            using var penGris = new Pen(Color.FromArgb(180, 180, 180), 0.7f);
+            using var brushVert = new SolidBrush(Color.FromArgb(20, 60, 20));
+            using var brushVert2 = new SolidBrush(Color.FromArgb(46, 100, 46));
+            using var brushGris = new SolidBrush(Color.FromArgb(90, 90, 90));
+            using var brushLG = new SolidBrush(Color.FromArgb(235, 245, 235));
+            using var brushAlt = new SolidBrush(Color.FromArgb(248, 252, 248));
+            using var brushRed = new SolidBrush(Color.FromArgb(183, 28, 28));
+            using var brushRedL = new SolidBrush(Color.FromArgb(255, 235, 235));
             var brushNoir = Brushes.Black;
-            using var brushVert = new SolidBrush(Color.FromArgb(34, 85, 34));
-            using var brushGris = new SolidBrush(Color.FromArgb(100, 100, 100));
-            using var brushLightVert = new SolidBrush(Color.FromArgb(232, 245, 233));
+            var brushBlanc = Brushes.White;
 
-            using var fontTitre = new Font("Segoe UI", 18F, FontStyle.Bold);
-            using var fontSousTitre = new Font("Segoe UI", 10F, FontStyle.Bold);
+            using var fontNom = new Font("Segoe UI", 26F, FontStyle.Bold);
+            using var fontSlogan = new Font("Segoe UI", 9F, FontStyle.Italic);
+            using var fontST = new Font("Segoe UI", 10F, FontStyle.Bold);
             using var fontGras = new Font("Segoe UI", 9F, FontStyle.Bold);
             using var fontNormal = new Font("Segoe UI", 9F);
             using var fontPetit = new Font("Segoe UI", 7.5F);
-            using var fontTotal = new Font("Segoe UI", 12F, FontStyle.Bold);
+            using var fontTotal = new Font("Segoe UI", 13F, FontStyle.Bold);
 
-            // ── En-tête Pharmacie ─────────────────────────────────────────
-            g.FillRectangle(brushVert, x, y, largeur, 65);
-            g.DrawString("🏥  PHARMACIE", fontTitre, brushBlanc, x + 12, y + 8);
-            g.DrawString("Votre santé, notre priorité", fontPetit, brushBlanc, x + 12, y + 48);
-            y += 75;
+            // ══════════════════════════════════════════════════════════════
+            // 1. EN-TÊTE — bande verte pleine largeur
+            // ══════════════════════════════════════════════════════════════
+            g.FillRectangle(brushVert, x, y, largeur, 80f);
+            g.DrawString("LIGUAPHARME", fontNom, brushBlanc, x + 16, y + 8);
+            g.DrawString("Votre santé, notre priorité — Pharmacie agréée",
+                fontSlogan, brushBlanc, x + 16, y + 56);
+            g.DrawString($"Facture  {vente.numeroVente ?? "—"}",
+                fontGras, brushBlanc, x + largeur - 220, y + 14);
+            g.DrawString(vente.DateVente.ToString("dd/MM/yyyy  HH:mm"),
+                fontNormal, brushBlanc, x + largeur - 220, y + 34);
+            y += 96;
 
-            // ── Séparateur titre ──────────────────────────────────────────
-            g.DrawString("F A C T U R E", fontSousTitre, brushVert,
-                x + largeur / 2 - 55, y);
-            y += 22;
-            g.DrawLine(penLigne, x, y, x + largeur, y);
-            y += 10;
+            // ══════════════════════════════════════════════════════════════
+            // 2. BLOC INFO — deux colonnes
+            // ══════════════════════════════════════════════════════════════
+            float colG = x;
+            float colD = x + largeur / 2 + 10;
 
-            // ── Bloc info vente / vendeur ─────────────────────────────────
-            string nomVendeur = vente.User != null
-                ? $"{vente.User.Prenom} {vente.User.Nom}"
-                : "—";
+            g.FillRectangle(brushLG, x, y, largeur, 76);
 
-            void LigneInfo(string label, string val, float xLeft, float yPos, Font font)
+            void Info(string lbl, string val, float lx, float ly)
             {
-                g.DrawString(label, fontGras, brushGris, xLeft, yPos);
-                g.DrawString(val, font, brushNoir, xLeft + 110, yPos);
+                g.DrawString(lbl, fontGras, brushGris, lx, ly);
+                g.DrawString(val, fontNormal, brushNoir, lx + 105f, ly);
             }
 
-            LigneInfo("N° Facture :", vente.numeroVente, x, y, fontGras);
-            LigneInfo("Date :", vente.DateVente.ToString("dd/MM/yyyy  HH:mm"), x + 270, y, fontNormal);
-            y += 18;
-            LigneInfo("Vendeur :", nomVendeur, x, y, fontNormal);
-            LigneInfo("Paiement :", vente.MoyenPaiement, x + 270, y, fontNormal);
-            y += 18;
-
-            // ── Bloc client ───────────────────────────────────────────────
+            string nomVendeur = vente.User != null
+                ? $"{vente.User.Prenom} {vente.User.Nom}" : "—";
             string nomClient = $"{vente.PrenomClient} {vente.NomClient}".Trim();
             if (string.IsNullOrWhiteSpace(nomClient)) nomClient = "Client anonyme";
-            string tel = string.IsNullOrWhiteSpace(vente.TelephoneClient) ? "—" : vente.TelephoneClient;
+            string tel = string.IsNullOrWhiteSpace(vente.TelephoneClient)
+                ? "—" : vente.TelephoneClient;
+            string motif = !string.IsNullOrWhiteSpace(vente.MotifAchat)
+                && vente.MotifAchat != "null" ? vente.MotifAchat : "—";
 
-            LigneInfo("Client :", nomClient, x, y, fontGras);
-            LigneInfo("Téléphone :", tel, x + 270, y, fontNormal);
-            y += 18;
+            Info("Vendeur :", nomVendeur, colG, y + 8);
+            Info("Paiement :", vente.MoyenPaiement, colG, y + 28);
+            Info("Motif :", motif, colG, y + 48);
+            Info("Client :", nomClient, colD, y + 8);
+            Info("Téléphone :", tel, colD, y + 28);
+            if (!string.IsNullOrWhiteSpace(vente.MatriculeEmploye)
+                && vente.MatriculeEmploye != "N/A")
+                Info("Matricule :", vente.MatriculeEmploye, colD, y + 48);
 
-            if (!string.IsNullOrWhiteSpace(vente.MotifAchat) && vente.MotifAchat != "null")
-            {
-                LigneInfo("Motif :", vente.MotifAchat, x, y, fontNormal);
-                y += 18;
-            }
+            y += 84;
+            g.DrawLine(penVert, x, y, x + largeur, y);
+            y += 12;
 
-            y += 6;
-            g.DrawLine(penLigne, x, y, x + largeur, y);
-            y += 10;
+            // ══════════════════════════════════════════════════════════════
+            // 3. TABLEAU PRODUITS
+            // ══════════════════════════════════════════════════════════════
+            // Colonnes : Produit | Unité | Qté | Prix U. | Sous-total
+            float[] cx = { x + 5, x + 360, x + 450, x + 530, x + 630 };
+            float rh = 24f;
 
-            // ── En-tête tableau produits ──────────────────────────────────
-            g.FillRectangle(brushLightVert, x, y, largeur, 22);
-            g.DrawString("Produit", fontGras, brushVert, x + 5, y + 3);
-            g.DrawString("Unité", fontGras, brushVert, x + 210, y + 3);
-            g.DrawString("Qté", fontGras, brushVert, x + 285, y + 3);
-            g.DrawString("Prix U.", fontGras, brushVert, x + 345, y + 3);
-            g.DrawString("Sous-total", fontGras, brushVert, x + 425, y + 3);
-            y += 24;
+            // En-tête
+            g.FillRectangle(brushVert2, x, y, largeur, rh);
+            string[] ent = { "Produit", "Unité", "Qté", "Prix unitaire", "Sous-total" };
+            for (int i = 0; i < ent.Length; i++)
+                g.DrawString(ent[i], fontGras, brushBlanc, cx[i], y + 4);
+            y += rh + 2;
 
-            // ── Lignes produits ───────────────────────────────────────────
-            bool altRow = false;
+            // Lignes produits
+            bool alt = false;
             foreach (var l in lignes)
             {
-                if (altRow)
-                    g.FillRectangle(
-                        new SolidBrush(Color.FromArgb(248, 252, 248)),
-                        x, y, largeur, 20);
+                // Hauteur variable : +18 si posologie présente
+                bool hasPoso = l.Produit != null &&
+                    (!string.IsNullOrWhiteSpace(l.Produit.Indication)
+                  || !string.IsNullOrWhiteSpace(l.Produit.Posologie)
+                  || l.Produit.NbFoisParJour > 0);
 
-                string nom = l.Produit?.Nom ?? $"Produit #{l.ProduitId}";
-                if (nom.Length > 34) nom = nom.Substring(0, 32) + "…";
+                float ligneH = hasPoso ? rh + 18f : rh;
 
-                g.DrawString(nom, fontNormal, brushNoir, x + 5, y + 2);
-                g.DrawString(l.UniteVendue, fontNormal, brushNoir, x + 210, y + 2);
-                g.DrawString(l.Quantite.ToString(), fontNormal, brushNoir, x + 293, y + 2);
-                g.DrawString(l.PrixUnitaire.ToString("N0"), fontNormal, brushNoir, x + 345, y + 2);
-                g.DrawString(l.SousTotal.ToString("N0"), fontGras, brushNoir, x + 430, y + 2);
+                if (alt) g.FillRectangle(brushAlt, x, y, largeur, ligneH);
 
-                y += 22;
-                altRow = !altRow;
+                string nom = l.Produit?.Nom ?? $"#{l.ProduitId}";
+                if (nom.Length > 52) nom = nom.Substring(0, 50) + "…";
+
+                g.DrawString(nom, fontNormal, brushNoir, cx[0], y + 3);
+                g.DrawString(l.UniteVendue, fontNormal, brushNoir, cx[1], y + 3);
+                g.DrawString(l.Quantite.ToString(), fontNormal, brushNoir, cx[2], y + 3);
+                g.DrawString($"{l.PrixUnitaire:N0} KMF", fontNormal, brushNoir, cx[3], y + 3);
+                g.DrawString($"{l.SousTotal:N0} KMF", fontGras, brushNoir, cx[4], y + 3);
+
+                // Posologie sous le nom du médicament
+                if (hasPoso)
+                {
+                    var parts = new System.Collections.Generic.List<string>();
+                    if (!string.IsNullOrWhiteSpace(l.Produit.Indication))
+                        parts.Add(l.Produit.Indication);
+                    if (!string.IsNullOrWhiteSpace(l.Produit.Posologie))
+                        parts.Add(l.Produit.Posologie);
+                    if (l.Produit.NbFoisParJour > 0)
+                        parts.Add($"{l.Produit.NbFoisParJour}x/jour");
+
+                    string poso = "   → " + string.Join("  |  ", parts);
+                    using var fontPoso = new Font("Segoe UI", 7.5F, FontStyle.Italic);
+                    using var brushPoso = new SolidBrush(Color.FromArgb(60, 100, 60));
+                    g.DrawString(poso, fontPoso, brushPoso, cx[0], y + rh - 2);
+                }
+
+                y += ligneH;
+                alt = !alt;
             }
 
-            y += 6;
-            g.DrawLine(penLigne, x, y, x + largeur, y);
-            y += 10;
+            y += 8;
+            g.DrawLine(penVert, x, y, x + largeur, y);
+            y += 14;
 
-            // ── Totaux ────────────────────────────────────────────────────
+            // ══════════════════════════════════════════════════════════════
+            // 4. TOTAUX
+            // ══════════════════════════════════════════════════════════════
+            float xLbl = x + largeur - 340;
+            float xVal = x + largeur - 110;
+
+            void LigneT(string lbl, string val, Font fl, Font fv,
+                        System.Drawing.Brush cl, System.Drawing.Brush cv)
+            {
+                g.DrawString(lbl, fl, cl, xLbl, y);
+                g.DrawString(val, fv, cv, xVal, y);
+                y += 22f;
+            }
+
             // Total principal
-            g.DrawString("TOTAL", fontTotal, brushNoir, x + 340, y);
-            g.DrawString($"{vente.MontantTotal:N0} KMF", fontTotal, brushVert, x + 415, y);
-            y += 26;
+            g.FillRectangle(brushLG, x + largeur - 360, y - 4, 360, 32);
+            g.DrawString("TOTAL", fontTotal, brushNoir, xLbl, y);
+            g.DrawString($"{vente.MontantTotal:N0} KMF", fontTotal, brushVert2, xVal, y);
+            y += 36;
 
-            // Part mutuelle si applicable
+            // Mutuelle
             if (vente.MontantMutuelle > 0)
             {
                 string nomMut = vente.Mutuel?.NomEmployeur ?? "Mutuelle";
                 decimal partPat = vente.MontantTotal - vente.MontantMutuelle;
-
-                g.DrawString($"Part {nomMut} :", fontNormal, brushGris, x + 290, y);
-                g.DrawString($"{vente.MontantMutuelle:N0} KMF", fontGras, brushGris, x + 420, y);
-                y += 18;
-
-                g.DrawString("Part patient :", fontNormal, brushNoir, x + 290, y);
-                g.DrawString($"{partPat:N0} KMF", fontGras, brushNoir, x + 420, y);
-                y += 18;
+                LigneT($"Part {nomMut} :", $"{vente.MontantMutuelle:N0} KMF",
+                    fontNormal, fontGras, brushGris, brushGris);
+                LigneT("Part patient :", $"{partPat:N0} KMF",
+                    fontNormal, fontGras, brushNoir, brushNoir);
             }
 
-            // Rendu
-            if (vente.MontantRendu > 0)
-            {
-                g.DrawString("Rendu :", fontNormal, brushGris, x + 290, y);
-                g.DrawString($"{vente.MontantRendu:N0} KMF", fontNormal, brushGris, x + 420, y);
-                y += 18;
-            }
-
-            // Avance crédit versée (si paiement partiel)
+            // Avance crédit
             if (vente.Type == "Crédit" && vente.MontantVerse > 0)
-            {
-                g.DrawString("Avance reçue :", fontNormal, brushGris, x + 290, y);
-                g.DrawString($"{vente.MontantVerse:N0} KMF", fontNormal, brushGris, x + 420, y);
-                y += 18;
-            }
+                LigneT("Avance reçue :", $"{vente.MontantVerse:N0} KMF",
+                    fontNormal, fontGras, brushGris, brushGris);
 
-            // Reste à payer (crédit ou impayé)
+            // Reste à payer
             if (vente.MontantRestant > 0)
             {
-                using var brushRed = new SolidBrush(Color.OrangeRed);
-                g.DrawString("Reste à payer :", fontGras, brushRed, x + 290, y);
-                g.DrawString($"{vente.MontantRestant:N0} KMF", fontGras, brushRed, x + 420, y);
-                y += 18;
+                g.FillRectangle(brushRedL, x + largeur - 360, y - 2, 360, 28);
+                LigneT("RESTE À PAYER :", $"{vente.MontantRestant:N0} KMF",
+                    fontGras, fontGras, brushRed, brushRed);
             }
             else if (vente.Type == "Crédit")
             {
-                // Crédit entièrement soldé
-                using var brushGreen = new SolidBrush(Color.FromArgb(27, 94, 32));
-                g.DrawString("✅ Soldé", fontGras, brushGreen, x + 370, y);
-                y += 18;
+                g.DrawString("✅  Soldé intégralement", fontGras, brushVert2, xLbl, y);
+                y += 22;
             }
 
-            y += 14;
-            g.DrawLine(penLigne, x, y, x + largeur, y);
-            y += 14;
-
-            // ── Pied de page ──────────────────────────────────────────────
+            // ══════════════════════════════════════════════════════════════
+            // 5. PIED DE PAGE — bande verte en bas de page
+            // ══════════════════════════════════════════════════════════════
+            float yPied = 1169f - marge - 36f;
+            g.FillRectangle(brushVert, x, yPied, largeur, 36f);
             g.DrawString(
-                "Merci pour votre confiance.  Conservez cette facture pour tout remboursement.",
-                fontPetit, brushGris,
-                x + (largeur / 2) - 175, y);
-            y += 14;
+                "Merci pour votre confiance.   Conservez cette facture pour tout remboursement.",
+                fontPetit, brushBlanc,
+                x + largeur / 2 - 230, yPied + 6);
             g.DrawString(
-                $"Document généré le {DateTime.Now:dd/MM/yyyy à HH:mm}",
-                fontPetit, brushGris,
-                x + (largeur / 2) - 90, y);
+                $"Document généré le {DateTime.Now:dd/MM/yyyy à HH:mm}  —  LIGUAPHARME",
+                fontPetit, brushBlanc,
+                x + largeur / 2 - 175, yPied + 20);
         }
 
         private void btnAnnuler_Click(object sender, EventArgs e) => this.Close();
