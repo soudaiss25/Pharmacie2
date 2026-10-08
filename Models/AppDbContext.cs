@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.Models
 {
@@ -18,7 +19,7 @@ namespace Pharmacie2.Models
         public DbSet<DepenseAnnexe> DepensesAnnexes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=PharmacieDB.sqlite");
+            => options.UseSqlite($"Data Source={CheminsApp.CheminBase}");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,4 +66,4 @@ namespace Pharmacie2.Models
                 .OnDelete(DeleteBehavior.SetNull);
         }
     }
-}
+}
