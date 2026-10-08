@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views
 {
@@ -11,6 +12,13 @@ namespace Pharmacie2.views
     {
         private List<Fournisseur> _fournisseurs;
         private readonly int? _produitId; // null = ajout, int = modification
+
+        // État d'origine du stock (mode modification) : sert à ne pas réécrire un stock non touché
+        private int _stockOrigineUnites;
+        private int _boitesOrigine;
+        private int _vracOrigine;
+        private int _nbParBoiteOrigine = 1;
+        private bool _nbAverti;
 
         // ── Constructeurs ─────────────────────────────────────────────────
 
@@ -98,12 +106,14 @@ namespace Pharmacie2.views
                 txtMarge.Text = p.MargeBeneficiaire.ToString("0.00", CultureInfo.InvariantCulture);
                 txtPrixVente.Text = p.PrixVente.ToString("0.00", CultureInfo.InvariantCulture);
 
-                // Afficher le stock en BOÎTES (l'admin pense en boîtes)
-                // Le stock est stocké en unités → convertir pour affichage
-                int stockEnBoites = p.NbUniteParBoite > 1
-                                    ? p.QuantiteEnStock / p.NbUniteParBoite
-                                    : p.QuantiteEnStock;
-                numQuantite.Value = stockEnBoites;
+                // Stock en unités de base → boîtes pleines + unités en vrac (la boîte entamée reste visible)
+                int nbParBoite = Math.Max(1, p.NbUniteParBoite);
+                _stockOrigineUnites = p.QuantiteEnStock;
+                _nbParBoiteOrigine = nbParBoite;
+                _boitesOrigine = p.QuantiteEnStock / nbParBoite;
+                _vracOrigine = p.QuantiteEnStock % nbParBoite;
+                numQuantite.Value = Math.Min(numQuantite.Maximum, _boitesOrigine);
+                numUnitesVrac.Value = Math.Min(numUnitesVrac.Maximum, _vracOrigine);
                 numSeuil.Value = p.SeuilAlerte;
 
                 if (p.DateExpiration > DateTime.MinValue)
@@ -176,6 +186,8 @@ namespace Pharmacie2.views
             bool actif = chkVenteDetail.Checked;
 
             pnlVenteDetail.Enabled = actif;
+            numUnitesVrac.Enabled = actif;
+            if (!actif) numUnitesVrac.Value = 0;
             pnlVenteDetail.BackColor = actif
                 ? System.Drawing.Color.FromArgb(232, 245, 233)
                 : System.Drawing.Color.FromArgb(245, 245, 245);
@@ -297,13 +309,47 @@ namespace Pharmacie2.views
                                   ? (int)numNbUniteParBoite.Value
                                   : 1;
 
-            // ── Conversion stock : l'admin saisit en BOÎTES
-            // On stocke en UNITÉS DE BASE pour la gestion précise du stock
-            // Ex : 2 boîtes × 5 plaquettes = 10 unités stockées
-            int stockSaisi = (int)numQuantite.Value;
+            // ── Stock saisi : boîtes pleines × nb par boîte + unités en vrac ──
             int stockEnUnites = nbUniteParBoite > 1
-                                ? stockSaisi * nbUniteParBoite
-                                : stockSaisi;
+                                ? (int)numQuantite.Value * nbUniteParBoite + (int)numUnitesVrac.Value
+                                : (int)numQuantite.Value;
+
+            // Stock réécrit seulement si l'utilisateur l'a touché (ou si NbUniteParBoite change)
+            bool stockTouche = _produitId == null
+                || (int)numQuantite.Value != _boitesOrigine
+                || (int)numUnitesVrac.Value != _vracOrigine
+                || nbUniteParBoite != _nbParBoiteOrigine;
+
+            // Changement de NbUniteParBoite avec du stock : ressaisie obligatoire du stock réel
+            if (_produitId != null && _stockOrigineUnites > 0 && nbUniteParBoite != _nbParBoiteOrigine)
+            {
+                if (!_nbAverti)
+                {
+                    _nbAverti = true;
+                    MessageBox.Show(
+                        $"Vous modifiez le nombre d'unités par boîte ({_nbParBoiteOrigine} → {nbUniteParBoite}).\n\n" +
+                        "Le stock actuel ne peut plus être converti automatiquement.\n" +
+                        "Comptez le stock réel en rayon et saisissez-le (boîtes pleines + unités en vrac), puis enregistrez à nouveau.",
+                        "Stock à ressaisir", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numQuantite.Focus();
+                    return;
+                }
+
+                var conf = MessageBox.Show(
+                    $"Stock réel saisi : {numQuantite.Value} boîte(s) + {numUnitesVrac.Value} unité(s) " +
+                    $"= {stockEnUnites} unité(s) de base.\n\nConfirmer que c'est bien le stock réel ?",
+                    "Confirmer le stock", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (conf != DialogResult.Yes) return;
+            }
+
+                        if (nbUniteParBoite > 1 && numUnitesVrac.Value >= nbUniteParBoite)
+            {
+                MessageBox.Show(
+                    $"Les unités en vrac doivent être inférieures au nombre d'unités par boîte ({nbUniteParBoite}).\n" +
+                    "Ajoutez plutôt une boîte pleine.",
+                    "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                numUnitesVrac.Focus(); return;
+            }
 
             try
             {
@@ -340,7 +386,8 @@ namespace Pharmacie2.views
                         p.PrixAchat = prixAchat;
                         p.MargeBeneficiaire = marge;
                         p.PrixVente = prixVente;
-                        p.QuantiteEnStock = stockEnUnites;
+                        if (stockTouche)
+                            p.QuantiteEnStock = stockEnUnites;
                         p.SeuilAlerte = (int)numSeuil.Value;
                         p.DateExpiration = dtpDateExpiration.Value;
                         p.UniteVente = uniteVente;

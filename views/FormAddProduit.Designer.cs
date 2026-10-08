@@ -26,6 +26,7 @@ namespace Pharmacie2.views
             lblMarge = new Label(); txtMarge = new TextBox();
             lblPrixVente = new Label(); txtPrixVente = new TextBox();
             lblQuantite = new Label(); numQuantite = new NumericUpDown();
+            lblUnitesVrac = new Label(); numUnitesVrac = new NumericUpDown();
             lblSeuil = new Label(); numSeuil = new NumericUpDown();
             lblDateExpiration = new Label(); dtpDateExpiration = new DateTimePicker();
             lblFournisseur = new Label(); cbFournisseur = new ComboBox();
@@ -44,6 +45,7 @@ namespace Pharmacie2.views
             lblPosologieJour = new Label(); numPosologieJour = new NumericUpDown();
 
             ((System.ComponentModel.ISupportInitialize)numQuantite).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numUnitesVrac).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSeuil).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numNbUniteParBoite).BeginInit();
             groupBoxProduit.SuspendLayout();
@@ -101,9 +103,20 @@ namespace Pharmacie2.views
             lblPrixVente.ForeColor = Color.ForestGreen;
             lblPrixVente.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
 
-            Row(lblQuantite, "Quantité en stock (boîtes) *", numQuantite, 6, 120);
+            Row(lblQuantite, "Boîtes pleines en stock *", numQuantite, 6, 120);
             numQuantite.Maximum = 100000;
             numQuantite.Minimum = 0;
+
+            // Unités en vrac (boîte entamée) : actif seulement si vente au détail
+            lblUnitesVrac.Text = "+ unités en vrac :";
+            lblUnitesVrac.Location = new Point(tx + 135, 6 * rh + 28);
+            lblUnitesVrac.Size = new Size(115, 22);
+            lblUnitesVrac.Font = new Font("Segoe UI", 9F);
+            numUnitesVrac.Location = new Point(tx + 255, 6 * rh + 25);
+            numUnitesVrac.Size = new Size(80, 28);
+            numUnitesVrac.Maximum = 100000;
+            numUnitesVrac.Minimum = 0;
+            numUnitesVrac.Enabled = false;
 
             Row(lblSeuil, "Seuil d'alerte *", numSeuil, 7, 120);
             numSeuil.Maximum = 100000;
@@ -128,7 +141,7 @@ namespace Pharmacie2.views
                 lblNom, txtNom, lblType, cmbType,
                 lblPrixAchat, txtPrixAchat, lblMarge, txtMarge,
                 lblPrixVente, txtPrixVente,
-                lblQuantite, numQuantite, lblSeuil, numSeuil,
+                lblQuantite, numQuantite, lblUnitesVrac, numUnitesVrac, lblSeuil, numSeuil,
                 lblDateExpiration, dtpDateExpiration,
                 lblFournisseur, cbFournisseur
             });
@@ -323,6 +336,7 @@ namespace Pharmacie2.views
             Controls.Add(btnAnnuler);
 
             ((System.ComponentModel.ISupportInitialize)numQuantite).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numUnitesVrac).EndInit();
             ((System.ComponentModel.ISupportInitialize)numSeuil).EndInit();
             ((System.ComponentModel.ISupportInitialize)numNbUniteParBoite).EndInit();
             pnlVenteDetail.ResumeLayout(false);
@@ -343,6 +357,7 @@ namespace Pharmacie2.views
         private Label lblMarge; private TextBox txtMarge;
         private Label lblPrixVente; private TextBox txtPrixVente;
         private Label lblQuantite; private NumericUpDown numQuantite;
+        private Label lblUnitesVrac; private NumericUpDown numUnitesVrac;
         private Label lblSeuil; private NumericUpDown numSeuil;
         private Label lblDateExpiration; private DateTimePicker dtpDateExpiration;
         private Label lblFournisseur; private ComboBox cbFournisseur;
