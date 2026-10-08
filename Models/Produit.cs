@@ -111,6 +111,9 @@ namespace Pharmacie2.Models
         /// <summary>Explication affichée à l'utilisateur.</summary>
         public string? MotifVerification { get; set; }
 
+        /// <summary>false = archivé : n'apparaît plus dans les choix, mais reste dans l'historique.</summary>
+        public bool Actif { get; set; } = true;
+
         public bool EstEnRupture() => QuantiteEnStock <= Pharmacie2.Services.StockService.SeuilEnUnites(this);
     }
 }

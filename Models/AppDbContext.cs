@@ -52,12 +52,28 @@ namespace Pharmacie2.Models
             modelBuilder.Entity<MutuelPaiement>()
                 .HasOne(mp => mp.Mutuel).WithMany()
                 .HasForeignKey(mp => mp.MutuelId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MutuelPaiement>()
                 .HasOne(mp => mp.User).WithMany()
                 .HasForeignKey(mp => mp.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Archivage : on ne supprime jamais un enregistrement qui a un historique
+            modelBuilder.Entity<LigneVente>()
+                .HasOne(l => l.Produit).WithMany()
+                .HasForeignKey(l => l.ProduitId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LigneCommande>()
+                .HasOne(l => l.Produit).WithMany()
+                .HasForeignKey(l => l.ProduitId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Commande>()
+                .HasOne(c => c.Fournisseur).WithMany(f => f.Commandes)
+                .HasForeignKey(c => c.FournisseurId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // ← AJOUT : relation DepenseAnnexe → User
             modelBuilder.Entity<DepenseAnnexe>()

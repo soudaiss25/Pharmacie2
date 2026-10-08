@@ -25,6 +25,9 @@ namespace Pharmacie2.Models
         [Range(0, 100)]
         public decimal TauxPriseEnCharge { get; set; }
 
+        /// <summary>false = archivé : n'apparaît plus dans les choix, mais reste dans l'historique.</summary>
+        public bool Actif { get; set; } = true;
+
 
     }
 }

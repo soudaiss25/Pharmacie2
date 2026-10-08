@@ -24,5 +24,8 @@ namespace Pharmacie2.Models
         public string Login { get; set; }
         [Required, MaxLength(250)]
         public string MotDePasse { get; set; }
+
+        /// <summary>false = archivé : n'apparaît plus dans les choix, mais reste dans l'historique.</summary>
+        public bool Actif { get; set; } = true;
     }
 }
