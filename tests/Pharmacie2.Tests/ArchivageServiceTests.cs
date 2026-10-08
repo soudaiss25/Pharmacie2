@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Xunit;
 
@@ -91,7 +91,10 @@ public class ArchivageServiceTests
             ctx.SaveChanges();
             fid = f.Id; mid = m.IdMutuel;
             ctx.commandes.Add(new Commande { FournisseurId = fid });
-            ctx.MutuelPaiements.Add(new MutuelPaiement { MutuelId = mid, Montant = 100, Commentaire = "" });
+            var vente = NouvelleVente(mutuelId: mid);
+            ctx.ventes.Add(vente);
+            ctx.SaveChanges();
+            ctx.MutuelPaiements.Add(new MutuelPaiement { MutuelId = mid, VenteId = vente.IdVente, NumeroPaiement = "MP-1", Montant = 100, Reference = "", Commentaire = "" });
             ctx.SaveChanges();
         }
 

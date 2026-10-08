@@ -46,7 +46,7 @@ public class ArchivageMigrationTests
         TestDb.Inserer(c, "LigneVentes", new() { ["Id"] = 1L, ["VenteId"] = 1L, ["ProduitId"] = 1L, ["Quantite"] = 2L, ["QuantiteUnites"] = 10L, ["UniteVendue"] = "Boîte", ["PrixUnitaire"] = "500" });
         TestDb.Inserer(c, "LigneVentes", new() { ["Id"] = 2L, ["VenteId"] = 1L, ["ProduitId"] = 2L, ["Quantite"] = 3L, ["QuantiteUnites"] = 3L, ["UniteVendue"] = "Boîte", ["PrixUnitaire"] = "100" });
         TestDb.Inserer(c, "paiement", new() { ["Id"] = 1L, ["NumeroPaiement"] = "P-1", ["VenteId"] = 1L, ["Montant"] = "500", ["UserId"] = 1L });
-        TestDb.Inserer(c, "MutuelPaiements", new() { ["Id"] = 1L, ["MutuelId"] = 1L, ["Montant"] = "300", ["UserId"] = 1L });
+        TestDb.Inserer(c, "MutuelPaiements", new() { ["Id"] = 1L, ["MutuelId"] = 1L, ["VenteId"] = 1L, ["NumeroPaiement"] = "MP-1", ["Montant"] = "300", ["UserId"] = 1L });
         TestDb.Inserer(c, "SessionsCaisse", new() { ["Id"] = 1L, ["UserId"] = 1L });
         TestDb.Inserer(c, "DepensesAnnexes", new() { ["Id"] = 1L, ["Categorie"] = "Loyer", ["Montant"] = "50", ["UserId"] = 1L });
         TestDb.Inserer(c, "commandes", new() { ["Id"] = 1L, ["FournisseurId"] = 1L, ["Statut"] = "Reçu" });
