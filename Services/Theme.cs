@@ -267,6 +267,9 @@ namespace Pharmacie2.Services
 
             switch (e.Value)
             {
+                case null:
+                case DBNull:
+                    e.Value = "—"; e.FormattingApplied = true; break;
                 case decimal d: e.Value = Format.Montant(d); e.FormattingApplied = true; break;
                 case double db: e.Value = Format.Montant((decimal)db); e.FormattingApplied = true; break;
                 case int i: e.Value = Format.Montant((decimal)i); e.FormattingApplied = true; break;

@@ -13,7 +13,7 @@ public class LayoutTests
     // Écrans déjà convertis aux règles B0 (la liste grandit au fil de la refonte ; voir TousLesEcransSontCouverts)
     private static readonly HashSet<string> Convertis = new()
     {
-        "PageAccueil", "Uc_MaJournee", "Uc_Stock", "Uc_Statistique", "PageCaissier", "FormVente", "Uc_Vente", "FormModificationVente", "FormPaiements", "FormDetailVente", "FormAnnulationVente", "FormSessionCaisse"
+        "PageAccueil", "Uc_MaJournee", "Uc_Stock", "Uc_Statistique", "PageCaissier", "FormVente", "Uc_Vente", "FormModificationVente", "FormPaiements", "FormDetailVente", "FormAnnulationVente", "FormSessionCaisse", "Uc_Caisse"
     };
 
     // Passe à true quand tous les écrans sont convertis : le test de couverture devient bloquant
@@ -168,6 +168,7 @@ public class LayoutTests
 
                     var locales = new List<string>();
                     Verifier(hote, type.Name, locales);
+                    VerifierOnglets(hote, type.Name, locales);
                     erreurs.AddRange(locales.Select(e => $"[{taille.Width}x{taille.Height}] {e}"));
                     tailles[taille] = Etirables(hote);
                 }
@@ -200,6 +201,7 @@ public class LayoutTests
                     erreurs.Add($"dialogue non centré (StartPosition = {f.StartPosition})");
 
                 Verifier(f, type.Name, erreurs);
+                VerifierOnglets(f, type.Name, erreurs);
             }
             finally { f.Close(); f.Dispose(); }
         }
@@ -226,6 +228,31 @@ public class LayoutTests
         }
         Visiter(racine);
         return d;
+    }
+
+    /// <summary>Affiche successivement chaque onglet des TabControl et vérifie sa mise en page.</summary>
+    private static void VerifierOnglets(Control racine, string chemin, List<string> erreurs)
+    {
+        foreach (Control c in racine.Controls)
+        {
+            if (c is TabControl tc)
+            {
+                for (int i = 0; i < tc.TabPages.Count; i++)
+                {
+                    tc.SelectedIndex = i;
+                    Application.DoEvents();
+                    tc.PerformLayout();
+                    tc.TabPages[i].PerformLayout();
+                    Application.DoEvents();
+                    Verifier(tc.TabPages[i], $"{chemin}/{tc.Name}[{tc.TabPages[i].Name}]", erreurs);
+                }
+                tc.SelectedIndex = 0;
+            }
+            else
+            {
+                VerifierOnglets(c, chemin, erreurs);
+            }
+        }
     }
 
     private static bool Descendre(Control c)

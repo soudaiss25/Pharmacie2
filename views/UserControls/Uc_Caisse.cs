@@ -1,8 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
@@ -12,49 +7,50 @@ namespace Pharmacie2.views.UserControls
     public partial class Uc_Caisse : UserControl
     {
         private int _sessionSelectionneeId = -1;
-        private static readonly string[] MobileTypes = { ModesPaiement.Mvola, ModesPaiement.HuriMoney };
 
         public Uc_Caisse()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
 
-            this.Load += (s, e) => { cbPeriode.SelectedIndex = 0; };
+            InitFiltresCombos();
+            cbPeriode.SelectedIndex = 0;
+            ToggleDatesPersonnalisees();
 
-            // Recharger seulement si ce n'est PAS "Personnalisé"
-            // Pour Personnalisé, on attend que l'utilisateur clique Actualiser
+            // Recharger seulement si ce n'est PAS « Personnalisé » (il faut alors cliquer sur Actualiser)
             cbPeriode.SelectedIndexChanged += (s, e) =>
             {
+                ToggleDatesPersonnalisees();
                 if (cbPeriode.SelectedItem?.ToString() != "Personnalisé")
                     ChargerRapport();
             };
-
-            // Pour Personnalisé, recharger quand les dates changent (après un délai)
-            dtpDebut.ValueChanged += (s, e) =>
-            {
-                if (cbPeriode.SelectedItem?.ToString() == "Personnalisé")
-                    ChargerRapport();
-            };
-            dtpFin.ValueChanged += (s, e) =>
-            {
-                if (cbPeriode.SelectedItem?.ToString() == "Personnalisé")
-                    ChargerRapport();
-            };
+            dtpDebut.ValueChanged += (s, e) => { if (cbPeriode.SelectedItem?.ToString() == "Personnalisé") ChargerRapport(); };
+            dtpFin.ValueChanged += (s, e) => { if (cbPeriode.SelectedItem?.ToString() == "Personnalisé") ChargerRapport(); };
 
             cbFiltreAnnee.SelectedIndexChanged += (s, e) => ChargerSessions();
             cbFiltreMois.SelectedIndexChanged += (s, e) => ChargerSessions();
             cbFiltreJour.SelectedIndexChanged += (s, e) => ChargerSessions();
             cbFiltreUser.SelectedIndexChanged += (s, e) => ChargerSessions();
-            dgvSessions.SelectionChanged += DgvSessions_SelectionChanged;
 
-            InitFiltresCombos();
+            // Se rafraîchit automatiquement quand une vente est créée, modifiée, payée ou annulée
+            VenteEvenements.VenteModifiee += SurVenteModifiee;
+            Disposed += (s, e) => VenteEvenements.VenteModifiee -= SurVenteModifiee;
+
+            ChargerRapport();
             ChargerSessions();
+        }
 
-            // ✅ Se rafraîchir automatiquement quand une vente est modifiée/payée
-            Uc_Vente.VenteModifiee += (s, e) =>
-            {
-                if (this.IsHandleCreated)
-                    this.BeginInvoke(new Action(() => ChargerRapport()));
-            };
+        private void SurVenteModifiee(object? sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated) return;
+            if (InvokeRequired) BeginInvoke(new Action(ChargerRapport)); else ChargerRapport();
+        }
+
+        private void ToggleDatesPersonnalisees()
+        {
+            bool perso = cbPeriode.SelectedItem?.ToString() == "Personnalisé";
+            dtpDebut.Visible = perso;
+            dtpFin.Visible = perso;
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -64,14 +60,16 @@ namespace Pharmacie2.views.UserControls
         private void ChargerRapport()
         {
             var (debut, fin) = GetPeriode();
-            lblPeriodeAffichee.Text = $"Période : {debut:dd/MM/yyyy}  →  {fin:dd/MM/yyyy}";
+            lblPeriodeAffichee.Text = $"Du {debut:dd/MM/yyyy} au {fin:dd/MM/yyyy}";
 
             try
             {
                 using (var ctx = new AppDbContext())
                 {
                     var ventes = ctx.ventes
+                        .AsNoTracking()
                         .Include(v => v.User)
+                        .Include(v => v.Paiements)
                         .Where(v => v.DateVente >= debut && v.DateVente <= fin)
                         .ToList();
 
@@ -79,176 +77,110 @@ namespace Pharmacie2.views.UserControls
                     var idsActives = ventesActives.Select(v => v.IdVente).ToHashSet();
 
                     var paiements = ctx.paiement
+                        .AsNoTracking()
                         .Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin)
                         .ToList();
 
-                    // ── Calculs globaux ────────────────────────────────────
-                    // totalEncaisse = TOUS les paiements reçus (y compris avances crédit)
-                    decimal totalEncaisse = paiements
-                        .Where(p => idsActives.Contains(p.VenteId))
-                        .Sum(p => (decimal)p.Montant);
-
-                    // Rendu supprimé du calcul — déjà inclus dans MontantTotal
-
-                    // ── TOTAL ATTENDU EN CAISSE = espèces physiques reçues ──────────
-                    // Comptant : espèces brutes reçues - rendu
                     // ── CE QUI EST PHYSIQUEMENT EN CAISSE ────────────────────
-                    //
-                    // 1. Ventes Comptant → MontantTotal encaissé
-                    decimal caisseComptant = ventesActives
-                        .Where(v => v.Type == "Comptant")
-                        .Sum(v => (decimal)v.MontantTotal);
+                    // 1. Ventes comptant → montant total encaissé
+                    decimal caisseComptant = ventesActives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantTotal);
 
-                    // 2. Ventes Mutuelle → part patient versée en espèces
-                    //    = MontantTotal - MontantMutuelle
-                    decimal caissePatientMutuelle = ventesActives
-                        .Where(v => v.Type == "Mutuelle")
-                        .Sum(v => (decimal)(v.MontantTotal - v.MontantMutuelle));
+                    // 2. Ventes mutuelle → part du patient versée en espèces
+                    decimal caissePatientMutuelle = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantTotal - v.MontantMutuelle);
 
-                    // 3. Ventes Mutuelle → part entreprise si déjà réglée
-                    decimal caisseEntrepriseMutuelle = ventesActives
-                        .Where(v => v.Type == "Mutuelle" && v.MutuelleReglee)
-                        .Sum(v => (decimal)v.MontantMutuelle);
+                    // 3. Ventes mutuelle → part de l'entreprise si déjà réglée
+                    decimal caisseEntrepriseMutuelle = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle && v.MutuelleReglee).Sum(v => v.MontantMutuelle);
 
-                    // 4. Ventes Crédit → avances versées en espèces
-                    var idsCredit2 = ventesActives
-                        .Where(v => v.Type == "Crédit")
-                        .Select(v => v.IdVente).ToHashSet();
-                    decimal avancesEnCaisse = paiements
-                        .Where(p => idsCredit2.Contains(p.VenteId))
-                        .Sum(p => (decimal)p.Montant);
+                    // 4. Ventes à crédit → versements reçus
+                    var idsCredit = ventesActives.Where(v => v.Type == ModesPaiement.Credit).Select(v => v.IdVente).ToHashSet();
+                    decimal avancesCredit = paiements.Where(p => idsCredit.Contains(p.VenteId)).Sum(p => p.Montant);
 
-                    // Total physique réel en caisse
-                    decimal totalCaisse = caisseComptant
-                                        + caissePatientMutuelle
-                                        + caisseEntrepriseMutuelle
-                                        + avancesEnCaisse;
-                    decimal caTotal = ventesActives.Sum(v => (decimal)v.MontantTotal);
+                    decimal totalCaisse = caisseComptant + caissePatientMutuelle + caisseEntrepriseMutuelle + avancesCredit;
+                    decimal caTotal = ventesActives.Sum(v => v.MontantTotal);
 
-                    // Ventes électroniques (CB + Chèque + Mobile) — non incluses dans le total physique
-                    // Affichées entre parenthèses pour rappel
+                    // Ventes électroniques (carte, chèque, mobile) : pas dans le tiroir
                     decimal totalElectronique = ventesActives
-                        .Where(v => v.Type == "Carte bancaire"
-                                 || v.Type == "Chèque"
-                                 || MobileTypes.Contains(v.Type))
-                        .Sum(v => (decimal)v.MontantTotal);
+                        .Where(v => v.Type == ModesPaiement.CarteBancaire || v.Type == ModesPaiement.Cheque || ModesPaiement.EstMobile(v.Type))
+                        .Sum(v => v.MontantTotal);
 
-                    // ── Ventilation par mode de paiement ──────────────────
-                    // Montants facturés par type
-                    decimal caEspeces = ventesActives.Where(v => v.Type == "Comptant").Sum(v => (decimal)v.MontantTotal);
-                    decimal caCheque = ventesActives.Where(v => v.Type == "Chèque").Sum(v => (decimal)v.MontantTotal);
-                    decimal caCB = ventesActives.Where(v => v.Type == "Carte bancaire").Sum(v => (decimal)v.MontantTotal);
-                    decimal caMobileMoney = ventesActives.Where(v => MobileTypes.Contains(v.Type)).Sum(v => (decimal)v.MontantTotal);
-                    decimal caMutuelle = ventesActives.Where(v => v.Type == "Mutuelle").Sum(v => (decimal)v.MontantTotal);
-                    decimal caMutuelleEnt = ventesActives.Where(v => v.Type == "Mutuelle").Sum(v => (decimal)v.MontantMutuelle);
-                    decimal especesRecues = ventesActives.Where(v => v.Type == "Comptant").Sum(v => (decimal)v.MontantEspeces);
+                    // ── Ventilation par moyen de paiement (montants facturés) ──
+                    decimal caEspeces = caisseComptant;
+                    decimal caCheque = ventesActives.Where(v => v.Type == ModesPaiement.Cheque).Sum(v => v.MontantTotal);
+                    decimal caCB = ventesActives.Where(v => v.Type == ModesPaiement.CarteBancaire).Sum(v => v.MontantTotal);
+                    decimal caMobileMoney = ventesActives.Where(v => ModesPaiement.EstMobile(v.Type)).Sum(v => v.MontantTotal);
+                    decimal caMutuelle = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantTotal);
+                    decimal caMutuelleEnt = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantMutuelle);
+                    decimal caCredit = ventesActives.Where(v => v.Type == ModesPaiement.Credit).Sum(v => v.MontantTotal);
+                    decimal resteCredit = ventesActives.Where(v => v.Type == ModesPaiement.Credit).Sum(v => v.MontantRestant);
 
-                    // Pour le crédit : montant total facturé ET avances déjà reçues
-                    decimal caCredit = ventesActives.Where(v => v.Type == "Crédit").Sum(v => (decimal)v.MontantTotal);
-                    // Avances crédit = paiements reçus sur ventes de type Crédit
-                    var idsCredit = ventesActives.Where(v => v.Type == "Crédit").Select(v => v.IdVente).ToHashSet();
-                    decimal avancesCredit = paiements.Where(p => idsCredit.Contains(p.VenteId)).Sum(p => (decimal)p.Montant);
-                    // Reste impayé crédit = total facturé - avances déjà reçues
-                    decimal resteCredit = ventesActives.Where(v => v.Type == "Crédit").Sum(v => v.MontantRestant);
+                    // ── Cartes ─────────────────────────────────────────────
+                    cardVentes.Valeur = ventesActives.Count.ToString();
+                    cardVentes.Detail = "pour " + Format.Montant(caTotal);
+                    cardComptant.Valeur = Format.Montant(caEspeces);
+                    cardComptant.Detail = $"{ventesActives.Count(v => v.Type == ModesPaiement.Comptant)} vente(s)";
+                    cardCredit.Valeur = Format.Montant(caCredit);
+                    cardCredit.Detail = $"versé : {Format.Montant(avancesCredit)}";
+                    cardCredit.Niveau = resteCredit > 0 ? "attention" : "succes";
+                    cardMutuelle.Valeur = Format.Montant(caMutuelle);
+                    cardMutuelle.Detail = $"part des entreprises : {Format.Montant(caMutuelleEnt)}";
+                    cardCB.Valeur = Format.Montant(caCB);
+                    cardCB.Detail = $"{ventesActives.Count(v => v.Type == ModesPaiement.CarteBancaire)} vente(s)";
+                    cardCheque.Valeur = Format.Montant(caCheque);
+                    cardCheque.Detail = "à déposer en banque";
 
-                    // ── UI Labels ──────────────────────────────────────────
-                    lblNbVentes.Text = $"{ventesActives.Count}";
-                    lblCaComptant.Text = $"{caEspeces:N0} KMF";
-                    lblCaCredit.Text = $"{caCredit:N0} KMF\n(avances: {avancesCredit:N0})";
-                    lblCaMutuelle.Text = $"{caMutuelle:N0} KMF";
-                    lblCaCB.Text = $"{caCB:N0} KMF";
-                    lblCaCheque.Text = $"{caCheque:N0} KMF";
-                    // Panneau "Ce qui doit être en caisse"
-                    lblEspecesRecues.Text = $"{caisseComptant:N0} KMF";
-
-                    // Part patient mutuelle (espèces reçues du patient)
-                    lblRendu.Text = $"{caissePatientMutuelle:N0} KMF";
-
-                    // Avances crédit reçues en espèces
-                    lblCreditRecu.Text = $"{avancesEnCaisse:N0} KMF";
-
-                    // Part entreprise non encore réglée (info — pas en caisse)
+                    // ── Ce qui doit être dans le tiroir ────────────────────
+                    lblEspecesRecues.Text = Format.Montant(caisseComptant);
+                    lblRendu.Text = Format.Montant(caissePatientMutuelle);
+                    lblCreditRecu.Text = Format.Montant(avancesCredit);
                     decimal partEntrepriseEnAttente = caMutuelleEnt - caisseEntrepriseMutuelle;
                     lblMutuellePatient.Text = partEntrepriseEnAttente > 0
-                        ? $"{partEntrepriseEnAttente:N0} KMF (non encaissé)"
-                        : "Tout réglé ✅";
-                    // Total + mention électronique entre parenthèses
-                    lblTotalCaisse.Text = $"{totalCaisse:N0} KMF";
-                    if (totalElectronique > 0)
-                        lblTotalCaisse.Text += $"\n(+ {totalElectronique:N0} KMF en CB/Chèque/Mobile)";
-                    lblTotalCaisse.ForeColor = totalCaisse >= 0
-                        ? Color.FromArgb(27, 94, 32) : Color.OrangeRed;
+                        ? $"{Format.Montant(partEntrepriseEnAttente)} (pas encore reçu)"
+                        : "Tout est réglé";
+                    lblMutuellePatient.ForeColor = partEntrepriseEnAttente > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
+                    lblTotalCaisse.Text = Format.Montant(totalCaisse);
+                    lblElectronique.Text = totalElectronique > 0
+                        ? $"En plus : {Format.Montant(totalElectronique)} payés par carte, chèque ou mobile (hors tiroir)"
+                        : "";
 
                     // ── Grille ventilation ────────────────────────────────
-                    var data = new[]
+                    dgvVentilation.DataSource = new[]
                     {
-                        new { Mode = "💵 Espèces (Comptant)",          NbVentes = ventesActives.Count(v => v.Type == "Comptant"),           Montant = caEspeces,     PctCA = Pct(caEspeces, caTotal),     Statut = "✅ Physique en caisse" },
-                        new { Mode = "📱 Mobile Money (Mvola / Huri)",  NbVentes = ventesActives.Count(v => MobileTypes.Contains(v.Type)),   Montant = caMobileMoney, PctCA = Pct(caMobileMoney, caTotal), Statut = "📲 Électronique" },
-                        new { Mode = "💳 Carte bancaire",               NbVentes = ventesActives.Count(v => v.Type == "Carte bancaire"),     Montant = caCB,          PctCA = Pct(caCB, caTotal),          Statut = "📲 Électronique" },
-                        new { Mode = "📄 Chèque",                       NbVentes = ventesActives.Count(v => v.Type == "Chèque"),             Montant = caCheque,      PctCA = Pct(caCheque, caTotal),      Statut = "🏦 À déposer en banque" },
-                        new { Mode = "🏥 Mutuelle (total facturé)",     NbVentes = ventesActives.Count(v => v.Type == "Mutuelle"),           Montant = caMutuelle,    PctCA = Pct(caMutuelle, caTotal),    Statut = "⏳ Part ent. en attente" },
-                        new { Mode = "📋 Crédit — facturé",            NbVentes = ventesActives.Count(v => v.Type == "Crédit"),             Montant = caCredit,      PctCA = Pct(caCredit, caTotal),      Statut = $"💵 Avances: {avancesCredit:N0} | Reste: {resteCredit:N0}" },
-                    };
-
-                    dgvVentilation.DataSource = null;
-                    dgvVentilation.DataSource = data;
-
-                    if (dgvVentilation.Columns["Mode"] != null) dgvVentilation.Columns["Mode"].HeaderText = "Mode de paiement";
-                    if (dgvVentilation.Columns["NbVentes"] != null) dgvVentilation.Columns["NbVentes"].HeaderText = "Nb ventes";
-                    if (dgvVentilation.Columns["Montant"] != null) dgvVentilation.Columns["Montant"].HeaderText = "Montant (KMF)";
-                    if (dgvVentilation.Columns["PctCA"] != null) dgvVentilation.Columns["PctCA"].HeaderText = "% du CA";
-                    if (dgvVentilation.Columns["Statut"] != null) dgvVentilation.Columns["Statut"].HeaderText = "Statut";
-
-                    ColorerVentilation(dgvVentilation);
+                        new { Mode = "Espèces (comptant)",             NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Comptant),        Montant = caEspeces,     PctCA = Pct(caEspeces, caTotal),     Statut = "Dans le tiroir" },
+                        new { Mode = "Mvola / Huri Money",             NbVentes = ventesActives.Count(v => ModesPaiement.EstMobile(v.Type)),         Montant = caMobileMoney, PctCA = Pct(caMobileMoney, caTotal), Statut = "Électronique" },
+                        new { Mode = "Carte bancaire",                 NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.CarteBancaire),   Montant = caCB,          PctCA = Pct(caCB, caTotal),          Statut = "Électronique" },
+                        new { Mode = "Chèque",                         NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Cheque),          Montant = caCheque,      PctCA = Pct(caCheque, caTotal),      Statut = "À déposer en banque" },
+                        new { Mode = "Mutuelle (total facturé)",       NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Mutuelle),        Montant = caMutuelle,    PctCA = Pct(caMutuelle, caTotal),    Statut = "Part de l'entreprise en attente" },
+                        new { Mode = "Crédit (total facturé)",         NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Credit),          Montant = caCredit,      PctCA = Pct(caCredit, caTotal),      Statut = $"Versé {Format.Montant(avancesCredit)} — reste {Format.Montant(resteCredit)}" },
+                    }.ToList();
 
                     // ── Grille détail ─────────────────────────────────────
-                    dgvDetail.DataSource = null;
                     dgvDetail.DataSource = ventes
                         .OrderByDescending(v => v.DateVente)
                         .Select(v => new
                         {
                             Date = v.DateVente.ToString("dd/MM/yyyy HH:mm"),
-                            Numéro = v.numeroVente,
+                            Numero = v.numeroVente,
                             Client = $"{v.PrenomClient} {v.NomClient}".Trim(),
-                            Motif = v.MotifAchat ?? "—",
-                            Type = v.Type,
-                            Statut = v.Statut,
+                            Motif = string.IsNullOrWhiteSpace(v.MotifAchat) ? "—" : v.MotifAchat,
+                            v.Type,
+                            v.Statut,
                             Total = v.MontantTotal,
-                            Espèces = v.MontantEspeces,
+                            Especes = v.MontantEspeces,
                             Rendu = v.MontantRendu,
                             Vendeur = v.User != null ? $"{v.User.Prenom} {v.User.Nom}" : "—"
                         }).ToList();
-
-                    ColorerGrille(dgvDetail);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur rapport : {ex.Message}",
+                Journal.Erreur("Rapport de caisse", ex);
+                MessageBox.Show($"Le rapport de caisse n'a pas pu être calculé : {ex.Message}",
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private static decimal Pct(decimal valeur, decimal total)
             => total > 0 ? Math.Round(valeur / total * 100, 1) : 0m;
-
-        private static void ColorerVentilation(DataGridView dgv)
-        {
-            foreach (DataGridViewRow row in dgv.Rows)
-            {
-                string mode = row.Cells["Mode"].Value?.ToString() ?? "";
-                row.DefaultCellStyle.BackColor = mode switch
-                {
-                    var m when m.StartsWith("💵") => Color.FromArgb(232, 245, 233),
-                    var m when m.StartsWith("📱") => Color.FromArgb(227, 242, 253),
-                    var m when m.StartsWith("💳") => Color.FromArgb(243, 229, 245),
-                    var m when m.StartsWith("📄") => Color.FromArgb(255, 253, 231),
-                    var m when m.StartsWith("🏥") => Color.FromArgb(225, 245, 254),
-                    var m when m.StartsWith("📋") => Color.FromArgb(255, 235, 238),
-                    _ => Color.White
-                };
-            }
-        }
 
         private (DateTime debut, DateTime fin) GetPeriode()
         {
@@ -268,8 +200,7 @@ namespace Pharmacie2.views.UserControls
                 case "Personnalisé":
                     DateTime pDebut = dtpDebut.Value.Date;
                     DateTime pFin = dtpFin.Value.Date.AddDays(1).AddSeconds(-1);
-                    // Sécurité : si début > fin, inverser
-                    if (pDebut > pFin) (pDebut, pFin) = (pFin, pDebut);
+                    if (pDebut > pFin) (pDebut, pFin) = (pFin, pDebut);   // sécurité : début > fin
                     return (pDebut, pFin);
                 default:
                     return (now.Date, now.Date.AddDays(1).AddSeconds(-1));
@@ -323,7 +254,7 @@ namespace Pharmacie2.views.UserControls
             {
                 using (var ctx = new AppDbContext())
                 {
-                    var query = ctx.SessionsCaisse.Include(s => s.User).AsQueryable();
+                    var query = ctx.SessionsCaisse.AsNoTracking().Include(s => s.User).AsQueryable();
 
                     if (cbFiltreAnnee.SelectedItem?.ToString() != "Toutes"
                         && int.TryParse(cbFiltreAnnee.SelectedItem?.ToString(), out int annee))
@@ -341,7 +272,7 @@ namespace Pharmacie2.views.UserControls
                         query = query.Where(s => s.UserId == ui.Id);
 
                     var sessions = query.OrderByDescending(s => s.DateOuverture).ToList();
-                    dgvSessions.Rows.Clear();
+                    var lignes = new List<object>();
 
                     foreach (var s in sessions)
                     {
@@ -349,63 +280,68 @@ namespace Pharmacie2.views.UserControls
                         DateTime fin = s.DateCloture ?? DateTime.Now;
 
                         var ventesSession = ctx.ventes
-                            .Where(v => v.UserId == s.UserId
-                                     && v.DateVente >= debut
-                                     && v.DateVente <= fin
-                                     && v.Statut == "Active")
+                            .AsNoTracking()
+                            .Where(v => v.UserId == s.UserId && v.DateVente >= debut && v.DateVente <= fin && v.Statut == "Active")
                             .ToList();
 
                         var ids = ventesSession.Select(v => v.IdVente).ToHashSet();
                         var paiementsSession = ctx.paiement
+                            .AsNoTracking()
                             .Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin)
                             .ToList();
 
-                        decimal encaisse = paiementsSession.Where(p => ids.Contains(p.VenteId)).Sum(p => (decimal)p.Montant);
-                        decimal rendu = ventesSession.Where(v => v.Type == "Comptant").Sum(v => (decimal)v.MontantRendu);
+                        decimal encaisse = paiementsSession.Where(p => ids.Contains(p.VenteId)).Sum(p => p.Montant);
+                        decimal rendu = ventesSession.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantRendu);
                         decimal theorique = s.FondOuverture + encaisse - rendu;
-                        decimal? ecart = s.MontantCompteCloture.HasValue ? s.MontantCompteCloture.Value - theorique : (decimal?)null;
-                        string ecartStr = ecart.HasValue ? (ecart >= 0 ? $"+{ecart:N0}" : $"{ecart:N0}") : "—";
+                        decimal? ecart = s.MontantCompteCloture.HasValue ? s.MontantCompteCloture.Value - theorique : null;
 
-                        int idx = dgvSessions.Rows.Add(
-                            s.Id,
-                            s.User != null ? $"{s.User.Prenom} {s.User.Nom}" : "—",
-                            s.DateOuverture.ToString("dd/MM/yyyy HH:mm"),
-                            s.DateCloture.HasValue ? s.DateCloture.Value.ToString("dd/MM/yyyy HH:mm") : "En cours",
+                        lignes.Add(new
+                        {
+                            SessionId = s.Id,
+                            Caissier = s.User != null ? $"{s.User.Prenom} {s.User.Nom}" : "—",
+                            Ouverture = s.DateOuverture.ToString("dd/MM/yyyy HH:mm"),
+                            Cloture = s.DateCloture.HasValue ? s.DateCloture.Value.ToString("dd/MM/yyyy HH:mm") : "En cours",
                             s.Statut,
-                            $"{s.FondOuverture:N0}",
-                            $"{encaisse:N0}",
-                            $"{theorique:N0}",
-                            s.MontantCompteCloture.HasValue ? $"{s.MontantCompteCloture:N0}" : "—",
-                            ecartStr,
-                            ventesSession.Count.ToString()
-                        );
-
-                        if (s.Statut == "Ouverte")
-                        {
-                            dgvSessions.Rows[idx].DefaultCellStyle.BackColor = Color.FromArgb(232, 245, 233);
-                            dgvSessions.Rows[idx].DefaultCellStyle.ForeColor = Color.FromArgb(27, 94, 32);
-                        }
-                        if (ecart.HasValue && ecart < 0)
-                        {
-                            dgvSessions.Rows[idx].Cells["colEcart"].Style.ForeColor = Color.OrangeRed;
-                            dgvSessions.Rows[idx].Cells["colEcart"].Style.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-                        }
+                            Fond = s.FondOuverture,
+                            Encaisse = encaisse,
+                            Theorique = theorique,
+                            Compte = s.MontantCompteCloture,
+                            Ecart = ecart,
+                            NbVentes = ventesSession.Count.ToString()
+                        });
                     }
 
-                    lblNbSessions.Text =
-                        $"{sessions.Count} session(s) — {sessions.Count(s => s.Statut == "Ouverte")} ouverte(s)";
+                    dgvSessions.DataSource = lignes;
+                    lblNbSessions.Text = $"{sessions.Count} session(s), dont {sessions.Count(s => s.Statut == "Ouverte")} en cours";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur sessions : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Journal.Erreur("Sessions de caisse", ex);
+                MessageBox.Show($"Les sessions n'ont pas pu être affichées : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dgvSessions_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvSessions.Rows.Count) return;
+            var ligne = dgvSessions.Rows[e.RowIndex];
+            if (ligne.Cells["Statut"].Value?.ToString() == "Ouverte")
+            {
+                e.CellStyle.BackColor = Theme.SuccesFond;
+                e.CellStyle.ForeColor = Theme.SuccesTexte;
+            }
+            if (dgvSessions.Columns[e.ColumnIndex].Name == "Ecart" && ligne.Cells["Ecart"].Value is decimal ecart && ecart < 0)
+            {
+                e.CellStyle.ForeColor = Theme.UrgentTexte;
+                e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
             }
         }
 
         private void DgvSessions_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvSessions.SelectedRows.Count == 0) return;
-            _sessionSelectionneeId = Convert.ToInt32(dgvSessions.SelectedRows[0].Cells["colSessionId"].Value);
+            _sessionSelectionneeId = Convert.ToInt32(dgvSessions.SelectedRows[0].Cells["SessionId"].Value);
             ChargerDetailSession(_sessionSelectionneeId);
         }
 
@@ -415,126 +351,103 @@ namespace Pharmacie2.views.UserControls
             {
                 using (var ctx = new AppDbContext())
                 {
-                    var session = ctx.SessionsCaisse.Include(s => s.User).FirstOrDefault(s => s.Id == sessionId);
+                    var session = ctx.SessionsCaisse.AsNoTracking().Include(s => s.User).FirstOrDefault(s => s.Id == sessionId);
                     if (session == null) return;
 
                     DateTime debut = session.DateOuverture;
                     DateTime fin = session.DateCloture ?? DateTime.Now;
 
                     var ventes = ctx.ventes
+                        .AsNoTracking()
                         .Include(v => v.Paiements)
                         .Where(v => v.UserId == session.UserId && v.DateVente >= debut && v.DateVente <= fin)
                         .OrderByDescending(v => v.DateVente)
                         .ToList();
 
-                    var ventesActives = ventes.Where(v => v.Statut == "Active").ToList();
+                    var actives = ventes.Where(v => v.Statut == "Active").ToList();
 
-                    // ── Ventilation de la session ──────────────────────────
-                    decimal sesEspeces = ventesActives.Where(v => v.Type == "Comptant").Sum(v => (decimal)v.MontantTotal);
-                    decimal sesMobile = ventesActives.Where(v => MobileTypes.Contains(v.Type)).Sum(v => (decimal)v.MontantTotal);
-                    decimal sesCB = ventesActives.Where(v => v.Type == "Carte bancaire").Sum(v => (decimal)v.MontantTotal);
-                    decimal sesCheque = ventesActives.Where(v => v.Type == "Chèque").Sum(v => (decimal)v.MontantTotal);
-                    decimal sesMutuelle = ventesActives.Where(v => v.Type == "Mutuelle").Sum(v => (decimal)v.MontantTotal);
-                    decimal sesCredit = ventesActives.Where(v => v.Type == "Crédit").Sum(v => (decimal)v.MontantTotal);
+                    decimal sesEspeces = actives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantTotal);
+                    decimal sesMobile = actives.Where(v => ModesPaiement.EstMobile(v.Type)).Sum(v => v.MontantTotal);
+                    decimal sesCB = actives.Where(v => v.Type == ModesPaiement.CarteBancaire).Sum(v => v.MontantTotal);
+                    decimal sesCheque = actives.Where(v => v.Type == ModesPaiement.Cheque).Sum(v => v.MontantTotal);
+                    decimal sesMutuelle = actives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantTotal);
+                    decimal sesCredit = actives.Where(v => v.Type == ModesPaiement.Credit).Sum(v => v.MontantTotal);
 
-                    // Grille détail
-                    dgvDetailSession.DataSource = null;
                     dgvDetailSession.DataSource = ventes.Select(v => new
                     {
                         Heure = v.DateVente.ToString("HH:mm:ss"),
-                        Numéro = v.numeroVente,
+                        Numero = v.numeroVente,
                         Client = $"{v.PrenomClient} {v.NomClient}".Trim(),
-                        Type = v.Type,
-                        Statut = v.Statut,
+                        v.Type,
+                        v.Statut,
                         Total = v.MontantTotal,
-                        Versé = v.MontantVerse,
+                        Verse = v.MontantVerse,
                         Reste = v.MontantRestant
                     }).ToList();
 
-                    ColorerGrilleSession(dgvDetailSession);
-
-                    // Calculs théorique / écart
-                    var ids = ventesActives.Select(v => v.IdVente).ToHashSet();
-                    var paiements = ctx.paiement.Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin).ToList();
-                    decimal encaisse = paiements.Where(p => ids.Contains(p.VenteId)).Sum(p => (decimal)p.Montant);
-                    decimal rendu = ventesActives.Where(v => v.Type == "Comptant").Sum(v => (decimal)v.MontantRendu);
+                    var ids = actives.Select(v => v.IdVente).ToHashSet();
+                    var paiements = ctx.paiement.AsNoTracking().Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin).ToList();
+                    decimal encaisse = paiements.Where(p => ids.Contains(p.VenteId)).Sum(p => p.Montant);
+                    decimal rendu = actives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantRendu);
                     decimal theorique = session.FondOuverture + encaisse - rendu;
-                    decimal? ecart = session.MontantCompteCloture.HasValue ? session.MontantCompteCloture.Value - theorique : (decimal?)null;
+                    decimal? ecart = session.MontantCompteCloture.HasValue ? session.MontantCompteCloture.Value - theorique : null;
 
                     string caissier = session.User != null ? $"{session.User.Prenom} {session.User.Nom}" : "—";
 
                     lblDetailSession.Text =
-                        $"👤 {caissier}  |  📅 {debut:dd/MM/yyyy HH:mm} → " +
-                        $"{(session.DateCloture.HasValue ? session.DateCloture.Value.ToString("HH:mm") : "en cours")}  |  " +
-                        $"Fond : {session.FondOuverture:N0} KMF  |  Encaissé : {encaisse:N0} KMF  |  " +
-                        $"Théorique : {theorique:N0} KMF" +
-                        (ecart.HasValue ? $"  |  Écart : {(ecart >= 0 ? "+" : "")}{ecart:N0} KMF" : "");
+                        $"{caissier} — du {debut:dd/MM/yyyy HH:mm} à " +
+                        $"{(session.DateCloture.HasValue ? session.DateCloture.Value.ToString("HH:mm") : "maintenant")} — " +
+                        $"fond de caisse {Format.Montant(session.FondOuverture)} — encaissé {Format.Montant(encaisse)} — " +
+                        $"attendu {Format.Montant(theorique)}" +
+                        (ecart.HasValue ? $" — écart {(ecart >= 0 ? "+" : "")}{Format.Montant(ecart.Value)}" : "");
 
-                    lblDetailSession.ForeColor = ecart.HasValue && ecart < 0
-                        ? Color.OrangeRed : Color.FromArgb(27, 94, 32);
+                    lblDetailSession.ForeColor = ecart.HasValue && ecart < 0 ? Theme.UrgentTexte : Theme.SuccesTexte;
 
-                    // ── Ventilation en une ligne sous le récap ─────────────
                     lblVentilationSession.Text =
-                        $"💵 Espèces : {sesEspeces:N0}  |  " +
-                        $"📱 Mobile : {sesMobile:N0}  |  " +
-                        $"💳 CB : {sesCB:N0}  |  " +
-                        $"📄 Chèque : {sesCheque:N0}  |  " +
-                        $"🏥 Mutuelle : {sesMutuelle:N0}  |  " +
-                        $"📋 Crédit : {sesCredit:N0}   (KMF)";
-                    lblVentilationSession.ForeColor = Color.FromArgb(25, 118, 210);
+                        $"Espèces : {Format.Montant(sesEspeces)}  |  Mobile : {Format.Montant(sesMobile)}  |  " +
+                        $"Carte : {Format.Montant(sesCB)}  |  Chèque : {Format.Montant(sesCheque)}  |  " +
+                        $"Mutuelle : {Format.Montant(sesMutuelle)}  |  Crédit : {Format.Montant(sesCredit)}";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erreur détail session : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Journal.Erreur("Détail d'une session de caisse", ex);
+                MessageBox.Show($"Le détail de la session n'a pas pu être affiché : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnActualiserSessions_Click(object sender, EventArgs e) => ChargerSessions();
 
-        // ── Helpers coloriage ─────────────────────────────────────────────
+        // ── Coloriage des types de paiement ───────────────────────────────
 
         private static Color CouleurType(string type) => type switch
         {
-            "Comptant" => Color.ForestGreen,
-            "Crédit" => Color.OrangeRed,
-            "Mutuelle" => Color.SteelBlue,
-            "Chèque" => Color.FromArgb(180, 140, 0),
-            "Carte bancaire" => Color.FromArgb(106, 27, 154),
-            ModesPaiement.Mvola => Color.FromArgb(0, 120, 180),
-            ModesPaiement.HuriMoney => Color.FromArgb(0, 120, 180),
-            _ => Color.Gray
+            ModesPaiement.Comptant => Theme.Accent,
+            ModesPaiement.Credit => Theme.AttentionTexte,
+            ModesPaiement.Mutuelle => Theme.Neutre,
+            _ => Theme.InfoTexte
         };
 
-        private static void ColorerGrille(DataGridView dgv)
+        private void ColorerLigneVente(DataGridView grille, DataGridViewCellFormattingEventArgs e)
         {
-            foreach (DataGridViewRow row in dgv.Rows)
+            if (e.RowIndex < 0 || e.RowIndex >= grille.Rows.Count) return;
+            var ligne = grille.Rows[e.RowIndex];
+
+            if (ligne.Cells["Statut"].Value?.ToString() == "Annulée")
             {
-                if (row.Cells["Type"]?.Value == null) continue;
-                string type = row.Cells["Type"].Value.ToString();
-                string statut = row.Cells["Statut"]?.Value?.ToString() ?? "";
-                row.Cells["Type"].Style.BackColor = CouleurType(type);
-                row.Cells["Type"].Style.ForeColor = Color.White;
-                row.Cells["Type"].Style.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-                if (statut == "Annulée")
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(160, 160, 160);
+                e.CellStyle.ForeColor = Theme.Neutre;
+                e.CellStyle.BackColor = Theme.InfoFond;
+            }
+            else if (grille.Columns[e.ColumnIndex].Name == "Type" && ligne.Cells["Type"].Value is string type)
+            {
+                e.CellStyle.BackColor = CouleurType(type);
+                e.CellStyle.ForeColor = Color.White;
             }
         }
 
-        private static void ColorerGrilleSession(DataGridView dgv)
-        {
-            foreach (DataGridViewRow row in dgv.Rows)
-            {
-                if (row.Cells["Type"]?.Value == null) continue;
-                string type = row.Cells["Type"].Value.ToString();
-                string statut = row.Cells["Statut"]?.Value?.ToString() ?? "";
-                row.Cells["Type"].Style.BackColor = CouleurType(type);
-                row.Cells["Type"].Style.ForeColor = Color.White;
-                row.Cells["Type"].Style.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-                if (statut == "Annulée")
-                    row.DefaultCellStyle.ForeColor = Color.FromArgb(160, 160, 160);
-            }
-        }
+        private void dgvDetail_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) => ColorerLigneVente(dgvDetail, e);
+
+        private void dgvDetailSession_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) => ColorerLigneVente(dgvDetailSession, e);
     }
 
     internal class UserItem

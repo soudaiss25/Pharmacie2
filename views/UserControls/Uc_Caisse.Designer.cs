@@ -1,318 +1,1150 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace Pharmacie2.views.UserControls
+﻿namespace Pharmacie2.views.UserControls
 {
     partial class Uc_Caisse
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        private Panel pnlTop;
-        private Label lblTitre;
-        private TabControl tabMain;
-        private TabPage tabRapport, tabSessions;
-
-        private Panel pnlFiltres;
-        private Label lblPeriodeLabel, lblPeriodeAffichee;
-        private ComboBox cbPeriode;
-        private DateTimePicker dtpDebut, dtpFin;
-        private Button btnActualiser;
-
-        private Panel pnlCartes;
-        private Panel cardVentes, cardComptant, cardCredit, cardMutuelle, cardCB, cardCheque;
-        private Label lblNbVentesTitle, lblNbVentes;
-        private Label lblCaComptantTitle, lblCaComptant;
-        private Label lblCaCreditTitle, lblCaCredit;
-        private Label lblCaMutuelleTitle, lblCaMutuelle;
-        private Label lblCaCBTitle, lblCaCB;
-        private Label lblCaChequeTitle, lblCaCheque;
-
-        private Panel pnlCaisse;
-        private Label lblEspecesTitle, lblEspecesRecues;
-        private Label lblRenduTitle, lblRendu;
-        private Label lblCreditRecuTitle, lblCreditRecu;
-        private Label lblMutuellePatientTitle, lblMutuellePatient;
-        private Label lblSeparateur;
-        private Label lblTotalTitle, lblTotalCaisse;
-
-        // NOUVEAU - ventilation
-        private GroupBox gbVentilation;
-        private DataGridView dgvVentilation;
-
-        private DataGridView dgvDetail;
-
-        private Panel pnlFiltresSessions;
-        private Label lblFiltreAnnee, lblFiltreMois, lblFiltreJour, lblFiltreUser;
-        private ComboBox cbFiltreAnnee, cbFiltreMois, cbFiltreJour, cbFiltreUser;
-        private Button btnActualiserSessions;
-        private Label lblNbSessions;
-
-        private SplitContainer splitSessions;
-        private DataGridView dgvSessions;
-        private DataGridViewTextBoxColumn
-            colSessionId, colCaissier, colOuverture, colCloture, colStatutSession,
-            colFond, colEncaisse, colTheorique, colCompte, colEcart, colNbVentes;
-
-        private Label lblDetailSession;
-        private Label lblVentilationSession;  // NOUVEAU
-        private DataGridView dgvDetailSession;
-
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && components != null) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
+        #region Code généré par le Concepteur Windows Form
+
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
         private void InitializeComponent()
         {
-            pnlTop = new Panel(); lblTitre = new Label();
-            tabMain = new TabControl(); tabRapport = new TabPage(); tabSessions = new TabPage();
-            pnlFiltres = new Panel(); lblPeriodeLabel = new Label(); lblPeriodeAffichee = new Label();
-            cbPeriode = new ComboBox(); dtpDebut = new DateTimePicker(); dtpFin = new DateTimePicker();
-            btnActualiser = new Button();
-            pnlCartes = new Panel();
-            cardVentes = new Panel(); cardComptant = new Panel(); cardCredit = new Panel(); cardMutuelle = new Panel();
-            cardCB = new Panel(); cardCheque = new Panel();
-            lblNbVentesTitle = new Label(); lblNbVentes = new Label();
-            lblCaComptantTitle = new Label(); lblCaComptant = new Label();
-            lblCaCreditTitle = new Label(); lblCaCredit = new Label();
-            lblCaMutuelleTitle = new Label(); lblCaMutuelle = new Label();
-            lblCaCBTitle = new Label(); lblCaCB = new Label();
-            lblCaChequeTitle = new Label(); lblCaCheque = new Label();
-            pnlCaisse = new Panel();
-            lblEspecesTitle = new Label(); lblEspecesRecues = new Label();
-            lblRenduTitle = new Label(); lblRendu = new Label();
-            lblCreditRecuTitle = new Label(); lblCreditRecu = new Label();
-            lblMutuellePatientTitle = new Label(); lblMutuellePatient = new Label();
-            lblSeparateur = new Label(); lblTotalTitle = new Label(); lblTotalCaisse = new Label();
-            gbVentilation = new GroupBox(); dgvVentilation = new DataGridView();
-            dgvDetail = new DataGridView();
-            pnlFiltresSessions = new Panel();
-            lblFiltreAnnee = new Label(); cbFiltreAnnee = new ComboBox();
-            lblFiltreMois = new Label(); cbFiltreMois = new ComboBox();
-            lblFiltreJour = new Label(); cbFiltreJour = new ComboBox();
-            lblFiltreUser = new Label(); cbFiltreUser = new ComboBox();
-            btnActualiserSessions = new Button(); lblNbSessions = new Label();
-            splitSessions = new SplitContainer(); dgvSessions = new DataGridView();
-            colSessionId = new DataGridViewTextBoxColumn(); colCaissier = new DataGridViewTextBoxColumn();
-            colOuverture = new DataGridViewTextBoxColumn(); colCloture = new DataGridViewTextBoxColumn();
-            colStatutSession = new DataGridViewTextBoxColumn(); colFond = new DataGridViewTextBoxColumn();
-            colEncaisse = new DataGridViewTextBoxColumn(); colTheorique = new DataGridViewTextBoxColumn();
-            colCompte = new DataGridViewTextBoxColumn(); colEcart = new DataGridViewTextBoxColumn();
-            colNbVentes = new DataGridViewTextBoxColumn();
-            lblDetailSession = new Label(); lblVentilationSession = new Label();
-            dgvDetailSession = new DataGridView();
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTitre = new System.Windows.Forms.Label();
+            this.tabMain = new System.Windows.Forms.TabControl();
+            this.tabRapport = new System.Windows.Forms.TabPage();
+            this.tlpRapport = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlFiltres = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPeriodeLabel = new System.Windows.Forms.Label();
+            this.cbPeriode = new System.Windows.Forms.ComboBox();
+            this.dtpDebut = new System.Windows.Forms.DateTimePicker();
+            this.dtpFin = new System.Windows.Forms.DateTimePicker();
+            this.btnActualiser = new System.Windows.Forms.Button();
+            this.lblPeriodeAffichee = new System.Windows.Forms.Label();
+            this.pnlCartes = new System.Windows.Forms.TableLayoutPanel();
+            this.cardVentes = new Pharmacie2.views.Composants.CarteKpi();
+            this.cardComptant = new Pharmacie2.views.Composants.CarteKpi();
+            this.cardCredit = new Pharmacie2.views.Composants.CarteKpi();
+            this.cardMutuelle = new Pharmacie2.views.Composants.CarteKpi();
+            this.cardCB = new Pharmacie2.views.Composants.CarteKpi();
+            this.cardCheque = new Pharmacie2.views.Composants.CarteKpi();
+            this.tlpMilieu = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlCaisse = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTitreCaisse = new System.Windows.Forms.Label();
+            this.lblEspecesTitle = new System.Windows.Forms.Label();
+            this.lblEspecesRecues = new System.Windows.Forms.Label();
+            this.lblRenduTitle = new System.Windows.Forms.Label();
+            this.lblRendu = new System.Windows.Forms.Label();
+            this.lblCreditRecuTitle = new System.Windows.Forms.Label();
+            this.lblCreditRecu = new System.Windows.Forms.Label();
+            this.lblMutuellePatientTitle = new System.Windows.Forms.Label();
+            this.lblMutuellePatient = new System.Windows.Forms.Label();
+            this.lblTotalTitle = new System.Windows.Forms.Label();
+            this.lblTotalCaisse = new System.Windows.Forms.Label();
+            this.lblElectronique = new System.Windows.Forms.Label();
+            this.tlpVentilation = new System.Windows.Forms.TableLayoutPanel();
+            this.lblVentilation = new System.Windows.Forms.Label();
+            this.dgvVentilation = new System.Windows.Forms.DataGridView();
+            this.lblDetailVentes = new System.Windows.Forms.Label();
+            this.dgvDetail = new System.Windows.Forms.DataGridView();
+            this.tabSessions = new System.Windows.Forms.TabPage();
+            this.tlpSessions = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlFiltresSessions = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblFiltreAnnee = new System.Windows.Forms.Label();
+            this.cbFiltreAnnee = new System.Windows.Forms.ComboBox();
+            this.lblFiltreMois = new System.Windows.Forms.Label();
+            this.cbFiltreMois = new System.Windows.Forms.ComboBox();
+            this.lblFiltreJour = new System.Windows.Forms.Label();
+            this.cbFiltreJour = new System.Windows.Forms.ComboBox();
+            this.lblFiltreUser = new System.Windows.Forms.Label();
+            this.cbFiltreUser = new System.Windows.Forms.ComboBox();
+            this.btnActualiserSessions = new System.Windows.Forms.Button();
+            this.lblNbSessions = new System.Windows.Forms.Label();
+            this.dgvSessions = new System.Windows.Forms.DataGridView();
+            this.lblDetailSession = new System.Windows.Forms.Label();
+            this.lblVentilationSession = new System.Windows.Forms.Label();
+            this.dgvDetailSession = new System.Windows.Forms.DataGridView();
+            this.colMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNbVentes = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMontant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPctCA = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailClient = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailMotif = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailEspeces = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailRendu = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDetailVendeur = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessionId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCaissier = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colOuverture = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCloture = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessionStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colFond = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEncaisse = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTheorique = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCompte = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEcart = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessionNbVentes = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessHeure = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessClient = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessVerse = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSessReste = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVentilation)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDetail)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSessions)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDetailSession)).BeginInit();
+            this.tlpRoot.SuspendLayout();
+            this.tabMain.SuspendLayout();
+            this.tabRapport.SuspendLayout();
+            this.tlpRapport.SuspendLayout();
+            this.pnlFiltres.SuspendLayout();
+            this.pnlCartes.SuspendLayout();
+            this.tlpMilieu.SuspendLayout();
+            this.pnlCaisse.SuspendLayout();
+            this.tlpVentilation.SuspendLayout();
+            this.tabSessions.SuspendLayout();
+            this.tlpSessions.SuspendLayout();
+            this.pnlFiltresSessions.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // tlpRoot
+            // 
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 2;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.tlpRoot.Controls.Add(this.tabMain, 0, 1);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
+            // 
+            // lblTitre
+            // 
+            this.lblTitre.Text = "Caisse";
+            this.lblTitre.AutoSize = true;
+            this.lblTitre.Tag = "titre";
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Name = "lblTitre";
+            // 
+            // tabMain
+            // 
+            this.tabMain.Controls.Add(this.tabRapport);
+            this.tabMain.Controls.Add(this.tabSessions);
+            this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabMain.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tabMain.Name = "tabMain";
+            // 
+            // tabRapport
+            // 
+            this.tabRapport.Controls.Add(this.tlpRapport);
+            this.tabRapport.Text = "Rapport de caisse";
+            this.tabRapport.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.tabRapport.UseVisualStyleBackColor = true;
+            this.tabRapport.Name = "tabRapport";
+            // 
+            // tlpRapport
+            // 
+            this.tlpRapport.ColumnCount = 1;
+            this.tlpRapport.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRapport.RowCount = 5;
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 44.0F));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 56.0F));
+            this.tlpRapport.Controls.Add(this.pnlFiltres, 0, 0);
+            this.tlpRapport.Controls.Add(this.pnlCartes, 0, 1);
+            this.tlpRapport.Controls.Add(this.tlpMilieu, 0, 2);
+            this.tlpRapport.Controls.Add(this.lblDetailVentes, 0, 3);
+            this.tlpRapport.Controls.Add(this.dgvDetail, 0, 4);
+            this.tlpRapport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRapport.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRapport.Name = "tlpRapport";
+            // 
+            // pnlFiltres
+            // 
+            this.pnlFiltres.Controls.Add(this.lblPeriodeLabel);
+            this.pnlFiltres.Controls.Add(this.cbPeriode);
+            this.pnlFiltres.Controls.Add(this.dtpDebut);
+            this.pnlFiltres.Controls.Add(this.dtpFin);
+            this.pnlFiltres.Controls.Add(this.btnActualiser);
+            this.pnlFiltres.Controls.Add(this.lblPeriodeAffichee);
+            this.pnlFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFiltres.AutoSize = true;
+            this.pnlFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlFiltres.WrapContents = true;
+            this.pnlFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.pnlFiltres.Name = "pnlFiltres";
+            // 
+            // lblPeriodeLabel
+            // 
+            this.lblPeriodeLabel.Text = "Période";
+            this.lblPeriodeLabel.AutoSize = true;
+            this.lblPeriodeLabel.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblPeriodeLabel.Name = "lblPeriodeLabel";
+            // 
+            // cbPeriode
+            // 
+            this.cbPeriode.Width = 170;
+            this.cbPeriode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbPeriode.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbPeriode.Items.AddRange(new object[] {
+            "Aujourd'hui",
+            "Cette semaine",
+            "Ce mois",
+            "Personnalisé"});
+            this.cbPeriode.Name = "cbPeriode";
+            // 
+            // dtpDebut
+            // 
+            this.dtpDebut.Width = 130;
+            this.dtpDebut.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDebut.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.dtpDebut.Name = "dtpDebut";
+            // 
+            // dtpFin
+            // 
+            this.dtpFin.Width = 130;
+            this.dtpFin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFin.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.dtpFin.Name = "dtpFin";
+            // 
+            // btnActualiser
+            // 
+            this.btnActualiser.Text = "Actualiser";
+            this.btnActualiser.Tag = "primaire";
+            this.btnActualiser.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnActualiser.Name = "btnActualiser";
+            this.btnActualiser.Click += new System.EventHandler(this.btnActualiser_Click);
+            // 
+            // lblPeriodeAffichee
+            // 
+            this.lblPeriodeAffichee.Text = "";
+            this.lblPeriodeAffichee.AutoSize = true;
+            this.lblPeriodeAffichee.Tag = "note";
+            this.lblPeriodeAffichee.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
+            this.lblPeriodeAffichee.Name = "lblPeriodeAffichee";
+            // 
+            // pnlCartes
+            // 
+            this.pnlCartes.ColumnCount = 6;
+            this.pnlCartes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.0F));
+            this.pnlCartes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.0F));
+            this.pnlCartes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.0F));
+            this.pnlCartes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.0F));
+            this.pnlCartes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.0F));
+            this.pnlCartes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.0F));
+            this.pnlCartes.RowCount = 1;
+            this.pnlCartes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCartes.Controls.Add(this.cardVentes, 0, 0);
+            this.pnlCartes.Controls.Add(this.cardComptant, 1, 0);
+            this.pnlCartes.Controls.Add(this.cardCredit, 2, 0);
+            this.pnlCartes.Controls.Add(this.cardMutuelle, 3, 0);
+            this.pnlCartes.Controls.Add(this.cardCB, 4, 0);
+            this.pnlCartes.Controls.Add(this.cardCheque, 5, 0);
+            this.pnlCartes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlCartes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.pnlCartes.Name = "pnlCartes";
+            // 
+            // cardVentes
+            // 
+            this.cardVentes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardVentes.Titre = "Ventes";
+            this.cardVentes.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.cardVentes.Name = "cardVentes";
+            // 
+            // cardComptant
+            // 
+            this.cardComptant.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardComptant.Titre = "Espèces (comptant)";
+            this.cardComptant.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.cardComptant.Name = "cardComptant";
+            // 
+            // cardCredit
+            // 
+            this.cardCredit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardCredit.Titre = "Crédits";
+            this.cardCredit.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.cardCredit.Name = "cardCredit";
+            // 
+            // cardMutuelle
+            // 
+            this.cardMutuelle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardMutuelle.Titre = "Mutuelles";
+            this.cardMutuelle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.cardMutuelle.Name = "cardMutuelle";
+            // 
+            // cardCB
+            // 
+            this.cardCB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardCB.Titre = "Carte bancaire";
+            this.cardCB.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.cardCB.Name = "cardCB";
+            // 
+            // cardCheque
+            // 
+            this.cardCheque.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cardCheque.Titre = "Chèques";
+            this.cardCheque.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cardCheque.Name = "cardCheque";
+            // 
+            // tlpMilieu
+            // 
+            this.tlpMilieu.ColumnCount = 2;
+            this.tlpMilieu.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.0F));
+            this.tlpMilieu.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.0F));
+            this.tlpMilieu.RowCount = 1;
+            this.tlpMilieu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpMilieu.Controls.Add(this.pnlCaisse, 0, 0);
+            this.tlpMilieu.Controls.Add(this.tlpVentilation, 1, 0);
+            this.tlpMilieu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMilieu.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.tlpMilieu.Name = "tlpMilieu";
+            // 
+            // pnlCaisse
+            // 
+            this.pnlCaisse.ColumnCount = 2;
+            this.pnlCaisse.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlCaisse.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.RowCount = 7;
+            this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlCaisse.Controls.Add(this.lblTitreCaisse, 0, 0);
+            this.pnlCaisse.SetColumnSpan(this.lblTitreCaisse, 2);
+            this.pnlCaisse.Controls.Add(this.lblEspecesTitle, 0, 1);
+            this.pnlCaisse.Controls.Add(this.lblEspecesRecues, 1, 1);
+            this.pnlCaisse.Controls.Add(this.lblRenduTitle, 0, 2);
+            this.pnlCaisse.Controls.Add(this.lblRendu, 1, 2);
+            this.pnlCaisse.Controls.Add(this.lblCreditRecuTitle, 0, 3);
+            this.pnlCaisse.Controls.Add(this.lblCreditRecu, 1, 3);
+            this.pnlCaisse.Controls.Add(this.lblMutuellePatientTitle, 0, 4);
+            this.pnlCaisse.Controls.Add(this.lblMutuellePatient, 1, 4);
+            this.pnlCaisse.Controls.Add(this.lblTotalTitle, 0, 5);
+            this.pnlCaisse.Controls.Add(this.lblTotalCaisse, 1, 5);
+            this.pnlCaisse.Controls.Add(this.lblElectronique, 0, 6);
+            this.pnlCaisse.SetColumnSpan(this.lblElectronique, 2);
+            this.pnlCaisse.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlCaisse.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.pnlCaisse.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
+            this.pnlCaisse.Tag = "carte";
+            this.pnlCaisse.Name = "pnlCaisse";
+            // 
+            // lblTitreCaisse
+            // 
+            this.lblTitreCaisse.Text = "Ce qui doit être dans le tiroir";
+            this.lblTitreCaisse.AutoSize = true;
+            this.lblTitreCaisse.Tag = "section";
+            this.lblTitreCaisse.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.lblTitreCaisse.Name = "lblTitreCaisse";
+            // 
+            // lblEspecesTitle
+            // 
+            this.lblEspecesTitle.Text = "Espèces des ventes au comptant";
+            this.lblEspecesTitle.AutoSize = true;
+            this.lblEspecesTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEspecesTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblEspecesTitle.Name = "lblEspecesTitle";
+            // 
+            // lblEspecesRecues
+            // 
+            this.lblEspecesRecues.Text = "";
+            this.lblEspecesRecues.AutoSize = true;
+            this.lblEspecesRecues.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblEspecesRecues.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEspecesRecues.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblEspecesRecues.Name = "lblEspecesRecues";
+            // 
+            // lblRenduTitle
+            // 
+            this.lblRenduTitle.Text = "Part des patients (mutuelle)";
+            this.lblRenduTitle.AutoSize = true;
+            this.lblRenduTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRenduTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblRenduTitle.Name = "lblRenduTitle";
+            // 
+            // lblRendu
+            // 
+            this.lblRendu.Text = "";
+            this.lblRendu.AutoSize = true;
+            this.lblRendu.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblRendu.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRendu.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblRendu.Name = "lblRendu";
+            // 
+            // lblCreditRecuTitle
+            // 
+            this.lblCreditRecuTitle.Text = "Versements sur crédits";
+            this.lblCreditRecuTitle.AutoSize = true;
+            this.lblCreditRecuTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCreditRecuTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblCreditRecuTitle.Name = "lblCreditRecuTitle";
+            // 
+            // lblCreditRecu
+            // 
+            this.lblCreditRecu.Text = "";
+            this.lblCreditRecu.AutoSize = true;
+            this.lblCreditRecu.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCreditRecu.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCreditRecu.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblCreditRecu.Name = "lblCreditRecu";
+            // 
+            // lblMutuellePatientTitle
+            // 
+            this.lblMutuellePatientTitle.Text = "Part des mutuelles";
+            this.lblMutuellePatientTitle.AutoSize = true;
+            this.lblMutuellePatientTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMutuellePatientTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblMutuellePatientTitle.Name = "lblMutuellePatientTitle";
+            // 
+            // lblMutuellePatient
+            // 
+            this.lblMutuellePatient.Text = "";
+            this.lblMutuellePatient.AutoSize = true;
+            this.lblMutuellePatient.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMutuellePatient.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMutuellePatient.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblMutuellePatient.Name = "lblMutuellePatient";
+            // 
+            // lblTotalTitle
+            // 
+            this.lblTotalTitle.Text = "Total attendu en espèces";
+            this.lblTotalTitle.AutoSize = true;
+            this.lblTotalTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTotalTitle.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalTitle.Margin = new System.Windows.Forms.Padding(0, 8, 12, 0);
+            this.lblTotalTitle.Name = "lblTotalTitle";
+            // 
+            // lblTotalCaisse
+            // 
+            this.lblTotalCaisse.Text = "";
+            this.lblTotalCaisse.AutoSize = true;
+            this.lblTotalCaisse.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTotalCaisse.Tag = "kpi";
+            this.lblTotalCaisse.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.lblTotalCaisse.Name = "lblTotalCaisse";
+            // 
+            // lblElectronique
+            // 
+            this.lblElectronique.Text = "";
+            this.lblElectronique.AutoSize = true;
+            this.lblElectronique.Tag = "note";
+            this.lblElectronique.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.lblElectronique.Name = "lblElectronique";
+            // 
+            // tlpVentilation
+            // 
+            this.tlpVentilation.ColumnCount = 1;
+            this.tlpVentilation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpVentilation.RowCount = 2;
+            this.tlpVentilation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpVentilation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpVentilation.Controls.Add(this.lblVentilation, 0, 0);
+            this.tlpVentilation.Controls.Add(this.dgvVentilation, 0, 1);
+            this.tlpVentilation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpVentilation.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpVentilation.Name = "tlpVentilation";
+            // 
+            // lblVentilation
+            // 
+            this.lblVentilation.Text = "Ventes par moyen de paiement";
+            this.lblVentilation.AutoSize = true;
+            this.lblVentilation.Tag = "section";
+            this.lblVentilation.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.lblVentilation.Name = "lblVentilation";
+            // 
+            // dgvVentilation
+            // 
+            this.dgvVentilation.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colMode,
+            this.colNbVentes,
+            this.colMontant,
+            this.colPctCA,
+            this.colStatut});
+            this.dgvVentilation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvVentilation.AutoGenerateColumns = false;
+            this.dgvVentilation.ReadOnly = true;
+            this.dgvVentilation.Name = "dgvVentilation";
+            // 
+            // lblDetailVentes
+            // 
+            this.lblDetailVentes.Text = "Détail des ventes de la période";
+            this.lblDetailVentes.AutoSize = true;
+            this.lblDetailVentes.Tag = "section";
+            this.lblDetailVentes.Margin = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblDetailVentes.Name = "lblDetailVentes";
+            // 
+            // dgvDetail
+            // 
+            this.dgvDetail.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colDetailDate,
+            this.colDetailNumero,
+            this.colDetailClient,
+            this.colDetailMotif,
+            this.colDetailType,
+            this.colDetailStatut,
+            this.colDetailTotal,
+            this.colDetailEspeces,
+            this.colDetailRendu,
+            this.colDetailVendeur});
+            this.dgvDetail.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvDetail.AutoGenerateColumns = false;
+            this.dgvDetail.ReadOnly = true;
+            this.dgvDetail.Name = "dgvDetail";
+            this.dgvDetail.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvDetail_CellFormatting);
+            // 
+            // tabSessions
+            // 
+            this.tabSessions.Controls.Add(this.tlpSessions);
+            this.tabSessions.Text = "Sessions de caisse";
+            this.tabSessions.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.tabSessions.UseVisualStyleBackColor = true;
+            this.tabSessions.Name = "tabSessions";
+            // 
+            // tlpSessions
+            // 
+            this.tlpSessions.ColumnCount = 1;
+            this.tlpSessions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpSessions.RowCount = 5;
+            this.tlpSessions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpSessions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0F));
+            this.tlpSessions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpSessions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpSessions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0F));
+            this.tlpSessions.Controls.Add(this.pnlFiltresSessions, 0, 0);
+            this.tlpSessions.Controls.Add(this.dgvSessions, 0, 1);
+            this.tlpSessions.Controls.Add(this.lblDetailSession, 0, 2);
+            this.tlpSessions.Controls.Add(this.lblVentilationSession, 0, 3);
+            this.tlpSessions.Controls.Add(this.dgvDetailSession, 0, 4);
+            this.tlpSessions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpSessions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpSessions.Name = "tlpSessions";
+            // 
+            // pnlFiltresSessions
+            // 
+            this.pnlFiltresSessions.Controls.Add(this.lblFiltreAnnee);
+            this.pnlFiltresSessions.Controls.Add(this.cbFiltreAnnee);
+            this.pnlFiltresSessions.Controls.Add(this.lblFiltreMois);
+            this.pnlFiltresSessions.Controls.Add(this.cbFiltreMois);
+            this.pnlFiltresSessions.Controls.Add(this.lblFiltreJour);
+            this.pnlFiltresSessions.Controls.Add(this.cbFiltreJour);
+            this.pnlFiltresSessions.Controls.Add(this.lblFiltreUser);
+            this.pnlFiltresSessions.Controls.Add(this.cbFiltreUser);
+            this.pnlFiltresSessions.Controls.Add(this.btnActualiserSessions);
+            this.pnlFiltresSessions.Controls.Add(this.lblNbSessions);
+            this.pnlFiltresSessions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFiltresSessions.AutoSize = true;
+            this.pnlFiltresSessions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlFiltresSessions.WrapContents = true;
+            this.pnlFiltresSessions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.pnlFiltresSessions.Name = "pnlFiltresSessions";
+            // 
+            // lblFiltreAnnee
+            // 
+            this.lblFiltreAnnee.Text = "Année";
+            this.lblFiltreAnnee.AutoSize = true;
+            this.lblFiltreAnnee.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblFiltreAnnee.Name = "lblFiltreAnnee";
+            // 
+            // cbFiltreAnnee
+            // 
+            this.cbFiltreAnnee.Width = 90;
+            this.cbFiltreAnnee.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFiltreAnnee.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbFiltreAnnee.Name = "cbFiltreAnnee";
+            // 
+            // lblFiltreMois
+            // 
+            this.lblFiltreMois.Text = "Mois";
+            this.lblFiltreMois.AutoSize = true;
+            this.lblFiltreMois.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblFiltreMois.Name = "lblFiltreMois";
+            // 
+            // cbFiltreMois
+            // 
+            this.cbFiltreMois.Width = 120;
+            this.cbFiltreMois.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFiltreMois.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbFiltreMois.Name = "cbFiltreMois";
+            // 
+            // lblFiltreJour
+            // 
+            this.lblFiltreJour.Text = "Jour";
+            this.lblFiltreJour.AutoSize = true;
+            this.lblFiltreJour.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblFiltreJour.Name = "lblFiltreJour";
+            // 
+            // cbFiltreJour
+            // 
+            this.cbFiltreJour.Width = 80;
+            this.cbFiltreJour.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFiltreJour.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbFiltreJour.Name = "cbFiltreJour";
+            // 
+            // lblFiltreUser
+            // 
+            this.lblFiltreUser.Text = "Caissier";
+            this.lblFiltreUser.AutoSize = true;
+            this.lblFiltreUser.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblFiltreUser.Name = "lblFiltreUser";
+            // 
+            // cbFiltreUser
+            // 
+            this.cbFiltreUser.Width = 180;
+            this.cbFiltreUser.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFiltreUser.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbFiltreUser.Name = "cbFiltreUser";
+            // 
+            // btnActualiserSessions
+            // 
+            this.btnActualiserSessions.Text = "Actualiser";
+            this.btnActualiserSessions.Tag = "primaire";
+            this.btnActualiserSessions.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnActualiserSessions.Name = "btnActualiserSessions";
+            this.btnActualiserSessions.Click += new System.EventHandler(this.btnActualiserSessions_Click);
+            // 
+            // lblNbSessions
+            // 
+            this.lblNbSessions.Text = "";
+            this.lblNbSessions.AutoSize = true;
+            this.lblNbSessions.Tag = "note";
+            this.lblNbSessions.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
+            this.lblNbSessions.Name = "lblNbSessions";
+            // 
+            // dgvSessions
+            // 
+            this.dgvSessions.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colSessionId,
+            this.colCaissier,
+            this.colOuverture,
+            this.colCloture,
+            this.colSessionStatut,
+            this.colFond,
+            this.colEncaisse,
+            this.colTheorique,
+            this.colCompte,
+            this.colEcart,
+            this.colSessionNbVentes});
+            this.dgvSessions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvSessions.AutoGenerateColumns = false;
+            this.dgvSessions.ReadOnly = true;
+            this.dgvSessions.Name = "dgvSessions";
+            this.dgvSessions.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvSessions_CellFormatting);
+            this.dgvSessions.SelectionChanged += new System.EventHandler(this.DgvSessions_SelectionChanged);
+            // 
+            // lblDetailSession
+            // 
+            this.lblDetailSession.Text = "Sélectionnez une session pour voir son détail";
+            this.lblDetailSession.AutoSize = true;
+            this.lblDetailSession.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDetailSession.Margin = new System.Windows.Forms.Padding(0, 8, 0, 2);
+            this.lblDetailSession.Name = "lblDetailSession";
+            // 
+            // lblVentilationSession
+            // 
+            this.lblVentilationSession.Text = "";
+            this.lblVentilationSession.AutoSize = true;
+            this.lblVentilationSession.Tag = "info";
+            this.lblVentilationSession.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.lblVentilationSession.Name = "lblVentilationSession";
+            // 
+            // dgvDetailSession
+            // 
+            this.dgvDetailSession.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colSessHeure,
+            this.colSessNumero,
+            this.colSessClient,
+            this.colSessType,
+            this.colSessStatut,
+            this.colSessTotal,
+            this.colSessVerse,
+            this.colSessReste});
+            this.dgvDetailSession.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvDetailSession.AutoGenerateColumns = false;
+            this.dgvDetailSession.ReadOnly = true;
+            this.dgvDetailSession.Name = "dgvDetailSession";
+            this.dgvDetailSession.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvDetailSession_CellFormatting);
+            // 
+            // colMode
+            // 
+            this.colMode.HeaderText = "Moyen de paiement";
+            this.colMode.Name = "Mode";
+            this.colMode.DataPropertyName = "Mode";
+            this.colMode.FillWeight = 34F;
+            this.colMode.MinimumWidth = 140;
+            this.colMode.ReadOnly = true;
+            // 
+            // colNbVentes
+            // 
+            this.colNbVentes.HeaderText = "Ventes";
+            this.colNbVentes.Name = "NbVentes";
+            this.colNbVentes.DataPropertyName = "NbVentes";
+            this.colNbVentes.FillWeight = 10F;
+            this.colNbVentes.MinimumWidth = 60;
+            this.colNbVentes.ReadOnly = true;
+            // 
+            // colMontant
+            // 
+            this.colMontant.HeaderText = "Montant";
+            this.colMontant.Name = "Montant";
+            this.colMontant.DataPropertyName = "Montant";
+            this.colMontant.FillWeight = 20F;
+            this.colMontant.MinimumWidth = 100;
+            this.colMontant.ReadOnly = true;
+            this.colMontant.Tag = "montant";
+            // 
+            // colPctCA
+            // 
+            this.colPctCA.HeaderText = "Part (%)";
+            this.colPctCA.Name = "PctCA";
+            this.colPctCA.DataPropertyName = "PctCA";
+            this.colPctCA.FillWeight = 10F;
+            this.colPctCA.MinimumWidth = 60;
+            this.colPctCA.ReadOnly = true;
+            // 
+            // colStatut
+            // 
+            this.colStatut.HeaderText = "Situation";
+            this.colStatut.Name = "Statut";
+            this.colStatut.DataPropertyName = "Statut";
+            this.colStatut.FillWeight = 26F;
+            this.colStatut.MinimumWidth = 140;
+            this.colStatut.ReadOnly = true;
+            // 
+            // colDetailDate
+            // 
+            this.colDetailDate.HeaderText = "Date";
+            this.colDetailDate.Name = "Date";
+            this.colDetailDate.DataPropertyName = "Date";
+            this.colDetailDate.FillWeight = 13F;
+            this.colDetailDate.MinimumWidth = 110;
+            this.colDetailDate.ReadOnly = true;
+            // 
+            // colDetailNumero
+            // 
+            this.colDetailNumero.HeaderText = "N° de vente";
+            this.colDetailNumero.Name = "Numero";
+            this.colDetailNumero.DataPropertyName = "Numero";
+            this.colDetailNumero.FillWeight = 10F;
+            this.colDetailNumero.MinimumWidth = 90;
+            this.colDetailNumero.ReadOnly = true;
+            // 
+            // colDetailClient
+            // 
+            this.colDetailClient.HeaderText = "Client";
+            this.colDetailClient.Name = "Client";
+            this.colDetailClient.DataPropertyName = "Client";
+            this.colDetailClient.FillWeight = 17F;
+            this.colDetailClient.MinimumWidth = 110;
+            this.colDetailClient.ReadOnly = true;
+            // 
+            // colDetailMotif
+            // 
+            this.colDetailMotif.HeaderText = "Motif";
+            this.colDetailMotif.Name = "Motif";
+            this.colDetailMotif.DataPropertyName = "Motif";
+            this.colDetailMotif.FillWeight = 16F;
+            this.colDetailMotif.MinimumWidth = 100;
+            this.colDetailMotif.ReadOnly = true;
+            // 
+            // colDetailType
+            // 
+            this.colDetailType.HeaderText = "Paiement";
+            this.colDetailType.Name = "Type";
+            this.colDetailType.DataPropertyName = "Type";
+            this.colDetailType.FillWeight = 11F;
+            this.colDetailType.MinimumWidth = 90;
+            this.colDetailType.ReadOnly = true;
+            // 
+            // colDetailStatut
+            // 
+            this.colDetailStatut.HeaderText = "Statut";
+            this.colDetailStatut.Name = "Statut";
+            this.colDetailStatut.DataPropertyName = "Statut";
+            this.colDetailStatut.FillWeight = 8F;
+            this.colDetailStatut.MinimumWidth = 70;
+            this.colDetailStatut.ReadOnly = true;
+            // 
+            // colDetailTotal
+            // 
+            this.colDetailTotal.HeaderText = "Total";
+            this.colDetailTotal.Name = "Total";
+            this.colDetailTotal.DataPropertyName = "Total";
+            this.colDetailTotal.FillWeight = 9F;
+            this.colDetailTotal.MinimumWidth = 90;
+            this.colDetailTotal.ReadOnly = true;
+            this.colDetailTotal.Tag = "montant";
+            // 
+            // colDetailEspeces
+            // 
+            this.colDetailEspeces.HeaderText = "Espèces reçues";
+            this.colDetailEspeces.Name = "Especes";
+            this.colDetailEspeces.DataPropertyName = "Especes";
+            this.colDetailEspeces.FillWeight = 9F;
+            this.colDetailEspeces.MinimumWidth = 90;
+            this.colDetailEspeces.ReadOnly = true;
+            this.colDetailEspeces.Tag = "montant";
+            // 
+            // colDetailRendu
+            // 
+            this.colDetailRendu.HeaderText = "Rendu";
+            this.colDetailRendu.Name = "Rendu";
+            this.colDetailRendu.DataPropertyName = "Rendu";
+            this.colDetailRendu.FillWeight = 7F;
+            this.colDetailRendu.MinimumWidth = 80;
+            this.colDetailRendu.ReadOnly = true;
+            this.colDetailRendu.Tag = "montant";
+            // 
+            // colDetailVendeur
+            // 
+            this.colDetailVendeur.HeaderText = "Vendeur";
+            this.colDetailVendeur.Name = "Vendeur";
+            this.colDetailVendeur.DataPropertyName = "Vendeur";
+            this.colDetailVendeur.FillWeight = 12F;
+            this.colDetailVendeur.MinimumWidth = 90;
+            this.colDetailVendeur.ReadOnly = true;
+            // 
+            // colSessionId
+            // 
+            this.colSessionId.HeaderText = "Id";
+            this.colSessionId.Name = "SessionId";
+            this.colSessionId.DataPropertyName = "SessionId";
+            this.colSessionId.FillWeight = 100F;
+            this.colSessionId.MinimumWidth = 60;
+            this.colSessionId.ReadOnly = true;
+            this.colSessionId.Visible = false;
+            // 
+            // colCaissier
+            // 
+            this.colCaissier.HeaderText = "Caissier";
+            this.colCaissier.Name = "Caissier";
+            this.colCaissier.DataPropertyName = "Caissier";
+            this.colCaissier.FillWeight = 16F;
+            this.colCaissier.MinimumWidth = 100;
+            this.colCaissier.ReadOnly = true;
+            // 
+            // colOuverture
+            // 
+            this.colOuverture.HeaderText = "Ouverture";
+            this.colOuverture.Name = "Ouverture";
+            this.colOuverture.DataPropertyName = "Ouverture";
+            this.colOuverture.FillWeight = 13F;
+            this.colOuverture.MinimumWidth = 110;
+            this.colOuverture.ReadOnly = true;
+            // 
+            // colCloture
+            // 
+            this.colCloture.HeaderText = "Clôture";
+            this.colCloture.Name = "Cloture";
+            this.colCloture.DataPropertyName = "Cloture";
+            this.colCloture.FillWeight = 13F;
+            this.colCloture.MinimumWidth = 110;
+            this.colCloture.ReadOnly = true;
+            // 
+            // colSessionStatut
+            // 
+            this.colSessionStatut.HeaderText = "Statut";
+            this.colSessionStatut.Name = "Statut";
+            this.colSessionStatut.DataPropertyName = "Statut";
+            this.colSessionStatut.FillWeight = 8F;
+            this.colSessionStatut.MinimumWidth = 70;
+            this.colSessionStatut.ReadOnly = true;
+            // 
+            // colFond
+            // 
+            this.colFond.HeaderText = "Fond de caisse";
+            this.colFond.Name = "Fond";
+            this.colFond.DataPropertyName = "Fond";
+            this.colFond.FillWeight = 9F;
+            this.colFond.MinimumWidth = 90;
+            this.colFond.ReadOnly = true;
+            this.colFond.Tag = "montant";
+            // 
+            // colEncaisse
+            // 
+            this.colEncaisse.HeaderText = "Encaissé";
+            this.colEncaisse.Name = "Encaisse";
+            this.colEncaisse.DataPropertyName = "Encaisse";
+            this.colEncaisse.FillWeight = 9F;
+            this.colEncaisse.MinimumWidth = 90;
+            this.colEncaisse.ReadOnly = true;
+            this.colEncaisse.Tag = "montant";
+            // 
+            // colTheorique
+            // 
+            this.colTheorique.HeaderText = "Attendu";
+            this.colTheorique.Name = "Theorique";
+            this.colTheorique.DataPropertyName = "Theorique";
+            this.colTheorique.FillWeight = 9F;
+            this.colTheorique.MinimumWidth = 90;
+            this.colTheorique.ReadOnly = true;
+            this.colTheorique.Tag = "montant";
+            // 
+            // colCompte
+            // 
+            this.colCompte.HeaderText = "Compté";
+            this.colCompte.Name = "Compte";
+            this.colCompte.DataPropertyName = "Compte";
+            this.colCompte.FillWeight = 9F;
+            this.colCompte.MinimumWidth = 90;
+            this.colCompte.ReadOnly = true;
+            this.colCompte.Tag = "montant";
+            // 
+            // colEcart
+            // 
+            this.colEcart.HeaderText = "Écart";
+            this.colEcart.Name = "Ecart";
+            this.colEcart.DataPropertyName = "Ecart";
+            this.colEcart.FillWeight = 8F;
+            this.colEcart.MinimumWidth = 80;
+            this.colEcart.ReadOnly = true;
+            this.colEcart.Tag = "montant";
+            // 
+            // colSessionNbVentes
+            // 
+            this.colSessionNbVentes.HeaderText = "Ventes";
+            this.colSessionNbVentes.Name = "NbVentes";
+            this.colSessionNbVentes.DataPropertyName = "NbVentes";
+            this.colSessionNbVentes.FillWeight = 6F;
+            this.colSessionNbVentes.MinimumWidth = 60;
+            this.colSessionNbVentes.ReadOnly = true;
+            // 
+            // colSessHeure
+            // 
+            this.colSessHeure.HeaderText = "Heure";
+            this.colSessHeure.Name = "Heure";
+            this.colSessHeure.DataPropertyName = "Heure";
+            this.colSessHeure.FillWeight = 10F;
+            this.colSessHeure.MinimumWidth = 80;
+            this.colSessHeure.ReadOnly = true;
+            // 
+            // colSessNumero
+            // 
+            this.colSessNumero.HeaderText = "N° de vente";
+            this.colSessNumero.Name = "Numero";
+            this.colSessNumero.DataPropertyName = "Numero";
+            this.colSessNumero.FillWeight = 12F;
+            this.colSessNumero.MinimumWidth = 90;
+            this.colSessNumero.ReadOnly = true;
+            // 
+            // colSessClient
+            // 
+            this.colSessClient.HeaderText = "Client";
+            this.colSessClient.Name = "Client";
+            this.colSessClient.DataPropertyName = "Client";
+            this.colSessClient.FillWeight = 24F;
+            this.colSessClient.MinimumWidth = 110;
+            this.colSessClient.ReadOnly = true;
+            // 
+            // colSessType
+            // 
+            this.colSessType.HeaderText = "Paiement";
+            this.colSessType.Name = "Type";
+            this.colSessType.DataPropertyName = "Type";
+            this.colSessType.FillWeight = 14F;
+            this.colSessType.MinimumWidth = 90;
+            this.colSessType.ReadOnly = true;
+            // 
+            // colSessStatut
+            // 
+            this.colSessStatut.HeaderText = "Statut";
+            this.colSessStatut.Name = "Statut";
+            this.colSessStatut.DataPropertyName = "Statut";
+            this.colSessStatut.FillWeight = 10F;
+            this.colSessStatut.MinimumWidth = 70;
+            this.colSessStatut.ReadOnly = true;
+            // 
+            // colSessTotal
+            // 
+            this.colSessTotal.HeaderText = "Total";
+            this.colSessTotal.Name = "Total";
+            this.colSessTotal.DataPropertyName = "Total";
+            this.colSessTotal.FillWeight = 10F;
+            this.colSessTotal.MinimumWidth = 90;
+            this.colSessTotal.ReadOnly = true;
+            this.colSessTotal.Tag = "montant";
+            // 
+            // colSessVerse
+            // 
+            this.colSessVerse.HeaderText = "Versé";
+            this.colSessVerse.Name = "Verse";
+            this.colSessVerse.DataPropertyName = "Verse";
+            this.colSessVerse.FillWeight = 10F;
+            this.colSessVerse.MinimumWidth = 90;
+            this.colSessVerse.ReadOnly = true;
+            this.colSessVerse.Tag = "montant";
+            // 
+            // colSessReste
+            // 
+            this.colSessReste.HeaderText = "Reste";
+            this.colSessReste.Name = "Reste";
+            this.colSessReste.DataPropertyName = "Reste";
+            this.colSessReste.FillWeight = 10F;
+            this.colSessReste.MinimumWidth = 90;
+            this.colSessReste.ReadOnly = true;
+            this.colSessReste.Tag = "montant";
+            // 
+            // Uc_Caisse
+            // 
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Size = new System.Drawing.Size(1146, 700);
+            this.Name = "Uc_Caisse";
+            this.ResumeLayout(false);
+            this.pnlFiltresSessions.ResumeLayout(false);
+            this.pnlFiltresSessions.PerformLayout();
+            this.tlpSessions.ResumeLayout(false);
+            this.tlpSessions.PerformLayout();
+            this.tabSessions.ResumeLayout(false);
+            this.tlpVentilation.ResumeLayout(false);
+            this.tlpVentilation.PerformLayout();
+            this.pnlCaisse.ResumeLayout(false);
+            this.pnlCaisse.PerformLayout();
+            this.tlpMilieu.ResumeLayout(false);
+            this.tlpMilieu.PerformLayout();
+            this.pnlCartes.ResumeLayout(false);
+            this.pnlCartes.PerformLayout();
+            this.pnlFiltres.ResumeLayout(false);
+            this.pnlFiltres.PerformLayout();
+            this.tlpRapport.ResumeLayout(false);
+            this.tlpRapport.PerformLayout();
+            this.tabRapport.ResumeLayout(false);
+            this.tabMain.ResumeLayout(false);
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDetailSession)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSessions)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDetail)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVentilation)).EndInit();
 
-            ((System.ComponentModel.ISupportInitialize)dgvVentilation).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvDetail).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvSessions).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvDetailSession).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)splitSessions).BeginInit();
-            splitSessions.Panel1.SuspendLayout();
-            splitSessions.Panel2.SuspendLayout();
-            gbVentilation.SuspendLayout();
-            tabMain.SuspendLayout();
-            SuspendLayout();
-
-            // PANEL TOP
-            pnlTop.Dock = DockStyle.Top; pnlTop.Height = 55; pnlTop.BackColor = Color.FromArgb(34, 85, 34);
-            lblTitre.Text = "  Caisse & Sessions"; lblTitre.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lblTitre.ForeColor = Color.White; lblTitre.Location = new Point(14, 12); lblTitre.Size = new Size(400, 32);
-            pnlTop.Controls.Add(lblTitre);
-
-            // TABCONTROL
-            tabMain.Dock = DockStyle.Fill; tabMain.Font = new Font("Segoe UI", 10F);
-            tabRapport.Text = "Rapport de caisse"; tabSessions.Text = "Sessions caisse";
-            tabMain.TabPages.AddRange(new TabPage[] { tabRapport, tabSessions });
-
-            // FILTRES
-            pnlFiltres.Dock = DockStyle.Top; pnlFiltres.Height = 52; pnlFiltres.BackColor = Color.FromArgb(245, 250, 245);
-            lblPeriodeLabel.Text = "Periode :"; lblPeriodeLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPeriodeLabel.Location = new Point(14, 16); lblPeriodeLabel.Size = new Size(65, 22);
-            cbPeriode.Location = new Point(82, 13); cbPeriode.Size = new Size(150, 28);
-            cbPeriode.DropDownStyle = ComboBoxStyle.DropDownList; cbPeriode.Font = new Font("Segoe UI", 9.5F);
-            cbPeriode.Items.AddRange(new object[] { "Aujourd'hui", "Cette semaine", "Ce mois", "Personnalisé" });
-            dtpDebut.Location = new Point(244, 13); dtpDebut.Size = new Size(140, 28); dtpDebut.Format = DateTimePickerFormat.Short; dtpDebut.Visible = false;
-            dtpFin.Location = new Point(394, 13); dtpFin.Size = new Size(140, 28); dtpFin.Format = DateTimePickerFormat.Short; dtpFin.Visible = false;
-            cbPeriode.SelectedIndexChanged += (s, e) => { bool c = cbPeriode.SelectedItem?.ToString() == "Personnalisé"; dtpDebut.Visible = c; dtpFin.Visible = c; };
-            btnActualiser.Text = "Actualiser"; btnActualiser.Location = new Point(546, 12); btnActualiser.Size = new Size(120, 30);
-            btnActualiser.BackColor = Color.FromArgb(46, 125, 50); btnActualiser.ForeColor = Color.White;
-            btnActualiser.FlatStyle = FlatStyle.Flat; btnActualiser.FlatAppearance.BorderSize = 0;
-            btnActualiser.Font = new Font("Segoe UI", 9F, FontStyle.Bold); btnActualiser.Click += btnActualiser_Click;
-            lblPeriodeAffichee.Text = ""; lblPeriodeAffichee.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
-            lblPeriodeAffichee.ForeColor = Color.DimGray; lblPeriodeAffichee.Location = new Point(680, 17); lblPeriodeAffichee.Size = new Size(400, 20);
-            pnlFiltres.Controls.AddRange(new Control[] { lblPeriodeLabel, cbPeriode, dtpDebut, dtpFin, btnActualiser, lblPeriodeAffichee });
-
-            // CARTES
-            pnlCartes.Dock = DockStyle.Top; pnlCartes.Height = 120; pnlCartes.BackColor = Color.White;
-            // 6 cartes sur une seule ligne, taille réduite pour tenir
-            void MakeCard(Panel card, Label title, Label value, string titleText, Color bg, int x)
-            {
-                card.Size = new Size(196, 100); card.Location = new Point(x, 8); card.BackColor = bg;
-                title.Text = titleText; title.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-                title.ForeColor = Color.White; title.Location = new Point(8, 8); title.Size = new Size(180, 18);
-                value.Text = "0"; value.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-                value.ForeColor = Color.White; value.Location = new Point(4, 30); value.Size = new Size(188, 28); value.TextAlign = ContentAlignment.MiddleCenter;
-                card.Controls.Add(title); card.Controls.Add(value); pnlCartes.Controls.Add(card);
-            }
-            int cw = 196, cg = 8, cx0 = 8;
-            MakeCard(cardVentes, lblNbVentesTitle, lblNbVentes, "Ventes", Color.FromArgb(69, 90, 100), cx0 + 0 * (cw + cg));
-            MakeCard(cardComptant, lblCaComptantTitle, lblCaComptant, "CA Espèces", Color.FromArgb(46, 125, 50), cx0 + 1 * (cw + cg));
-            MakeCard(cardCredit, lblCaCreditTitle, lblCaCredit, "CA Crédit", Color.FromArgb(211, 84, 0), cx0 + 2 * (cw + cg));
-            MakeCard(cardMutuelle, lblCaMutuelleTitle, lblCaMutuelle, "CA Mutuelle", Color.FromArgb(25, 118, 210), cx0 + 3 * (cw + cg));
-            MakeCard(cardCB, lblCaCBTitle, lblCaCB, "CA Carte/CB", Color.FromArgb(106, 27, 154), cx0 + 4 * (cw + cg));
-            MakeCard(cardCheque, lblCaChequeTitle, lblCaCheque, "CA Chèque", Color.FromArgb(0, 131, 143), cx0 + 5 * (cw + cg));
-
-            // PANNEAU CAISSE (droite)
-            pnlCaisse.Dock = DockStyle.Right; pnlCaisse.Width = 310; pnlCaisse.BackColor = Color.FromArgb(250, 253, 250); pnlCaisse.Padding = new Padding(16);
-            pnlCaisse.Paint += (s, e) => e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(46, 125, 50)), 0, 0, 4, pnlCaisse.Height);
-            var lblTitreCaisse = new Label { Text = "Ce qui doit etre en caisse", Font = new Font("Segoe UI", 10F, FontStyle.Bold), ForeColor = Color.FromArgb(34, 85, 34), Location = new Point(16, 14), Size = new Size(280, 24) };
-            pnlCaisse.Controls.Add(lblTitreCaisse);
-            int cy = 50, ch = 34;
-            void LigneCaisse(Label lt, string t, Label lv, string dv, int row, Color col)
-            {
-                lt.Text = t; lt.Font = new Font("Segoe UI", 8.5F); lt.ForeColor = Color.FromArgb(80, 80, 80); lt.Location = new Point(16, cy + row * ch); lt.Size = new Size(160, 22);
-                lv.Text = dv; lv.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold); lv.ForeColor = col; lv.Location = new Point(176, cy + row * ch); lv.Size = new Size(120, 22); lv.TextAlign = ContentAlignment.MiddleRight;
-                pnlCaisse.Controls.Add(lt); pnlCaisse.Controls.Add(lv);
-            }
-            LigneCaisse(lblEspecesTitle, "💵 Espèces comptant :", lblEspecesRecues, "0 KMF", 0, Color.ForestGreen);
-            LigneCaisse(lblRenduTitle, "🏥 Part patient mutuelle :", lblRendu, "0 KMF", 1, Color.FromArgb(25, 118, 210));
-            LigneCaisse(lblCreditRecuTitle, "📋 Avances crédit reçues :", lblCreditRecu, "0 KMF", 2, Color.FromArgb(211, 84, 0));
-            LigneCaisse(lblMutuellePatientTitle, "⏳ Mutuelle entreprise due :", lblMutuellePatient, "—", 3, Color.Gray);
-            lblSeparateur.Text = ""; lblSeparateur.BorderStyle = BorderStyle.Fixed3D; lblSeparateur.Location = new Point(16, cy + 4 * ch + 8); lblSeparateur.Size = new Size(278, 2); pnlCaisse.Controls.Add(lblSeparateur);
-            lblTotalTitle.Text = "TOTAL ATTENDU EN CAISSE"; lblTotalTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold); lblTotalTitle.ForeColor = Color.FromArgb(34, 85, 34); lblTotalTitle.Location = new Point(16, cy + 4 * ch + 18); lblTotalTitle.Size = new Size(278, 20); pnlCaisse.Controls.Add(lblTotalTitle);
-            lblTotalCaisse.Text = "0 KMF"; lblTotalCaisse.Font = new Font("Segoe UI", 18F, FontStyle.Bold); lblTotalCaisse.ForeColor = Color.ForestGreen; lblTotalCaisse.Location = new Point(16, cy + 4 * ch + 42); lblTotalCaisse.Size = new Size(278, 66); lblTotalCaisse.TextAlign = System.Drawing.ContentAlignment.MiddleCenter; pnlCaisse.Controls.Add(lblTotalCaisse);
-
-            // GRILLE VENTILATION (NOUVEAU)
-            dgvVentilation.AllowUserToAddRows = false; dgvVentilation.AllowUserToDeleteRows = false; dgvVentilation.ReadOnly = true;
-            dgvVentilation.Dock = DockStyle.Fill; dgvVentilation.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvVentilation.RowHeadersVisible = false; dgvVentilation.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvVentilation.BackgroundColor = Color.White; dgvVentilation.BorderStyle = BorderStyle.None;
-            dgvVentilation.Font = new Font("Segoe UI", 9.5F); dgvVentilation.RowTemplate.Height = 34; dgvVentilation.ColumnHeadersHeight = 36;
-            dgvVentilation.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(34, 85, 34); dgvVentilation.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvVentilation.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold); dgvVentilation.EnableHeadersVisualStyles = false;
-            dgvVentilation.Name = "dgvVentilation";
-            gbVentilation.Controls.Add(dgvVentilation);
-            gbVentilation.Dock = DockStyle.Top; gbVentilation.Height = 260;
-            gbVentilation.Text = "Ventilation par mode de paiement"; gbVentilation.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            gbVentilation.ForeColor = Color.FromArgb(34, 85, 34); gbVentilation.Name = "gbVentilation";
-
-            // GRILLE DETAIL
-            dgvDetail.Dock = DockStyle.Fill; dgvDetail.ReadOnly = true; dgvDetail.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDetail.AllowUserToAddRows = false; dgvDetail.RowHeadersVisible = false; dgvDetail.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvDetail.BackgroundColor = Color.White; dgvDetail.BorderStyle = BorderStyle.None; dgvDetail.Font = new Font("Segoe UI", 9F); dgvDetail.RowTemplate.Height = 32; dgvDetail.ColumnHeadersHeight = 36;
-            dgvDetail.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(46, 100, 46); dgvDetail.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvDetail.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold); dgvDetail.EnableHeadersVisualStyles = false;
-            dgvDetail.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 248, 240);
-
-            // Ordre important pour Dock
-            tabRapport.Controls.Add(dgvDetail);
-            tabRapport.Controls.Add(pnlCaisse);
-            tabRapport.Controls.Add(gbVentilation);
-            tabRapport.Controls.Add(pnlCartes);
-            tabRapport.Controls.Add(pnlFiltres);
-
-            // SESSIONS - FILTRES
-            pnlFiltresSessions.Dock = DockStyle.Top; pnlFiltresSessions.Height = 52; pnlFiltresSessions.BackColor = Color.FromArgb(245, 250, 245);
-            void LblCombo(Label l, string t, ComboBox cb, int x)
-            {
-                l.Text = t; l.Location = new Point(x, 16); l.Size = new Size(55, 20); l.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-                cb.Location = new Point(x + 58, 13); cb.Size = new Size(120, 28); cb.DropDownStyle = ComboBoxStyle.DropDownList; cb.Font = new Font("Segoe UI", 9F);
-                pnlFiltresSessions.Controls.Add(l); pnlFiltresSessions.Controls.Add(cb);
-            }
-            LblCombo(lblFiltreAnnee, "Annee :", cbFiltreAnnee, 10);
-            LblCombo(lblFiltreMois, "Mois :", cbFiltreMois, 200);
-            LblCombo(lblFiltreJour, "Jour :", cbFiltreJour, 390);
-            LblCombo(lblFiltreUser, "Caissier :", cbFiltreUser, 530); cbFiltreUser.Size = new Size(180, 28);
-            btnActualiserSessions.Text = "Actualiser"; btnActualiserSessions.Location = new Point(730, 12); btnActualiserSessions.Size = new Size(120, 30);
-            btnActualiserSessions.BackColor = Color.FromArgb(46, 125, 50); btnActualiserSessions.ForeColor = Color.White;
-            btnActualiserSessions.FlatStyle = FlatStyle.Flat; btnActualiserSessions.FlatAppearance.BorderSize = 0;
-            btnActualiserSessions.Font = new Font("Segoe UI", 9F, FontStyle.Bold); btnActualiserSessions.Click += btnActualiserSessions_Click;
-            lblNbSessions.Text = "0 session(s)"; lblNbSessions.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic); lblNbSessions.ForeColor = Color.DimGray; lblNbSessions.Location = new Point(862, 17); lblNbSessions.Size = new Size(200, 20);
-            pnlFiltresSessions.Controls.Add(btnActualiserSessions); pnlFiltresSessions.Controls.Add(lblNbSessions);
-
-            // SPLIT SESSIONS - PAS de SplitterDistance ici
-            splitSessions.Dock = DockStyle.Fill; splitSessions.Orientation = Orientation.Horizontal;
-            splitSessions.Panel1MinSize = 150; splitSessions.Panel2MinSize = 120;
-
-            // Colonnes sessions
-            colSessionId.Name = "colSessionId"; colSessionId.HeaderText = "ID"; colSessionId.Visible = false;
-            colCaissier.Name = "colCaissier"; colCaissier.HeaderText = "Caissier";
-            colOuverture.Name = "colOuverture"; colOuverture.HeaderText = "Ouverture";
-            colCloture.Name = "colCloture"; colCloture.HeaderText = "Cloture";
-            colStatutSession.Name = "colStatutSession"; colStatutSession.HeaderText = "Statut";
-            colFond.Name = "colFond"; colFond.HeaderText = "Fond (KMF)";
-            colEncaisse.Name = "colEncaisse"; colEncaisse.HeaderText = "Encaisse (KMF)";
-            colTheorique.Name = "colTheorique"; colTheorique.HeaderText = "Theorique (KMF)";
-            colCompte.Name = "colCompte"; colCompte.HeaderText = "Compte (KMF)";
-            colEcart.Name = "colEcart"; colEcart.HeaderText = "Ecart (KMF)";
-            colNbVentes.Name = "colNbVentes"; colNbVentes.HeaderText = "Nb Ventes";
-            dgvSessions.Columns.AddRange(new DataGridViewColumn[] { colSessionId, colCaissier, colOuverture, colCloture, colStatutSession, colFond, colEncaisse, colTheorique, colCompte, colEcart, colNbVentes });
-            dgvSessions.Dock = DockStyle.Fill; dgvSessions.ReadOnly = true; dgvSessions.SelectionMode = DataGridViewSelectionMode.FullRowSelect; dgvSessions.MultiSelect = false;
-            dgvSessions.AllowUserToAddRows = false; dgvSessions.RowHeadersVisible = false; dgvSessions.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvSessions.BackgroundColor = Color.White; dgvSessions.BorderStyle = BorderStyle.None; dgvSessions.Font = new Font("Segoe UI", 9F); dgvSessions.RowTemplate.Height = 34; dgvSessions.ColumnHeadersHeight = 36;
-            dgvSessions.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(34, 85, 34); dgvSessions.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvSessions.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold); dgvSessions.EnableHeadersVisualStyles = false;
-            dgvSessions.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 248, 240);
-            splitSessions.Panel1.Controls.Add(dgvSessions);
-
-            // Recaps session
-            lblDetailSession.Dock = DockStyle.Top; lblDetailSession.Height = 30;
-            lblDetailSession.Font = new Font("Segoe UI", 9F, FontStyle.Bold); lblDetailSession.ForeColor = Color.FromArgb(27, 94, 32);
-            lblDetailSession.BackColor = Color.FromArgb(232, 245, 233); lblDetailSession.Text = "Selectionnez une session pour voir le detail";
-            lblDetailSession.TextAlign = ContentAlignment.MiddleLeft; lblDetailSession.Padding = new Padding(8, 0, 0, 0);
-
-            // NOUVEAU - ligne ventilation session
-            lblVentilationSession.Dock = DockStyle.Top; lblVentilationSession.Height = 26;
-            lblVentilationSession.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold); lblVentilationSession.ForeColor = Color.FromArgb(25, 118, 210);
-            lblVentilationSession.BackColor = Color.FromArgb(227, 242, 253); lblVentilationSession.Text = "Especes : -  |  Mobile : -  |  CB : -  |  Cheque : -  |  Mutuelle : -  |  Credit : -  (KMF)";
-            lblVentilationSession.TextAlign = ContentAlignment.MiddleLeft; lblVentilationSession.Padding = new Padding(8, 0, 0, 0); lblVentilationSession.Name = "lblVentilationSession";
-
-            dgvDetailSession.Dock = DockStyle.Fill; dgvDetailSession.ReadOnly = true; dgvDetailSession.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDetailSession.AllowUserToAddRows = false; dgvDetailSession.RowHeadersVisible = false; dgvDetailSession.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvDetailSession.BackgroundColor = Color.White; dgvDetailSession.BorderStyle = BorderStyle.None; dgvDetailSession.Font = new Font("Segoe UI", 9F); dgvDetailSession.RowTemplate.Height = 32; dgvDetailSession.ColumnHeadersHeight = 34;
-            dgvDetailSession.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(69, 90, 100); dgvDetailSession.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvDetailSession.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold); dgvDetailSession.EnableHeadersVisualStyles = false;
-            dgvDetailSession.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 250);
-
-            // Ordre : Fill en dernier dans Panel2
-            splitSessions.Panel2.Controls.Add(dgvDetailSession);
-            splitSessions.Panel2.Controls.Add(lblVentilationSession);
-            splitSessions.Panel2.Controls.Add(lblDetailSession);
-
-            tabSessions.Controls.Add(splitSessions);
-            tabSessions.Controls.Add(pnlFiltresSessions);
-
-            // ASSEMBLAGE
-            gbVentilation.ResumeLayout(false);
-            splitSessions.Panel1.ResumeLayout(false);
-            splitSessions.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvVentilation).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvDetail).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvSessions).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvDetailSession).EndInit();
-            ((System.ComponentModel.ISupportInitialize)splitSessions).EndInit();
-            tabMain.ResumeLayout(false);
-
-            Controls.Add(tabMain);
-            Controls.Add(pnlTop);
-
-            Size = new Size(1200, 780);
-            BackColor = Color.White;
-
-            // SplitterDistance au Load pour eviter l'exception
-            this.Load += (s, e) =>
-            {
-                try
-                {
-                    int dist = (int)(splitSessions.Height * 0.45);
-                    if (dist > splitSessions.Panel1MinSize && dist < splitSessions.Height - splitSessions.Panel2MinSize)
-                        splitSessions.SplitterDistance = dist;
-                }
-                catch { }
-            };
-
-            ResumeLayout(false);
         }
+
+        #endregion
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.Label lblTitre;
+        private System.Windows.Forms.TabControl tabMain;
+        private System.Windows.Forms.TabPage tabRapport;
+        private System.Windows.Forms.TableLayoutPanel tlpRapport;
+        private System.Windows.Forms.FlowLayoutPanel pnlFiltres;
+        private System.Windows.Forms.Label lblPeriodeLabel;
+        private System.Windows.Forms.ComboBox cbPeriode;
+        private System.Windows.Forms.DateTimePicker dtpDebut;
+        private System.Windows.Forms.DateTimePicker dtpFin;
+        private System.Windows.Forms.Button btnActualiser;
+        private System.Windows.Forms.Label lblPeriodeAffichee;
+        private System.Windows.Forms.TableLayoutPanel pnlCartes;
+        private Pharmacie2.views.Composants.CarteKpi cardVentes;
+        private Pharmacie2.views.Composants.CarteKpi cardComptant;
+        private Pharmacie2.views.Composants.CarteKpi cardCredit;
+        private Pharmacie2.views.Composants.CarteKpi cardMutuelle;
+        private Pharmacie2.views.Composants.CarteKpi cardCB;
+        private Pharmacie2.views.Composants.CarteKpi cardCheque;
+        private System.Windows.Forms.TableLayoutPanel tlpMilieu;
+        private System.Windows.Forms.TableLayoutPanel pnlCaisse;
+        private System.Windows.Forms.Label lblTitreCaisse;
+        private System.Windows.Forms.Label lblEspecesTitle;
+        private System.Windows.Forms.Label lblEspecesRecues;
+        private System.Windows.Forms.Label lblRenduTitle;
+        private System.Windows.Forms.Label lblRendu;
+        private System.Windows.Forms.Label lblCreditRecuTitle;
+        private System.Windows.Forms.Label lblCreditRecu;
+        private System.Windows.Forms.Label lblMutuellePatientTitle;
+        private System.Windows.Forms.Label lblMutuellePatient;
+        private System.Windows.Forms.Label lblTotalTitle;
+        private System.Windows.Forms.Label lblTotalCaisse;
+        private System.Windows.Forms.Label lblElectronique;
+        private System.Windows.Forms.TableLayoutPanel tlpVentilation;
+        private System.Windows.Forms.Label lblVentilation;
+        private System.Windows.Forms.DataGridView dgvVentilation;
+        private System.Windows.Forms.Label lblDetailVentes;
+        private System.Windows.Forms.DataGridView dgvDetail;
+        private System.Windows.Forms.TabPage tabSessions;
+        private System.Windows.Forms.TableLayoutPanel tlpSessions;
+        private System.Windows.Forms.FlowLayoutPanel pnlFiltresSessions;
+        private System.Windows.Forms.Label lblFiltreAnnee;
+        private System.Windows.Forms.ComboBox cbFiltreAnnee;
+        private System.Windows.Forms.Label lblFiltreMois;
+        private System.Windows.Forms.ComboBox cbFiltreMois;
+        private System.Windows.Forms.Label lblFiltreJour;
+        private System.Windows.Forms.ComboBox cbFiltreJour;
+        private System.Windows.Forms.Label lblFiltreUser;
+        private System.Windows.Forms.ComboBox cbFiltreUser;
+        private System.Windows.Forms.Button btnActualiserSessions;
+        private System.Windows.Forms.Label lblNbSessions;
+        private System.Windows.Forms.DataGridView dgvSessions;
+        private System.Windows.Forms.Label lblDetailSession;
+        private System.Windows.Forms.Label lblVentilationSession;
+        private System.Windows.Forms.DataGridView dgvDetailSession;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMode;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNbVentes;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMontant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPctCA;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStatut;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailNumero;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailClient;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailMotif;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailStatut;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailTotal;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailEspeces;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailRendu;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDetailVendeur;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessionId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCaissier;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colOuverture;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCloture;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessionStatut;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFond;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEncaisse;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTheorique;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCompte;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEcart;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessionNbVentes;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessHeure;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessNumero;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessClient;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessStatut;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessTotal;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessVerse;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSessReste;
     }
 }
