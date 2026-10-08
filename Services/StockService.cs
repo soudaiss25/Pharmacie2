@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 
 namespace Pharmacie2.Services
 {
@@ -22,7 +22,7 @@ namespace Pharmacie2.Services
         public static void Retirer(Produit p, int unites)
         {
             if (!EstDisponible(p, unites))
-                throw new InvalidOperationException(
+                throw new StockInsuffisantException(
                     $"Stock insuffisant pour « {p.Nom} ».\nDisponible : {Formater(p)}");
             p.QuantiteEnStock -= unites;
         }

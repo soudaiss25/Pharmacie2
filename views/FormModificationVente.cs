@@ -308,6 +308,12 @@ namespace Pharmacie2.views
                 DialogResult = DialogResult.OK;
                 Close();
             }
+            catch (StockInsuffisantException ex)
+            {
+                // Stock insuffisant : rien n'a été modifié
+                MessageBox.Show(ex.Message + "\n\nLa vente n'a pas été modifiée.", "Stock insuffisant",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             catch (Exception ex)
             {
                 Journal.Erreur("Modification de la vente " + _venteId, ex);

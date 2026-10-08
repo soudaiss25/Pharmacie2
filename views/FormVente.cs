@@ -459,7 +459,7 @@ namespace Pharmacie2.views
                 DialogResult = DialogResult.OK;
                 this.Close();
             }
-            catch (InvalidOperationException ex)
+            catch (StockInsuffisantException ex)
             {
                 // Stock insuffisant à la validation : rien n'a été enregistré
                 MessageBox.Show(ex.Message + "\n\nAucune vente n'a été enregistrée.", "Vente non enregistrée",

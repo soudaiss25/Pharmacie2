@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Xunit;
@@ -18,8 +18,17 @@ public class StockServiceTests
     public void Retirer_leve_une_exception_sans_ecreter()
     {
         var p = P(7);
-        Assert.Throws<InvalidOperationException>(() => StockService.Retirer(p, 8));
+        Assert.Throws<StockInsuffisantException>(() => StockService.Retirer(p, 8));
         Assert.Equal(7, p.QuantiteEnStock);
+    }
+
+    [Fact]
+    public void StockInsuffisantException_est_une_InvalidOperationException_mais_pas_l_inverse()
+    {
+        Assert.True(typeof(InvalidOperationException).IsAssignableFrom(typeof(StockInsuffisantException)));
+        // Une InvalidOperationException quelconque (ex. EF) ne doit pas être prise pour un « stock insuffisant »
+        Exception autre = new InvalidOperationException("erreur EF");
+        Assert.False(autre is StockInsuffisantException);
     }
 }
 
@@ -58,7 +67,7 @@ public class VenteTransactionTests
         TestDb.MigrerTout();
         int pid = TestDb.NouveauProduit("Doliprane", 7, 5);
 
-        Assert.Throws<InvalidOperationException>(() =>
+        Assert.Throws<StockInsuffisantException>(() =>
         {
             using var ctx = new AppDbContext();
             using var tx = ctx.Database.BeginTransaction();
