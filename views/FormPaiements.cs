@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views
 {
+    /// <summary>Encaissement d'un paiement sur une vente (crédit ou reste à payer) et historique des paiements.</summary>
     public partial class FormPaiements : Form
     {
         private readonly int _venteId;
@@ -13,6 +12,7 @@ namespace Pharmacie2.views
         public FormPaiements(int venteId)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _venteId = venteId;
             ChargerResume();
             ChargerPaiements();
@@ -23,31 +23,37 @@ namespace Pharmacie2.views
             using (var ctx = new AppDbContext())
             {
                 var vente = ctx.ventes
+                    .AsNoTracking()
                     .Include(v => v.Paiements)
                     .Include(v => v.User)
                     .FirstOrDefault(v => v.IdVente == _venteId);
 
                 if (vente == null) return;
 
-                lblNumero.Text = $"Vente : {vente.numeroVente}";
-                lblTotal.Text = $"Montant total : {vente.MontantTotal:0.00} KMF";
-                lblVerse.Text = $"Déjà versé : {vente.MontantVerse:0.00} KMF";
-                lblRestant.Text = $"Reste à payer : {vente.MontantRestant:0.00} KMF";
-                lblRestant.ForeColor = vente.MontantRestant > 0
-                    ? System.Drawing.Color.OrangeRed
-                    : System.Drawing.Color.ForestGreen;
+                lblNumero.Text = $"Vente {vente.numeroVente}";
+                lblTotal.Text = $"Total : {Format.Montant(vente.MontantTotal)}";
+                lblVerse.Text = $"Déjà versé : {Format.Montant(vente.MontantVerse)}";
 
-                // Afficher vendeur + motif si renseigné
-                string vendeur = vente.User != null
-                    ? $"{vente.User.Prenom} {vente.User.Nom}"
-                    : "Inconnu";
+                decimal restantPatient = vente.RestantPatient;
+                lblRestant.Text = $"Reste à payer par le patient : {Format.Montant(restantPatient)}";
+                lblRestant.ForeColor = restantPatient > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
+
+                string vendeur = vente.User != null ? $"{vente.User.Prenom} {vente.User.Nom}" : "inconnu";
+                string motif = !string.IsNullOrWhiteSpace(vente.MotifAchat) ? vente.MotifAchat : "—";
                 lblVendeurVente.Text = $"Vendeur : {vendeur}";
+                lblMotif.Text = $"Motif : {motif}";
 
-                lblMotif.Text = !string.IsNullOrWhiteSpace(vente.MotifAchat)
-                    ? $"Motif : {vente.MotifAchat}"
-                    : "Motif : —";
+                // Maximum avant Value : on ne peut pas encaisser plus que ce que le patient doit
+                numMontant.Maximum = Math.Max(0m, Math.Ceiling(restantPatient));
+                numMontant.Value = numMontant.Maximum;
+                numMontant.Enabled = btnAjouterPaiement.Enabled = restantPatient > 0 && vente.Statut != "Annulée";
 
-                txtMontant.Text = vente.MontantRestant.ToString("0.00");
+                if (vente.Statut == "Annulée")
+                    lblRetour.Text = "Cette vente est annulée : aucun paiement possible.";
+                else if (restantPatient <= 0 && vente.MontantMutuelle > 0 && !vente.MutuelleReglee)
+                    lblRetour.Text = $"Le patient a tout payé. La part de la mutuelle ({Format.Montant(vente.MontantMutuelle)}) se règle depuis l'écran Mutuelles.";
+                else if (restantPatient <= 0)
+                    lblRetour.Text = "Cette vente est entièrement payée.";
             }
         }
 
@@ -56,33 +62,30 @@ namespace Pharmacie2.views
             using (var ctx = new AppDbContext())
             {
                 var paiements = ctx.paiement
+                    .AsNoTracking()
                     .Include(p => p.User)
                     .Where(p => p.VenteId == _venteId)
                     .OrderBy(p => p.DatePaiement)
                     .ToList();
 
-                lvPaiements.Items.Clear();
-                foreach (var p in paiements)
+                dgvPaiements.DataSource = paiements.Select(p => new
                 {
-                    string caissier = p.User != null
-                        ? $"{p.User.Prenom} {p.User.Nom}"
-                        : "—";
-
-                    var item = new ListViewItem(p.NumeroPaiement);
-                    item.SubItems.Add(p.DatePaiement.ToString("dd/MM/yyyy HH:mm"));
-                    item.SubItems.Add(p.Montant.ToString("0.00") + " KMF");
-                    item.SubItems.Add(caissier);
-                    lvPaiements.Items.Add(item);
-                }
+                    Numero = p.NumeroPaiement,
+                    Date = p.DatePaiement.ToString("dd/MM/yyyy HH:mm"),
+                    p.Montant,
+                    Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "—"
+                }).ToList();
             }
         }
 
         private void btnAjouterPaiement_Click(object sender, EventArgs e)
         {
-            if (!decimal.TryParse(txtMontant.Text, out decimal montant) || montant <= 0)
+            decimal montant = numMontant.Value;
+            if (montant <= 0)
             {
-                MessageBox.Show("Montant invalide.", "Validation",
+                MessageBox.Show("Saisissez un montant supérieur à 0.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                numMontant.Focus();
                 return;
             }
 
@@ -94,19 +97,26 @@ namespace Pharmacie2.views
 
                 if (vente == null) return;
 
-                decimal restant = vente.MontantRestant;
+                if (vente.Statut == "Annulée")
+                {
+                    MessageBox.Show("Impossible d'encaisser une vente annulée.", "Information",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                decimal restant = vente.RestantPatient;
 
                 if (restant <= 0)
                 {
-                    MessageBox.Show("Cette vente est déjà entièrement payée.",
+                    MessageBox.Show("Cette vente est déjà entièrement payée par le patient.",
                         "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
                 if (montant > restant)
                 {
-                    montant = restant;
-                    MessageBox.Show($"Montant ajusté au restant : {restant:0.00} KMF",
+                    montant = restant;   // jamais plus que ce que le patient doit
+                    MessageBox.Show($"Montant ramené au reste à payer : {Format.Montant(restant)}",
                         "Ajustement", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
@@ -119,12 +129,13 @@ namespace Pharmacie2.views
                     UserId = SessionUtilisateur.IdCourant  // ← qui encaisse
                 });
                 ctx.SaveChanges();
+
+                lblRetour.Text = $"Paiement de {Format.Montant(montant)} enregistré.";
             }
 
+            VenteEvenements.Notifier(this);
             ChargerResume();
             ChargerPaiements();
-            MessageBox.Show("Paiement enregistré !", "Succès",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnFermer_Click(object sender, EventArgs e)

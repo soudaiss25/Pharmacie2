@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -19,6 +20,7 @@ namespace Pharmacie2.views
         public FormAnnulationVente(int venteId)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _venteId = venteId;
             ChargerInfo();
         }
@@ -37,17 +39,15 @@ namespace Pharmacie2.views
                 lblInfo.Text =
                     $"Vente : {vente.numeroVente}\n" +
                     $"Client : {vente.PrenomClient} {vente.NomClient}\n" +
-                    $"Total : {vente.MontantTotal:N0} KMF\n" +
-                    $"Déjà versé : {vente.MontantVerse:N0} KMF";
+                    $"Total : {Format.Montant(vente.MontantTotal)}\n" +
+                    $"Déjà versé : {Format.Montant(vente.MontantVerse)}";
 
-                lvLignes.Items.Clear();
-                foreach (var l in vente.Lignes)
+                dgvLignes.DataSource = vente.Lignes.Select(l => new
                 {
-                    var item = new ListViewItem(l.Produit?.Nom ?? "—");
-                    item.SubItems.Add(l.UniteVendue);
-                    item.SubItems.Add(l.Quantite.ToString());
-                    lvLignes.Items.Add(item);
-                }
+                    Produit = l.Produit?.Nom ?? "—",
+                    Unite = l.UniteVendue,
+                    l.Quantite
+                }).ToList();
             }
         }
 
@@ -108,9 +108,7 @@ namespace Pharmacie2.views
 
                 VenteEvenements.Notifier(this);
 
-                MessageBox.Show(
-                    "✅ Vente annulée avec succès.\nLe stock a été remis à jour.",
-                    "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes("Vente annulée : le stock a été remis à jour");
 
                 DialogResult = DialogResult.OK;
                 this.Close();

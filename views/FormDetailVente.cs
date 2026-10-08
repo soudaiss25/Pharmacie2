@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views
 {
@@ -14,6 +12,7 @@ namespace Pharmacie2.views
         public FormDetailVente(int venteId)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _venteId = venteId;
             ChargerDetail();
         }
@@ -23,6 +22,7 @@ namespace Pharmacie2.views
             using (var ctx = new AppDbContext())
             {
                 var vente = ctx.ventes
+                    .AsNoTracking()
                     .Include(v => v.Lignes).ThenInclude(l => l.Produit)
                     .Include(v => v.Paiements).ThenInclude(p => p.User)
                     .Include(v => v.User)
@@ -32,37 +32,28 @@ namespace Pharmacie2.views
                 if (vente == null) return;
 
                 // ── En-tête ───────────────────────────────────────────────
-                lblNumero.Text = vente.numeroVente;
+                lblNumero.Text = "Vente " + vente.numeroVente;
                 lblDate.Text = vente.DateVente.ToString("dd/MM/yyyy HH:mm");
-                lblClient.Text = $"{vente.PrenomClient} {vente.NomClient}".Trim();
-                lblTel.Text = vente.TelephoneClient ?? "—";
-                lblMotif.Text = !string.IsNullOrWhiteSpace(vente.MotifAchat)
-                                  ? vente.MotifAchat : "—";
-                lblVendeur.Text = vente.User != null
-                                  ? $"{vente.User.Prenom} {vente.User.Nom}" : "—";
+                lblClient.Text = $"{vente.PrenomClient} {vente.NomClient}".Trim() is { Length: > 0 } c ? c : "—";
+                lblTel.Text = string.IsNullOrWhiteSpace(vente.TelephoneClient) ? "—" : vente.TelephoneClient;
+                lblMotif.Text = "Motif : " + (!string.IsNullOrWhiteSpace(vente.MotifAchat) ? vente.MotifAchat : "—");
+                lblVendeur.Text = vente.User != null ? $"{vente.User.Prenom} {vente.User.Nom}" : "—";
                 lblMode.Text = vente.MoyenPaiement;
                 lblStatut.Text = vente.Statut;
-                lblStatut.ForeColor = vente.Statut == "Annulée"
-                    ? System.Drawing.Color.OrangeRed
-                    : System.Drawing.Color.ForestGreen;
+                lblStatut.ForeColor = vente.Statut == "Annulée" ? Theme.UrgentTexte : Theme.SuccesTexte;
 
                 // ── Mutuelle — affiche statut de règlement ────────────────
                 if (vente.Mutuel != null)
                 {
-                    string statutMutuelle = vente.MutuelleReglee
-                        ? "✅ Réglée"
-                        : "⏳ En attente de règlement";
+                    string statutMutuelle = vente.MutuelleReglee ? "réglée" : "en attente de règlement";
 
                     lblMutuelle.Text =
-                        $"🏢 {vente.Mutuel.NomEmployeur} ({vente.TauxMutuelle}%)  |  " +
-                        $"Part entreprise : {vente.MontantMutuelle:N0} KMF  |  " +
-                        $"Matricule : {vente.MatriculeEmploye ?? "—"}  |  " +
-                        $"Statut mutuelle : {statutMutuelle}";
+                        $"Mutuelle {vente.Mutuel.NomEmployeur} ({vente.TauxMutuelle:0.##} %) — " +
+                        $"part de l'entreprise : {Format.Montant(vente.MontantMutuelle)} — " +
+                        $"matricule : {(string.IsNullOrWhiteSpace(vente.MatriculeEmploye) ? "—" : vente.MatriculeEmploye)} — " +
+                        $"{statutMutuelle}";
 
-                    lblMutuelle.ForeColor = vente.MutuelleReglee
-                        ? System.Drawing.Color.ForestGreen
-                        : System.Drawing.Color.OrangeRed;
-
+                    lblMutuelle.ForeColor = vente.MutuelleReglee ? Theme.SuccesTexte : Theme.AttentionTexte;
                     lblMutuelle.Visible = true;
                 }
                 else
@@ -74,31 +65,26 @@ namespace Pharmacie2.views
                 dgvLignes.DataSource = vente.Lignes.Select(l => new
                 {
                     Produit = l.Produit?.Nom ?? "—",
-                    Unité = l.UniteVendue,
-                    Quantité = l.Quantite,
-                    PrixU = l.PrixUnitaire.ToString("N0") + " KMF",
-                    SousTotal = l.SousTotal.ToString("N0") + " KMF"
+                    Unite = l.UniteVendue,
+                    Quantite = l.Quantite,
+                    PrixU = l.PrixUnitaire,
+                    SousTotal = l.SousTotal
                 }).ToList();
 
                 // ── Totaux ────────────────────────────────────────────────
-                lblTotal.Text = $"Total : {vente.MontantTotal:N0} KMF";
-                lblVerse.Text = $"Versé (patient) : {vente.MontantVerse:N0} KMF";
-                lblRestant.Text = $"Reste : {vente.MontantRestant:N0} KMF";
-                lblRestant.ForeColor = vente.MontantRestant > 0
-                    ? System.Drawing.Color.OrangeRed
-                    : System.Drawing.Color.ForestGreen;
+                lblTotal.Text = "Total : " + Format.Montant(vente.MontantTotal);
+                lblVerse.Text = "Versé par le patient : " + Format.Montant(vente.MontantVerse);
+                lblRestant.Text = "Reste à récupérer : " + Format.Montant(vente.MontantRestant);
+                lblRestant.ForeColor = vente.MontantRestant > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
 
                 // ── Historique paiements patient ──────────────────────────
-                lvPaiements.Items.Clear();
-                foreach (var p in vente.Paiements.OrderBy(p => p.DatePaiement))
+                dgvPaiements.DataSource = vente.Paiements.OrderBy(p => p.DatePaiement).Select(p => new
                 {
-                    var item = new ListViewItem(p.NumeroPaiement);
-                    item.SubItems.Add(p.DatePaiement.ToString("dd/MM/yyyy HH:mm"));
-                    item.SubItems.Add(p.Montant.ToString("N0") + " KMF");
-                    item.SubItems.Add(p.User != null
-                        ? $"{p.User.Prenom} {p.User.Nom}" : "—");
-                    lvPaiements.Items.Add(item);
-                }
+                    Numero = p.NumeroPaiement,
+                    Date = p.DatePaiement.ToString("dd/MM/yyyy HH:mm"),
+                    p.Montant,
+                    Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "—"
+                }).ToList();
             }
         }
 

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 using Pharmacie2.views.UserControls;
 
 namespace Pharmacie2.views
@@ -21,6 +22,7 @@ namespace Pharmacie2.views
         private List<LigneVenteModif> _lignes = new List<LigneVenteModif>();
         private List<Mutuel> _mutuels;
         private int? _mutuelIdOrigine;   // mutuelle d'origine de la vente, présélectionnée dans la liste
+        private decimal _total;
         // Unités de base déjà retirées du stock par la vente d'origine, par produit
         private Dictionary<int, int> _unitesOriginales = new Dictionary<int, int>();
 
@@ -39,6 +41,7 @@ namespace Pharmacie2.views
         public FormModificationVente(int venteId)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _venteId = venteId;
             // ✅ ORDRE CRITIQUE :
             // 1. Charger mutuelles AVANT le combo (evite _mutuels null dans SelectedIndexChanged)
@@ -187,8 +190,8 @@ namespace Pharmacie2.views
 
         private void btnSupprimer_Click(object sender, EventArgs e)
         {
-            if (lvProduits.SelectedItems.Count == 0) return;
-            int idx = lvProduits.SelectedItems[0].Index;
+            if (dgvProduits.SelectedRows.Count == 0) return;
+            int idx = dgvProduits.SelectedRows[0].Index;
             var actives = _lignes.Where(l => !l.Supprimee).ToList();
             actives[idx].Supprimee = true;
             RafraichirListView();
@@ -197,22 +200,20 @@ namespace Pharmacie2.views
 
         private void RafraichirListView()
         {
-            lvProduits.Items.Clear();
-            foreach (var l in _lignes.Where(l => !l.Supprimee))
+            dgvProduits.DataSource = _lignes.Where(l => !l.Supprimee).Select(l => new
             {
-                var item = new ListViewItem(l.ProduitNom);
-                item.SubItems.Add(l.UniteVendue);
-                item.SubItems.Add(l.Quantite.ToString());
-                item.SubItems.Add(l.PrixUnitaire.ToString("0.00"));
-                item.SubItems.Add(l.SousTotal.ToString("0.00"));
-                lvProduits.Items.Add(item);
-            }
+                Produit = l.ProduitNom,
+                Unite = l.UniteVendue,
+                l.Quantite,
+                l.PrixUnitaire,
+                l.SousTotal
+            }).ToList();
         }
 
         private void CalculerTotal()
         {
-            decimal total = _lignes.Where(l => !l.Supprimee).Sum(l => l.SousTotal);
-            txtMontantTotal.Text = total.ToString("0.00");
+            _total = _lignes.Where(l => !l.Supprimee).Sum(l => l.SousTotal);
+            lblMontantTotal.Text = Format.Montant(_total);
         }
 
         // ─── Sauvegarde ──────────────────────────────────────────────────
@@ -228,12 +229,7 @@ namespace Pharmacie2.views
                 return;
             }
 
-            if (!decimal.TryParse(txtMontantTotal.Text, out decimal total))
-            {
-                MessageBox.Show("Montant total invalide.", "Erreur",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            decimal total = _total;
 
             var confirm = MessageBox.Show(
                 "Enregistrer les modifications de cette vente ?",
@@ -308,8 +304,7 @@ namespace Pharmacie2.views
 
                 VenteEvenements.Notifier(this);
 
-                MessageBox.Show("✅ Vente modifiée avec succès !", "Succès",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes("Vente modifiée");
 
                 DialogResult = DialogResult.OK;
                 Close();

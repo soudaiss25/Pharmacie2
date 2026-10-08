@@ -1,6 +1,3 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
@@ -11,7 +8,7 @@ namespace Pharmacie2.views.UserControls
     {
         /// <summary>
         /// Déclenché après toute modification de vente (paiement, annulation, modification).
-        /// Uc_Caisse s'y abonne pour se rafraîchir automatiquement.
+        /// Relais vers l'événement central VenteEvenements (Uc_Caisse s'y abonne).
         /// </summary>
         public static event EventHandler VenteModifiee
         {
@@ -19,43 +16,47 @@ namespace Pharmacie2.views.UserControls
             remove => VenteEvenements.VenteModifiee -= value;
         }
 
-        private bool _creditsSeulement;
-
         /// <summary>Ne montre que les ventes qui restent à encaisser (crédits clients, parts de mutuelle).</summary>
-        public void FiltrerCredits()
-        {
-            _creditsSeulement = true;
-            ChargerVentes(txtSearchVente.Text);
-        }
+        public void FiltrerCredits() => chkACaisser.Checked = true;
 
         public Uc_Vente()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
 
-            bool isAdmin = SessionUtilisateur.Courant?.Role == Roles.Administrateur
-                        || SessionUtilisateur.Courant?.Role == Roles.Pharmacien;
+            bool gestionnaire = Roles.EstGestionnaire(SessionUtilisateur.Courant?.Role);
+            btnModifierVente.Visible = gestionnaire;
+            btnAnnuler.Visible = gestionnaire;
 
-            btnModifierVente.Visible = isAdmin;
-            btnAnnuler.Visible = isAdmin;
+            VenteEvenements.VenteModifiee += SurVenteModifiee;
+            Disposed += (s, e) => VenteEvenements.VenteModifiee -= SurVenteModifiee;
 
             ChargerVentes();
         }
 
-        // ── Méthode publique pour permettre au parent de rafraîchir ───────
-        public void Rafraichir() => ChargerVentes(txtSearchVente.Text);
-
-        private void ChargerVentes(string recherche = "")
+        private void SurVenteModifiee(object? sender, EventArgs e)
         {
+            if (IsDisposed || !IsHandleCreated) return;
+            if (InvokeRequired) BeginInvoke(new Action(Rafraichir)); else Rafraichir();
+        }
+
+        // ── Méthode publique pour permettre au parent de rafraîchir ───────
+        public void Rafraichir() => ChargerVentes();
+
+        private void ChargerVentes()
+        {
+            string recherche = txtSearchVente.Text.Trim().ToLower();
+
             using (var ctx = new AppDbContext())
             {
                 var query = ctx.ventes
+                    .AsNoTracking()
                     .Include(v => v.Paiements)
                     .Include(v => v.User)
                     .AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(recherche))
                 {
-                    recherche = recherche.ToLower();
                     query = query.Where(v =>
                         v.numeroVente.ToLower().Contains(recherche) ||
                         (v.NomClient != null && v.NomClient.ToLower().Contains(recherche)) ||
@@ -64,61 +65,57 @@ namespace Pharmacie2.views.UserControls
                 }
 
                 var ventes = query.OrderByDescending(v => v.DateVente).ToList();
-                if (_creditsSeulement)
+                if (chkACaisser.Checked)
                     ventes = ventes.Where(v => v.Statut == "Active" && v.MontantRestant > 0).ToList();
 
-                dgvVentes.Rows.Clear();
-
-                foreach (var v in ventes)
+                dgvVentes.DataSource = ventes.Select(v => new
                 {
-                    int idx = dgvVentes.Rows.Add(
-                        v.IdVente,
-                        v.numeroVente,
-                        $"{v.PrenomClient} {v.NomClient}".Trim(),
-                        v.TelephoneClient ?? "—",
-                        v.DateVente.ToString("dd/MM/yyyy HH:mm"),
-                        v.MontantTotal.ToString("N0"),
-                        v.MontantVerse.ToString("N0"),
-                        v.MontantRestant.ToString("N0"),
-                        v.MoyenPaiement,
-                        v.User != null ? $"{v.User.Prenom} {v.User.Nom}" : "—",
-                        v.Statut
-                    );
-
-                    if (v.Statut == "Annulée")
-                    {
-                        dgvVentes.Rows[idx].DefaultCellStyle.BackColor =
-                            System.Drawing.Color.FromArgb(255, 235, 238);
-                        dgvVentes.Rows[idx].DefaultCellStyle.ForeColor =
-                            System.Drawing.Color.OrangeRed;
-                    }
-                    else if (v.MontantRestant > 0)
-                    {
-                        dgvVentes.Rows[idx].Cells["colMontantRestant"].Style.ForeColor =
-                            System.Drawing.Color.OrangeRed;
-                        dgvVentes.Rows[idx].Cells["colMontantRestant"].Style.Font =
-                            new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-                    }
-                }
+                    v.IdVente,
+                    Numero = v.numeroVente,
+                    Client = $"{v.PrenomClient} {v.NomClient}".Trim(),
+                    Tel = string.IsNullOrWhiteSpace(v.TelephoneClient) ? "—" : v.TelephoneClient,
+                    Date = v.DateVente.ToString("dd/MM/yyyy HH:mm"),
+                    Total = v.MontantTotal,
+                    Verse = v.MontantVerse,
+                    Restant = v.MontantRestant,
+                    Mode = v.MoyenPaiement,
+                    Vendeur = v.User != null ? $"{v.User.Prenom} {v.User.Nom}" : "—",
+                    v.Statut
+                }).ToList();
 
                 // ── Barre du bas — cohérente avec Uc_Caisse ───────────────
-                var ventesActives = ventes.Where(v => v.Statut == "Active").ToList();
+                var actives = ventes.Where(v => v.Statut == "Active").ToList();
+                decimal totalCA = actives.Sum(v => v.MontantTotal);
+                // Argent à récupérer : crédits clients + part de mutuelle non réglée
+                decimal aRecuperer = actives.Sum(v => v.MontantRestant);
 
-                // CA = total facturé (toutes ventes actives)
-                decimal totalCA = ventesActives.Sum(v => v.MontantTotal);
-
-                // Crédit en cours = restant dû sur ventes actives
-                // Inclut : crédit client + part mutuelle non réglée
-                decimal creditEnCours = ventesActives.Sum(v => v.MontantRestant);
-
-                lblNombreVentes.Text = $"Total : {ventes.Count} vente(s)";
-                lblTotalVentes.Text = $"CA : {totalCA:N0} KMF";
-                lblVentesCredit.Text = $"Crédit en cours : {creditEnCours:N0} KMF";
-                lblVentesCredit.ForeColor = creditEnCours > 0
-                    ? System.Drawing.Color.OrangeRed
-                    : System.Drawing.Color.FromArgb(27, 94, 32);
+                lblNombreVentes.Text = $"{ventes.Count} vente(s)";
+                lblTotalVentes.Text = $"Ventes : {Format.Montant(totalCA)}";
+                lblVentesCredit.Text = $"Argent à récupérer : {Format.Montant(aRecuperer)}";
+                lblVentesCredit.ForeColor = aRecuperer > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
             }
         }
+
+        private void dgvVentes_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvVentes.Rows.Count) return;
+            var ligne = dgvVentes.Rows[e.RowIndex];
+            string statut = ligne.Cells["Statut"].Value?.ToString() ?? "";
+
+            if (statut == "Annulée")
+            {
+                e.CellStyle.BackColor = Theme.InfoFond;
+                e.CellStyle.ForeColor = Theme.Neutre;
+            }
+            else if (dgvVentes.Columns[e.ColumnIndex].Name == "Restant" && ligne.Cells["Restant"].Value is decimal reste && reste > 0)
+            {
+                e.CellStyle.ForeColor = Theme.AttentionTexte;
+                e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
+            }
+        }
+
+        private int? VenteSelectionnee()
+            => dgvVentes.SelectedRows.Count == 0 ? null : Convert.ToInt32(dgvVentes.SelectedRows[0].Cells["IdVente"].Value);
 
         // ── Boutons ───────────────────────────────────────────────────────
 
@@ -126,49 +123,42 @@ namespace Pharmacie2.views.UserControls
         {
             using (var form = new FormVente())
             {
-                form.ShowDialog();
-                ChargerVentes(txtSearchVente.Text);
-                VenteEvenements.Notifier(this);
+                form.ShowDialog(this);
+                ChargerVentes();
             }
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
-            => ChargerVentes(txtSearchVente.Text);
+        private void txtSearchVente_TextChanged(object sender, EventArgs e) => ChargerVentes();
 
-        private void txtSearchVente_TextChanged(object sender, EventArgs e)
-            => ChargerVentes(txtSearchVente.Text);
+        private void chkACaisser_CheckedChanged(object sender, EventArgs e) => ChargerVentes();
 
         private void btnDetail_Click(object sender, EventArgs e)
         {
-            if (dgvVentes.SelectedRows.Count == 0)
+            if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente.", "Info",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Sélectionnez une vente.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            int id = Convert.ToInt32(dgvVentes.SelectedRows[0].Cells["colIdVente"].Value);
             using (var form = new FormDetailVente(id))
-                form.ShowDialog();
+                form.ShowDialog(this);
         }
 
         private void btnModifierVente_Click(object sender, EventArgs e)
         {
-            if (SessionUtilisateur.Courant?.Role != Roles.Administrateur
-             && SessionUtilisateur.Courant?.Role != Roles.Pharmacien)
+            if (!Roles.EstGestionnaire(SessionUtilisateur.Courant?.Role))
             {
                 MessageBox.Show("Accès réservé à l'administrateur ou au pharmacien.",
                     "Accès refusé", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (dgvVentes.SelectedRows.Count == 0)
+            if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente à modifier.", "Info",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Sélectionnez une vente à modifier.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string statut = dgvVentes.SelectedRows[0].Cells["colStatut"].Value?.ToString();
+            string statut = dgvVentes.SelectedRows[0].Cells["Statut"].Value?.ToString() ?? "";
             if (statut == "Annulée")
             {
                 MessageBox.Show("Impossible de modifier une vente annulée.", "Info",
@@ -176,32 +166,24 @@ namespace Pharmacie2.views.UserControls
                 return;
             }
 
-            int id = Convert.ToInt32(dgvVentes.SelectedRows[0].Cells["colIdVente"].Value);
             using (var form = new FormModificationVente(id))
             {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    ChargerVentes(txtSearchVente.Text);
-                    VenteEvenements.Notifier(this); // ← notifie Uc_Caisse
-                }
+                if (form.ShowDialog(this) == DialogResult.OK)
+                    ChargerVentes();
             }
         }
 
         private void btnEnregistrerPaiement_Click(object sender, EventArgs e)
         {
-            if (dgvVentes.SelectedRows.Count == 0)
+            if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente.", "Info",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Sélectionnez une vente.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            int id = Convert.ToInt32(dgvVentes.SelectedRows[0].Cells["colIdVente"].Value);
-
             using (var ctx = new AppDbContext())
             {
-                var vente = ctx.ventes.Include(v => v.Paiements)
-                    .FirstOrDefault(v => v.IdVente == id);
+                var vente = ctx.ventes.Include(v => v.Paiements).FirstOrDefault(v => v.IdVente == id);
                 if (vente == null) return;
 
                 if (vente.Statut == "Annulée")
@@ -210,19 +192,20 @@ namespace Pharmacie2.views.UserControls
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                if (vente.MontantRestant <= 0)
+                if (vente.RestantPatient <= 0)
                 {
-                    MessageBox.Show("Cette vente est déjà soldée.", "Info",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(vente.MontantRestant > 0
+                            ? "Le patient a tout payé. La part de la mutuelle se règle depuis l'écran Mutuelles."
+                            : "Cette vente est déjà soldée.",
+                        "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
 
             using (var form = new FormPaiements(id))
-                form.ShowDialog();
+                form.ShowDialog(this);
 
-            ChargerVentes(txtSearchVente.Text);
-            VenteEvenements.Notifier(this); // ← notifie Uc_Caisse
+            ChargerVentes();
         }
 
         private void btnAnnuler_Click(object sender, EventArgs e)
@@ -234,21 +217,16 @@ namespace Pharmacie2.views.UserControls
                 return;
             }
 
-            if (dgvVentes.SelectedRows.Count == 0)
+            if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente à annuler.", "Info",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Sélectionnez une vente à annuler.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            int id = Convert.ToInt32(dgvVentes.SelectedRows[0].Cells["colIdVente"].Value);
             using (var form = new FormAnnulationVente(id))
             {
-                if (form.ShowDialog() == DialogResult.OK)
-                {
-                    ChargerVentes(txtSearchVente.Text);
-                    VenteEvenements.Notifier(this); // ← notifie Uc_Caisse
-                }
+                if (form.ShowDialog(this) == DialogResult.OK)
+                    ChargerVentes();
             }
         }
     }

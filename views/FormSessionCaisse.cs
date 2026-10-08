@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -15,6 +17,7 @@ namespace Pharmacie2.views
         {
             _userId = userId;
             InitializeComponent();
+            Theme.Appliquer(this);
             ChargerEtat();
         }
 
@@ -33,23 +36,28 @@ namespace Pharmacie2.views
 
             if (_sessionOuverte == null)
             {
-                lblEtat.Text = "Aucune session ouverte pour aujourd'hui.";
-                lblEtat.ForeColor = System.Drawing.Color.OrangeRed;
+                lblEtat.Text = "Aucune caisse ouverte aujourd'hui.";
+                lblEtat.ForeColor = Theme.AttentionTexte;
                 btnOuvrir.Enabled = true;
                 btnCloture.Enabled = false;
+                numFond.Enabled = true;
                 numMontantReel.Enabled = false;
                 txtCommentaire.Enabled = false;
-                lblInfoSession.Text = "Cliquez sur « Ouvrir la caisse » pour démarrer votre session.";
+                lblInfoSession.Text = "Indiquez l'argent qui se trouve déjà dans le tiroir, puis cliquez sur « Ouvrir la caisse ».";
+                AcceptButton = btnOuvrir;
             }
             else
             {
-                lblEtat.Text = $"Session ouverte le {_sessionOuverte.DateOuverture:dd/MM/yyyy à HH:mm}";
-                lblEtat.ForeColor = System.Drawing.Color.ForestGreen;
+                lblEtat.Text = $"Caisse ouverte le {_sessionOuverte.DateOuverture:dd/MM/yyyy à HH:mm}";
+                lblEtat.ForeColor = Theme.SuccesTexte;
                 btnOuvrir.Enabled = false;
                 btnCloture.Enabled = true;
+                numFond.Enabled = false;
+                numFond.Value = Math.Min(numFond.Maximum, _sessionOuverte.FondOuverture);
                 numMontantReel.Enabled = true;
                 txtCommentaire.Enabled = true;
-                lblInfoSession.Text = "Session en cours. Renseignez le montant compté en caisse avant de clôturer.";
+                lblInfoSession.Text = "Caisse en cours. Comptez l'argent du tiroir et saisissez le montant avant de clôturer.";
+                AcceptButton = btnCloture;
             }
         }
 
@@ -69,15 +77,14 @@ namespace Pharmacie2.views
                 {
                     UserId = _userId,
                     DateOuverture = DateTime.Now,
-                    FondOuverture = 0,
+                    FondOuverture = numFond.Value,
                     Statut = "Ouverte",
                     CommentaireCloture = ""
                 });
                 ctx.SaveChanges();
             }
 
-            MessageBox.Show("Caisse ouverte ✅\nBonne journée !",
-                "Ouverture effectuée", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            BandeauNotification.Succes("Caisse ouverte. Bonne journée !");
 
             DialogResult = DialogResult.OK;
             Close();
@@ -91,7 +98,7 @@ namespace Pharmacie2.views
 
             var confirm = MessageBox.Show(
                 $"Clôturer la session caisse ?\n\n" +
-                $"Montant compté en caisse : {montantCompte:N0} KMF\n\n" +
+                $"Montant compté en caisse : {Format.Montant(montantCompte)}\n\n" +
                 $"Confirmez-vous la clôture ?",
                 "Clôture de caisse",
                 MessageBoxButtons.YesNo,
@@ -113,8 +120,7 @@ namespace Pharmacie2.views
                 ctx.SaveChanges();
             }
 
-            MessageBox.Show("Session clôturée ✅",
-                "Clôture effectuée", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            BandeauNotification.Succes("Caisse clôturée");
 
             DialogResult = DialogResult.OK;
             Close();
