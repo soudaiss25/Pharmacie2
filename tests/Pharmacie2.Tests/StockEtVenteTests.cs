@@ -37,7 +37,7 @@ public class VenteTransactionTests
             using var ctx = new AppDbContext();
             using var tx = ctx.Database.BeginTransaction();
             StockService.Retirer(ctx.produits.Find(pid), 5);
-            var v = new Vente { numeroVente = "V-000001", Statut = "Active" };
+            var v = new Vente { numeroVente = "V-000001", Statut = "Active", NomClient = "", PrenomClient = "", TelephoneClient = "", MotifAchat = "", MatriculeEmploye = "", MoyenPaiement = "Comptant", Type = "Comptant", MotifAnnulation = "" };
             ctx.ventes.Add(v);
             ctx.SaveChanges();
             ctx.LigneVentes.Add(new LigneVente { VenteId = v.IdVente, ProduitId = pid, Quantite = 1, QuantiteUnites = 5 });
@@ -77,7 +77,7 @@ public class VenteTransactionTests
         int venteId;
         using (var ctx = new AppDbContext())
         {
-            var v = new Vente { numeroVente = "V-000001", Statut = "Active" };
+            var v = new Vente { numeroVente = "V-000001", Statut = "Active", NomClient = "", PrenomClient = "", TelephoneClient = "", MotifAchat = "", MatriculeEmploye = "", MoyenPaiement = "Comptant", Type = "Comptant", MotifAnnulation = "" };
             v.Lignes.Add(new LigneVente { ProduitId = pid, Quantite = 2, QuantiteUnites = 10, UniteVendue = "Boîte" });
             v.Lignes.Add(new LigneVente { ProduitId = pid, Quantite = 3, QuantiteUnites = 3, UniteVendue = "Plaquette" });
             ctx.ventes.Add(v);

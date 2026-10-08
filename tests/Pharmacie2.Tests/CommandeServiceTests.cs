@@ -8,7 +8,7 @@ public class CommandeServiceTests
     {
         int pid = TestDb.NouveauProduit("Amox", stock, 5, "Comprimé");
         using var ctx = new AppDbContext();
-        if (!ctx.fournisseur.Any()) { ctx.fournisseur.Add(new Fournisseur { Nom = "Four" }); ctx.SaveChanges(); }
+        if (!ctx.fournisseur.Any()) { ctx.fournisseur.Add(new Fournisseur { Nom = "Four", Contact = "" }); ctx.SaveChanges(); }
         var c = new Commande
         {
             FournisseurId = ctx.fournisseur.First().Id,
