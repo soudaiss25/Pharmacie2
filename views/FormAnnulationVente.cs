@@ -106,6 +106,8 @@ namespace Pharmacie2.views
                     tx.Commit();
                 }
 
+                VenteEvenements.Notifier(this);
+
                 MessageBox.Show(
                     "✅ Vente annulée avec succès.\nLe stock a été remis à jour.",
                     "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);

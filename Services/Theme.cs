@@ -87,7 +87,8 @@ namespace Pharmacie2.Services
             switch (c)
             {
                 case Button b:
-                    StyleBoutonDepuisTag(b, tag);
+                    if (tag != "menu")   // les boutons du menu (BoutonMenu) se dessinent eux-mêmes
+                        StyleBoutonDepuisTag(b, tag);
                     break;
 
                 case DataGridView g:
@@ -206,7 +207,7 @@ namespace Pharmacie2.Services
                     if (l.ForeColor == SystemColors.ControlText) l.ForeColor = Texte;
                     break;
             }
-            if (tag.Length > 0 && l.BackColor == SystemColors.Control) l.BackColor = Color.Transparent;
+            if (l.BackColor == SystemColors.Control) l.BackColor = Color.Transparent;
         }
 
         /// <summary>Style commun des tableaux (règle B0.8). À compléter par colonne : montants avec MarquerMontant.</summary>

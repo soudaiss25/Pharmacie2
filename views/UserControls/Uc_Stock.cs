@@ -19,6 +19,8 @@ namespace Pharmacie2.views.UserControls
             dgvStock.MultiSelect = false;
 
             cbSeuil.Items.Add("À vérifier");
+            cbSeuil.Items.Add("Périmés");
+            cbSeuil.Items.Add("Péremption proche");
             cbSeuil.SelectedIndex = 0;
             cbDisponibilite.SelectedIndex = 0;
 
@@ -55,7 +57,14 @@ namespace Pharmacie2.views.UserControls
         }
 
         /// <summary>Filtre la liste sur les produits dont le stock est à vérifier.</summary>
-        public void FiltrerAVerifier() => cbSeuil.SelectedItem = "À vérifier";
+        public void FiltrerAVerifier() => Filtrer("À vérifier");
+
+        /// <summary>Applique un filtre depuis l'extérieur (« À vérifier », « Périmés », « Péremption proche », « En rupture »).</summary>
+        public void Filtrer(string filtre)
+        {
+            if (filtre == "En rupture") cbDisponibilite.SelectedItem = filtre;
+            else cbSeuil.SelectedItem = filtre;
+        }
 
         private void btnInventaire_Click(object sender, EventArgs e)
         {
@@ -108,6 +117,11 @@ namespace Pharmacie2.views.UserControls
 
             if (cbSeuil.Text == "Sous le seuil")
                 query = query.Where(p => p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
+            else if (cbSeuil.Text == "Périmés")
+                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration < DateTime.Today);
+            else if (cbSeuil.Text == "Péremption proche")
+                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration >= DateTime.Today
+                                         && p.DateExpiration <= DateTime.Today.AddDays(TableauDeBordService.JoursAvantPeremption));
             else if (cbSeuil.Text == "À vérifier")
                 query = query.Where(p => p.StockAVerifier && p.Actif);
             else if (cbSeuil.Text == "Normal")

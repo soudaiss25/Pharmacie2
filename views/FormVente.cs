@@ -437,6 +437,8 @@ namespace Pharmacie2.views
                     _derniereVenteId = vente.IdVente;
                 }
 
+                VenteEvenements.Notifier(this);   // Uc_Vente, Uc_Caisse et « Ma journée » se rafraîchissent
+
                 // ── Message de succès + proposition d'impression ──────────
                 string msg = "✅ Vente enregistrée avec succès !";
                 if (rendu > 0) msg += $"\n\n💵 Rendu au client : {rendu:0.00} KMF";

@@ -306,6 +306,8 @@ namespace Pharmacie2.views
                     tx.Commit();
                 }
 
+                VenteEvenements.Notifier(this);
+
                 MessageBox.Show("✅ Vente modifiée avec succès !", "Succès",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 

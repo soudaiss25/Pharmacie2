@@ -1,84 +1,154 @@
-﻿using System;
-using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
+using Pharmacie2.views.UserControls;
 
 namespace Pharmacie2.views
 {
     public partial class PageAccueil : Form, IPageSession
     {
         private readonly User _user;
+        private BoutonMenu? _boutonActif;
+
+        public bool DeconnexionDemandee { get; private set; }
 
         public PageAccueil(User user)
         {
             _user = user;
             InitializeComponent();
+            Theme.Appliquer(this);
+
+            Text = AppInfo.NomLogiciel;
+            lblNomPharmacie.Text = AppInfo.NomPharmacie;
+            lblUtilisateur.Text = $"{user.Prenom} {user.Nom} ({user.Role})";
+            BandeauNotification.Courant = bandeau;
+
+            flpMenu.Resize += (s, e) => AjusterBoutonsMenu();
+            AjusterBoutonsMenu();
+            FormClosed += (s, e) => { if (ReferenceEquals(BandeauNotification.Courant, bandeau)) BandeauNotification.Courant = null; };
+
+            OuvrirMaJournee();   // plus d'écran vide à l'ouverture
         }
 
-        private void LoadUserControl(UserControl uc)
+        // ── Navigation ────────────────────────────────────────────────────
+
+        private void AjusterBoutonsMenu()
         {
+            int largeur = Math.Max(120, flpMenu.ClientSize.Width);
+            foreach (Control c in flpMenu.Controls)
+                if (c is BoutonMenu) c.Width = largeur;
+        }
+
+        private void Ouvrir(UserControl uc, BoutonMenu? bouton)
+        {
+            var anciens = panelContent.Controls.Cast<Control>().ToList();
             panelContent.Controls.Clear();
+            foreach (var a in anciens) a.Dispose();
+
             uc.Dock = DockStyle.Fill;
             panelContent.Controls.Add(uc);
+
+            if (_boutonActif != null) _boutonActif.Actif = false;
+            _boutonActif = bouton;
+            if (bouton != null) bouton.Actif = true;
+            bandeau.Masquer();
         }
 
-        /// <summary>Ouvre l'écran Stock filtré sur les produits « À vérifier ».</summary>
-        public void OuvrirStockAVerifier()
+        private void OuvrirMaJournee()
         {
-            var stock = new views.UserControls.Uc_Stock();
-            LoadUserControl(stock);
-            stock.FiltrerAVerifier();
+            var uc = new Uc_MaJournee();
+            uc.OuvrirDemande += SurDemandeDepuisMaJournee;
+            Ouvrir(uc, btnMaJournee);
         }
 
-        private void btnProduits_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Produits());
+        private void SurDemandeDepuisMaJournee(TypeAFaire type)
+        {
+            switch (type)
+            {
+                case TypeAFaire.Perimes: OuvrirStock("Périmés"); break;
+                case TypeAFaire.Ruptures: OuvrirStock("En rupture"); break;
+                case TypeAFaire.PeremptionProche: OuvrirStock("Péremption proche"); break;
+                case TypeAFaire.StocksAVerifier: OuvrirStock("À vérifier"); break;
+                case TypeAFaire.MutuellesEnRetard:
+                    var m = new Uc_Mutuelle();
+                    Ouvrir(m, btnMutuelles);
+                    m.FiltrerEnRetard();
+                    break;
+            }
+        }
 
-        private void btnFournisseurs_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Fournisser());
+        /// <summary>Ouvre l'écran Stock déjà filtré (« À vérifier », « Périmés », « En rupture »…).</summary>
+        public void OuvrirStock(string filtre)
+        {
+            var stock = new Uc_Stock();
+            Ouvrir(stock, btn_stock);
+            stock.Filtrer(filtre);
+        }
 
-        private void btnVentes_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Vente());
+        /// <summary>Ouvre l'écran Stock filtré sur les produits « À vérifier » (message à la connexion).</summary>
+        public void OuvrirStockAVerifier() => OuvrirStock("À vérifier");
 
-        private void btn_stock_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Stock());
+        private void btnMaJournee_Click(object sender, EventArgs e) => OuvrirMaJournee();
 
-        private void btnMutuelles_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Mutuelle());
+        private void btnProduits_Click(object sender, EventArgs e) => Ouvrir(new Uc_Produits(), btnProduits);
 
-        private void btnStatistiques_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Statistique());
+        private void btnFournisseurs_Click(object sender, EventArgs e) => Ouvrir(new Uc_Fournisser(), btnFournisseurs);
 
-        private void btnDepenses_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Depenses());
+        private void btnVentes_Click(object sender, EventArgs e) => Ouvrir(new Uc_Vente(), btnVentes);
 
-        private void BtnCaisse_Click_1(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Caisse());
+        private void btnCredits_Click(object sender, EventArgs e)
+        {
+            var v = new Uc_Vente();
+            Ouvrir(v, btnCredits);
+            v.FiltrerCredits();
+        }
 
-        private void BtnGestionUtilisateur_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Utilisateurs());
+        private void btn_stock_Click(object sender, EventArgs e) => Ouvrir(new Uc_Stock(), btn_stock);
 
-        // ✅ NOUVEAU — Vue globale des commandes fournisseurs
-        private void btnCommandes_Click(object sender, EventArgs e)
-            => LoadUserControl(new views.UserControls.Uc_Commande());
+        private void btnMutuelles_Click(object sender, EventArgs e) => Ouvrir(new Uc_Mutuelle(), btnMutuelles);
 
-        // ✅ Sauvegarde complète CSV
+        private void btnStatistiques_Click(object sender, EventArgs e) => Ouvrir(new Uc_Statistique(), btnStatistiques);
+
+        private void btnDepenses_Click(object sender, EventArgs e) => Ouvrir(new Uc_Depenses(), btnDepenses);
+
+        private void BtnCaisse_Click_1(object sender, EventArgs e) => Ouvrir(new Uc_Caisse(), BtnCaisse);
+
+        private void BtnGestionUtilisateur_Click(object sender, EventArgs e) => Ouvrir(new Uc_Utilisateurs(), BtnGestionUtilisateur);
+
+        private void btnCommandes_Click(object sender, EventArgs e) => Ouvrir(new Uc_Commande(), btnCommandes);
+
+        // ── Raccourcis clavier ────────────────────────────────────────────
+
+        private void PageAccueil_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F2)
+            {
+                e.Handled = true;
+                using var form = new FormVente();
+                form.ShowDialog(this);   // les écrans se rafraîchissent via VenteEvenements
+            }
+        }
+
+        // ── Sauvegarde ────────────────────────────────────────────────────
+
         private void btnSauvegarde_Click(object sender, EventArgs e)
         {
-            using var fbd = new System.Windows.Forms.FolderBrowserDialog();
+            using var fbd = new FolderBrowserDialog();
             fbd.Description = "Choisissez le dossier de sauvegarde";
-            if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            if (fbd.ShowDialog() != DialogResult.OK) return;
 
-            string dossier = System.IO.Path.Combine(
-                fbd.SelectedPath,
-                $"Pharmacie2_backup_{System.DateTime.Now:yyyy-MM-dd_HHmmss}");
-            System.IO.Directory.CreateDirectory(dossier);
-
-            Services.SauvegardeService.ExporterTout(dossier);
-
-            System.Windows.Forms.MessageBox.Show(
-                $"Sauvegarde effectuée dans :\n{dossier}",
-                "Sauvegarde réussie",
-                System.Windows.Forms.MessageBoxButtons.OK,
-                System.Windows.Forms.MessageBoxIcon.Information);
+            try
+            {
+                string dossier = Path.Combine(fbd.SelectedPath, $"Pharmacie2_backup_{DateTime.Now:yyyy-MM-dd_HHmmss}");
+                Directory.CreateDirectory(dossier);
+                SauvegardeService.ExporterTout(dossier);
+                bandeau.Afficher("Sauvegarde effectuée dans : " + dossier);
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Sauvegarde CSV", ex);
+                MessageBox.Show("La sauvegarde a échoué : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnOuvrirDossierSauvegardes_Click(object sender, EventArgs e)
@@ -87,25 +157,22 @@ namespace Pharmacie2.views
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = Services.CheminsApp.DossierSauvegardes,
+                    FileName = CheminsApp.DossierSauvegardes,
                     UseShellExecute = true
                 });
             }
             catch (Exception ex)
             {
-                Services.Journal.Erreur("Ouverture du dossier des sauvegardes", ex);
-                MessageBox.Show("Impossible d'ouvrir le dossier des sauvegardes :\n" + Services.CheminsApp.DossierSauvegardes,
+                Journal.Erreur("Ouverture du dossier des sauvegardes", ex);
+                MessageBox.Show("Impossible d'ouvrir le dossier des sauvegardes :\n" + CheminsApp.DossierSauvegardes,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        public bool DeconnexionDemandee { get; private set; }
 
         private void btnDeconnexion_Click(object sender, EventArgs e)
         {
             DeconnexionDemandee = true;
             Close();   // Form1 (la fenêtre de connexion, unique) se ré-affiche : pas de Application.Exit
         }
-
     }
 }

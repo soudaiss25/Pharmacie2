@@ -34,6 +34,14 @@ namespace Pharmacie2.views.UserControls
         // ══════════════════════════════════════════════════════════════════
 
         private CheckBox _chkArchives;
+        private bool _filtreRetard;
+
+        /// <summary>Ne garde que les mutuelles qui n'ont pas réglé leur part depuis plus de 30 jours.</summary>
+        public void FiltrerEnRetard()
+        {
+            _filtreRetard = true;
+            ChargerMutuelles();
+        }
 
         private (int id, string nom, bool actif)? SelectionMutuelle()
         {
@@ -51,6 +59,11 @@ namespace Pharmacie2.views.UserControls
                 {
                     bool archives = _chkArchives?.Checked ?? false;
                     var mutuels = ctx.mutuels.Where(m => m.Actif || archives).ToList();
+                    if (_filtreRetard)
+                    {
+                        var enRetard = TableauDeBordService.MutuellesEnRetard(ctx, DateTime.Now).Select(x => x.mutuelleId).ToHashSet();
+                        mutuels = mutuels.Where(m => enRetard.Contains(m.IdMutuel)).ToList();
+                    }
 
                     // ✅ Charger toutes les ventes mutuelle impayées EN MÉMOIRE d'abord
                     // SQLite ne supporte pas Sum() sur decimal directement en requête EF

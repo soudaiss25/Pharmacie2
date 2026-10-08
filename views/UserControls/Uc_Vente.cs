@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -12,7 +13,20 @@ namespace Pharmacie2.views.UserControls
         /// Déclenché après toute modification de vente (paiement, annulation, modification).
         /// Uc_Caisse s'y abonne pour se rafraîchir automatiquement.
         /// </summary>
-        public static event EventHandler VenteModifiee;
+        public static event EventHandler VenteModifiee
+        {
+            add => VenteEvenements.VenteModifiee += value;
+            remove => VenteEvenements.VenteModifiee -= value;
+        }
+
+        private bool _creditsSeulement;
+
+        /// <summary>Ne montre que les ventes qui restent à encaisser (crédits clients, parts de mutuelle).</summary>
+        public void FiltrerCredits()
+        {
+            _creditsSeulement = true;
+            ChargerVentes(txtSearchVente.Text);
+        }
 
         public Uc_Vente()
         {
@@ -50,6 +64,8 @@ namespace Pharmacie2.views.UserControls
                 }
 
                 var ventes = query.OrderByDescending(v => v.DateVente).ToList();
+                if (_creditsSeulement)
+                    ventes = ventes.Where(v => v.Statut == "Active" && v.MontantRestant > 0).ToList();
 
                 dgvVentes.Rows.Clear();
 
@@ -112,7 +128,7 @@ namespace Pharmacie2.views.UserControls
             {
                 form.ShowDialog();
                 ChargerVentes(txtSearchVente.Text);
-                VenteModifiee?.Invoke(this, EventArgs.Empty);
+                VenteEvenements.Notifier(this);
             }
         }
 
@@ -166,7 +182,7 @@ namespace Pharmacie2.views.UserControls
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     ChargerVentes(txtSearchVente.Text);
-                    VenteModifiee?.Invoke(this, EventArgs.Empty); // ← notifie Uc_Caisse
+                    VenteEvenements.Notifier(this); // ← notifie Uc_Caisse
                 }
             }
         }
@@ -206,7 +222,7 @@ namespace Pharmacie2.views.UserControls
                 form.ShowDialog();
 
             ChargerVentes(txtSearchVente.Text);
-            VenteModifiee?.Invoke(this, EventArgs.Empty); // ← notifie Uc_Caisse
+            VenteEvenements.Notifier(this); // ← notifie Uc_Caisse
         }
 
         private void btnAnnuler_Click(object sender, EventArgs e)
@@ -231,7 +247,7 @@ namespace Pharmacie2.views.UserControls
                 if (form.ShowDialog() == DialogResult.OK)
                 {
                     ChargerVentes(txtSearchVente.Text);
-                    VenteModifiee?.Invoke(this, EventArgs.Empty); // ← notifie Uc_Caisse
+                    VenteEvenements.Notifier(this); // ← notifie Uc_Caisse
                 }
             }
         }

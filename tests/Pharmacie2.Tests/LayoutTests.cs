@@ -13,6 +13,7 @@ public class LayoutTests
     // Écrans déjà convertis aux règles B0 (la liste grandit au fil de la refonte ; voir TousLesEcransSontCouverts)
     private static readonly HashSet<string> Convertis = new()
     {
+        "PageAccueil", "Uc_MaJournee"
     };
 
     // Passe à true quand tous les écrans sont convertis : le test de couverture devient bloquant
