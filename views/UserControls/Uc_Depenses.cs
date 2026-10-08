@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -131,7 +132,7 @@ namespace Pharmacie2.views.UserControls
 
                     decimal encaisseCB = ventes.Where(v => v.Type == "Carte bancaire").Sum(v => (decimal)v.MontantTotal);
                     decimal encaisseCheque = ventes.Where(v => v.Type == "Chèque").Sum(v => (decimal)v.MontantTotal);
-                    decimal encaisseMobile = ventes.Where(v => v.Type == "Mvolo" || v.Type == "Huri Money").Sum(v => (decimal)v.MontantTotal);
+                    decimal encaisseMobile = ventes.Where(v => v.Type == ModesPaiement.Mvola || v.Type == ModesPaiement.HuriMoney).Sum(v => (decimal)v.MontantTotal);
 
                     decimal totalRevenus = encaisseComptant + avancesCredit
                                            + partPatientMutuelle + mutuelleReglee

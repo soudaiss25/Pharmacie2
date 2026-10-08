@@ -23,7 +23,7 @@ namespace Pharmacie2.views.UserControls
         // Ventilation par mode de paiement
         private decimal _caEspeces;
         private decimal _caCheque;
-        private decimal _caMobileMoney;   // Mvolo + Huri Money
+        private decimal _caMobileMoney;   // Mvola + Huri Money
         private decimal _caCB;
         private decimal _caCredit;
         private decimal _caMutuelle;
@@ -137,7 +137,7 @@ namespace Pharmacie2.views.UserControls
 
                     // ── Ventilation par MODE DE PAIEMENT ──────────────────
                     // Groupes mobiles
-                    var mobileTypes = new[] { "Mvolo", "Huri Money" };
+                    var mobileTypes = new[] { ModesPaiement.Mvola, ModesPaiement.HuriMoney };
 
                     _caEspeces = ventesActives
                         .Where(v => v.Type == "Comptant")
@@ -273,8 +273,8 @@ namespace Pharmacie2.views.UserControls
                     Pourcentage  = _ca > 0 ? Math.Round(_caEspeces / _ca * 100, 1) : 0m
                 },
                 new {
-                    ModePaiement = "📱 Mobile Money (Mvolo / Huri)",
-                    NbVentes     = ventesActives.Count(v => v.Type == "Mvolo" || v.Type == "Huri Money"),
+                    ModePaiement = "📱 Mobile Money (Mvola / Huri)",
+                    NbVentes     = ventesActives.Count(v => v.Type == ModesPaiement.Mvola || v.Type == ModesPaiement.HuriMoney),
                     Montant      = _caMobileMoney,
                     Pourcentage  = _ca > 0 ? Math.Round(_caMobileMoney / _ca * 100, 1) : 0m
                 },

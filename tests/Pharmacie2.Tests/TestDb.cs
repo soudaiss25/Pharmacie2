@@ -47,6 +47,13 @@ public static class TestDb
         ctx.GetService<IMigrator>().Migrate(migration);
     }
 
+    /// <summary>Identifiant complet d'une migration à partir de son nom (ex. « AjoutArchivage »).</summary>
+    public static string MigrationId(string nom)
+    {
+        using var ctx = new AppDbContext();
+        return ctx.Database.GetMigrations().Single(m => m.EndsWith("_" + nom));
+    }
+
     public static void MigrerTout()
     {
         using var ctx = new AppDbContext();

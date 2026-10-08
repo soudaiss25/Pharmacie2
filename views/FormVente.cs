@@ -61,10 +61,7 @@ namespace Pharmacie2.views
         private void InitComboMoyenPaiement()
         {
             cbPaiement.Items.Clear();
-            cbPaiement.Items.AddRange(new object[] {
-                "Comptant", "Crédit", "Mutuelle",
-                "Chèque", "Carte bancaire", "Mvolo", "Huri Money"
-            });
+            cbPaiement.Items.AddRange(ModesPaiement.Tous);
             cbPaiement.SelectedIndex = 0;
         }
 
@@ -202,8 +199,8 @@ namespace Pharmacie2.views
 
                 case "Chèque":
                 case "Carte bancaire":
-                case "Mvolo":
-                case "Huri Money":
+                case ModesPaiement.Mvola:
+                case ModesPaiement.HuriMoney:
                     txtMontantVerse.Text = total.ToString("0.00");
                     break;
             }
@@ -353,7 +350,7 @@ namespace Pharmacie2.views
             }
             else
             {
-                // Chèque, CB, Mvolo, Huri Money → versé en totalité
+                // Chèque, CB, Mvola, Huri Money → versé en totalité
                 decimal.TryParse(txtMontantVerse.Text, out verse);
                 especes = verse;
             }

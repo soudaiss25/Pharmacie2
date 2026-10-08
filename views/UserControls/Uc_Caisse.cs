@@ -5,13 +5,14 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
     public partial class Uc_Caisse : UserControl
     {
         private int _sessionSelectionneeId = -1;
-        private static readonly string[] MobileTypes = { "Mvolo", "Huri Money" };
+        private static readonly string[] MobileTypes = { ModesPaiement.Mvola, ModesPaiement.HuriMoney };
 
         public Uc_Caisse()
         {
@@ -182,7 +183,7 @@ namespace Pharmacie2.views.UserControls
                     var data = new[]
                     {
                         new { Mode = "💵 Espèces (Comptant)",          NbVentes = ventesActives.Count(v => v.Type == "Comptant"),           Montant = caEspeces,     PctCA = Pct(caEspeces, caTotal),     Statut = "✅ Physique en caisse" },
-                        new { Mode = "📱 Mobile Money (Mvolo / Huri)",  NbVentes = ventesActives.Count(v => MobileTypes.Contains(v.Type)),   Montant = caMobileMoney, PctCA = Pct(caMobileMoney, caTotal), Statut = "📲 Électronique" },
+                        new { Mode = "📱 Mobile Money (Mvola / Huri)",  NbVentes = ventesActives.Count(v => MobileTypes.Contains(v.Type)),   Montant = caMobileMoney, PctCA = Pct(caMobileMoney, caTotal), Statut = "📲 Électronique" },
                         new { Mode = "💳 Carte bancaire",               NbVentes = ventesActives.Count(v => v.Type == "Carte bancaire"),     Montant = caCB,          PctCA = Pct(caCB, caTotal),          Statut = "📲 Électronique" },
                         new { Mode = "📄 Chèque",                       NbVentes = ventesActives.Count(v => v.Type == "Chèque"),             Montant = caCheque,      PctCA = Pct(caCheque, caTotal),      Statut = "🏦 À déposer en banque" },
                         new { Mode = "🏥 Mutuelle (total facturé)",     NbVentes = ventesActives.Count(v => v.Type == "Mutuelle"),           Montant = caMutuelle,    PctCA = Pct(caMutuelle, caTotal),    Statut = "⏳ Part ent. en attente" },
@@ -500,8 +501,8 @@ namespace Pharmacie2.views.UserControls
             "Mutuelle" => Color.SteelBlue,
             "Chèque" => Color.FromArgb(180, 140, 0),
             "Carte bancaire" => Color.FromArgb(106, 27, 154),
-            "Mvolo" => Color.FromArgb(0, 120, 180),
-            "Huri Money" => Color.FromArgb(0, 120, 180),
+            ModesPaiement.Mvola => Color.FromArgb(0, 120, 180),
+            ModesPaiement.HuriMoney => Color.FromArgb(0, 120, 180),
             _ => Color.Gray
         };
 

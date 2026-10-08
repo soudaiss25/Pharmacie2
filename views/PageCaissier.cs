@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views
 {
@@ -207,8 +208,8 @@ namespace Pharmacie2.views
                     // Digital CB/Mobile : tout reçu électroniquement
                     decimal totalDigital = ventesActives
                         .Where(v => v.Type == "Carte bancaire"
-                                 || v.Type == "Mvolo"
-                                 || v.Type == "Huri Money")
+                                 || v.Type == ModesPaiement.Mvola
+                                 || v.Type == ModesPaiement.HuriMoney)
                         .Sum(v => (decimal)v.MontantTotal);
 
                     // Mutuelle : seulement la PART PATIENT est encaissée

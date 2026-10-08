@@ -116,10 +116,7 @@ namespace Pharmacie2.views
         private void InitComboMoyenPaiement()
         {
             cbPaiement.Items.Clear();
-            cbPaiement.Items.AddRange(new object[] {
-                "Comptant", "Crédit", "Mutuelle",
-                "Chèque", "Carte bancaire", "Mvolo", "Huri Money"
-            });
+            cbPaiement.Items.AddRange(ModesPaiement.Tous);
         }
 
         private void ChargerMutuelles()

@@ -5,6 +5,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>resources\pharmacie_icon.ico</ApplicationIcon>
   </PropertyGroup>
