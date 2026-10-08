@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Pharmacie2 : donnees et sauvegardes (jamais dans le depot)
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+UpgradeLog*.htm
+Backup*/
