@@ -57,7 +57,7 @@ public static class LayoutSeed
         cmd.Lignes.Add(new LigneCommande { ProduitId = p1.Id, Quantite = 10, PrixAchatUnitaire = 800 });
         ctx.commandes.Add(cmd);
 
-        var session = new SessionCaisse { UserId = caissier.Id, DateOuverture = DateTime.Now.AddHours(-3), FondOuverture = 5000, Statut = "Ouverte" };
+        var session = new SessionCaisse { UserId = caissier.Id, DateOuverture = DateTime.Today, FondOuverture = 5000, Statut = "Ouverte" };
         ctx.SessionsCaisse.Add(session);
         ctx.SaveChanges();
 
