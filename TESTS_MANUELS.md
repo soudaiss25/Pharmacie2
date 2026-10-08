@@ -162,3 +162,26 @@ un utilisateur sans historique (U2), et votre compte administrateur.
 ## 17. Mise à jour d'une base existante
 - [ ] Après la mise à jour : **tous** les produits, fournisseurs, mutuelles et utilisateurs existants sont **actifs** (aucun archivé par erreur) et le nombre de ventes, lignes de vente, commandes, paiements est identique à avant (comparer avec la copie de la base d'avant).
 - [ ] Une sauvegarde `PharmacieDB_avant-migration_…sqlite` a été créée dans le dossier des sauvegardes.
+
+---
+
+# Modification d'une vente mutuelle
+
+Préparer : deux mutuelles (A « Aaa » 30 %, Z « Zzz » 50 %, A première dans la liste) et une vente **à la mutuelle Z** de 10 boîtes.
+
+## 18. Mutuelle conservée
+- [ ] Ouvrir la modification de cette vente : le mode de paiement est « Mutuelle » et **Z est présélectionnée** (pas A, la première de la liste).
+- [ ] Changer seulement la quantité (10 → 20) et enregistrer : la vente reste à **Z** ; la part mutuelle = 50 % du nouveau total ; le stock est correct (10 restituées, 20 retirées).
+- [ ] Dans l'écran Mutuelles, la dette de Z a augmenté du bon montant ; celle de A n'a **pas** bougé.
+- [ ] Choisir volontairement A dans la liste et enregistrer : la vente passe à A (changement voulu).
+- [ ] Passer le mode de paiement à « Comptant » : la vente n'a plus de mutuelle ni de part mutuelle.
+
+## 19. Mutuelle archivée
+- [ ] Archiver Z (elle a des ventes) puis rouvrir la modification de la vente : la liste contient « Zzz (archivée) », présélectionnée.
+- [ ] Une **autre** vente (sans mutuelle) modifiée en « Mutuelle » : Z archivée n'est **pas** proposée.
+- [ ] Enregistrer la vente avec Z archivée sans la changer : la vente reste à Z.
+
+## 20. Vente déjà réglée par la mutuelle
+- [ ] Dans l'écran Mutuelles, régler les ventes de Z (« Régler »).
+- [ ] Tenter de modifier une de ces ventes : message « La mutuelle a déjà réglé cette vente : elle ne peut plus être modifiée. » et l'écran se ferme sans rien changer.
+- [ ] L'annulation d'une telle vente (si autorisée par ailleurs) n'est pas concernée par ce changement.

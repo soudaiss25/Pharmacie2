@@ -20,6 +20,7 @@ namespace Pharmacie2.views
         private readonly int _venteId;
         private List<LigneVenteModif> _lignes = new List<LigneVenteModif>();
         private List<Mutuel> _mutuels;
+        private int? _mutuelIdOrigine;   // mutuelle d'origine de la vente, présélectionnée dans la liste
         // Unités de base déjà retirées du stock par la vente d'origine, par produit
         private Dictionary<int, int> _unitesOriginales = new Dictionary<int, int>();
 
@@ -73,6 +74,17 @@ namespace Pharmacie2.views
                     Close(); return;
                 }
 
+                // Vente déjà réglée par la mutuelle : plus modifiable
+                if (vente.MutuelId != null && vente.MutuelleReglee)
+                {
+                    MessageBox.Show(VenteModificationRegles.MessageVenteReglee, "Modification impossible",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Load += (s, e) => Close();
+                    return;
+                }
+
+                _mutuelIdOrigine = vente.MutuelId;
+
                 txtNom.Text = vente.NomClient;
                 txtPrenom.Text = vente.PrenomClient;
                 txtTelephone.Text = vente.TelephoneClient;
@@ -113,7 +125,14 @@ namespace Pharmacie2.views
         private void ChargerMutuelles()
         {
             using (var ctx = new AppDbContext())
-                _mutuels = ctx.mutuels.Where(m => m.Actif).ToList();
+            {
+                int? origine = ctx.ventes.Where(v => v.IdVente == _venteId).Select(v => v.MutuelId).FirstOrDefault();
+
+                // Mutuelles actives + celle de la vente même si elle est archivée
+                _mutuels = ctx.mutuels.Where(m => m.Actif || m.IdMutuel == origine).ToList();
+                foreach (var m in _mutuels.Where(m => !m.Actif))
+                    m.NomEmployeur += " (archivée)";   // affichage seulement : ce contexte n'est jamais enregistré
+            }
         }
 
         // ─── Produits ────────────────────────────────────────────────────
@@ -236,6 +255,8 @@ namespace Pharmacie2.views
 
                     if (vente == null) return;
 
+                    VenteModificationRegles.VerifierModifiable(vente);
+
                     // ── 1. Remettre le stock de l'ancienne version (unités figées à la vente) ──
                     foreach (var ancienne in vente.Lignes)
                     {
@@ -259,23 +280,9 @@ namespace Pharmacie2.views
                     vente.MatriculeEmploye = cbPaiement.Text == "Mutuelle"
                                             ? txtMatricule.Text.Trim() : "N/A";
 
-                    // ── 4. Mutuelle ───────────────────────────────────────
-                    if (cbPaiement.Text == "Mutuelle" && cbMutuelle.SelectedItem is Mutuel m)
-                    {
-                        vente.MutuelId = m.IdMutuel;
-                        vente.TauxMutuelle = m.TauxPriseEnCharge;
-                        vente.MontantMutuelle = Math.Round(total * m.TauxPriseEnCharge / 100m, 2);
-                        // ✅ Réinitialiser le statut de règlement mutuelle
-                        // (la vente est modifiée donc on repart de zéro)
-                        vente.MutuelleReglee = false;
-                    }
-                    else
-                    {
-                        vente.MutuelId = null;
-                        vente.TauxMutuelle = 0;
-                        vente.MontantMutuelle = 0;
-                        vente.MutuelleReglee = false;
-                    }
+                    // ── 4. Mutuelle : même mutuelle conservée, règlement remis à zéro seulement si elle ou la part change ──
+                    VenteModificationRegles.AppliquerMutuelle(
+                        vente, cbPaiement.Text == "Mutuelle", cbMutuelle.SelectedItem as Mutuel, total);
 
                     // ── 5. Nouvelles lignes + décrémentation stock ────────
                     foreach (var l in actives)
@@ -340,6 +347,10 @@ namespace Pharmacie2.views
                 cbMutuelle.DataSource = _mutuels;
                 cbMutuelle.DisplayMember = "NomEmployeur";
                 cbMutuelle.ValueMember = "IdMutuel";
+
+                // Présélectionner la mutuelle d'origine de la vente (et non la première de la liste)
+                if (_mutuelIdOrigine != null && _mutuels.Any(m => m.IdMutuel == _mutuelIdOrigine))
+                    cbMutuelle.SelectedValue = _mutuelIdOrigine.Value;
             }
         }
     }
