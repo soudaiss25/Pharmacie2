@@ -63,7 +63,7 @@ namespace Pharmacie2.Models
             modelBuilder.Entity<DepenseAnnexe>()
                 .HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.ClientSetNull); // NO ACTION en base (identique à l'existant)
         }
     }
 }
