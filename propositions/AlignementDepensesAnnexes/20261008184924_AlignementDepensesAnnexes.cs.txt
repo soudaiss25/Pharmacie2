@@ -1,0 +1,41 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Pharmacie2.Migrations
+{
+    /// <inheritdoc />
+    public partial class AlignementDepensesAnnexes : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_DepensesAnnexes_Users_UserId",
+                table: "DepensesAnnexes");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DepensesAnnexes_Users_UserId",
+                table: "DepensesAnnexes",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_DepensesAnnexes_Users_UserId",
+                table: "DepensesAnnexes");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DepensesAnnexes_Users_UserId",
+                table: "DepensesAnnexes",
+                column: "UserId",
+                principalTable: "Users",
+                principalColumn: "Id");
+        }
+    }
+}

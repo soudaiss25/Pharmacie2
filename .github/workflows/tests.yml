@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+    branches: [fiabilisation]
+  pull_request:
+    branches: [fiabilisation]
+
+jobs:
+  tests:
+    runs-on: windows-latest
+    env:
+      # Dossier de données isolé : les tests n'utilisent jamais le vrai dossier Pharmacie2Data
+      PHARMACIE2_DATA_DIR: ${{ runner.temp }}\pharmacie2-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet restore tests/Pharmacie2.Tests/Pharmacie2.Tests.csproj
+      - run: dotnet build tests/Pharmacie2.Tests/Pharmacie2.Tests.csproj -c Release --no-restore
+      - run: dotnet test tests/Pharmacie2.Tests/Pharmacie2.Tests.csproj -c Release --no-build --filter "Category!=Alignement" --logger "console;verbosity=normal"
+
+  # Teste la proposition de migration AlignementDepensesAnnexes sur une base remplie (non appliquée en production)
+  alignement:
+    runs-on: windows-latest
+    env:
+      PHARMACIE2_DATA_DIR: ${{ runner.temp }}\pharmacie2-alignement
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Copier la proposition dans Migrations
+        shell: bash
+        run: |
+          for f in propositions/AlignementDepensesAnnexes/*.cs.txt; do
+            cp "$f" "Migrations/$(basename "${f%.txt}")"
+          done
+          ls Migrations | grep Alignement
+      - run: dotnet restore tests/Pharmacie2.Tests/Pharmacie2.Tests.csproj
+      - run: dotnet test tests/Pharmacie2.Tests/Pharmacie2.Tests.csproj -c Release --no-restore --filter "Category=Alignement" --logger "console;verbosity=normal"
