@@ -53,7 +53,6 @@ namespace Pharmacie2.views
             panelMenu.Name = "panelMenu";
             panelMenu.Size = new Size(220, 720);
             panelMenu.TabIndex = 0;
-            panelMenu.Paint += panelMenu_Paint;
 
             // Helper bouton menu
             void BtnMenu(Button b, string txt, int y, EventHandler handler)
@@ -109,7 +108,6 @@ namespace Pharmacie2.views
             panelContent.Location = new Point(220, 0);
             panelContent.Name = "panelContent";
             panelContent.TabIndex = 1;
-            panelContent.Paint += panelContent_Paint;
 
             // ── Form ───────────────────────────────────────────────────────
             ClientSize = new Size(1280, 720);

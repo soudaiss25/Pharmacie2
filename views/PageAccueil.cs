@@ -107,8 +107,5 @@ namespace Pharmacie2.views
             Close();   // Form1 (la fenêtre de connexion, unique) se ré-affiche : pas de Application.Exit
         }
 
-        private void lblTitre_Click(object sender, EventArgs e) { }
-        private void panelContent_Paint(object sender, System.Windows.Forms.PaintEventArgs e) { }
-        private void panelMenu_Paint(object sender, PaintEventArgs e) { }
     }
 }
