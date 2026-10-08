@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Pharmacie2.views.Composants;
 using Pharmacie2.views.UserControls;
@@ -107,7 +107,12 @@ namespace Pharmacie2.views
 
         private void btnMutuelles_Click(object sender, EventArgs e) => Ouvrir(new Uc_Mutuelle(), btnMutuelles);
 
-        private void btnStatistiques_Click(object sender, EventArgs e) => Ouvrir(new Uc_Statistique(), btnStatistiques);
+        private void btnStatistiques_Click(object sender, EventArgs e)
+        {
+            var uc = new Uc_Statistique();
+            uc.OuvrirDemande += SurDemandeDepuisMaJournee;
+            Ouvrir(uc, btnStatistiques);
+        }
 
         private void btnDepenses_Click(object sender, EventArgs e) => Ouvrir(new Uc_Depenses(), btnDepenses);
 
