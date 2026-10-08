@@ -396,8 +396,6 @@ namespace Pharmacie2.views
                         MatriculeEmploye = mode == "Mutuelle" ? txtMatricule.Text.Trim() : "N/A",
                         MoyenPaiement = mode,
                         Type = mode,
-                        MotifAnnulation = "null",
-                        DateAnnulation = DateTime.Now,
                         MontantTotal = total,
                         MontantEspeces = especes,
                         MontantRendu = rendu,

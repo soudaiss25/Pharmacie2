@@ -33,7 +33,7 @@ namespace Pharmacie2.Models
         // ── Statut ─────────────────────────────────────────────────────
         public string Statut { get; set; } = "Active";
         public DateTime? DateAnnulation { get; set; }
-        public string MotifAnnulation { get; set; }
+        public string? MotifAnnulation { get; set; }
 
         // ── Mutuelle ───────────────────────────────────────────────────
         public int? MutuelId { get; set; }
