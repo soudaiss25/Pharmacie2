@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views
 {
@@ -13,33 +14,19 @@ namespace Pharmacie2.views
     {
         private List<LigneVente> _lignes = new List<LigneVente>();
         private List<Mutuel> _mutuels = new List<Mutuel>();
-        // Compteur initialisé depuis la base au premier accès
-        private static int _compteur = -1;
-
-        private static int GetProchainCompteur()
+        /// <summary>Prochain numéro de vente, calculé depuis la base (appelé dans la transaction).</summary>
+        private static string GetProchainNumeroVente(AppDbContext ctx)
         {
-            if (_compteur < 0)
-            {
-                try
-                {
-                    using (var ctx = new AppDbContext())
-                    {
-                        // Chercher le plus grand numéro V-XXXXXX en base
-                        var derniere = ctx.ventes
-                            .Select(v => v.numeroVente)
-                            .OrderByDescending(n => n)
-                            .FirstOrDefault();
+            var derniere = ctx.ventes
+                .Where(v => v.numeroVente.StartsWith("V-"))
+                .Select(v => v.numeroVente)
+                .OrderByDescending(n => n)
+                .FirstOrDefault();
 
-                        if (derniere != null && derniere.StartsWith("V-")
-                            && int.TryParse(derniere.Substring(2), out int num))
-                            _compteur = num + 1;
-                        else
-                            _compteur = 1;
-                    }
-                }
-                catch { _compteur = 1; }
-            }
-            return _compteur++;
+            int num = 1;
+            if (derniere != null && int.TryParse(derniere.Substring(2), out int n))
+                num = n + 1;
+            return "V-" + num.ToString("D6");
         }
 
         // ID de la dernière vente sauvegardée (pour impression immédiate)
@@ -93,23 +80,20 @@ namespace Pharmacie2.views
                 int qte = form.QuantiteSelectionnee;
                 string unite = form.UniteSelectionnee;
 
-                // ── Calcul des boîtes nécessaires ─────────────────────────
-                // Ex : vendre 3 plaquettes d'une boîte de 4 plaquettes = ceil(3/4) = 1 boîte
-                int boitesNecessaires;
-                if (unite != "Boîte" && produit.NbUniteParBoite > 1)
-                    boitesNecessaires = (int)Math.Ceiling((double)qte / produit.NbUniteParBoite);
-                else
-                    boitesNecessaires = qte;
+                // ── Contrôle du stock en UNITÉS sur la quantité CUMULÉE du panier ──
+                int unitesPanier = _lignes
+                    .Where(l => l.ProduitId == produit.Id)
+                    .Sum(l => StockService.EnUnites(produit, l.Quantite, l.UniteVendue));
+                int unitesDemandees = StockService.EnUnites(produit, qte, unite);
 
-                if (boitesNecessaires > produit.QuantiteEnStock)
+                if (!StockService.EstDisponible(produit, unitesPanier + unitesDemandees))
                 {
-                    int unitesDispo = produit.QuantiteEnStock * produit.NbUniteParBoite;
+                    string dejaPanier = unitesPanier > 0
+                        ? $"\nDéjà dans le panier : {StockService.Formater(produit, unitesPanier)}"
+                        : "";
                     MessageBox.Show(
                         $"Stock insuffisant pour « {produit.Nom} ».\n" +
-                        $"Disponible : {produit.QuantiteEnStock} boîte(s)" +
-                        (produit.NbUniteParBoite > 1
-                            ? $" = {unitesDispo} {produit.UniteVente}(s)"
-                            : ""),
+                        $"Disponible : {StockService.Formater(produit)}" + dejaPanier,
                         "Stock insuffisant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -377,10 +361,34 @@ namespace Pharmacie2.views
             try
             {
                 using (var ctx = new AppDbContext())
+                using (var tx = ctx.Database.BeginTransaction())
                 {
+                    // ── Rechargement des produits et revérification du stock ──
+                    var ids = _lignes.Select(l => l.ProduitId).Distinct().ToList();
+                    var produits = ctx.produits.Where(p => ids.Contains(p.Id)).ToDictionary(p => p.Id);
+
+                    var lignesVente = new List<LigneVente>();
+                    foreach (var ligne in _lignes)
+                    {
+                        if (!produits.TryGetValue(ligne.ProduitId, out var produit))
+                            throw new InvalidOperationException("Un produit du panier n'existe plus.");
+
+                        int unites = StockService.EnUnites(produit, ligne.Quantite, ligne.UniteVendue);
+                        StockService.Retirer(produit, unites);   // lève une exception si insuffisant
+
+                        lignesVente.Add(new LigneVente
+                        {
+                            ProduitId = ligne.ProduitId,
+                            Quantite = ligne.Quantite,
+                            QuantiteUnites = unites,
+                            PrixUnitaire = ligne.PrixUnitaire,
+                            UniteVendue = ligne.UniteVendue
+                        });
+                    }
+
                     var vente = new Vente
                     {
-                        numeroVente = "V-" + GetProchainCompteur().ToString("D6"),
+                        numeroVente = GetProchainNumeroVente(ctx),
                         NomClient = txtNom.Text.Trim(),
                         PrenomClient = txtPrenom.Text.Trim(),
                         TelephoneClient = txtTelephone.Text.Trim(),
@@ -410,40 +418,10 @@ namespace Pharmacie2.views
                     ctx.ventes.Add(vente);
                     ctx.SaveChanges();
 
-                    // ── Lignes + décrémentation stock ─────────────────────
-                    foreach (var ligne in _lignes)
+                    foreach (var lv in lignesVente)
                     {
-                        ctx.LigneVentes.Add(new LigneVente
-                        {
-                            VenteId = vente.IdVente,
-                            ProduitId = ligne.ProduitId,
-                            Quantite = ligne.Quantite,
-                            PrixUnitaire = ligne.PrixUnitaire,
-                            UniteVendue = ligne.UniteVendue
-                        });
-
-                        var produit = ctx.produits.Find(ligne.ProduitId);
-                        if (produit != null)
-                        {
-                            // Stock stocké en UNITÉS DE BASE (plaquettes/comprimés/boîtes)
-                            if (ligne.UniteVendue == "Boîte" && produit.NbUniteParBoite > 1)
-                            {
-                                // On vend des boîtes entières → enlever NbUniteParBoite par boîte vendue
-                                // Ex : vendre 2 boîtes de 5 plaquettes → enlever 10 unités
-                                produit.QuantiteEnStock -= ligne.Quantite * produit.NbUniteParBoite;
-                            }
-                            else
-                            {
-                                // On vend à l'unité (plaquette/comprimé) OU NbUniteParBoite = 1
-                                // → enlever exactement la quantité vendue
-                                // Ex : vendre 3 plaquettes → enlever 3 (pas 5 !)
-                                produit.QuantiteEnStock -= ligne.Quantite;
-                            }
-
-                            // Sécurité : jamais en dessous de 0
-                            if (produit.QuantiteEnStock < 0)
-                                produit.QuantiteEnStock = 0;
-                        }
+                        lv.VenteId = vente.IdVente;
+                        ctx.LigneVentes.Add(lv);
                     }
 
                     // ── Paiement initial ──────────────────────────────────
@@ -460,6 +438,7 @@ namespace Pharmacie2.views
                     }
 
                     ctx.SaveChanges();
+                    tx.Commit();   // sans Commit, tout est annulé à la fermeture
                     _derniereVenteId = vente.IdVente;
                 }
 
@@ -480,14 +459,21 @@ namespace Pharmacie2.views
                 DialogResult = DialogResult.OK;
                 this.Close();
             }
+            catch (InvalidOperationException ex)
+            {
+                // Stock insuffisant à la validation : rien n'a été enregistré
+                MessageBox.Show(ex.Message + "\n\nAucune vente n'a été enregistrée.", "Vente non enregistrée",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             catch (Exception ex)
             {
+                Journal.Erreur("Enregistrement de la vente", ex);
                 string msg = ex.Message;
                 if (ex.InnerException != null)
                     msg += "\n\nDétail : " + ex.InnerException.Message;
                 if (ex.InnerException?.InnerException != null)
                     msg += "\n\n" + ex.InnerException.InnerException.Message;
-                MessageBox.Show(msg, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(msg + "\n\nAucune vente n'a été enregistrée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

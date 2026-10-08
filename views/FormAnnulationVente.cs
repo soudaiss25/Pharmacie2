@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views
 {
@@ -71,6 +72,7 @@ namespace Pharmacie2.views
             try
             {
                 using (var ctx = new AppDbContext())
+                using (var tx = ctx.Database.BeginTransaction())
                 {
                     var vente = ctx.ventes
                         .Include(v => v.Lignes)
@@ -91,29 +93,17 @@ namespace Pharmacie2.views
                     vente.DateAnnulation = DateTime.Now;
                     vente.MotifAnnulation = txtMotif.Text.Trim();
 
-                    // 2. Remettre le stock — convention unités de base
-                    // QuantiteEnStock est stocké en UNITÉS (plaquettes/comprimés/boîtes)
-                    // On restitue exactement ce qui avait été vendu
+                    // 2. Remettre le stock : on restitue exactement les unités retirées à la vente
                     foreach (var ligne in vente.Lignes)
                     {
                         var produit = ctx.produits.Find(ligne.ProduitId);
                         if (produit == null) continue;
 
-                        if (ligne.UniteVendue == "Boîte" && produit.NbUniteParBoite > 1)
-                        {
-                            // On avait vendu des boîtes → restituer en unités
-                            // Ex : 2 boîtes vendues × 5 plaquettes = remettre 10 unités
-                            produit.QuantiteEnStock += ligne.Quantite * produit.NbUniteParBoite;
-                        }
-                        else
-                        {
-                            // On avait vendu à l'unité OU NbUniteParBoite = 1
-                            // → restituer exactement la quantité vendue
-                            produit.QuantiteEnStock += ligne.Quantite;
-                        }
+                        StockService.Ajouter(produit, ligne.QuantiteUnites);
                     }
 
                     ctx.SaveChanges();
+                    tx.Commit();
                 }
 
                 MessageBox.Show(
@@ -125,7 +115,8 @@ namespace Pharmacie2.views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Journal.Erreur("Annulation de la vente " + _venteId, ex);
+                MessageBox.Show("Erreur : " + ex.Message + "\n\nLa vente n'a pas été annulée.", "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

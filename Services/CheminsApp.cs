@@ -1,4 +1,4 @@
-namespace Pharmacie2.Services
+﻿namespace Pharmacie2.Services
 {
     /// <summary>
     /// Emplacements fixes des données de l'application, indépendants du répertoire courant.
@@ -7,8 +7,13 @@ namespace Pharmacie2.Services
     {
         public const string NomFichierBase = "PharmacieDB.sqlite";
 
-        public static string DossierDonnees { get; } = CreerDossier(Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Pharmacie2Data"));
+        /// <summary>Variable d'environnement réservée aux tests : remplace le dossier de données.</summary>
+        private const string VariableDossierTest = "PHARMACIE2_DATA_DIR";
+
+        public static string DossierDonnees { get; } = CreerDossier(
+            Environment.GetEnvironmentVariable(VariableDossierTest) is { Length: > 0 } test
+                ? test
+                : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Pharmacie2Data"));
 
         public static string CheminBase => Path.Combine(DossierDonnees, NomFichierBase);
 

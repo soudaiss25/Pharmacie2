@@ -14,6 +14,9 @@ namespace Pharmacie2.Models
         public Produit Produit { get; set; }
 
         public int Quantite { get; set; }
+
+        /// <summary>Équivalent en unités de base, figé à la vente (sert à restituer le stock).</summary>
+        public int QuantiteUnites { get; set; }
         public decimal PrixUnitaire { get; set; }
 
         // Unité vendue (Boîte, Plaquette, Comprimé...)

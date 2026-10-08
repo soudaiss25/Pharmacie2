@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 using Pharmacie2.views.UserControls;
 
 namespace Pharmacie2.views
@@ -19,6 +20,8 @@ namespace Pharmacie2.views
         private readonly int _venteId;
         private List<LigneVenteModif> _lignes = new List<LigneVenteModif>();
         private List<Mutuel> _mutuels;
+        // Unités de base déjà retirées du stock par la vente d'origine, par produit
+        private Dictionary<int, int> _unitesOriginales = new Dictionary<int, int>();
 
         private class LigneVenteModif
         {
@@ -76,6 +79,10 @@ namespace Pharmacie2.views
                 txtMotif.Text = vente.MotifAchat;
                 txtMatricule.Text = vente.MatriculeEmploye;
 
+                _unitesOriginales = vente.Lignes
+                    .GroupBy(l => l.ProduitId)
+                    .ToDictionary(g => g.Key, g => g.Sum(l => l.QuantiteUnites));
+
                 _lignes = vente.Lignes.Select(l => new LigneVenteModif
                 {
                     Id = l.Id,
@@ -118,6 +125,23 @@ namespace Pharmacie2.views
                 if (form.ShowDialog() != DialogResult.OK) return;
 
                 var produit = form.ProduitSelectionne;
+
+                // Contrôle en unités sur la quantité cumulée : stock actuel + ce que la vente d'origine a déjà retiré
+                int unitesPanier = _lignes
+                    .Where(l => l.ProduitId == produit.Id && !l.Supprimee)
+                    .Sum(l => StockService.EnUnites(produit, l.Quantite, l.UniteVendue));
+                int unitesDemandees = StockService.EnUnites(produit, form.QuantiteSelectionnee, form.UniteSelectionnee);
+                _unitesOriginales.TryGetValue(produit.Id, out int dejaRetirees);
+
+                if (unitesPanier + unitesDemandees > produit.QuantiteEnStock + dejaRetirees)
+                {
+                    MessageBox.Show(
+                        $"Stock insuffisant pour « {produit.Nom} ».\n" +
+                        $"Disponible : {StockService.Formater(produit, produit.QuantiteEnStock + dejaRetirees)}",
+                        "Stock insuffisant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 var existant = _lignes.FirstOrDefault(l =>
                     l.ProduitId == produit.Id
                     && l.UniteVendue == form.UniteSelectionnee
@@ -204,6 +228,7 @@ namespace Pharmacie2.views
             try
             {
                 using (var ctx = new AppDbContext())
+                using (var tx = ctx.Database.BeginTransaction())
                 {
                     var vente = ctx.ventes
                         .Include(v => v.Lignes)
@@ -211,19 +236,13 @@ namespace Pharmacie2.views
 
                     if (vente == null) return;
 
-                    // ── 1. Remettre le stock de l'ancienne version ────────
-                    // Convention : QuantiteEnStock en UNITÉS de base
+                    // ── 1. Remettre le stock de l'ancienne version (unités figées à la vente) ──
                     foreach (var ancienne in vente.Lignes)
                     {
                         var p = ctx.produits.Find(ancienne.ProduitId);
                         if (p == null) continue;
 
-                        if (ancienne.UniteVendue == "Boîte" && p.NbUniteParBoite > 1)
-                            // Vendu en boîtes → restituer en unités
-                            p.QuantiteEnStock += ancienne.Quantite * p.NbUniteParBoite;
-                        else
-                            // Vendu à l'unité ou NbUniteParBoite = 1
-                            p.QuantiteEnStock += ancienne.Quantite;
+                        StockService.Ajouter(p, ancienne.QuantiteUnites);
                     }
 
                     // ── 2. Supprimer les anciennes lignes ─────────────────
@@ -261,32 +280,26 @@ namespace Pharmacie2.views
                     // ── 5. Nouvelles lignes + décrémentation stock ────────
                     foreach (var l in actives)
                     {
+                        var prod = ctx.produits.Find(l.ProduitId);
+                        if (prod == null)
+                            throw new InvalidOperationException("Un produit de la vente n'existe plus.");
+
+                        int unites = StockService.EnUnites(prod, l.Quantite, l.UniteVendue);
+                        StockService.Retirer(prod, unites);   // lève une exception si insuffisant
+
                         ctx.LigneVentes.Add(new LigneVente
                         {
                             VenteId = _venteId,
                             ProduitId = l.ProduitId,
                             Quantite = l.Quantite,
+                            QuantiteUnites = unites,
                             PrixUnitaire = l.PrixUnitaire,
                             UniteVendue = l.UniteVendue
                         });
-
-                        var prod = ctx.produits.Find(l.ProduitId);
-                        if (prod != null)
-                        {
-                            if (l.UniteVendue == "Boîte" && prod.NbUniteParBoite > 1)
-                                // Vente en boîtes → enlever en unités
-                                prod.QuantiteEnStock -= l.Quantite * prod.NbUniteParBoite;
-                            else
-                                // Vente à l'unité ou NbUniteParBoite = 1
-                                prod.QuantiteEnStock -= l.Quantite;
-
-                            // Sécurité
-                            if (prod.QuantiteEnStock < 0)
-                                prod.QuantiteEnStock = 0;
-                        }
                     }
 
                     ctx.SaveChanges();
+                    tx.Commit();
                 }
 
                 MessageBox.Show("✅ Vente modifiée avec succès !", "Succès",
@@ -297,10 +310,11 @@ namespace Pharmacie2.views
             }
             catch (Exception ex)
             {
+                Journal.Erreur("Modification de la vente " + _venteId, ex);
                 string msg = ex.Message;
                 if (ex.InnerException != null)
                     msg += "\n\nDétail : " + ex.InnerException.Message;
-                MessageBox.Show(msg, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(msg + "\n\nLa vente n'a pas été modifiée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
