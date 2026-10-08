@@ -1,184 +1,377 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace Pharmacie2.views
+﻿namespace Pharmacie2.views
 {
     partial class FormChoixProduit
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private Label lblTitre, lblPrixUnit;
-        private TextBox txtRecherche;
-        private DataGridView dgvProduits;
-        private Label lblUnite, lblQte;
-        private ComboBox cbUnite;
-        private NumericUpDown numQuantite;
-        private Button btnValider, btnAnnuler;
 
-        // ── Panneau posologie ─────────────────────────────────────────────
-        private Panel pnlPosologie;
-        private Label lblPosologieTitre;
-        private Label lblIndicationVal;
-        private Label lblPosologieVal;
-        private Label lblNbFoisVal;
-
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null)) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
+        #region Code généré par le Concepteur Windows Form
+
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
         private void InitializeComponent()
         {
-            lblTitre = new Label();
-            txtRecherche = new TextBox();
-            dgvProduits = new DataGridView();
-            lblUnite = new Label(); cbUnite = new ComboBox();
-            lblQte = new Label(); numQuantite = new NumericUpDown();
-            lblPrixUnit = new Label();
-            btnValider = new Button(); btnAnnuler = new Button();
-            pnlPosologie = new Panel();
-            lblPosologieTitre = new Label();
-            lblIndicationVal = new Label();
-            lblPosologieVal = new Label();
-            lblNbFoisVal = new Label();
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.flpRecherche = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblRecherche = new System.Windows.Forms.Label();
+            this.txtRecherche = new System.Windows.Forms.TextBox();
+            this.dgvProduits = new System.Windows.Forms.DataGridView();
+            this.flpChoix = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblUnite = new System.Windows.Forms.Label();
+            this.cbUnite = new System.Windows.Forms.ComboBox();
+            this.lblQuantite = new System.Windows.Forms.Label();
+            this.numQuantite = new System.Windows.Forms.NumericUpDown();
+            this.lblPrixUnit = new System.Windows.Forms.Label();
+            this.pnlPosologie = new System.Windows.Forms.TableLayoutPanel();
+            this.lblIndicationVal = new System.Windows.Forms.Label();
+            this.lblPosologieVal = new System.Windows.Forms.Label();
+            this.lblNbFoisVal = new System.Windows.Forms.Label();
+            this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnValider = new System.Windows.Forms.Button();
+            this.btnAnnuler = new System.Windows.Forms.Button();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPrixVente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUniteVente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colParBoite = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProduits)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numQuantite)).BeginInit();
+            this.tlpRoot.SuspendLayout();
+            this.flpRecherche.SuspendLayout();
+            this.flpChoix.SuspendLayout();
+            this.pnlPosologie.SuspendLayout();
+            this.flpBoutons.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // tlpRoot
+            // 
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 5;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.Controls.Add(this.flpRecherche, 0, 0);
+            this.tlpRoot.Controls.Add(this.dgvProduits, 0, 1);
+            this.tlpRoot.Controls.Add(this.flpChoix, 0, 2);
+            this.tlpRoot.Controls.Add(this.pnlPosologie, 0, 3);
+            this.tlpRoot.Controls.Add(this.flpBoutons, 0, 4);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
+            // 
+            // flpRecherche
+            // 
+            this.flpRecherche.Controls.Add(this.lblRecherche);
+            this.flpRecherche.Controls.Add(this.txtRecherche);
+            this.flpRecherche.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpRecherche.AutoSize = true;
+            this.flpRecherche.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpRecherche.WrapContents = true;
+            this.flpRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.flpRecherche.Name = "flpRecherche";
+            // 
+            // lblRecherche
+            // 
+            this.lblRecherche.Text = "Rechercher un produit";
+            this.lblRecherche.AutoSize = true;
+            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 8, 8, 0);
+            this.lblRecherche.Name = "lblRecherche";
+            // 
+            // txtRecherche
+            // 
+            this.txtRecherche.Width = 320;
+            this.txtRecherche.MaximumSize = new System.Drawing.Size(420, 0);
+            this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.txtRecherche.Name = "txtRecherche";
+            this.txtRecherche.TextChanged += new System.EventHandler(this.txtRecherche_TextChanged);
+            // 
+            // dgvProduits
+            // 
+            this.dgvProduits.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colId,
+            this.colNom,
+            this.colType,
+            this.colPrixVente,
+            this.colStock,
+            this.colUniteVente,
+            this.colParBoite});
+            this.dgvProduits.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvProduits.AutoGenerateColumns = false;
+            this.dgvProduits.ReadOnly = true;
+            this.dgvProduits.Name = "dgvProduits";
+            this.dgvProduits.SelectionChanged += new System.EventHandler(this.dgvProduits_SelectionChanged);
+            this.dgvProduits.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProduits_CellDoubleClick);
+            // 
+            // flpChoix
+            // 
+            this.flpChoix.Controls.Add(this.lblUnite);
+            this.flpChoix.Controls.Add(this.cbUnite);
+            this.flpChoix.Controls.Add(this.lblQuantite);
+            this.flpChoix.Controls.Add(this.numQuantite);
+            this.flpChoix.Controls.Add(this.lblPrixUnit);
+            this.flpChoix.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpChoix.AutoSize = true;
+            this.flpChoix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpChoix.WrapContents = true;
+            this.flpChoix.Margin = new System.Windows.Forms.Padding(0, 8, 0, 4);
+            this.flpChoix.Name = "flpChoix";
+            // 
+            // lblUnite
+            // 
+            this.lblUnite.Text = "Vendre en";
+            this.lblUnite.AutoSize = true;
+            this.lblUnite.Margin = new System.Windows.Forms.Padding(0, 8, 8, 0);
+            this.lblUnite.Name = "lblUnite";
+            // 
+            // cbUnite
+            // 
+            this.cbUnite.Width = 160;
+            this.cbUnite.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbUnite.Margin = new System.Windows.Forms.Padding(0, 4, 16, 0);
+            this.cbUnite.Name = "cbUnite";
+            this.cbUnite.SelectedIndexChanged += new System.EventHandler(this.cbUnite_SelectedIndexChanged);
+            // 
+            // lblQuantite
+            // 
+            this.lblQuantite.Text = "Quantité";
+            this.lblQuantite.AutoSize = true;
+            this.lblQuantite.Margin = new System.Windows.Forms.Padding(0, 8, 8, 0);
+            this.lblQuantite.Name = "lblQuantite";
+            // 
+            // numQuantite
+            // 
+            this.numQuantite.Width = 90;
+            this.numQuantite.Minimum = new decimal(new int[] { 1, 0, 0, 0});
+            this.numQuantite.Maximum = new decimal(new int[] { 10000, 0, 0, 0});
+            this.numQuantite.Value = new decimal(new int[] { 1, 0, 0, 0});
+            this.numQuantite.ThousandsSeparator = true;
+            this.numQuantite.DecimalPlaces = 0;
+            this.numQuantite.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numQuantite.Margin = new System.Windows.Forms.Padding(0, 4, 16, 0);
+            this.numQuantite.Name = "numQuantite";
+            // 
+            // lblPrixUnit
+            // 
+            this.lblPrixUnit.Text = "";
+            this.lblPrixUnit.AutoSize = true;
+            this.lblPrixUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPrixUnit.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.lblPrixUnit.Name = "lblPrixUnit";
+            // 
+            // pnlPosologie
+            // 
+            this.pnlPosologie.ColumnCount = 1;
+            this.pnlPosologie.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlPosologie.RowCount = 3;
+            this.pnlPosologie.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlPosologie.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlPosologie.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlPosologie.Controls.Add(this.lblIndicationVal, 0, 0);
+            this.pnlPosologie.Controls.Add(this.lblPosologieVal, 0, 1);
+            this.pnlPosologie.Controls.Add(this.lblNbFoisVal, 0, 2);
+            this.pnlPosologie.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlPosologie.AutoSize = true;
+            this.pnlPosologie.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlPosologie.Visible = false;
+            this.pnlPosologie.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.pnlPosologie.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.pnlPosologie.Tag = "carte";
+            this.pnlPosologie.Name = "pnlPosologie";
+            // 
+            // lblIndicationVal
+            // 
+            this.lblIndicationVal.Text = "";
+            this.lblIndicationVal.AutoSize = true;
+            this.lblIndicationVal.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.lblIndicationVal.Name = "lblIndicationVal";
+            // 
+            // lblPosologieVal
+            // 
+            this.lblPosologieVal.Text = "";
+            this.lblPosologieVal.AutoSize = true;
+            this.lblPosologieVal.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.lblPosologieVal.Name = "lblPosologieVal";
+            // 
+            // lblNbFoisVal
+            // 
+            this.lblNbFoisVal.Text = "";
+            this.lblNbFoisVal.AutoSize = true;
+            this.lblNbFoisVal.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.lblNbFoisVal.Name = "lblNbFoisVal";
+            // 
+            // flpBoutons
+            // 
+            this.flpBoutons.Controls.Add(this.btnValider);
+            this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpBoutons.AutoSize = true;
+            this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpBoutons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpBoutons.WrapContents = false;
+            this.flpBoutons.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.flpBoutons.Name = "flpBoutons";
+            // 
+            // btnValider
+            // 
+            this.btnValider.Text = "Choisir ce produit";
+            this.btnValider.Tag = "primaire";
+            this.btnValider.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnValider.Name = "btnValider";
+            this.btnValider.Click += new System.EventHandler(this.btnValider_Click);
+            // 
+            // btnAnnuler
+            // 
+            this.btnAnnuler.Text = "Annuler";
+            this.btnAnnuler.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnAnnuler.Name = "btnAnnuler";
+            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
+            // 
+            // colId
+            // 
+            this.colId.HeaderText = "Id";
+            this.colId.Name = "Id";
+            this.colId.DataPropertyName = "Id";
+            this.colId.FillWeight = 100F;
+            this.colId.MinimumWidth = 60;
+            this.colId.ReadOnly = true;
+            this.colId.Visible = false;
+            // 
+            // colNom
+            // 
+            this.colNom.HeaderText = "Produit";
+            this.colNom.Name = "Nom";
+            this.colNom.DataPropertyName = "Nom";
+            this.colNom.FillWeight = 44F;
+            this.colNom.MinimumWidth = 160;
+            this.colNom.ReadOnly = true;
+            // 
+            // colType
+            // 
+            this.colType.HeaderText = "Type";
+            this.colType.Name = "Type";
+            this.colType.DataPropertyName = "Type";
+            this.colType.FillWeight = 16F;
+            this.colType.MinimumWidth = 90;
+            this.colType.ReadOnly = true;
+            // 
+            // colPrixVente
+            // 
+            this.colPrixVente.HeaderText = "Prix (boîte)";
+            this.colPrixVente.Name = "PrixVente";
+            this.colPrixVente.DataPropertyName = "PrixVente";
+            this.colPrixVente.FillWeight = 18F;
+            this.colPrixVente.MinimumWidth = 100;
+            this.colPrixVente.ReadOnly = true;
+            this.colPrixVente.Tag = "montant";
+            // 
+            // colStock
+            // 
+            this.colStock.HeaderText = "En stock";
+            this.colStock.Name = "Stock";
+            this.colStock.DataPropertyName = "Stock";
+            this.colStock.FillWeight = 22F;
+            this.colStock.MinimumWidth = 130;
+            this.colStock.ReadOnly = true;
+            // 
+            // colUniteVente
+            // 
+            this.colUniteVente.HeaderText = "Unité";
+            this.colUniteVente.Name = "UniteVente";
+            this.colUniteVente.DataPropertyName = "UniteVente";
+            this.colUniteVente.FillWeight = 100F;
+            this.colUniteVente.MinimumWidth = 60;
+            this.colUniteVente.ReadOnly = true;
+            this.colUniteVente.Visible = false;
+            // 
+            // colParBoite
+            // 
+            this.colParBoite.HeaderText = "Par boîte";
+            this.colParBoite.Name = "ParBoite";
+            this.colParBoite.DataPropertyName = "ParBoite";
+            this.colParBoite.FillWeight = 100F;
+            this.colParBoite.MinimumWidth = 60;
+            this.colParBoite.ReadOnly = true;
+            this.colParBoite.Visible = false;
+            // 
+            // FormChoixProduit
+            // 
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClientSize = new System.Drawing.Size(900, 600);
+            this.MinimumSize = new System.Drawing.Size(760, 520);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Choisir un produit";
+            this.AcceptButton = this.btnValider;
+            this.CancelButton = this.btnAnnuler;
+            this.Name = "FormChoixProduit";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+            this.flpBoutons.ResumeLayout(false);
+            this.flpBoutons.PerformLayout();
+            this.pnlPosologie.ResumeLayout(false);
+            this.pnlPosologie.PerformLayout();
+            this.flpChoix.ResumeLayout(false);
+            this.flpChoix.PerformLayout();
+            this.flpRecherche.ResumeLayout(false);
+            this.flpRecherche.PerformLayout();
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numQuantite)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProduits)).EndInit();
 
-            ((System.ComponentModel.ISupportInitialize)dgvProduits).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numQuantite).BeginInit();
-            SuspendLayout();
-
-            // ── En-tête ───────────────────────────────────────────────────
-            lblTitre.Dock = DockStyle.Top;
-            lblTitre.Height = 55;
-            lblTitre.Text = "CHOISIR UN MÉDICAMENT";
-            lblTitre.TextAlign = ContentAlignment.MiddleCenter;
-            lblTitre.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            lblTitre.BackColor = Color.ForestGreen;
-            lblTitre.ForeColor = Color.White;
-
-            // ── Recherche ─────────────────────────────────────────────────
-            txtRecherche.Location = new Point(12, 65);
-            txtRecherche.Size = new Size(756, 26);
-            txtRecherche.PlaceholderText = "🔍 Rechercher par nom…";
-            txtRecherche.TextChanged += txtRecherche_TextChanged;
-
-            // ── Grille produits ───────────────────────────────────────────
-            dgvProduits.Location = new Point(12, 100);
-            dgvProduits.Size = new Size(756, 220);
-            dgvProduits.ReadOnly = true;
-            dgvProduits.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProduits.MultiSelect = false;
-            dgvProduits.AllowUserToAddRows = false;
-            dgvProduits.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvProduits.BackgroundColor = Color.White;
-            dgvProduits.BorderStyle = BorderStyle.None;
-            dgvProduits.RowTemplate.Height = 30;
-            dgvProduits.ColumnHeadersHeight = 34;
-            dgvProduits.ColumnHeadersDefaultCellStyle.BackColor = Color.ForestGreen;
-            dgvProduits.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvProduits.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dgvProduits.EnableHeadersVisualStyles = false;
-            dgvProduits.Font = new Font("Segoe UI", 9.5F);
-            dgvProduits.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 248, 240);
-            dgvProduits.SelectionChanged += dgvProduits_SelectionChanged;
-
-            // ── Panneau posologie — s'affiche quand un produit est sélectionné
-            pnlPosologie.Location = new Point(12, 330);
-            pnlPosologie.Size = new Size(756, 110);
-            pnlPosologie.BackColor = Color.FromArgb(232, 245, 233);
-            pnlPosologie.BorderStyle = BorderStyle.FixedSingle;
-            pnlPosologie.Visible = false;
-
-            lblPosologieTitre.Text = "💊  Informations sur ce médicament";
-            lblPosologieTitre.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblPosologieTitre.ForeColor = Color.FromArgb(27, 94, 32);
-            lblPosologieTitre.Location = new Point(10, 8);
-            lblPosologieTitre.Size = new Size(730, 20);
-
-            lblIndicationVal.Text = "";
-            lblIndicationVal.Font = new Font("Segoe UI", 9.5F);
-            lblIndicationVal.ForeColor = Color.FromArgb(40, 40, 40);
-            lblIndicationVal.Location = new Point(10, 32);
-            lblIndicationVal.Size = new Size(730, 20);
-
-            lblPosologieVal.Text = "";
-            lblPosologieVal.Font = new Font("Segoe UI", 9.5F);
-            lblPosologieVal.ForeColor = Color.FromArgb(40, 40, 40);
-            lblPosologieVal.Location = new Point(10, 56);
-            lblPosologieVal.Size = new Size(730, 20);
-
-            lblNbFoisVal.Text = "";
-            lblNbFoisVal.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblNbFoisVal.ForeColor = Color.FromArgb(25, 118, 210);
-            lblNbFoisVal.Location = new Point(10, 80);
-            lblNbFoisVal.Size = new Size(730, 20);
-
-            pnlPosologie.Controls.AddRange(new Control[] {
-                lblPosologieTitre, lblIndicationVal, lblPosologieVal, lblNbFoisVal });
-
-            // ── Unité + quantité + prix ───────────────────────────────────
-            int yCtrl = 452;
-
-            lblUnite.Text = "Unité :";
-            lblUnite.Location = new Point(12, yCtrl + 4);
-            lblUnite.Size = new Size(50, 22);
-
-            cbUnite.Location = new Point(65, yCtrl);
-            cbUnite.Size = new Size(140, 28);
-            cbUnite.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbUnite.SelectedIndexChanged += cbUnite_SelectedIndexChanged;
-
-            lblQte.Text = "Quantité :";
-            lblQte.Location = new Point(220, yCtrl + 4);
-            lblQte.Size = new Size(70, 22);
-
-            numQuantite.Location = new Point(295, yCtrl);
-            numQuantite.Size = new Size(90, 28);
-            numQuantite.Minimum = 1;
-            numQuantite.Maximum = 10000;
-
-            lblPrixUnit.Text = "Prix unitaire : —";
-            lblPrixUnit.Location = new Point(12, yCtrl + 36);
-            lblPrixUnit.Size = new Size(756, 22);
-            lblPrixUnit.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblPrixUnit.ForeColor = Color.ForestGreen;
-
-            // ── Boutons ───────────────────────────────────────────────────
-            int yBtn = yCtrl + 68;
-
-            btnValider.Text = "✔ Ajouter à la vente";
-            btnValider.Location = new Point(12, yBtn);
-            btnValider.Size = new Size(200, 40);
-            btnValider.BackColor = Color.ForestGreen;
-            btnValider.ForeColor = Color.White;
-            btnValider.FlatStyle = FlatStyle.Flat;
-            btnValider.FlatAppearance.BorderSize = 0;
-            btnValider.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnValider.Click += btnValider_Click;
-
-            btnAnnuler.Text = "Annuler";
-            btnAnnuler.Location = new Point(222, yBtn);
-            btnAnnuler.Size = new Size(110, 40);
-            btnAnnuler.BackColor = Color.Tomato;
-            btnAnnuler.ForeColor = Color.White;
-            btnAnnuler.FlatStyle = FlatStyle.Flat;
-            btnAnnuler.FlatAppearance.BorderSize = 0;
-            btnAnnuler.Font = new Font("Segoe UI", 10F);
-            btnAnnuler.Click += btnAnnuler_Click;
-
-            // ── Assemblage ────────────────────────────────────────────────
-            ((System.ComponentModel.ISupportInitialize)dgvProduits).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numQuantite).EndInit();
-
-            ClientSize = new Size(780, yBtn + 56);
-            Controls.AddRange(new Control[] {
-                lblTitre, txtRecherche, dgvProduits,
-                pnlPosologie,
-                lblUnite, cbUnite, lblQte, numQuantite,
-                lblPrixUnit, btnValider, btnAnnuler });
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "Choix médicament";
-            ResumeLayout(false);
         }
+
+        #endregion
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.FlowLayoutPanel flpRecherche;
+        private System.Windows.Forms.Label lblRecherche;
+        private System.Windows.Forms.TextBox txtRecherche;
+        private System.Windows.Forms.DataGridView dgvProduits;
+        private System.Windows.Forms.FlowLayoutPanel flpChoix;
+        private System.Windows.Forms.Label lblUnite;
+        private System.Windows.Forms.ComboBox cbUnite;
+        private System.Windows.Forms.Label lblQuantite;
+        private System.Windows.Forms.NumericUpDown numQuantite;
+        private System.Windows.Forms.Label lblPrixUnit;
+        private System.Windows.Forms.TableLayoutPanel pnlPosologie;
+        private System.Windows.Forms.Label lblIndicationVal;
+        private System.Windows.Forms.Label lblPosologieVal;
+        private System.Windows.Forms.Label lblNbFoisVal;
+        private System.Windows.Forms.FlowLayoutPanel flpBoutons;
+        private System.Windows.Forms.Button btnValider;
+        private System.Windows.Forms.Button btnAnnuler;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNom;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPrixVente;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStock;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUniteVente;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colParBoite;
     }
 }

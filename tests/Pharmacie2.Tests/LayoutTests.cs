@@ -13,7 +13,7 @@ public class LayoutTests
     // Écrans déjà convertis aux règles B0 (la liste grandit au fil de la refonte ; voir TousLesEcransSontCouverts)
     private static readonly HashSet<string> Convertis = new()
     {
-        "PageAccueil", "Uc_MaJournee", "Uc_Stock", "Uc_Statistique", "PageCaissier", "FormVente", "Uc_Vente", "FormModificationVente", "FormPaiements", "FormDetailVente", "FormAnnulationVente", "FormSessionCaisse", "Uc_Caisse", "Uc_Depenses", "FormAddDepense"
+        "PageAccueil", "Uc_MaJournee", "Uc_Stock", "Uc_Statistique", "PageCaissier", "FormVente", "Uc_Vente", "FormModificationVente", "FormPaiements", "FormDetailVente", "FormAnnulationVente", "FormSessionCaisse", "Uc_Caisse", "Uc_Depenses", "FormAddDepense", "Uc_Produits", "FormAddProduit", "FormChoixProduit"
     };
 
     // Passe à true quand tous les écrans sont convertis : le test de couverture devient bloquant
@@ -210,7 +210,8 @@ public class LayoutTests
     private static bool EstRedimensionnable(Type type, LayoutSeed.Ids ids)
     {
         if (!type.IsSubclassOf(typeof(Form))) return false;
-        return type.Name is "FormVente" or "FormModificationVente";
+        using var f = (Form)Creer(type, ids);
+        return f.FormBorderStyle is FormBorderStyle.Sizable or FormBorderStyle.SizableToolWindow;
     }
 
     private static Dictionary<string, Size> Etirables(Control racine)

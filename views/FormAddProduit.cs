@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -32,70 +33,47 @@ namespace Pharmacie2.views
         {
             _produitId = null;
             InitializeComponent();
+            Theme.Appliquer(this);
+            cmbUniteVente.SelectedIndex = 0;
             ChargerFournisseurs();
             WireEvents();
-            this.Load += LimiterHauteur;
-            this.Text = "➕  Ajouter un produit";
+            this.Text = AppInfo.Titre("Ajouter un produit");
         }
 
         public FormAddProduit(int produitId)
         {
             _produitId = produitId;
             InitializeComponent();
+            Theme.Appliquer(this);
+            cmbUniteVente.SelectedIndex = 0;
             ChargerFournisseurs();
             WireEvents();
-            this.Load += LimiterHauteur;
-            this.Text = "✏️  Modifier le produit";
+            this.Text = AppInfo.Titre("Modifier le produit");
             PreRemplir(produitId);
             AfficherBandeauVerification();
-        }
-
-        /// <summary>
-        /// Limite la hauteur à 90% de l'écran pour que le formulaire
-        /// ne dépasse jamais la barre des tâches.
-        /// </summary>
-        private void LimiterHauteur(object sender, EventArgs e)
-        {
-            int hauteurMax = (int)(Screen.PrimaryScreen.WorkingArea.Height * 0.90);
-            if (this.Height > hauteurMax)
-                this.Height = hauteurMax;
-
-            // Recentrer après ajustement
-            this.Top = (Screen.PrimaryScreen.WorkingArea.Height - this.Height) / 2;
         }
 
         // ── Câblage des événements ────────────────────────────────────────
 
         private void WireEvents()
         {
-            txtPrixAchat.TextChanged += RecalculerPrixVente;
-            txtMarge.TextChanged += RecalculerPrixVente;
-            txtPrixVente.TextChanged += VerifierMarge;
+            numPrixAchat.ValueChanged += RecalculerPrixVente;
+            numMarge.ValueChanged += RecalculerPrixVente;
+            numPrixVente.ValueChanged += VerifierMarge;
             chkVenteDetail.CheckedChanged += chkVenteDetail_CheckedChanged;
             cmbUniteVente.SelectedIndexChanged += MettreAJourApercu;
             numNbUniteParBoite.ValueChanged += MettreAJourApercu;
-            txtPrixVente.TextChanged += MettreAJourApercu;
+            numPrixVente.ValueChanged += MettreAJourApercu;
         }
 
-        /// <summary>Colore le champ prix vente en rouge si marge <= 0.</summary>
+        /// <summary>Colore le champ prix de vente en rouge si la marge est nulle ou négative.</summary>
         private void VerifierMarge(object sender, EventArgs e)
         {
-            bool ok = decimal.TryParse(txtPrixAchat.Text,
-                          System.Globalization.NumberStyles.Any,
-                          System.Globalization.CultureInfo.InvariantCulture, out decimal achat)
-                   && decimal.TryParse(txtPrixVente.Text,
-                          System.Globalization.NumberStyles.Any,
-                          System.Globalization.CultureInfo.InvariantCulture, out decimal vente)
-                   && vente > achat && achat > 0;
+            decimal achat = numPrixAchat.Value;
+            bool ok = numPrixVente.Value > achat && achat > 0;
 
-            txtPrixVente.BackColor = ok
-                ? System.Drawing.Color.LightGreen
-                : System.Drawing.Color.FromArgb(255, 200, 200);  // rouge clair si marge nulle
-
-            if (!ok && achat > 0)
-                lblMarge.Text = "⚠️ Marge (%) →";
-            else
-                lblMarge.Text = "Marge bénéfice (%) →";
+            numPrixVente.BackColor = ok ? Theme.SuccesFond : Theme.UrgentFond;
+            lblMarge.Text = !ok && achat > 0 ? "Marge bénéfice (%) : trop faible" : "Marge bénéfice (%)";
         }
 
         // ── Pré-remplissage en mode modification ──────────────────────────
@@ -109,9 +87,10 @@ namespace Pharmacie2.views
 
                 txtNom.Text = p.Nom;
                 cmbType.Text = p.Type;
-                txtPrixAchat.Text = p.PrixAchat.ToString("0.00", CultureInfo.InvariantCulture);
-                txtMarge.Text = p.MargeBeneficiaire.ToString("0.00", CultureInfo.InvariantCulture);
-                txtPrixVente.Text = p.PrixVente.ToString("0.00", CultureInfo.InvariantCulture);
+                // Ordre important : le prix de vente est saisi EN DERNIER (achat et marge le recalculent)
+                numPrixAchat.Value = Math.Min(numPrixAchat.Maximum, p.PrixAchat);
+                numMarge.Value = Math.Min(numMarge.Maximum, Math.Max(numMarge.Minimum, p.MargeBeneficiaire));
+                numPrixVente.Value = Math.Min(numPrixVente.Maximum, p.PrixVente);
 
                 // Stock en unités de base → boîtes pleines + unités en vrac (la boîte entamée reste visible)
                 int nbParBoite = Math.Max(1, p.NbUniteParBoite);
@@ -175,70 +154,34 @@ namespace Pharmacie2.views
         {
             if (!_verifier || _produitOrigine == null) return;
 
-            const int h = 150;
-            var orange = System.Drawing.Color.FromArgb(255, 224, 178);
-            var pnl = new Panel
-            {
-                BackColor = orange,
-                BorderStyle = BorderStyle.FixedSingle,
-                Location = new System.Drawing.Point(14, 8),
-                Size = new System.Drawing.Size(ClientSize.Width - 28, h)
-            };
+            lblVerification.Text = "Le stock de ce produit est peut-être incorrect (ancienne erreur du logiciel).\n" + _motifVerification;
+            pnlVerification.BackColor = Theme.AttentionFond;
+            lblVerification.ForeColor = Theme.AttentionTexte;
 
-            var lbl = new Label
-            {
-                Text = "⚠ Le stock de ce produit est peut-être incorrect (ancienne erreur du logiciel).\n" + _motifVerification,
-                Location = new System.Drawing.Point(10, 8),
-                Size = new System.Drawing.Size(pnl.Width - 24, 56),
-                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
-                ForeColor = System.Drawing.Color.FromArgb(120, 53, 0)
-            };
-            pnl.Controls.Add(lbl);
-
-            int y = 70;
             if (_unitesManquantes > 0)
             {
                 int nouveau = _produitOrigine.QuantiteEnStock + _unitesManquantes;
-                var btnCorr = new Button
-                {
-                    Text = $"Appliquer la correction (+ {_unitesManquantes} unités → nouveau stock : {StockService.Formater(_produitOrigine, nouveau)})",
-                    Location = new System.Drawing.Point(10, y),
-                    Size = new System.Drawing.Size(pnl.Width - 24, 30)
-                };
-                btnCorr.Click += (s, e) => AppliquerCorrection(nouveau);
-                pnl.Controls.Add(btnCorr);
-                y += 36;
+                btnCorrection.Text = $"Appliquer la correction (+ {_unitesManquantes} unités → nouveau stock : {StockService.Formater(_produitOrigine, nouveau)})";
+                btnCorrection.Click += (s, e) => AppliquerCorrection(nouveau);
+                btnCorrection.Visible = true;
+            }
+            else
+            {
+                btnCorrection.Visible = false;   // « Reçu partiellement » : quantité inconnue, pas d'estimation
             }
 
-            var btnOk = new Button
-            {
-                Text = "Le stock est correct",
-                Location = new System.Drawing.Point(10, y),
-                Size = new System.Drawing.Size(200, 30)
-            };
-            btnOk.Click += (s, e) => ResoudreEtFermer(ChoixVerification.StockCorrect,
+            btnStockCorrect.Click += (s, e) => ResoudreEtFermer(ChoixVerification.StockCorrect,
                 "Confirmer que le stock actuel (" + StockService.Formater(_produitOrigine) + ") est correct ?",
                 "Le marquage « à vérifier » est levé. Le stock n'est pas modifié.");
-            pnl.Controls.Add(btnOk);
 
-            var btnCompte = new Button
-            {
-                Text = "J'ai compté le stock",
-                Location = new System.Drawing.Point(220, y),
-                Size = new System.Drawing.Size(200, 30)
-            };
             btnCompte.Click += (s, e) =>
             {
-                lbl.Text += "\nSaisissez le stock compté (boîtes pleines + unités en vrac), puis enregistrez : le marquage sera levé.";
+                lblVerification.Text += "\nSaisissez le stock compté (boîtes pleines + unités en vrac), puis enregistrez : le marquage sera levé.";
                 numQuantite.Focus();
                 numQuantite.Select(0, numQuantite.Text.Length);
             };
-            pnl.Controls.Add(btnCompte);
 
-            // Décaler le formulaire existant sous le bandeau
-            foreach (Control c in Controls) c.Top += h + 12;
-            ClientSize = new System.Drawing.Size(ClientSize.Width, ClientSize.Height + h + 12);
-            Controls.Add(pnl);
+            pnlVerification.Visible = true;
         }
 
         private void AppliquerCorrection(int nouveauStock)
@@ -254,7 +197,7 @@ namespace Pharmacie2.views
             try
             {
                 VerificationStockService.Resoudre(_produitId.Value, ChoixVerification.CorrectionAppliquee);
-                MessageBox.Show("✅ Stock corrigé.", "Correction appliquée", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes("Stock corrigé");
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -272,7 +215,7 @@ namespace Pharmacie2.views
             try
             {
                 VerificationStockService.Resoudre(_produitId.Value, choix);
-                MessageBox.Show(resultat, "Enregistré", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes(resultat);
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -303,13 +246,8 @@ namespace Pharmacie2.views
 
         private void RecalculerPrixVente(object sender, EventArgs e)
         {
-            if (!decimal.TryParse(txtPrixAchat.Text, NumberStyles.Any,
-                    CultureInfo.InvariantCulture, out decimal achat)) return;
-            if (!decimal.TryParse(txtMarge.Text, NumberStyles.Any,
-                    CultureInfo.InvariantCulture, out decimal marge)) return;
-
-            decimal pv = Math.Round(achat * (1m + marge / 100m), 2);
-            txtPrixVente.Text = pv.ToString("0.00", CultureInfo.InvariantCulture);
+            decimal pv = Math.Round(numPrixAchat.Value * (1m + numMarge.Value / 100m), 0, MidpointRounding.AwayFromZero);
+            numPrixVente.Value = Math.Min(numPrixVente.Maximum, pv);
         }
 
         // ── Activation/désactivation du bloc vente en détail ─────────────
@@ -321,9 +259,7 @@ namespace Pharmacie2.views
             pnlVenteDetail.Enabled = actif;
             numUnitesVrac.Enabled = actif;
             if (!actif) numUnitesVrac.Value = 0;
-            pnlVenteDetail.BackColor = actif
-                ? System.Drawing.Color.FromArgb(232, 245, 233)
-                : System.Drawing.Color.FromArgb(245, 245, 245);
+            pnlVenteDetail.BackColor = actif ? Theme.SuccesFond : Theme.Fond;
 
             if (!actif)
             {
@@ -354,25 +290,22 @@ namespace Pharmacie2.views
 
             if (nbParB <= 1)
             {
-                lblApercu.Text = "⚠️ Le nombre d'unités doit être supérieur à 1.";
-                lblApercu.ForeColor = System.Drawing.Color.OrangeRed;
+                lblApercu.Text = "Le nombre d'unités doit être supérieur à 1.";
+                lblApercu.ForeColor = Theme.AttentionTexte;
                 return;
             }
 
-            // Calcul prix par unité
-            decimal pv = 0;
-            decimal.TryParse(txtPrixVente.Text, NumberStyles.Any,
-                CultureInfo.InvariantCulture, out pv);
-
-            decimal prixParUnite = nbParB > 0 ? Math.Round(pv / nbParB, 2) : 0;
+            // Prix par unité
+            decimal pv = numPrixVente.Value;
+            decimal prixParUnite = Math.Round(pv / nbParB, 2);
 
             lblApercu.Text =
-                $"✅  1 boîte  =  {nbParB} {unite}(s)\n" +
-                $"     Prix / {unite} : {prixParUnite:N0} KMF\n" +
-                $"     Exemple : vendre 4 {unite}(s) = consomme " +
+                $"1 boîte = {nbParB} {unite}(s)\n" +
+                $"Prix par {unite} : {Format.Montant(prixParUnite)}\n" +
+                $"Exemple : vendre 4 {unite}(s) consomme " +
                 $"{(int)Math.Ceiling(4.0 / nbParB)} boîte(s) du stock";
 
-            lblApercu.ForeColor = System.Drawing.Color.FromArgb(27, 94, 32);
+            lblApercu.ForeColor = Theme.SuccesTexte;
         }
 
         // ── Validation et enregistrement ──────────────────────────────────
@@ -387,36 +320,23 @@ namespace Pharmacie2.views
                 txtNom.Focus(); return;
             }
 
-            if (!decimal.TryParse(txtPrixAchat.Text, NumberStyles.Any,
-                    CultureInfo.InvariantCulture, out decimal prixAchat))
-            {
-                MessageBox.Show("Prix d'achat invalide.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPrixAchat.Focus(); return;
-            }
+            decimal prixAchat = numPrixAchat.Value;
+            decimal prixVente = numPrixVente.Value;
 
-            if (!decimal.TryParse(txtPrixVente.Text, NumberStyles.Any,
-                    CultureInfo.InvariantCulture, out decimal prixVente))
-            {
-                MessageBox.Show("Prix de vente invalide.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPrixVente.Focus(); return;
-            }
-
-            // ✅ Vérification marge obligatoire
+            // Vérification marge obligatoire
             if (prixVente <= prixAchat)
             {
                 MessageBox.Show(
-                    $"Le prix de vente ({prixVente:N0} KMF) doit être supérieur au prix d'achat ({prixAchat:N0} KMF).\n\nAjustez la marge bénéficiaire.",
+                    $"Le prix de vente ({Format.Montant(prixVente)}) doit être supérieur au prix d'achat ({Format.Montant(prixAchat)}).\n\nAjustez la marge bénéficiaire.",
                     "Marge invalide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtMarge.Focus(); return;
+                numMarge.Focus(); return;
             }
 
             if (prixAchat <= 0)
             {
                 MessageBox.Show("Le prix d'achat doit être supérieur à 0.",
                     "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPrixAchat.Focus(); return;
+                numPrixAchat.Focus(); return;
             }
 
             // Vente en détail — vérification
@@ -428,8 +348,7 @@ namespace Pharmacie2.views
                 numNbUniteParBoite.Focus(); return;
             }
 
-            decimal.TryParse(txtMarge.Text, NumberStyles.Any,
-                CultureInfo.InvariantCulture, out decimal marge);
+            decimal marge = numMarge.Value;
 
             int? fournisseurId = cbFournisseur.SelectedValue is int fId && fId > 0
                                    ? fId : (int?)null;
@@ -545,8 +464,7 @@ namespace Pharmacie2.views
                     ctx.SaveChanges();
                 }
 
-                MessageBox.Show("✅ Produit enregistré avec succès !", "Succès",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes("Produit enregistré : " + txtNom.Text.Trim());
 
                 DialogResult = DialogResult.OK;
                 Close();

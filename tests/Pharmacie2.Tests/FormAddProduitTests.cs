@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Pharmacie2.Models;
@@ -69,7 +69,7 @@ public class FormAddProduitTests
         var cts = Fermeur();
         try
         {
-            Enregistrer(pid, f => Champ<TextBox>(f, "txtPrixVente").Text = "250.00");
+            Enregistrer(pid, f => Champ<NumericUpDown>(f, "numPrixVente").Value = 250m);
             Assert.Equal(9, Stock(pid));
             using (var ctx = new AppDbContext()) Assert.Equal(250m, ctx.produits.Find(pid).PrixVente);
 

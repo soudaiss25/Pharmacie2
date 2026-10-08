@@ -19,6 +19,7 @@ namespace Pharmacie2.views
         public FormChoixProduit()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             ChargerProduits();
             Load += (s, e) =>
             {
@@ -46,9 +47,12 @@ namespace Pharmacie2.views
                     ParBoite = p.NbUniteParBoite
                 }).ToList();
 
-                if (dgvProduits.Columns["Id"] != null)
-                    dgvProduits.Columns["Id"].Visible = false;
             }
+        }
+
+        private void dgvProduits_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0) btnValider_Click(sender, EventArgs.Empty);
         }
 
         private void txtRecherche_TextChanged(object sender, EventArgs e)
@@ -94,15 +98,15 @@ namespace Pharmacie2.views
                 pnlPosologie.Visible = hasInfo;
 
                 lblIndicationVal.Text = !string.IsNullOrWhiteSpace(p.Indication)
-                    ? $"📌 Indication : {p.Indication}"
+                    ? $"Indication : {p.Indication}"
                     : "";
 
                 lblPosologieVal.Text = !string.IsNullOrWhiteSpace(p.Posologie)
-                    ? $"💊 Posologie : {p.Posologie}"
+                    ? $"Posologie : {p.Posologie}"
                     : "";
 
                 lblNbFoisVal.Text = p.NbFoisParJour > 0
-                    ? $"🕐 {p.NbFoisParJour} prise(s) par jour"
+                    ? $"{p.NbFoisParJour} prise(s) par jour"
                     : "";
             }
         }
@@ -125,7 +129,7 @@ namespace Pharmacie2.views
                     ? p.PrixVente
                     : p.PrixUnitaireVente;
 
-                lblPrixUnit.Text = $"Prix unitaire : {prix:0.00} KMF";
+                lblPrixUnit.Text = $"Prix unitaire : {Format.Montant(prix)}";
             }
         }
 
