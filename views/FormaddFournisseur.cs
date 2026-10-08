@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -14,10 +16,11 @@ namespace Pharmacie2.views
         public FormaddFournisseur()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _fournisseur = new Fournisseur();
             _isEdit = false;
 
-            lblTitle.Text = "NOUVEAU FOURNISSEUR";
+            lblTitle.Text = "Nouveau fournisseur";
             btnEnregistrer.Text = "Enregistrer";
         }
 
@@ -25,10 +28,11 @@ namespace Pharmacie2.views
         public FormaddFournisseur(Fournisseur fournisseur)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _fournisseur = fournisseur;
             _isEdit = true;
 
-            lblTitle.Text = "MODIFIER FOURNISSEUR";
+            lblTitle.Text = "Modifier le fournisseur";
             btnEnregistrer.Text = "Modifier";
 
             // Pré-remplir
@@ -91,8 +95,7 @@ namespace Pharmacie2.views
                     }
                 }
 
-                MessageBox.Show("Enregistrement effectué avec succès !", "Succès",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+BandeauNotification.Succes("Fournisseur enregistré : " + nom);
 
                 DialogResult = DialogResult.OK;
                 Close();

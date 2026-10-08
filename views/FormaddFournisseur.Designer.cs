@@ -2,191 +2,195 @@
 {
     partial class FormaddFournisseur
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.Panel panelHeader;
-        private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label labelNom;
-        private System.Windows.Forms.TextBox txtNom;
-        private System.Windows.Forms.Label labelContact;
-        private System.Windows.Forms.TextBox txtContact;
-        private System.Windows.Forms.Panel panelBottom;
-        private System.Windows.Forms.Button btnEnregistrer;
-        private System.Windows.Forms.Button btnAnnuler;
 
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
+            {
                 components.Dispose();
-
+            }
             base.Dispose(disposing);
         }
 
+        #region Code généré par le Concepteur Windows Form
+
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
         private void InitializeComponent()
         {
-            this.panelHeader = new System.Windows.Forms.Panel();
-            this.lblSubtitle = new System.Windows.Forms.Label();
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.txtContact = new System.Windows.Forms.TextBox();
-            this.labelContact = new System.Windows.Forms.Label();
+            this.tlpChamps = new System.Windows.Forms.TableLayoutPanel();
+            this.lblNom = new System.Windows.Forms.Label();
             this.txtNom = new System.Windows.Forms.TextBox();
-            this.labelNom = new System.Windows.Forms.Label();
-            this.panelBottom = new System.Windows.Forms.Panel();
-            this.btnAnnuler = new System.Windows.Forms.Button();
+            this.lblContact = new System.Windows.Forms.Label();
+            this.txtContact = new System.Windows.Forms.TextBox();
+            this.panelEspace = new System.Windows.Forms.Panel();
+            this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnEnregistrer = new System.Windows.Forms.Button();
-            this.panelHeader.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.panelBottom.SuspendLayout();
+            this.btnAnnuler = new System.Windows.Forms.Button();
+            this.tlpRoot.SuspendLayout();
+            this.tlpChamps.SuspendLayout();
+            this.panelEspace.SuspendLayout();
+            this.flpBoutons.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panelHeader
+            // tlpRoot
             // 
-            this.panelHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
-            this.panelHeader.Controls.Add(this.lblSubtitle);
-            this.panelHeader.Controls.Add(this.lblTitle);
-            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelHeader.Location = new System.Drawing.Point(0, 0);
-            this.panelHeader.Name = "panelHeader";
-            this.panelHeader.Size = new System.Drawing.Size(720, 92);
-            this.panelHeader.TabIndex = 0;
-            // 
-            // lblSubtitle
-            // 
-            this.lblSubtitle.AutoSize = true;
-            this.lblSubtitle.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.lblSubtitle.Location = new System.Drawing.Point(20, 54);
-            this.lblSubtitle.Name = "lblSubtitle";
-            this.lblSubtitle.Size = new System.Drawing.Size(362, 20);
-            this.lblSubtitle.TabIndex = 1;
-            this.lblSubtitle.Text = "Nom + contact (téléphone, email, personne contact)";
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 4;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.Controls.Add(this.lblTitle, 0, 0);
+            this.tlpRoot.Controls.Add(this.tlpChamps, 0, 1);
+            this.tlpRoot.Controls.Add(this.panelEspace, 0, 2);
+            this.tlpRoot.Controls.Add(this.flpBoutons, 0, 3);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
             // 
             // lblTitle
             // 
+            this.lblTitle.Text = "Nouveau fournisseur";
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(18, 14);
+            this.lblTitle.Tag = "titre";
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(305, 45);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "FOURNISSEUR";
             // 
-            // groupBox1
+            // tlpChamps
             // 
-            this.groupBox1.Controls.Add(this.txtContact);
-            this.groupBox1.Controls.Add(this.labelContact);
-            this.groupBox1.Controls.Add(this.txtNom);
-            this.groupBox1.Controls.Add(this.labelNom);
-            this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.groupBox1.Location = new System.Drawing.Point(18, 110);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(684, 200);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Informations";
+            this.tlpChamps.ColumnCount = 2;
+            this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpChamps.RowCount = 2;
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.Controls.Add(this.lblNom, 0, 0);
+            this.tlpChamps.Controls.Add(this.txtNom, 1, 0);
+            this.tlpChamps.Controls.Add(this.lblContact, 0, 1);
+            this.tlpChamps.Controls.Add(this.txtContact, 1, 1);
+            this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpChamps.AutoSize = true;
+            this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpChamps.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
+            this.tlpChamps.Name = "tlpChamps";
             // 
-            // txtContact
+            // lblNom
             // 
-            this.txtContact.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtContact.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.txtContact.Location = new System.Drawing.Point(22, 132);
-            this.txtContact.Name = "txtContact";
-            this.txtContact.Size = new System.Drawing.Size(636, 37);
-            this.txtContact.TabIndex = 3;
-            // 
-            // labelContact
-            // 
-            this.labelContact.AutoSize = true;
-            this.labelContact.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.labelContact.Location = new System.Drawing.Point(18, 100);
-            this.labelContact.Name = "labelContact";
-            this.labelContact.Size = new System.Drawing.Size(83, 28);
-            this.labelContact.TabIndex = 2;
-            this.labelContact.Text = "Contact";
+            this.lblNom.Text = "Nom du fournisseur *";
+            this.lblNom.AutoSize = true;
+            this.lblNom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblNom.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblNom.Name = "lblNom";
             // 
             // txtNom
             // 
-            this.txtNom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtNom.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.txtNom.Location = new System.Drawing.Point(22, 62);
+            this.txtNom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNom.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtNom.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtNom.Name = "txtNom";
-            this.txtNom.Size = new System.Drawing.Size(636, 37);
-            this.txtNom.TabIndex = 1;
             // 
-            // labelNom
+            // lblContact
             // 
-            this.labelNom.AutoSize = true;
-            this.labelNom.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.labelNom.Location = new System.Drawing.Point(18, 32);
-            this.labelNom.Name = "labelNom";
-            this.labelNom.Size = new System.Drawing.Size(56, 28);
-            this.labelNom.TabIndex = 0;
-            this.labelNom.Text = "Nom";
+            this.lblContact.Text = "Contact (téléphone, e-mail)";
+            this.lblContact.AutoSize = true;
+            this.lblContact.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblContact.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblContact.Name = "lblContact";
             // 
-            // panelBottom
+            // txtContact
             // 
-            this.panelBottom.BackColor = System.Drawing.Color.White;
-            this.panelBottom.Controls.Add(this.btnAnnuler);
-            this.panelBottom.Controls.Add(this.btnEnregistrer);
-            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(0, 340);
-            this.panelBottom.Name = "panelBottom";
-            this.panelBottom.Size = new System.Drawing.Size(720, 90);
-            this.panelBottom.TabIndex = 2;
+            this.txtContact.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtContact.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtContact.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.txtContact.Name = "txtContact";
             // 
-            // btnAnnuler
+            // panelEspace
             // 
-            this.btnAnnuler.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.btnAnnuler.FlatAppearance.BorderSize = 0;
-            this.btnAnnuler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAnnuler.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnAnnuler.Location = new System.Drawing.Point(420, 20);
-            this.btnAnnuler.Name = "btnAnnuler";
-            this.btnAnnuler.Size = new System.Drawing.Size(130, 52);
-            this.btnAnnuler.TabIndex = 1;
-            this.btnAnnuler.Text = "Annuler";
-            this.btnAnnuler.UseVisualStyleBackColor = false;
-            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
+            this.panelEspace.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelEspace.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.panelEspace.Name = "panelEspace";
+            // 
+            // flpBoutons
+            // 
+            this.flpBoutons.Controls.Add(this.btnEnregistrer);
+            this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpBoutons.AutoSize = true;
+            this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpBoutons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpBoutons.WrapContents = false;
+            this.flpBoutons.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.flpBoutons.Name = "flpBoutons";
             // 
             // btnEnregistrer
             // 
-            this.btnEnregistrer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
-            this.btnEnregistrer.FlatAppearance.BorderSize = 0;
-            this.btnEnregistrer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEnregistrer.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnEnregistrer.ForeColor = System.Drawing.Color.White;
-            this.btnEnregistrer.Location = new System.Drawing.Point(560, 20);
-            this.btnEnregistrer.Name = "btnEnregistrer";
-            this.btnEnregistrer.Size = new System.Drawing.Size(140, 52);
-            this.btnEnregistrer.TabIndex = 0;
             this.btnEnregistrer.Text = "Enregistrer";
-            this.btnEnregistrer.UseVisualStyleBackColor = false;
+            this.btnEnregistrer.Tag = "primaire";
+            this.btnEnregistrer.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnEnregistrer.Name = "btnEnregistrer";
             this.btnEnregistrer.Click += new System.EventHandler(this.btnEnregistrer_Click);
+            // 
+            // btnAnnuler
+            // 
+            this.btnAnnuler.Text = "Annuler";
+            this.btnAnnuler.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnAnnuler.Name = "btnAnnuler";
+            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
             // 
             // FormaddFournisseur
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(720, 430);
-            this.Controls.Add(this.panelBottom);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.panelHeader);
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClientSize = new System.Drawing.Size(560, 280);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormaddFournisseur";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Fournisseur";
-            this.panelHeader.ResumeLayout(false);
-            this.panelHeader.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panelBottom.ResumeLayout(false);
+            this.AcceptButton = this.btnEnregistrer;
+            this.CancelButton = this.btnAnnuler;
+            this.Name = "FormaddFournisseur";
             this.ResumeLayout(false);
+            this.PerformLayout();
+            this.flpBoutons.ResumeLayout(false);
+            this.flpBoutons.PerformLayout();
+            this.panelEspace.ResumeLayout(false);
+            this.tlpChamps.ResumeLayout(false);
+            this.tlpChamps.PerformLayout();
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
 
         }
+
+        #endregion
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.TableLayoutPanel tlpChamps;
+        private System.Windows.Forms.Label lblNom;
+        private System.Windows.Forms.TextBox txtNom;
+        private System.Windows.Forms.Label lblContact;
+        private System.Windows.Forms.TextBox txtContact;
+        private System.Windows.Forms.Panel panelEspace;
+        private System.Windows.Forms.FlowLayoutPanel flpBoutons;
+        private System.Windows.Forms.Button btnEnregistrer;
+        private System.Windows.Forms.Button btnAnnuler;
     }
 }
