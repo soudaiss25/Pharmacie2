@@ -32,12 +32,51 @@ namespace Pharmacie2.views.UserControls
             btnSupprimer.Click += btnSupprimer_Click;
             btnCommander.Click += btnCommander_Click;
 
+            // Feuille d'inventaire (bouton créé ici pour ne pas toucher au Designer)
+            var btnInventaire = new Button
+            {
+                Text = "🖨 Feuille d'inventaire",
+                Size = new System.Drawing.Size(190, 35),
+                Location = new System.Drawing.Point(btnCommander.Right + 10, btnCommander.Top),
+                BackColor = System.Drawing.Color.FromArgb(96, 125, 139),
+                ForeColor = System.Drawing.Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
+                UseVisualStyleBackColor = false
+            };
+            btnInventaire.FlatAppearance.BorderSize = 0;
+            panelButtons.Controls.Add(btnInventaire);
+            btnInventaire.Click += btnInventaire_Click;
 
             ChargerStock();
         }
 
         /// <summary>Filtre la liste sur les produits dont le stock est à vérifier.</summary>
         public void FiltrerAVerifier() => cbSeuil.SelectedItem = "À vérifier";
+
+        private void btnInventaire_Click(object sender, EventArgs e)
+        {
+            using var dlg = new SaveFileDialog
+            {
+                Filter = "Classeur Excel (*.xlsx)|*.xlsx",
+                FileName = $"Inventaire_{DateTime.Now:yyyy-MM-dd}.xlsx",
+                Title = "Enregistrer la feuille d'inventaire"
+            };
+            if (dlg.ShowDialog() != DialogResult.OK) return;
+
+            try
+            {
+                InventaireExportService.Exporter(dlg.FileName);
+                MessageBox.Show("Feuille d'inventaire enregistrée :\n" + dlg.FileName,
+                    "Inventaire", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Export de la feuille d'inventaire", ex);
+                MessageBox.Show("Impossible de créer la feuille d'inventaire : " + ex.Message,
+                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         // ── Chargement stock ──────────────────────────────────────────────
 
