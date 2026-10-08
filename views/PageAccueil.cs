@@ -21,6 +21,14 @@ namespace Pharmacie2.views
             panelContent.Controls.Add(uc);
         }
 
+        /// <summary>Ouvre l'écran Stock filtré sur les produits « À vérifier ».</summary>
+        public void OuvrirStockAVerifier()
+        {
+            var stock = new views.UserControls.Uc_Stock();
+            LoadUserControl(stock);
+            stock.FiltrerAVerifier();
+        }
+
         private void btnProduits_Click(object sender, EventArgs e)
             => LoadUserControl(new views.UserControls.Uc_Produits());
 

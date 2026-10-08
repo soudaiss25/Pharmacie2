@@ -18,6 +18,7 @@ namespace Pharmacie2.views.UserControls
             dgvStock.AutoGenerateColumns = true;
             dgvStock.MultiSelect = false;
 
+            cbSeuil.Items.Add("À vérifier");
             cbSeuil.SelectedIndex = 0;
             cbDisponibilite.SelectedIndex = 0;
 
@@ -31,8 +32,12 @@ namespace Pharmacie2.views.UserControls
             btnSupprimer.Click += btnSupprimer_Click;
             btnCommander.Click += btnCommander_Click;
 
+
             ChargerStock();
         }
+
+        /// <summary>Filtre la liste sur les produits dont le stock est à vérifier.</summary>
+        public void FiltrerAVerifier() => cbSeuil.SelectedItem = "À vérifier";
 
         // ── Chargement stock ──────────────────────────────────────────────
 
@@ -56,10 +61,15 @@ namespace Pharmacie2.views.UserControls
 
             if (cbSeuil.Text == "Sous le seuil")
                 query = query.Where(p => p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
+            else if (cbSeuil.Text == "À vérifier")
+                query = query.Where(p => p.StockAVerifier);
             else if (cbSeuil.Text == "Normal")
                 query = query.Where(p => p.QuantiteEnStock > p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
 
-            var data = query.ToList().Select(p => new
+            var data = query
+                .OrderByDescending(p => p.StockAVerifier)   // produits « À vérifier » en premier
+                .ThenBy(p => p.Nom)
+                .ToList().Select(p => new
             {
                 p.Id,
                 Produit = p.Nom,
@@ -68,6 +78,7 @@ namespace Pharmacie2.views.UserControls
                 // Ex : 9 unités (5/boîte) → « 1 boîte(s) + 4 plaquette(s) »
                 Quantite = StockService.Formater(p),
                 Seuil = $"{p.SeuilAlerte} boîte(s)",
+                Verification = p.StockAVerifier ? "⚠ À vérifier" : "",
                 Etat = p.QuantiteEnStock <= 0 ? "Rupture"
                             : p.QuantiteEnStock <= StockService.SeuilEnUnites(p) ? "Alerte"
                             : "OK"
@@ -84,6 +95,13 @@ namespace Pharmacie2.views.UserControls
             if (e.RowIndex < 0 || dgvStock.Columns["Etat"] == null) return;
 
             var etat = dgvStock.Rows[e.RowIndex].Cells["Etat"].Value?.ToString();
+
+            if (dgvStock.Columns["Verification"] != null
+                && !string.IsNullOrEmpty(dgvStock.Rows[e.RowIndex].Cells["Verification"].Value?.ToString()))
+            {
+                dgvStock.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(255, 243, 176);
+                return;
+            }
 
             switch (etat)
             {

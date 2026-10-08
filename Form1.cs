@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 using Pharmacie2.views;
 
 namespace Pharmacie2
@@ -39,7 +40,7 @@ namespace Pharmacie2
                     return;
                 }
 
-                // ? Stocker l'utilisateur connect� en session
+                // ? Stocker l'utilisateur connecté en session
                 SessionUtilisateur.Courant = user;
 
                 this.Hide();
@@ -52,9 +53,22 @@ namespace Pharmacie2
                 }
                 else
                 {
+                    // Un seul message par session, pour l'Administrateur et le Pharmacien
+                    bool verifierStock = false;
+                    int nbAVerifier = VerificationStockService.NombreAVerifier();
+                    if (nbAVerifier > 0)
+                    {
+                        verifierStock = MessageBox.Show(
+                            $"{nbAVerifier} produit(s) ont peut-être un stock incorrect à cause d'une ancienne erreur du logiciel.\n\n" +
+                            "Voulez-vous les vérifier maintenant ?",
+                            "Stock à vérifier", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+                    }
+
                     var accueil = new PageAccueil(user);
                     accueil.FormClosed += (s, args) => Application.Exit();
                     accueil.Show();
+                    if (verifierStock)
+                        accueil.OuvrirStockAVerifier();
                 }
             }
         }

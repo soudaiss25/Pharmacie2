@@ -101,6 +101,16 @@ namespace Pharmacie2.Models
         [ForeignKey("FournisseurId")]
         public Fournisseur? Fournisseur { get; set; }
 
+        // ── Vérification de stock (ancienne erreur de réception des commandes) ──
+        /// <summary>Stock peut-être faussé par l'ancienne réception des commandes : à vérifier.</summary>
+        public bool StockAVerifier { get; set; }
+
+        /// <summary>Unités estimées manquantes (0 = pas d'estimation). Jamais appliquées automatiquement.</summary>
+        public int UnitesManquantesEstimees { get; set; }
+
+        /// <summary>Explication affichée à l'utilisateur.</summary>
+        public string? MotifVerification { get; set; }
+
         public bool EstEnRupture() => QuantiteEnStock <= Pharmacie2.Services.StockService.SeuilEnUnites(this);
     }
 }

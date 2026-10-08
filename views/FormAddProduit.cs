@@ -20,6 +20,12 @@ namespace Pharmacie2.views
         private int _nbParBoiteOrigine = 1;
         private bool _nbAverti;
 
+        // Produit marqué « stock à vérifier » (ancienne erreur de réception des commandes)
+        private bool _verifier;
+        private int _unitesManquantes;
+        private string _motifVerification = "";
+        private Produit _produitOrigine;
+
         // ── Constructeurs ─────────────────────────────────────────────────
 
         public FormAddProduit()
@@ -41,6 +47,7 @@ namespace Pharmacie2.views
             this.Load += LimiterHauteur;
             this.Text = "✏️  Modifier le produit";
             PreRemplir(produitId);
+            AfficherBandeauVerification();
         }
 
         /// <summary>
@@ -109,6 +116,14 @@ namespace Pharmacie2.views
                 // Stock en unités de base → boîtes pleines + unités en vrac (la boîte entamée reste visible)
                 int nbParBoite = Math.Max(1, p.NbUniteParBoite);
                 _stockOrigineUnites = p.QuantiteEnStock;
+                _verifier = p.StockAVerifier;
+                _unitesManquantes = p.UnitesManquantesEstimees;
+                _motifVerification = p.MotifVerification ?? "";
+                _produitOrigine = new Produit
+                {
+                    Id = p.Id, Nom = p.Nom, NbUniteParBoite = p.NbUniteParBoite,
+                    UniteVente = p.UniteVente, QuantiteEnStock = p.QuantiteEnStock
+                };
                 _nbParBoiteOrigine = nbParBoite;
                 _boitesOrigine = p.QuantiteEnStock / nbParBoite;
                 _vracOrigine = p.QuantiteEnStock % nbParBoite;
@@ -151,6 +166,120 @@ namespace Pharmacie2.views
                     cmbUniteVente.Items.Add(p.UniteVente);
                     cmbUniteVente.SelectedItem = p.UniteVente;
                 }
+            }
+        }
+
+        // ── Bandeau « stock à vérifier » ──────────────────────────────────
+
+        private void AfficherBandeauVerification()
+        {
+            if (!_verifier || _produitOrigine == null) return;
+
+            const int h = 150;
+            var orange = System.Drawing.Color.FromArgb(255, 224, 178);
+            var pnl = new Panel
+            {
+                BackColor = orange,
+                BorderStyle = BorderStyle.FixedSingle,
+                Location = new System.Drawing.Point(14, 8),
+                Size = new System.Drawing.Size(ClientSize.Width - 28, h)
+            };
+
+            var lbl = new Label
+            {
+                Text = "⚠ Le stock de ce produit est peut-être incorrect (ancienne erreur du logiciel).\n" + _motifVerification,
+                Location = new System.Drawing.Point(10, 8),
+                Size = new System.Drawing.Size(pnl.Width - 24, 56),
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
+                ForeColor = System.Drawing.Color.FromArgb(120, 53, 0)
+            };
+            pnl.Controls.Add(lbl);
+
+            int y = 70;
+            if (_unitesManquantes > 0)
+            {
+                int nouveau = _produitOrigine.QuantiteEnStock + _unitesManquantes;
+                var btnCorr = new Button
+                {
+                    Text = $"Appliquer la correction (+ {_unitesManquantes} unités → nouveau stock : {StockService.Formater(_produitOrigine, nouveau)})",
+                    Location = new System.Drawing.Point(10, y),
+                    Size = new System.Drawing.Size(pnl.Width - 24, 30)
+                };
+                btnCorr.Click += (s, e) => AppliquerCorrection(nouveau);
+                pnl.Controls.Add(btnCorr);
+                y += 36;
+            }
+
+            var btnOk = new Button
+            {
+                Text = "Le stock est correct",
+                Location = new System.Drawing.Point(10, y),
+                Size = new System.Drawing.Size(200, 30)
+            };
+            btnOk.Click += (s, e) => ResoudreEtFermer(ChoixVerification.StockCorrect,
+                "Confirmer que le stock actuel (" + StockService.Formater(_produitOrigine) + ") est correct ?",
+                "Le marquage « à vérifier » est levé. Le stock n'est pas modifié.");
+            pnl.Controls.Add(btnOk);
+
+            var btnCompte = new Button
+            {
+                Text = "J'ai compté le stock",
+                Location = new System.Drawing.Point(220, y),
+                Size = new System.Drawing.Size(200, 30)
+            };
+            btnCompte.Click += (s, e) =>
+            {
+                lbl.Text += "\nSaisissez le stock compté (boîtes pleines + unités en vrac), puis enregistrez : le marquage sera levé.";
+                numQuantite.Focus();
+                numQuantite.Select(0, numQuantite.Text.Length);
+            };
+            pnl.Controls.Add(btnCompte);
+
+            // Décaler le formulaire existant sous le bandeau
+            foreach (Control c in Controls) c.Top += h + 12;
+            ClientSize = new System.Drawing.Size(ClientSize.Width, ClientSize.Height + h + 12);
+            Controls.Add(pnl);
+        }
+
+        private void AppliquerCorrection(int nouveauStock)
+        {
+            var conf = MessageBox.Show(
+                $"Ajouter {_unitesManquantes} unité(s) au stock ?\n\n" +
+                $"Stock actuel : {StockService.Formater(_produitOrigine)}\n" +
+                $"Nouveau stock : {StockService.Formater(_produitOrigine, nouveauStock)}\n\n" +
+                "Ce chiffre est une estimation. Si des ventes ont eu lieu depuis, comptez plutôt le stock en rayon.",
+                "Appliquer la correction", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (conf != DialogResult.Yes) return;
+
+            try
+            {
+                VerificationStockService.Resoudre(_produitId.Value, ChoixVerification.CorrectionAppliquee);
+                MessageBox.Show("✅ Stock corrigé.", "Correction appliquée", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Correction de stock", ex);
+                MessageBox.Show("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ResoudreEtFermer(ChoixVerification choix, string question, string resultat)
+        {
+            if (MessageBox.Show(question, "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+            try
+            {
+                VerificationStockService.Resoudre(_produitId.Value, choix);
+                MessageBox.Show(resultat, "Enregistré", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Vérification de stock", ex);
+                MessageBox.Show("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -387,7 +516,18 @@ namespace Pharmacie2.views
                         p.MargeBeneficiaire = marge;
                         p.PrixVente = prixVente;
                         if (stockTouche)
+                        {
+                            int ancienStock = p.QuantiteEnStock;
                             p.QuantiteEnStock = stockEnUnites;
+
+                            // Stock saisi/enregistré à la main : le marquage « à vérifier » est levé
+                            if (p.StockAVerifier)
+                            {
+                                p.StockAVerifier = false;
+                                p.UnitesManquantesEstimees = 0;
+                                VerificationStockService.Tracer(p, ancienStock, ChoixVerification.StockRecompte);
+                            }
+                        }
                         p.SeuilAlerte = (int)numSeuil.Value;
                         p.DateExpiration = dtpDateExpiration.Value;
                         p.UniteVente = uniteVente;
