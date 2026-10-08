@@ -18,6 +18,7 @@ namespace Pharmacie2.views.UserControls
     {
         private readonly AppDbContext _context;
         private int _fournisseurSelectionneId = -1;
+        private CheckBox _chkArchives;
 
         public Uc_Fournisser()
         {
@@ -44,6 +45,19 @@ namespace Pharmacie2.views.UserControls
                 catch { }
             };
 
+            // Archivage (remplace la suppression)
+            _chkArchives = ArchivageUi.Installer(btnDelete, TypeElement.Fournisseur, SelectionFournisseur, () => ChargerFournisseurs(txtSearch.Text));
+            dgvFournisseurs.CellFormatting += (s, e) =>
+            {
+                if (e.RowIndex >= 0 && dgvFournisseurs.Rows[e.RowIndex].DataBoundItem is Fournisseur f && !f.Actif)
+                {
+                    e.CellStyle.BackColor = System.Drawing.Color.Gainsboro;
+                    e.CellStyle.ForeColor = System.Drawing.Color.Gray;
+                    if (dgvFournisseurs.Columns[e.ColumnIndex].Name == "colNom")
+                        e.Value = f.Nom + " (📦 archivé)";
+                }
+            };
+
             ChargerFournisseurs();
 
             btnAdd.Click += btnAdd_Click;
@@ -61,7 +75,8 @@ namespace Pharmacie2.views.UserControls
 
         private void ChargerFournisseurs(string search = null)
         {
-            var query = _context.fournisseur.AsQueryable();
+            bool archives = _chkArchives?.Checked ?? false;
+            var query = _context.fournisseur.AsNoTracking().Where(f => f.Actif || archives);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -106,7 +121,7 @@ namespace Pharmacie2.views.UserControls
             using (var ctx = new AppDbContext())
             {
                 var produits = ctx.produits
-                    .Where(p => p.FournisseurId == fournisseurId)
+                    .Where(p => p.FournisseurId == fournisseurId && p.Actif)
                     .OrderBy(p => p.Nom)
                     .ToList();
 
@@ -243,31 +258,17 @@ namespace Pharmacie2.views.UserControls
             }
         }
 
+        private (int id, string nom, bool actif)? SelectionFournisseur()
+        {
+            var f = GetSelectedFournisseur();
+            if (f == null) return null;
+            return (f.Id, f.Nom, ArchivageService.EstActif(TypeElement.Fournisseur, f.Id));
+        }
+
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var selected = GetSelectedFournisseur();
-            if (selected == null)
-            {
-                MessageBox.Show("Veuillez sélectionner un fournisseur.",
-                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var confirm = MessageBox.Show(
-                $"Supprimer le fournisseur « {selected.Nom} » ?",
-                "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (confirm != DialogResult.Yes) return;
-
-            var fournisseurDb = _context.fournisseur.Find(selected.Id);
-            if (fournisseurDb == null)
-            {
+            if (ArchivageUi.Archiver(TypeElement.Fournisseur, SelectionFournisseur()))
                 ChargerFournisseurs(txtSearch.Text);
-                return;
-            }
-
-            _context.fournisseur.Remove(fournisseurDb);
-            _context.SaveChanges();
-            ChargerFournisseurs(txtSearch.Text);
         }
 
         private void btnClear_Click(object sender, EventArgs e)

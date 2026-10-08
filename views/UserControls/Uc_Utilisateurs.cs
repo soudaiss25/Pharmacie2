@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -10,10 +11,12 @@ namespace Pharmacie2.views.UserControls
         private enum Mode { Aucun, Ajout, Modification }
         private Mode _mode = Mode.Aucun;
         private int _idEnCours = -1;
+        private CheckBox _chkArchives;
 
         public Uc_Utilisateurs()
         {
             InitializeComponent();
+            _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Utilisateur, SelectionUtilisateur, () => ChargerUtilisateurs(txtRecherche.Text));
             this.Load += (s, e) => ChargerUtilisateurs();
         }
 
@@ -25,7 +28,8 @@ namespace Pharmacie2.views.UserControls
             {
                 using (var ctx = new AppDbContext())
                 {
-                    var query = ctx.Users.AsQueryable();
+                    bool archives = _chkArchives?.Checked ?? false;
+                    var query = ctx.Users.Where(u => u.Actif || archives);
 
                     if (!string.IsNullOrWhiteSpace(recherche))
                     {
@@ -47,7 +51,8 @@ namespace Pharmacie2.views.UserControls
                             u.Prenom,
                             u.Login,
                             u.MotDePasse,
-                            u.Role
+                            u.Role,
+                            Statut = u.Actif ? "" : "📦 Archivé"
                         })
                         .ToList();
 
@@ -240,41 +245,21 @@ namespace Pharmacie2.views.UserControls
         private void btnAnnuler_Click(object sender, EventArgs e)
             => AnnulerEdition();
 
+        private (int id, string nom, bool actif)? SelectionUtilisateur()
+        {
+            if (dgvUtilisateurs.SelectedRows.Count == 0) return null;
+            var row = dgvUtilisateurs.SelectedRows[0];
+            int id = Convert.ToInt32(row.Cells["Id"].Value);
+            return (id, $"{row.Cells["Prenom"].Value} {row.Cells["Nom"].Value}",
+                    ArchivageService.EstActif(TypeElement.Utilisateur, id));
+        }
+
         private void btnSupprimer_Click(object sender, EventArgs e)
         {
-            if (dgvUtilisateurs.SelectedRows.Count == 0)
+            if (ArchivageUi.Archiver(TypeElement.Utilisateur, SelectionUtilisateur()))
             {
-                MessageBox.Show("Sélectionnez un utilisateur à supprimer.",
-                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            int id = Convert.ToInt32(dgvUtilisateurs.SelectedRows[0].Cells["Id"].Value);
-            string nom = dgvUtilisateurs.SelectedRows[0].Cells["Nom"].Value?.ToString();
-            string prenom = dgvUtilisateurs.SelectedRows[0].Cells["Prenom"].Value?.ToString();
-
-            if (MessageBox.Show(
-                    $"Supprimer « {prenom} {nom} » ?\nCette action est irréversible.",
-                    "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                != DialogResult.Yes) return;
-
-            try
-            {
-                using (var ctx = new AppDbContext())
-                {
-                    var u = ctx.Users.Find(id);
-                    if (u != null) { ctx.Users.Remove(u); ctx.SaveChanges(); }
-                }
-
                 AnnulerEdition();
                 ChargerUtilisateurs(txtRecherche.Text);
-                MessageBox.Show("Utilisateur supprimé.", "Succès",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

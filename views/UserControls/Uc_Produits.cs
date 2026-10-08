@@ -9,6 +9,8 @@ namespace Pharmacie2.views.UserControls
 {
     public partial class Uc_Produits : UserControl
     {
+        private CheckBox _chkArchives;
+
         public Uc_Produits()
         {
             InitializeComponent();
@@ -16,6 +18,9 @@ namespace Pharmacie2.views.UserControls
             txtRecherche.TextChanged += (s, e) => ChargerProduits();
             cmbTypeFiltre.SelectedIndexChanged += (s, e) => ChargerProduits();
             btnEffacer.Click += (s, e) => { txtRecherche.Clear(); cmbTypeFiltre.SelectedIndex = 0; };
+
+            // Archivage (remplace la suppression)
+            _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Produit, SelectionProduit, ChargerProduits);
         }
 
         private void ChargerProduits()
@@ -24,8 +29,10 @@ namespace Pharmacie2.views.UserControls
             {
                 using (var ctx = new AppDbContext())
                 {
+                    bool archives = _chkArchives?.Checked ?? false;
                     var query = ctx.produits
                         .Include(p => p.Fournisseur)
+                        .Where(p => p.Actif || archives)
                         .AsQueryable();
 
                     // Filtre texte
@@ -54,7 +61,7 @@ namespace Pharmacie2.views.UserControls
                         UniteVente = p.UniteVente,
                         Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
                         Fournisseur = p.Fournisseur?.Nom ?? "—",
-                        Etat = p.EstEnRupture() ? "⚠️ Alerte" : "✅ OK"
+                        Etat = !p.Actif ? "📦 Archivé" : p.EstEnRupture() ? "⚠️ Alerte" : "✅ OK"
                     }).ToList();
 
                     dgvProduits.DataSource = null;
@@ -67,7 +74,12 @@ namespace Pharmacie2.views.UserControls
                     foreach (DataGridViewRow row in dgvProduits.Rows)
                     {
                         string etat = row.Cells["Etat"].Value?.ToString() ?? "";
-                        if (etat.Contains("Alerte"))
+                        if (etat.Contains("Archivé"))
+                        {
+                            row.DefaultCellStyle.BackColor = System.Drawing.Color.Gainsboro;
+                            row.DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
+                        }
+                        else if (etat.Contains("Alerte"))
                         {
                             row.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(255, 224, 178);
                             row.DefaultCellStyle.ForeColor = System.Drawing.Color.DarkRed;
@@ -108,29 +120,18 @@ namespace Pharmacie2.views.UserControls
             }
         }
 
+        private (int id, string nom, bool actif)? SelectionProduit()
+        {
+            if (dgvProduits.SelectedRows.Count == 0) return null;
+            int id = Convert.ToInt32(dgvProduits.SelectedRows[0].Cells["Id"].Value);
+            return (id, dgvProduits.SelectedRows[0].Cells["Nom"].Value?.ToString() ?? "",
+                    ArchivageService.EstActif(TypeElement.Produit, id));
+        }
+
         private void btnSupprimer_Click(object sender, EventArgs e)
         {
-            if (dgvProduits.SelectedRows.Count == 0) return;
-            int id = Convert.ToInt32(dgvProduits.SelectedRows[0].Cells["Id"].Value);
-            string nom = dgvProduits.SelectedRows[0].Cells["Nom"].Value?.ToString();
-
-            if (MessageBox.Show($"Supprimer « {nom} » ?", "Confirmation",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-
-            try
-            {
-                using (var ctx = new AppDbContext())
-                {
-                    var p = ctx.produits.Find(id);
-                    if (p != null) { ctx.produits.Remove(p); ctx.SaveChanges(); }
-                }
+            if (ArchivageUi.Archiver(TypeElement.Produit, SelectionProduit()))
                 ChargerProduits();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
     }
 }

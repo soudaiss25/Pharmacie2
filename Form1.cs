@@ -31,6 +31,14 @@ namespace Pharmacie2
                 var user = ctx.Users.FirstOrDefault(u =>
                     u.Login == login && u.MotDePasse == mdp);
 
+                if (user != null && !user.Actif)
+                {
+                    MessageBox.Show("Ce compte a été archivé. Contactez un administrateur.", "Connexion",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtPassword.Clear();
+                    return;
+                }
+
                 if (user == null)
                 {
                     MessageBox.Show("Login ou mot de passe incorrect.", "Connexion",

@@ -23,7 +23,7 @@ namespace Pharmacie2.views
         {
             using (var ctx = new AppDbContext())
             {
-                var query = ctx.produits.Include(p => p.Fournisseur).AsQueryable();
+                var query = ctx.produits.Include(p => p.Fournisseur).Where(p => p.Actif).AsQueryable();
                 if (!string.IsNullOrWhiteSpace(filtre))
                     query = query.Where(p => p.Nom.ToLower().Contains(filtre.ToLower()));
 

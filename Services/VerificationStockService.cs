@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 
 namespace Pharmacie2.Services
 {
@@ -18,7 +18,7 @@ namespace Pharmacie2.Services
         public static int NombreAVerifier()
         {
             using var ctx = new AppDbContext();
-            return ctx.produits.Count(p => p.StockAVerifier);
+            return ctx.produits.Count(p => p.StockAVerifier && p.Actif);
         }
 
         /// <summary>

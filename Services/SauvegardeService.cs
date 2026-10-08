@@ -67,10 +67,10 @@ namespace Pharmacie2.Services
         private static void ExporterLignesVente(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;VenteId;ProduitId;Quantite;PrixUnitaire;UniteVendue");
+            sb.AppendLine("Id;VenteId;ProduitId;Quantite;PrixUnitaire;UniteVendue;QuantiteUnites");
 
             foreach (var l in ctx.LigneVentes.AsNoTracking().ToList())
-                sb.AppendLine($"{l.Id};{l.VenteId};{l.ProduitId};{l.Quantite};{l.PrixUnitaire};{l.UniteVendue}");
+                sb.AppendLine($"{l.Id};{l.VenteId};{l.ProduitId};{l.Quantite};{l.PrixUnitaire};{l.UniteVendue};{l.QuantiteUnites}");
 
             Ecrire(Path.Combine(dossier, "lignes_vente.csv"), sb.ToString());
         }
@@ -92,13 +92,13 @@ namespace Pharmacie2.Services
             var sb = new StringBuilder();
             sb.AppendLine("Id;Nom;Type;PrixAchat;MargeBeneficiaire;PrixVente;" +
                           "QuantiteEnStock;SeuilAlerte;DateExpiration;UniteVente;" +
-                          "NbUniteParBoite;FournisseurId;Indication;Posologie;NbFoisParJour");
+                          "NbUniteParBoite;FournisseurId;Indication;Posologie;NbFoisParJour;Actif;StockAVerifier;UnitesManquantesEstimees");
 
             foreach (var p in ctx.produits.AsNoTracking().ToList())
                 sb.AppendLine($"{p.Id};{Echap(p.Nom)};{p.Type};{p.PrixAchat};{p.MargeBeneficiaire};" +
                     $"{p.PrixVente};{p.QuantiteEnStock};{p.SeuilAlerte};" +
                     $"{p.DateExpiration:yyyy-MM-dd};{p.UniteVente};{p.NbUniteParBoite};" +
-                    $"{p.FournisseurId};{Echap(p.Indication)};{Echap(p.Posologie)};{p.NbFoisParJour}");
+                    $"{p.FournisseurId};{Echap(p.Indication)};{Echap(p.Posologie)};{p.NbFoisParJour};{p.Actif};{p.StockAVerifier};{p.UnitesManquantesEstimees}");
 
             Ecrire(Path.Combine(dossier, "produits.csv"), sb.ToString());
         }
@@ -106,10 +106,10 @@ namespace Pharmacie2.Services
         private static void ExporterFournisseurs(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;Nom;Contact");
+            sb.AppendLine("Id;Nom;Contact;Actif");
 
             foreach (var f in ctx.fournisseur.AsNoTracking().ToList())
-                sb.AppendLine($"{f.Id};{Echap(f.Nom)};{Echap(f.Contact)}");
+                sb.AppendLine($"{f.Id};{Echap(f.Nom)};{Echap(f.Contact)};{f.Actif}");
 
             Ecrire(Path.Combine(dossier, "fournisseurs.csv"), sb.ToString());
         }
@@ -130,10 +130,10 @@ namespace Pharmacie2.Services
         private static void ExporterLignesCommande(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;CommandeId;ProduitId;Quantite;PrixAchatUnitaire");
+            sb.AppendLine("Id;CommandeId;ProduitId;Quantite;PrixAchatUnitaire;QuantiteRecue");
 
             foreach (var l in ctx.LigneCommandes.AsNoTracking().ToList())
-                sb.AppendLine($"{l.Id};{l.CommandeId};{l.ProduitId};{l.Quantite};{l.PrixAchatUnitaire}");
+                sb.AppendLine($"{l.Id};{l.CommandeId};{l.ProduitId};{l.Quantite};{l.PrixAchatUnitaire};{l.QuantiteRecue}");
 
             Ecrire(Path.Combine(dossier, "lignes_commande.csv"), sb.ToString());
         }
@@ -141,11 +141,11 @@ namespace Pharmacie2.Services
         private static void ExporterMutuelles(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("IdMutuel;NomEmployeur;TauxPriseEnCharge;EmailContact;Telephone");
+            sb.AppendLine("IdMutuel;NomEmployeur;TauxPriseEnCharge;EmailContact;Telephone;Actif");
 
             foreach (var m in ctx.mutuels.AsNoTracking().ToList())
                 sb.AppendLine($"{m.IdMutuel};{Echap(m.NomEmployeur)};{m.TauxPriseEnCharge};" +
-                    $"{Echap(m.EmailContact)};{Echap(m.telephoneEmployeur)}");
+                    $"{Echap(m.EmailContact)};{Echap(m.telephoneEmployeur)};{m.Actif}");
 
             Ecrire(Path.Combine(dossier, "mutuelles.csv"), sb.ToString());
         }
@@ -191,10 +191,10 @@ namespace Pharmacie2.Services
         {
             var sb = new StringBuilder();
             // Ne pas exporter les mots de passe hashés — seulement les infos utiles
-            sb.AppendLine("Id;Nom;Prenom;Login;Role");
+            sb.AppendLine("Id;Nom;Prenom;Login;Role;Actif");
 
             foreach (var u in ctx.Users.AsNoTracking().ToList())
-                sb.AppendLine($"{u.Id};{Echap(u.Nom)};{Echap(u.Prenom)};{Echap(u.Login)};{u.Role}");
+                sb.AppendLine($"{u.Id};{Echap(u.Nom)};{Echap(u.Prenom)};{Echap(u.Login)};{u.Role};{u.Actif}");
 
             Ecrire(Path.Combine(dossier, "utilisateurs.csv"), sb.ToString());
         }

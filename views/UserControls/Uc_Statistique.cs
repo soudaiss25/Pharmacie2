@@ -345,7 +345,7 @@ namespace Pharmacie2.views.UserControls
 
             // Produits en alerte
             var alertes = ctx.produits.AsNoTracking()
-                .Where(p => p.QuantiteEnStock > 0 && p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1))
+                .Where(p => p.Actif && p.QuantiteEnStock > 0 && p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1))
                 .OrderBy(p => p.QuantiteEnStock)
                 .Take(8).ToList();
 
@@ -361,7 +361,7 @@ namespace Pharmacie2.views.UserControls
 
             // Ruptures
             var ruptures = ctx.produits.AsNoTracking()
-                .Where(p => p.QuantiteEnStock <= 0)
+                .Where(p => p.Actif && p.QuantiteEnStock <= 0)
                 .Take(8).ToList();
 
             if (ruptures.Any())
@@ -375,7 +375,7 @@ namespace Pharmacie2.views.UserControls
             // Expirations proches (30 jours)
             DateTime limite = DateTime.Now.AddDays(30);
             var expirations = ctx.produits.AsNoTracking()
-                .Where(p => p.DateExpiration <= limite && p.DateExpiration >= DateTime.Now)
+                .Where(p => p.Actif && p.DateExpiration <= limite && p.DateExpiration >= DateTime.Now)
                 .OrderBy(p => p.DateExpiration)
                 .Take(8).ToList();
 

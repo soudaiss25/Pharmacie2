@@ -33,13 +33,24 @@ namespace Pharmacie2.views.UserControls
         // PARTIE HAUTE — Liste des mutuelles
         // ══════════════════════════════════════════════════════════════════
 
+        private CheckBox _chkArchives;
+
+        private (int id, string nom, bool actif)? SelectionMutuelle()
+        {
+            if (dgvMutuelles.SelectedRows.Count == 0) return null;
+            int id = Convert.ToInt32(dgvMutuelles.SelectedRows[0].Cells["IdMutuel"].Value);
+            return (id, dgvMutuelles.SelectedRows[0].Cells["Mutuelle"].Value?.ToString() ?? "",
+                    ArchivageService.EstActif(TypeElement.Mutuelle, id));
+        }
+
         private void ChargerMutuelles()
         {
             try
             {
                 using (var ctx = new AppDbContext())
                 {
-                    var mutuels = ctx.mutuels.ToList();
+                    bool archives = _chkArchives?.Checked ?? false;
+                    var mutuels = ctx.mutuels.Where(m => m.Actif || archives).ToList();
 
                     // ✅ Charger toutes les ventes mutuelle impayées EN MÉMOIRE d'abord
                     // SQLite ne supporte pas Sum() sur decimal directement en requête EF
@@ -60,7 +71,7 @@ namespace Pharmacie2.views.UserControls
                         return new
                         {
                             m.IdMutuel,
-                            Mutuelle = m.NomEmployeur,
+                            Mutuelle = m.Actif ? m.NomEmployeur : m.NomEmployeur + " (📦 archivée)",
                             Taux = m.TauxPriseEnCharge,
                             Telephone = m.telephoneEmployeur ?? "—",
                             Email = m.EmailContact ?? "—",
@@ -376,16 +387,8 @@ namespace Pharmacie2.views.UserControls
 
         private void btnSupprimer_Click(object sender, EventArgs e)
         {
-            if (dgvMutuelles.SelectedRows.Count == 0) return;
-            int id = Convert.ToInt32(dgvMutuelles.SelectedRows[0].Cells["IdMutuel"].Value);
-            if (MessageBox.Show("Supprimer cette mutuelle ?", "Confirmation",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-            using (var ctx = new AppDbContext())
-            {
-                var m = ctx.mutuels.Find(id);
-                if (m != null) { ctx.mutuels.Remove(m); ctx.SaveChanges(); }
-            }
-            ChargerMutuelles();
+            if (ArchivageUi.Archiver(TypeElement.Mutuelle, SelectionMutuelle()))
+                ChargerMutuelles();
         }
 
         private void btnExportExcel_Click(object sender, EventArgs e)

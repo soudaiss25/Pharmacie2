@@ -55,7 +55,7 @@ namespace Pharmacie2.views
         private void ChargerMutuelles()
         {
             using (var ctx = new AppDbContext())
-                _mutuels = ctx.mutuels.ToList();
+                _mutuels = ctx.mutuels.Where(m => m.Actif).ToList();
         }
 
         private void InitComboMoyenPaiement()

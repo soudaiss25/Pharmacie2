@@ -287,7 +287,11 @@ namespace Pharmacie2.views
         {
             using (var ctx = new AppDbContext())
             {
-                _fournisseurs = ctx.fournisseur.OrderBy(f => f.Nom).ToList();
+                int? fournisseurActuel = _produitId == null ? null
+                    : ctx.produits.Where(x => x.Id == _produitId.Value).Select(x => x.FournisseurId).FirstOrDefault();
+                _fournisseurs = ctx.fournisseur
+                    .Where(f => f.Actif || f.Id == fournisseurActuel)
+                    .OrderBy(f => f.Nom).ToList();
                 cbFournisseur.DataSource = _fournisseurs;
                 cbFournisseur.DisplayMember = "Nom";
                 cbFournisseur.ValueMember = "Id";

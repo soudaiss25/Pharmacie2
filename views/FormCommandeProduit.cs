@@ -73,7 +73,7 @@ namespace Pharmacie2.views
         {
             using (var ctx = new AppDbContext())
             {
-                var noms = ctx.fournisseur.Select(f => f.Nom).ToArray();
+                var noms = ctx.fournisseur.Where(f => f.Actif).Select(f => f.Nom).ToArray();
                 var auto = new AutoCompleteStringCollection();
                 auto.AddRange(noms);
                 txtFournisseur.AutoCompleteCustomSource = auto;
@@ -94,7 +94,12 @@ namespace Pharmacie2.views
                 var f = ctx.fournisseur
                     .FirstOrDefault(x => x.Nom.ToLower() == nom.ToLower());
 
-                if (f != null)
+                if (f != null && !f.Actif)
+                {
+                    lblFournisseurInfo.Text = "⚠️ Fournisseur archivé — réactivez-le avant de commander";
+                    lblFournisseurInfo.ForeColor = System.Drawing.Color.OrangeRed;
+                }
+                else if (f != null)
                 {
                     lblFournisseurInfo.Text =
                         string.IsNullOrWhiteSpace(f.Contact) ? "📞 —" : $"📞 {f.Contact}";
@@ -144,6 +149,14 @@ namespace Pharmacie2.views
                     // Chercher ou créer le fournisseur
                     var fournisseur = ctx.fournisseur
                         .FirstOrDefault(f => f.Nom.ToLower() == fournisseurNom.ToLower());
+
+                    if (fournisseur != null && !fournisseur.Actif)
+                    {
+                        MessageBox.Show(
+                            $"Le fournisseur « {fournisseur.Nom} » est archivé.\nRéactivez-le dans l'écran Fournisseurs avant de lui commander.",
+                            "Fournisseur archivé", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
                     if (fournisseur == null)
                     {

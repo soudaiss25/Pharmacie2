@@ -1,4 +1,4 @@
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 
@@ -16,6 +16,7 @@ namespace Pharmacie2.Services
             using (var ctx = new AppDbContext())
             {
                 produits = ctx.produits.AsNoTracking()
+                    .Where(p => p.Actif)
                     .OrderByDescending(p => p.StockAVerifier)
                     .ThenBy(p => p.Nom)
                     .ToList();

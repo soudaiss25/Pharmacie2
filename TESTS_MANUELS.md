@@ -117,3 +117,48 @@ Un produit non marqué (P4) : aucun bandeau.
 - [ ] Les produits « À vérifier » sont **en tête** et surlignés en orange.
 - [ ] Annuler la boîte d'enregistrement : rien ne se passe, pas d'erreur.
 - [ ] Impression : mise en page paysage, tient en largeur sur une page.
+
+---
+
+# Archivage au lieu de suppression (phase 7)
+
+Sur une copie de la base, avec : un produit déjà **vendu** (A), un produit **jamais vendu** (B), un fournisseur avec commandes (F1),
+un fournisseur sans rien (F2), une mutuelle avec ventes (M1), une mutuelle sans rien (M2), un utilisateur avec des ventes (U1, Caissier),
+un utilisateur sans historique (U2), et votre compte administrateur.
+
+## 13. Produits (écrans Stock **et** Produits)
+- [ ] Le bouton s'appelle maintenant « 📦 Archiver ». À côté : « ♻ Réactiver » et la case « Afficher les archivés ».
+- [ ] Archiver A (vendu) : message « Archiver… restera dans l'historique et les statistiques… » → Oui. A disparaît de la liste.
+- [ ] Cocher « Afficher les archivés » : A réapparaît, grisé, marqué « 📦 Archivé », en bas de la liste.
+- [ ] Vente : « Ajouter un produit » ne propose **pas** A. Commande (Nouvelle commande) : A non proposé non plus.
+- [ ] L'historique des ventes qui contiennent A est inchangé (détail de vente, factures, annulation d'une ancienne vente de A fonctionne et restitue le stock).
+- [ ] Statistiques : le chiffre d'affaires et le « top produits » incluent toujours A.
+- [ ] Archiver B (jamais vendu) : message « n'a aucun historique. Oui = supprimer définitivement / Non = archiver / Annuler » ; tester Annuler (rien), puis Oui (B disparaît pour de bon, même avec « Afficher les archivés »).
+- [ ] Sélectionner A archivé (case cochée) → « Réactiver » : A redevient normal et réapparaît dans les choix de vente.
+- [ ] « Archiver » sur un produit déjà archivé : message « déjà archivé ».
+- [ ] Produit archivé **et** marqué « À vérifier » : il n'est plus compté dans le message de connexion et n'apparaît plus dans le filtre « À vérifier » ; il n'est pas non plus dans la feuille d'inventaire.
+- [ ] Statistiques / recommandations : un produit archivé n'apparaît plus dans les alertes de stock, ruptures ou expirations.
+
+## 14. Fournisseurs
+- [ ] Archiver F1 (avec commandes) : confirmation d'archivage ; F1 disparaît, ses commandes restent visibles dans l'écran Commandes (filtre par fournisseur inclus).
+- [ ] « Afficher les archivés » : F1 grisé « (📦 archivé) ». « Réactiver » le remet.
+- [ ] Fiche produit : la liste des fournisseurs ne propose pas F1 archivé. Un produit déjà lié à F1 garde F1 affiché à l'ouverture de sa fiche.
+- [ ] Nouvelle commande en tapant le nom de F1 archivé : avertissement « Fournisseur archivé… » et la commande est refusée.
+- [ ] F2 (rien) : proposition supprimer / archiver.
+
+## 15. Mutuelles
+- [ ] Archiver M1 (avec ventes) : elle disparaît de la liste et du choix « Mutuelle » en vente ; les ventes mutuelle et les paiements mutuelle déjà faits restent visibles.
+- [ ] « Afficher les archivés » : « (📦 archivée) » ; « Réactiver » la remet.
+- [ ] M2 (rien) : proposition supprimer / archiver.
+
+## 16. Utilisateurs
+- [ ] Archiver U1 (Caissier avec ventes) : il disparaît de la liste. Ses ventes et encaissements gardent son nom (écran Caisse, historique).
+- [ ] Se déconnecter, essayer de se connecter avec U1 : message « Ce compte a été archivé. Contactez un administrateur. »
+- [ ] Réactiver U1 : il peut se reconnecter.
+- [ ] Tenter d'archiver **votre propre compte** : refusé (« Vous ne pouvez pas archiver ou supprimer votre propre compte »).
+- [ ] S'il n'y a qu'un seul administrateur actif : impossible de l'archiver (« Il doit rester au moins un administrateur actif »).
+- [ ] U2 (sans historique) : proposition supprimer / archiver ; « Oui » supprime vraiment.
+
+## 17. Mise à jour d'une base existante
+- [ ] Après la mise à jour : **tous** les produits, fournisseurs, mutuelles et utilisateurs existants sont **actifs** (aucun archivé par erreur) et le nombre de ventes, lignes de vente, commandes, paiements est identique à avant (comparer avec la copie de la base d'avant).
+- [ ] Une sauvegarde `PharmacieDB_avant-migration_…sqlite` a été créée dans le dossier des sauvegardes.

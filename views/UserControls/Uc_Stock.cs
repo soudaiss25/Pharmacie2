@@ -10,6 +10,7 @@ namespace Pharmacie2.views.UserControls
     public partial class Uc_Stock : UserControl
     {
         private readonly AppDbContext _context = new AppDbContext();
+        private CheckBox _chkArchives;
 
         public Uc_Stock()
         {
@@ -48,6 +49,9 @@ namespace Pharmacie2.views.UserControls
             panelButtons.Controls.Add(btnInventaire);
             btnInventaire.Click += btnInventaire_Click;
 
+            // Archivage (remplace la suppression)
+            _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Produit, SelectionProduit, ChargerStock);
+
             ChargerStock();
         }
 
@@ -84,8 +88,12 @@ namespace Pharmacie2.views.UserControls
         {
             string search = txtSearchProduit.Text.ToLower();
 
+            bool archives = _chkArchives?.Checked ?? false;
+
             var query = _context.produits
+                .AsNoTracking()
                 .Include(p => p.Fournisseur)
+                .Where(p => p.Actif || archives)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -101,12 +109,13 @@ namespace Pharmacie2.views.UserControls
             if (cbSeuil.Text == "Sous le seuil")
                 query = query.Where(p => p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
             else if (cbSeuil.Text == "À vérifier")
-                query = query.Where(p => p.StockAVerifier);
+                query = query.Where(p => p.StockAVerifier && p.Actif);
             else if (cbSeuil.Text == "Normal")
                 query = query.Where(p => p.QuantiteEnStock > p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
 
             var data = query
-                .OrderByDescending(p => p.StockAVerifier)   // produits « À vérifier » en premier
+                .OrderByDescending(p => p.Actif)            // archivés en dernier
+                .ThenByDescending(p => p.StockAVerifier)    // produits « À vérifier » en premier
                 .ThenBy(p => p.Nom)
                 .ToList().Select(p => new
             {
@@ -117,7 +126,7 @@ namespace Pharmacie2.views.UserControls
                 // Ex : 9 unités (5/boîte) → « 1 boîte(s) + 4 plaquette(s) »
                 Quantite = StockService.Formater(p),
                 Seuil = $"{p.SeuilAlerte} boîte(s)",
-                Verification = p.StockAVerifier ? "⚠ À vérifier" : "",
+                Verification = !p.Actif ? "📦 Archivé" : p.StockAVerifier ? "⚠ À vérifier" : "",
                 Etat = p.QuantiteEnStock <= 0 ? "Rupture"
                             : p.QuantiteEnStock <= StockService.SeuilEnUnites(p) ? "Alerte"
                             : "OK"
@@ -134,6 +143,14 @@ namespace Pharmacie2.views.UserControls
             if (e.RowIndex < 0 || dgvStock.Columns["Etat"] == null) return;
 
             var etat = dgvStock.Rows[e.RowIndex].Cells["Etat"].Value?.ToString();
+
+            if (dgvStock.Columns["Verification"] != null
+                && dgvStock.Rows[e.RowIndex].Cells["Verification"].Value?.ToString() == "📦 Archivé")
+            {
+                dgvStock.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.Color.Gainsboro;
+                dgvStock.Rows[e.RowIndex].DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
+                return;
+            }
 
             if (dgvStock.Columns["Verification"] != null
                 && !string.IsNullOrEmpty(dgvStock.Rows[e.RowIndex].Cells["Verification"].Value?.ToString()))
@@ -191,31 +208,20 @@ namespace Pharmacie2.views.UserControls
             }
         }
 
-        // ── Supprimer ─────────────────────────────────────────────────────
+        // ── Archiver ──────────────────────────────────────────────────────
+
+        private (int id, string nom, bool actif)? SelectionProduit()
+        {
+            if (dgvStock.SelectedRows.Count == 0) return null;
+            int id = Convert.ToInt32(dgvStock.SelectedRows[0].Cells["Id"].Value);
+            return (id, dgvStock.SelectedRows[0].Cells["Produit"].Value?.ToString() ?? "",
+                    ArchivageService.EstActif(TypeElement.Produit, id));
+        }
 
         private void btnSupprimer_Click(object sender, EventArgs e)
         {
-            if (dgvStock.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Sélectionnez un produit à supprimer.",
-                    "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            int id = Convert.ToInt32(dgvStock.SelectedRows[0].Cells["Id"].Value);
-            string nom = dgvStock.SelectedRows[0].Cells["Produit"].Value?.ToString();
-
-            var confirm = MessageBox.Show(
-                $"Supprimer le produit « {nom} » ?",
-                "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (confirm != DialogResult.Yes) return;
-
-            var produit = _context.produits.Find(id);
-            if (produit == null) return;
-
-            _context.produits.Remove(produit);
-            _context.SaveChanges();
-            ChargerStock();
+            if (ArchivageUi.Archiver(TypeElement.Produit, SelectionProduit()))
+                ChargerStock();
         }
 
         // ── Commander au fournisseur ──────────────────────────────────────
