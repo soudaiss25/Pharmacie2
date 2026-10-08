@@ -18,8 +18,8 @@ namespace Pharmacie2.views.UserControls
         {
             InitializeComponent();
 
-            bool isAdmin = SessionUtilisateur.Courant?.Role == "Administrateur"
-                        || SessionUtilisateur.Courant?.Role == "Pharmacien";
+            bool isAdmin = SessionUtilisateur.Courant?.Role == Roles.Administrateur
+                        || SessionUtilisateur.Courant?.Role == Roles.Pharmacien;
 
             btnModifierVente.Visible = isAdmin;
             btnAnnuler.Visible = isAdmin;
@@ -137,8 +137,8 @@ namespace Pharmacie2.views.UserControls
 
         private void btnModifierVente_Click(object sender, EventArgs e)
         {
-            if (SessionUtilisateur.Courant?.Role != "Administrateur"
-             && SessionUtilisateur.Courant?.Role != "Pharmacien")
+            if (SessionUtilisateur.Courant?.Role != Roles.Administrateur
+             && SessionUtilisateur.Courant?.Role != Roles.Pharmacien)
             {
                 MessageBox.Show("Accès réservé à l'administrateur ou au pharmacien.",
                     "Accès refusé", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -211,7 +211,7 @@ namespace Pharmacie2.views.UserControls
 
         private void btnAnnuler_Click(object sender, EventArgs e)
         {
-            if (SessionUtilisateur.Courant?.Role != "Administrateur")
+            if (SessionUtilisateur.Courant?.Role != Roles.Administrateur)
             {
                 MessageBox.Show("Seul l'administrateur peut annuler une vente.",
                     "Accès refusé", MessageBoxButtons.OK, MessageBoxIcon.Warning);

@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Pharmacie2.Models;
 
 namespace Pharmacie2.Services
@@ -82,7 +82,7 @@ namespace Pharmacie2.Services
 
             var maintenant = Maintenant();
             using var ctx = new AppDbContext();
-            var u = ctx.Users.FirstOrDefault(x => x.Login == login && x.Role == "Administrateur" && x.Actif);
+            var u = ctx.Users.FirstOrDefault(x => x.Login == login && x.Role == Roles.Administrateur && x.Actif);
 
             if (u == null)
             {

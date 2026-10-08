@@ -101,8 +101,8 @@ namespace Pharmacie2.Services
                 throw new InvalidOperationException("Vous ne pouvez pas archiver ou supprimer votre propre compte.");
 
             var u = ctx.Users.Find(id);
-            if (u != null && u.Role == "Administrateur" && u.Actif
-                && !ctx.Users.Any(x => x.Id != id && x.Actif && x.Role == "Administrateur"))
+            if (u != null && u.Role == Roles.Administrateur && u.Actif
+                && !ctx.Users.Any(x => x.Id != id && x.Actif && x.Role == Roles.Administrateur))
                 throw new InvalidOperationException("Il doit rester au moins un administrateur actif.");
         }
 

@@ -33,6 +33,25 @@ namespace Pharmacie2
             panelLogin.Controls.Add(lienOubli);
         }
 
+        /// <summary>
+        /// Déconnexion : on vide la session et on ré-affiche CETTE fenêtre de connexion (jamais une seconde).
+        /// Fermeture par la croix : on quitte l'application.
+        /// </summary>
+        private void ApresFermetureDePage(bool deconnexion)
+        {
+            if (!deconnexion)
+            {
+                Application.Exit();
+                return;
+            }
+
+            SessionUtilisateur.Deconnecter();
+            txtUsername.Clear();
+            txtPassword.Clear();
+            Show();
+            txtUsername.Focus();
+        }
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
             string login = txtUsername.Text.Trim();
@@ -66,7 +85,7 @@ namespace Pharmacie2
                 }
 
                 // Administrateur sans clé de secours (première connexion après la mise à jour) : en créer une
-                if (user.Role == "Administrateur" && !CleSecoursService.AUneCle(user.Id))
+                if (user.Role == Roles.Administrateur && !CleSecoursService.AUneCle(user.Id))
                     FormCleSecours.GenererAfficherEtEnregistrer(this, user.Id);
 
                 // ? Stocker l'utilisateur connecté en session
@@ -74,10 +93,10 @@ namespace Pharmacie2
 
                 this.Hide();
 
-                if (user.Role == "Caissier")
+                if (user.Role == Roles.Caissier)
                 {
                     var caisse = new PageCaissier(user);
-                    caisse.FormClosed += (s, args) => Application.Exit();
+                    caisse.FormClosed += (s, args) => ApresFermetureDePage(caisse.DeconnexionDemandee);
                     caisse.Show();
                 }
                 else
@@ -94,7 +113,7 @@ namespace Pharmacie2
                     }
 
                     var accueil = new PageAccueil(user);
-                    accueil.FormClosed += (s, args) => Application.Exit();
+                    accueil.FormClosed += (s, args) => ApresFermetureDePage(accueil.DeconnexionDemandee);
                     accueil.Show();
                     if (verifierStock)
                         accueil.OuvrirStockAVerifier();

@@ -381,7 +381,7 @@ namespace Pharmacie2.views.UserControls
             if (tabMain.SelectedTab != tabHistorique) return;
             if (dgvHistorique.SelectedRows.Count == 0) return;
 
-            if (SessionUtilisateur.Courant?.Role != "Administrateur")
+            if (SessionUtilisateur.Courant?.Role != Roles.Administrateur)
             {
                 MessageBox.Show("Seul l'administrateur peut supprimer une dépense.",
                     "Accès refusé", MessageBoxButtons.OK, MessageBoxIcon.Warning);

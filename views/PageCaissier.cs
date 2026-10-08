@@ -6,7 +6,7 @@ using Pharmacie2.Models;
 
 namespace Pharmacie2.views
 {
-    public partial class PageCaissier : Form
+    public partial class PageCaissier : Form, IPageSession
     {
         private readonly User _user;
 
@@ -333,10 +333,12 @@ namespace Pharmacie2.views
             ChargerVentesSession();
         }
 
+        public bool DeconnexionDemandee { get; private set; }
+
         private void btnDeconnexion_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            new Form1().Show();
+            DeconnexionDemandee = true;
+            Close();   // Form1 (la fenêtre de connexion, unique) se ré-affiche : pas de Application.Exit
         }
     }
 }

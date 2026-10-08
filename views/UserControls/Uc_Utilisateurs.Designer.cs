@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
+using Pharmacie2.Models;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -240,7 +241,7 @@ namespace Pharmacie2.views.UserControls
             cbRole.FlatStyle = FlatStyle.Flat;
             cbRole.BackColor = Color.FromArgb(245, 250, 245);
             cbRole.Enabled = false;
-            cbRole.Items.AddRange(new object[] { "Administrateur", "Pharmacien", "Caissier" });
+            cbRole.Items.AddRange(new object[] { Roles.Administrateur, Roles.Pharmacien, Roles.Caissier });
 
             pnlFormulaire.Controls.Add(lblRole);
             pnlFormulaire.Controls.Add(cbRole);

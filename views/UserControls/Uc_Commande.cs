@@ -181,7 +181,12 @@ namespace Pharmacie2.views.UserControls
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Chargement des lignes de la commande", ex);
+                MessageBox.Show("Impossible d'afficher le détail de la commande : " + ex.Message,
+                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void MettreAJourBoutons()

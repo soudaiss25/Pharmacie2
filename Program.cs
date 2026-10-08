@@ -10,6 +10,7 @@ namespace Pharmacie2
         static void Main()
         {
             ApplicationConfiguration.Initialize();
+            GestionErreurs.Installer();   // journal + message simple en français pour toute erreur imprévue
 
             // Doit passer AVANT tout accès à la base.
             MigrationEmplacementBase.Executer();

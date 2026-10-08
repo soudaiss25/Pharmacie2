@@ -4,7 +4,7 @@ using Pharmacie2.Models;
 
 namespace Pharmacie2.views
 {
-    public partial class PageAccueil : Form
+    public partial class PageAccueil : Form, IPageSession
     {
         private readonly User _user;
 
@@ -99,18 +99,12 @@ namespace Pharmacie2.views
             }
         }
 
+        public bool DeconnexionDemandee { get; private set; }
+
         private void btnDeconnexion_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            var login = new Form1();
-            login.Show();
-        }
-
-        private void btnDeconnexion_Click_1(object sender, EventArgs e)
-        {
-            this.Hide();
-            var login = new Form1();
-            login.Show();
+            DeconnexionDemandee = true;
+            Close();   // Form1 (la fenêtre de connexion, unique) se ré-affiche : pas de Application.Exit
         }
 
         private void lblTitre_Click(object sender, EventArgs e) { }

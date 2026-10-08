@@ -95,9 +95,9 @@ namespace Pharmacie2.views.UserControls
 
                 row.Cells["Role"].Style.BackColor = role switch
                 {
-                    "Administrateur" => System.Drawing.Color.FromArgb(46, 125, 50),
-                    "Pharmacien" => System.Drawing.Color.FromArgb(25, 118, 210),
-                    "Caissier" => System.Drawing.Color.FromArgb(230, 120, 0),
+                    Roles.Administrateur => System.Drawing.Color.FromArgb(46, 125, 50),
+                    Roles.Pharmacien => System.Drawing.Color.FromArgb(25, 118, 210),
+                    Roles.Caissier => System.Drawing.Color.FromArgb(230, 120, 0),
                     _ => System.Drawing.Color.Gray
                 };
             }

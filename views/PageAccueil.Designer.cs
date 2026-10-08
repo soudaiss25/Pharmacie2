@@ -99,7 +99,7 @@ namespace Pharmacie2.views
             BtnMenu(btnSauvegarde2, "💾 Sauvegarder données", y, btnSauvegarde_Click); y += gap;
             var btnDossierSauvegardes = new Button();
             BtnMenu(btnDossierSauvegardes, "📂 Dossier des sauvegardes", y, btnOuvrirDossierSauvegardes_Click); y += gap;
-            BtnMenu(btnDeconnexion, "🚪 Déconnexion", y + 10, btnDeconnexion_Click_1);
+            BtnMenu(btnDeconnexion, "🚪 Déconnexion", y + 10, btnDeconnexion_Click);
 
             // Agrandir le panel pour contenir tous les boutons
             panelMenu.Size = new Size(220, 720);

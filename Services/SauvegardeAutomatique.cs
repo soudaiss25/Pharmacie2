@@ -1,4 +1,4 @@
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 
@@ -70,7 +70,8 @@ namespace Pharmacie2.Services
             }
             catch
             {
-                try { if (File.Exists(temporaire)) File.Delete(temporaire); } catch { }
+                try { if (File.Exists(temporaire)) File.Delete(temporaire); }
+                catch (Exception exNettoyage) { Journal.Erreur("Nettoyage du fichier temporaire de sauvegarde", exNettoyage); }
                 throw;
             }
         }

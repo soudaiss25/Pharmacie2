@@ -17,6 +17,13 @@
         /// <summary>Session de caisse actuellement ouverte (null si aucune).</summary>
         public static SessionCaisse SessionCaisseEnCours { get; set; }
 
+        /// <summary>Vide l'utilisateur connecté et la session de caisse en cours (déconnexion).</summary>
+        public static void Deconnecter()
+        {
+            Courant = null;
+            SessionCaisseEnCours = null;
+        }
+
         /// <summary>Recharge depuis la DB la dernière session ouverte, si elle existe.</summary>
         public static void ChargerSessionCaisseActive()
         {

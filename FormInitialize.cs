@@ -51,7 +51,7 @@ namespace Pharmacie2
                     Prenom = txtPrenom.Text.Trim(),
                     Login = txtLogin.Text.Trim(),
                     MotDePasse = MotDePasseService.Hacher(txtPassword.Text.Trim()),
-                    Role = "Administrateur"
+                    Role = Roles.Administrateur
                 };
 
                 context.Users.Add(admin);
@@ -68,8 +68,10 @@ namespace Pharmacie2
             FormCleSecours.GenererAfficherEtEnregistrer(this, nouvelAdminId);
 
             // Ouvre Form1
+            var connexion = new Form1();
+            connexion.FormClosed += (s, args) => Application.Exit();   // sinon ce formulaire masqué garderait l'application ouverte
             this.Hide();
-            new Form1().Show();
+            connexion.Show();
         }
     }
 }

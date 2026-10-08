@@ -308,7 +308,7 @@ namespace Pharmacie2.views.UserControls
             using (var ctx = new AppDbContext())
             {
                 var users = ctx.Users
-                    .Where(u => u.Role == "Caissier" || u.Role == "Pharmacien")
+                    .Where(u => u.Role == Roles.Caissier || u.Role == Roles.Pharmacien)
                     .OrderBy(u => u.Nom).ToList();
                 foreach (var u in users)
                     cbFiltreUser.Items.Add(new UserItem(u.Id, $"{u.Prenom} {u.Nom}"));

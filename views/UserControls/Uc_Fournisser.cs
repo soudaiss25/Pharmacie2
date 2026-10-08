@@ -16,14 +16,12 @@ namespace Pharmacie2.views.UserControls
     /// </summary>
     public partial class Uc_Fournisser : UserControl
     {
-        private readonly AppDbContext _context;
         private int _fournisseurSelectionneId = -1;
         private CheckBox _chkArchives;
 
         public Uc_Fournisser()
         {
             InitializeComponent();
-            _context = new AppDbContext();
             dgvFournisseurs.AutoGenerateColumns = false;
 
             // Lier les colonnes aux proprietes du modele Fournisseur
@@ -42,7 +40,11 @@ namespace Pharmacie2.views.UserControls
                         dist < splitMain.Height - splitMain.Panel2MinSize)
                         splitMain.SplitterDistance = dist;
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Journal.Erreur("Réglage de la séparation de l'écran Fournisseurs", ex);
+                    MessageBox.Show("Mise en page impossible : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             };
 
             // Archivage (remplace la suppression)
@@ -76,7 +78,8 @@ namespace Pharmacie2.views.UserControls
         private void ChargerFournisseurs(string search = null)
         {
             bool archives = _chkArchives?.Checked ?? false;
-            var query = _context.fournisseur.AsNoTracking().Where(f => f.Actif || archives);
+            using var ctx = new AppDbContext();
+            var query = ctx.fournisseur.AsNoTracking().Where(f => f.Actif || archives);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -86,8 +89,9 @@ namespace Pharmacie2.views.UserControls
                     (f.Contact != null && f.Contact.ToLower().Contains(search)));
             }
 
+            var liste = query.OrderBy(f => f.Nom).ToList();   // lu avant la fermeture du contexte
             dgvFournisseurs.DataSource = null;
-            dgvFournisseurs.DataSource = query.OrderBy(f => f.Nom).ToList();
+            dgvFournisseurs.DataSource = liste;
 
             // Vider le panneau produits quand la liste change
             dgvProduits.Rows.Clear();
@@ -242,7 +246,9 @@ namespace Pharmacie2.views.UserControls
                 return;
             }
 
-            var fournisseurDb = _context.fournisseur.Find(selected.Id);
+            Fournisseur fournisseurDb;
+            using (var ctxEdit = new AppDbContext())
+                fournisseurDb = ctxEdit.fournisseur.AsNoTracking().FirstOrDefault(x => x.Id == selected.Id);
             if (fournisseurDb == null)
             {
                 MessageBox.Show("Fournisseur introuvable.", "Erreur",

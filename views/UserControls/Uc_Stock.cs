@@ -9,7 +9,6 @@ namespace Pharmacie2.views.UserControls
 {
     public partial class Uc_Stock : UserControl
     {
-        private readonly AppDbContext _context = new AppDbContext();
         private CheckBox _chkArchives;
 
         public Uc_Stock()
@@ -90,6 +89,7 @@ namespace Pharmacie2.views.UserControls
 
             bool archives = _chkArchives?.Checked ?? false;
 
+            using var _context = new AppDbContext();
             var query = _context.produits
                 .AsNoTracking()
                 .Include(p => p.Fournisseur)
