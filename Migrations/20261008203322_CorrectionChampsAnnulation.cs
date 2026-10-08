@@ -18,9 +18,8 @@ namespace Pharmacie2.Migrations
                 oldClrType: typeof(string),
                 oldType: "TEXT");
 
-            // Les ventes actives avaient DateAnnulation = date de vente et MotifAnnulation = "null" (une chaîne).
-            migrationBuilder.Sql("UPDATE ventes SET DateAnnulation = NULL, MotifAnnulation = NULL WHERE Statut <> 'Annulée';");
-            migrationBuilder.Sql("UPDATE ventes SET MotifAnnulation = NULL WHERE MotifAnnulation = 'null';");
+            // Le nettoyage des données est dans la migration suivante (NettoyageChampsAnnulation) :
+            // EF exécute les Sql() AVANT la reconstruction de la table, la colonne serait donc encore NOT NULL.
         }
 
         /// <inheritdoc />
