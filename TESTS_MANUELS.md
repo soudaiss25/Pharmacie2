@@ -54,3 +54,66 @@ Noter à chaque étape le stock affiché dans l'écran **Stock**.
 - [ ] Après lancement, `%LOCALAPPDATA%\Pharmacie2Data\Sauvegardes` contient `PharmacieDB_AAAA-MM-JJ.sqlite`.
 - [ ] Bouton « Dossier des sauvegardes » dans le menu : ouvre ce dossier.
 - [ ] Lancer l'application depuis un autre dossier : même base, mêmes données.
+
+---
+
+# Stocks « À vérifier » et feuille d'inventaire
+
+## 8. Préparer une base de test avec des produits « À vérifier »
+
+La détection se fait **une seule fois**, pendant la migration `DetectionStocksAVerifier`. Il faut donc créer les
+commandes avec l'ancienne version, puis lancer la nouvelle. Travailler sur une base de test (jamais celle de la pharmacie).
+
+**Méthode A (fidèle à la réalité)**
+1. Sauvegarder (renommer) votre dossier `%LOCALAPPDATA%\Pharmacie2Data` s'il existe, pour repartir d'une base de développement.
+2. Dans Visual Studio : `git stash` si besoin, puis `git checkout 19c3fd0` (phase 5, **avant** la correction de la réception).
+3. Lancer (F5). Créer un utilisateur Administrateur, un fournisseur « Four test », puis 5 produits :
+   - P1 « Test reçu » : 5 plaquettes/boîte, stock 0 ; P2 « Test reçu boîte » : vendu à la boîte uniquement (1 par boîte) ;
+   - P3 « Test partiel » : 5/boîte ; P4 « Test sans commande » : 5/boîte, stock 30 ; P5 « Test en attente » : 5/boîte.
+4. Écran Commandes : commander **10 boîtes** de P1 → « Marquer reçu » (le stock de P1 passe à 10 au lieu de 50 : c'est l'ancien défaut). Commander 10 boîtes de P2 → « Marquer reçu ». Commander 6 boîtes de P3 → « Reçu partiellement » (saisir 3). Commander 4 boîtes de P5 → ne pas réceptionner.
+5. Fermer l'application, puis `git checkout fiabilisation` et relancer (F5) : la migration s'exécute au démarrage.
+6. Résultat attendu : P1 marqué (estimation 40), P3 marqué (sans estimation), P2, P4, P5 **non** marqués.
+
+**Méthode B (rapide)** : sur une base à jour, avec un outil SQLite (par ex. DB Browser), créer les mêmes produits et commandes, puis
+`UPDATE produits SET StockAVerifier=1, UnitesManquantesEstimees=40, MotifVerification='10 boîte(s) reçue(s) avant la correction : seulement 10 unité(s) ajoutée(s) au lieu de 50.' WHERE Nom='Test reçu';`
+(pour P3 : `UnitesManquantesEstimees=0`). Cette méthode ne teste pas la migration elle-même (déjà couverte par les tests automatiques).
+
+Avant chaque série de tests, faire une copie de la base pour pouvoir recommencer.
+
+## 9. Message à la connexion
+- [ ] Se connecter en **Administrateur** : message « 2 produit(s) ont peut-être un stock incorrect… Voulez-vous les vérifier maintenant ? ». Une seule fois (pas de second message en naviguant dans l'application).
+- [ ] « **Plus tard** » : le message se ferme, le tableau de bord s'ouvre normalement.
+- [ ] Se déconnecter, se reconnecter : le message réapparaît (une fois par session).
+- [ ] « **Oui** » : l'écran **Stock** s'ouvre, filtré sur « À vérifier » (P1 et P3 seulement).
+- [ ] Même test avec un **Pharmacien**.
+- [ ] Un **Caissier** ne voit **aucun** message.
+- [ ] Base sans produit marqué : aucun message, aucun changement visible.
+
+## 10. Écran Stock
+- [ ] Colonne « Vérification » avec « ⚠ À vérifier » sur P1 et P3, lignes surlignées en jaune.
+- [ ] Dans la liste complète, les produits marqués sont **en tête**.
+- [ ] Le filtre (liste déroulante du seuil) propose « À vérifier » : seuls P1 et P3 restent.
+- [ ] Les autres filtres (« Sous le seuil », « En rupture »…) fonctionnent toujours.
+
+## 11. Fiche produit d'un produit marqué
+Ouvrir P1 (« Test reçu », stock 10, estimation 40) :
+- [ ] Bandeau orange en haut avec le motif : « 10 boîte(s) reçue(s) avant la correction : seulement 10 unité(s) ajoutée(s) au lieu de 50. »
+- [ ] Bouton « Appliquer la correction (+ 40 unités → nouveau stock : 10 boîte(s)) » présent. Cliquer → confirmation → Oui : stock = 50 unités (10 boîtes), la fiche se ferme, le produit n'est plus « À vérifier ». Le journal (`Logs\journal_AAAA-MM.log`) contient la ligne « Vérification de stock… ».
+- [ ] Sur une copie fraîche de la base : « Non » à la confirmation → rien ne change, le bandeau reste.
+- [ ] Bouton « **Le stock est correct** » (sur une autre copie) : confirmation → le marquage est levé, le stock **n'est pas modifié**.
+- [ ] Bouton « **J'ai compté le stock** » : le curseur va sur « Boîtes pleines » ; saisir un nouveau stock, enregistrer → marquage levé, stock = valeur saisie (journalisé).
+- [ ] « J'ai compté » puis fermer la fiche **sans enregistrer** → le produit reste « À vérifier ».
+- [ ] Enregistrer la fiche en changeant seulement le prix (stock non touché) → le produit **reste** « À vérifier ».
+
+Ouvrir P3 (« Test partiel », Reçu partiellement) :
+- [ ] Bandeau orange avec « quantité reçue inconnue… ».
+- [ ] **Pas** de bouton « Appliquer la correction » (seulement « Le stock est correct » et « J'ai compté le stock »).
+
+Un produit non marqué (P4) : aucun bandeau.
+
+## 12. Feuille d'inventaire
+- [ ] Écran Stock → « 🖨 Feuille d'inventaire » → choisir un emplacement → le fichier `Inventaire_AAAA-MM-JJ.xlsx` se crée et s'ouvre dans Excel sans erreur.
+- [ ] Colonnes : Produit, Unité, Stock affiché (ex. « 2 boîte(s) + 3 plaquette(s) »), **Boîtes comptées** et **Unités en vrac comptées** (vides), À vérifier.
+- [ ] Les produits « À vérifier » sont **en tête** et surlignés en orange.
+- [ ] Annuler la boîte d'enregistrement : rien ne se passe, pas d'erreur.
+- [ ] Impression : mise en page paysage, tient en largeur sur une page.
