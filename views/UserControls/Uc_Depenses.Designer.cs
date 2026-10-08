@@ -1,472 +1,962 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace Pharmacie2.views.UserControls
+﻿namespace Pharmacie2.views.UserControls
 {
     partial class Uc_Depenses
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && components != null) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
-        // ── Contrôles ─────────────────────────────────────────────────────
-        private Panel pnlHeader;
-        private Label lblTitre;
-        private TabControl tabMain;
-        private TabPage tabMensuel, tabAnnuel, tabHistorique;
+        #region Code généré par le Concepteur Windows Form
 
-        // Onglet mensuel — filtres
-        private Panel pnlFiltreMensuel;
-        private Label lblMoisLabel, lblAnneeLabel, lblPeriodeMensuel;
-        private ComboBox cbMois, cbAnnee;
-        private Button btnActualiser, btnNouvelleDepense;
-
-        // Onglet mensuel — deux panels côte à côte (pas de SplitContainer)
-        private Panel pnlGauche;   // Fill — Revenus + Charges
-        private Panel pnlDroite;   // Right — Résultat net
-
-        // Revenus — labels
-        private Label lblRevTitre;
-        private Label lblEspecesT, lblEspeces;
-        private Label lblCBT, lblCB;
-        private Label lblAvancesT, lblAvancesCredit;
-        private Label lblMutuellePT, lblMutuelleP;
-        private Label lblMutuelleET, lblMutuelleE;
-        private Label lblSepRevenus;
-        private Label lblTotalRevenusT, lblTotalRevenus;
-
-        // Charges — labels
-        private Label lblChargeTitre;
-        private Label lblCOGST, lblCOGS;
-        private Label lblSalairesT, lblSalaires;
-        private Label lblLoyerT, lblLoyer;
-        private Label lblFacturesT, lblFactures;
-        private Label lblFournituresT, lblFournitures;
-        private Label lblAutresT, lblAutres;
-        private Label lblSepCharges;
-        private Label lblTotalChargesT, lblTotalCharges;
-
-        // Panel droit = Résultat net
-        private Panel pnlResultat;
-        private Label lblBeneficeLabel, lblBeneficeNet, lblMarge;
-
-        // Onglet annuel
-        private Panel pnlFiltreAnnuel;
-        private Label lblAnneeAnnuelLabel;
-        private ComboBox cbAnneeAnnuel;
-        private DataGridView dgvAnnuel;
-        private DataGridViewTextBoxColumn
-            colMois, colCA, colCOGS, colDepenses, colBenefice, colMarge;
-
-        // Onglet historique
-        private Panel pnlFiltreHisto;
-        private Label lblFiltreHistoCat;
-        private ComboBox cbFiltreHistoCat;
-        private Button btnSupprimerDep;
-        private Label lblTotalHistorique;
-        private DataGridView dgvHistorique;
-        private DataGridViewTextBoxColumn
-            colHistId, colHistDate, colHistCat, colHistDesc, colHistMontant, colHistSaisi;
-
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
         private void InitializeComponent()
         {
-            pnlHeader = new Panel(); lblTitre = new Label();
-            tabMain = new TabControl();
-            tabMensuel = new TabPage(); tabAnnuel = new TabPage(); tabHistorique = new TabPage();
-            pnlFiltreMensuel = new Panel();
-            lblMoisLabel = new Label(); cbMois = new ComboBox();
-            lblAnneeLabel = new Label(); cbAnnee = new ComboBox();
-            lblPeriodeMensuel = new Label();
-            btnActualiser = new Button(); btnNouvelleDepense = new Button();
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTitre = new System.Windows.Forms.Label();
+            this.tabMain = new System.Windows.Forms.TabControl();
+            this.tabMensuel = new System.Windows.Forms.TabPage();
+            this.tlpMensuel = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlFiltreMensuel = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblMoisLabel = new System.Windows.Forms.Label();
+            this.cbMois = new System.Windows.Forms.ComboBox();
+            this.lblAnneeLabel = new System.Windows.Forms.Label();
+            this.cbAnnee = new System.Windows.Forms.ComboBox();
+            this.btnActualiser = new System.Windows.Forms.Button();
+            this.btnNouvelleDepense = new System.Windows.Forms.Button();
+            this.lblPeriodeMensuel = new System.Windows.Forms.Label();
+            this.tlpCorps = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlGauche = new System.Windows.Forms.TableLayoutPanel();
+            this.lblRevTitre = new System.Windows.Forms.Label();
+            this.lblEspecesT = new System.Windows.Forms.Label();
+            this.lblEspeces = new System.Windows.Forms.Label();
+            this.lblCBT = new System.Windows.Forms.Label();
+            this.lblCB = new System.Windows.Forms.Label();
+            this.lblAvancesT = new System.Windows.Forms.Label();
+            this.lblAvancesCredit = new System.Windows.Forms.Label();
+            this.lblMutuellePT = new System.Windows.Forms.Label();
+            this.lblMutuelleP = new System.Windows.Forms.Label();
+            this.lblMutuelleET = new System.Windows.Forms.Label();
+            this.lblMutuelleE = new System.Windows.Forms.Label();
+            this.lblTotalRevenusT = new System.Windows.Forms.Label();
+            this.lblTotalRevenus = new System.Windows.Forms.Label();
+            this.pnlDroite = new System.Windows.Forms.TableLayoutPanel();
+            this.lblChargeTitre = new System.Windows.Forms.Label();
+            this.lblCOGST = new System.Windows.Forms.Label();
+            this.lblCOGS = new System.Windows.Forms.Label();
+            this.lblSalairesT = new System.Windows.Forms.Label();
+            this.lblSalaires = new System.Windows.Forms.Label();
+            this.lblLoyerT = new System.Windows.Forms.Label();
+            this.lblLoyer = new System.Windows.Forms.Label();
+            this.lblFacturesT = new System.Windows.Forms.Label();
+            this.lblFactures = new System.Windows.Forms.Label();
+            this.lblFournituresT = new System.Windows.Forms.Label();
+            this.lblFournitures = new System.Windows.Forms.Label();
+            this.lblAutresT = new System.Windows.Forms.Label();
+            this.lblAutres = new System.Windows.Forms.Label();
+            this.lblTotalChargesT = new System.Windows.Forms.Label();
+            this.lblTotalCharges = new System.Windows.Forms.Label();
+            this.pnlResultat = new System.Windows.Forms.TableLayoutPanel();
+            this.lblBeneficeLabel = new System.Windows.Forms.Label();
+            this.lblBeneficeNet = new System.Windows.Forms.Label();
+            this.lblMarge = new System.Windows.Forms.Label();
+            this.tabAnnuel = new System.Windows.Forms.TabPage();
+            this.tlpAnnuel = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlFiltreAnnuel = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblAnneeAnnuelLabel = new System.Windows.Forms.Label();
+            this.cbAnneeAnnuel = new System.Windows.Forms.ComboBox();
+            this.dgvAnnuel = new System.Windows.Forms.DataGridView();
+            this.tabHistorique = new System.Windows.Forms.TabPage();
+            this.tlpHisto = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlFiltreHisto = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblFiltreHistoLabel = new System.Windows.Forms.Label();
+            this.cbFiltreHistoCat = new System.Windows.Forms.ComboBox();
+            this.btnSupprimerDep = new System.Windows.Forms.Button();
+            this.dgvHistorique = new System.Windows.Forms.DataGridView();
+            this.lblTotalHistorique = new System.Windows.Forms.Label();
+            this.colMois = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCA = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCOGS = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDepenses = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colBenefice = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMarge = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHistoId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHistoDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHistoCat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHistoDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHistoMontant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHistoUser = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAnnuel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHistorique)).BeginInit();
+            this.tlpRoot.SuspendLayout();
+            this.tabMain.SuspendLayout();
+            this.tabMensuel.SuspendLayout();
+            this.tlpMensuel.SuspendLayout();
+            this.pnlFiltreMensuel.SuspendLayout();
+            this.tlpCorps.SuspendLayout();
+            this.pnlGauche.SuspendLayout();
+            this.pnlDroite.SuspendLayout();
+            this.pnlResultat.SuspendLayout();
+            this.tabAnnuel.SuspendLayout();
+            this.tlpAnnuel.SuspendLayout();
+            this.pnlFiltreAnnuel.SuspendLayout();
+            this.tabHistorique.SuspendLayout();
+            this.tlpHisto.SuspendLayout();
+            this.pnlFiltreHisto.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // tlpRoot
+            // 
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 2;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.tlpRoot.Controls.Add(this.tabMain, 0, 1);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
+            // 
+            // lblTitre
+            // 
+            this.lblTitre.Text = "Dépenses et résultat";
+            this.lblTitre.AutoSize = true;
+            this.lblTitre.Tag = "titre";
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Name = "lblTitre";
+            // 
+            // tabMain
+            // 
+            this.tabMain.Controls.Add(this.tabMensuel);
+            this.tabMain.Controls.Add(this.tabAnnuel);
+            this.tabMain.Controls.Add(this.tabHistorique);
+            this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabMain.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tabMain.Name = "tabMain";
+            // 
+            // tabMensuel
+            // 
+            this.tabMensuel.Controls.Add(this.tlpMensuel);
+            this.tabMensuel.Text = "Résultat du mois";
+            this.tabMensuel.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.tabMensuel.UseVisualStyleBackColor = true;
+            this.tabMensuel.Name = "tabMensuel";
+            // 
+            // tlpMensuel
+            // 
+            this.tlpMensuel.ColumnCount = 1;
+            this.tlpMensuel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpMensuel.RowCount = 2;
+            this.tlpMensuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpMensuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpMensuel.Controls.Add(this.pnlFiltreMensuel, 0, 0);
+            this.tlpMensuel.Controls.Add(this.tlpCorps, 0, 1);
+            this.tlpMensuel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMensuel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpMensuel.Name = "tlpMensuel";
+            // 
+            // pnlFiltreMensuel
+            // 
+            this.pnlFiltreMensuel.Controls.Add(this.lblMoisLabel);
+            this.pnlFiltreMensuel.Controls.Add(this.cbMois);
+            this.pnlFiltreMensuel.Controls.Add(this.lblAnneeLabel);
+            this.pnlFiltreMensuel.Controls.Add(this.cbAnnee);
+            this.pnlFiltreMensuel.Controls.Add(this.btnActualiser);
+            this.pnlFiltreMensuel.Controls.Add(this.btnNouvelleDepense);
+            this.pnlFiltreMensuel.Controls.Add(this.lblPeriodeMensuel);
+            this.pnlFiltreMensuel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFiltreMensuel.AutoSize = true;
+            this.pnlFiltreMensuel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlFiltreMensuel.WrapContents = true;
+            this.pnlFiltreMensuel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.pnlFiltreMensuel.Name = "pnlFiltreMensuel";
+            // 
+            // lblMoisLabel
+            // 
+            this.lblMoisLabel.Text = "Mois";
+            this.lblMoisLabel.AutoSize = true;
+            this.lblMoisLabel.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblMoisLabel.Name = "lblMoisLabel";
+            // 
+            // cbMois
+            // 
+            this.cbMois.Width = 140;
+            this.cbMois.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMois.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbMois.Name = "cbMois";
+            // 
+            // lblAnneeLabel
+            // 
+            this.lblAnneeLabel.Text = "Année";
+            this.lblAnneeLabel.AutoSize = true;
+            this.lblAnneeLabel.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblAnneeLabel.Name = "lblAnneeLabel";
+            // 
+            // cbAnnee
+            // 
+            this.cbAnnee.Width = 90;
+            this.cbAnnee.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbAnnee.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbAnnee.Name = "cbAnnee";
+            // 
+            // btnActualiser
+            // 
+            this.btnActualiser.Text = "Actualiser";
+            this.btnActualiser.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnActualiser.Name = "btnActualiser";
+            // 
+            // btnNouvelleDepense
+            // 
+            this.btnNouvelleDepense.Text = "Nouvelle dépense";
+            this.btnNouvelleDepense.Tag = "primaire";
+            this.btnNouvelleDepense.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnNouvelleDepense.Name = "btnNouvelleDepense";
+            // 
+            // lblPeriodeMensuel
+            // 
+            this.lblPeriodeMensuel.Text = "";
+            this.lblPeriodeMensuel.AutoSize = true;
+            this.lblPeriodeMensuel.Tag = "note";
+            this.lblPeriodeMensuel.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
+            this.lblPeriodeMensuel.Name = "lblPeriodeMensuel";
+            // 
+            // tlpCorps
+            // 
+            this.tlpCorps.ColumnCount = 3;
+            this.tlpCorps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.0F));
+            this.tlpCorps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.0F));
+            this.tlpCorps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.0F));
+            this.tlpCorps.RowCount = 1;
+            this.tlpCorps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpCorps.Controls.Add(this.pnlGauche, 0, 0);
+            this.tlpCorps.Controls.Add(this.pnlDroite, 1, 0);
+            this.tlpCorps.Controls.Add(this.pnlResultat, 2, 0);
+            this.tlpCorps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCorps.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpCorps.Name = "tlpCorps";
+            // 
+            // pnlGauche
+            // 
+            this.pnlGauche.ColumnCount = 2;
+            this.pnlGauche.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlGauche.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.RowCount = 7;
+            this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlGauche.Controls.Add(this.lblRevTitre, 0, 0);
+            this.pnlGauche.SetColumnSpan(this.lblRevTitre, 2);
+            this.pnlGauche.Controls.Add(this.lblEspecesT, 0, 1);
+            this.pnlGauche.Controls.Add(this.lblEspeces, 1, 1);
+            this.pnlGauche.Controls.Add(this.lblCBT, 0, 2);
+            this.pnlGauche.Controls.Add(this.lblCB, 1, 2);
+            this.pnlGauche.Controls.Add(this.lblAvancesT, 0, 3);
+            this.pnlGauche.Controls.Add(this.lblAvancesCredit, 1, 3);
+            this.pnlGauche.Controls.Add(this.lblMutuellePT, 0, 4);
+            this.pnlGauche.Controls.Add(this.lblMutuelleP, 1, 4);
+            this.pnlGauche.Controls.Add(this.lblMutuelleET, 0, 5);
+            this.pnlGauche.Controls.Add(this.lblMutuelleE, 1, 5);
+            this.pnlGauche.Controls.Add(this.lblTotalRevenusT, 0, 6);
+            this.pnlGauche.Controls.Add(this.lblTotalRevenus, 1, 6);
+            this.pnlGauche.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlGauche.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.pnlGauche.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
+            this.pnlGauche.Tag = "carte";
+            this.pnlGauche.Name = "pnlGauche";
+            // 
+            // lblRevTitre
+            // 
+            this.lblRevTitre.Text = "Argent reçu";
+            this.lblRevTitre.AutoSize = true;
+            this.lblRevTitre.Tag = "section";
+            this.lblRevTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.lblRevTitre.Name = "lblRevTitre";
+            // 
+            // lblEspecesT
+            // 
+            this.lblEspecesT.Text = "Espèces (comptant)";
+            this.lblEspecesT.AutoSize = true;
+            this.lblEspecesT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEspecesT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblEspecesT.Name = "lblEspecesT";
+            // 
+            // lblEspeces
+            // 
+            this.lblEspeces.Text = "";
+            this.lblEspeces.AutoSize = true;
+            this.lblEspeces.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblEspeces.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblEspeces.Name = "lblEspeces";
+            // 
+            // lblCBT
+            // 
+            this.lblCBT.Text = "Carte, chèque et mobile";
+            this.lblCBT.AutoSize = true;
+            this.lblCBT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCBT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblCBT.Name = "lblCBT";
+            // 
+            // lblCB
+            // 
+            this.lblCB.Text = "";
+            this.lblCB.AutoSize = true;
+            this.lblCB.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCB.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblCB.Name = "lblCB";
+            // 
+            // lblAvancesT
+            // 
+            this.lblAvancesT.Text = "Versements sur crédits";
+            this.lblAvancesT.AutoSize = true;
+            this.lblAvancesT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblAvancesT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblAvancesT.Name = "lblAvancesT";
+            // 
+            // lblAvancesCredit
+            // 
+            this.lblAvancesCredit.Text = "";
+            this.lblAvancesCredit.AutoSize = true;
+            this.lblAvancesCredit.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblAvancesCredit.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblAvancesCredit.Name = "lblAvancesCredit";
+            // 
+            // lblMutuellePT
+            // 
+            this.lblMutuellePT.Text = "Part des patients (mutuelle)";
+            this.lblMutuellePT.AutoSize = true;
+            this.lblMutuellePT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMutuellePT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblMutuellePT.Name = "lblMutuellePT";
+            // 
+            // lblMutuelleP
+            // 
+            this.lblMutuelleP.Text = "";
+            this.lblMutuelleP.AutoSize = true;
+            this.lblMutuelleP.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMutuelleP.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblMutuelleP.Name = "lblMutuelleP";
+            // 
+            // lblMutuelleET
+            // 
+            this.lblMutuelleET.Text = "Part réglée par les mutuelles";
+            this.lblMutuelleET.AutoSize = true;
+            this.lblMutuelleET.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMutuelleET.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblMutuelleET.Name = "lblMutuelleET";
+            // 
+            // lblMutuelleE
+            // 
+            this.lblMutuelleE.Text = "";
+            this.lblMutuelleE.AutoSize = true;
+            this.lblMutuelleE.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMutuelleE.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblMutuelleE.Name = "lblMutuelleE";
+            // 
+            // lblTotalRevenusT
+            // 
+            this.lblTotalRevenusT.Text = "Total reçu";
+            this.lblTotalRevenusT.AutoSize = true;
+            this.lblTotalRevenusT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTotalRevenusT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblTotalRevenusT.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalRevenusT.Name = "lblTotalRevenusT";
+            // 
+            // lblTotalRevenus
+            // 
+            this.lblTotalRevenus.Text = "";
+            this.lblTotalRevenus.AutoSize = true;
+            this.lblTotalRevenus.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTotalRevenus.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblTotalRevenus.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalRevenus.Name = "lblTotalRevenus";
+            // 
+            // pnlDroite
+            // 
+            this.pnlDroite.ColumnCount = 2;
+            this.pnlDroite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlDroite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowCount = 8;
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlDroite.Controls.Add(this.lblChargeTitre, 0, 0);
+            this.pnlDroite.SetColumnSpan(this.lblChargeTitre, 2);
+            this.pnlDroite.Controls.Add(this.lblCOGST, 0, 1);
+            this.pnlDroite.Controls.Add(this.lblCOGS, 1, 1);
+            this.pnlDroite.Controls.Add(this.lblSalairesT, 0, 2);
+            this.pnlDroite.Controls.Add(this.lblSalaires, 1, 2);
+            this.pnlDroite.Controls.Add(this.lblLoyerT, 0, 3);
+            this.pnlDroite.Controls.Add(this.lblLoyer, 1, 3);
+            this.pnlDroite.Controls.Add(this.lblFacturesT, 0, 4);
+            this.pnlDroite.Controls.Add(this.lblFactures, 1, 4);
+            this.pnlDroite.Controls.Add(this.lblFournituresT, 0, 5);
+            this.pnlDroite.Controls.Add(this.lblFournitures, 1, 5);
+            this.pnlDroite.Controls.Add(this.lblAutresT, 0, 6);
+            this.pnlDroite.Controls.Add(this.lblAutres, 1, 6);
+            this.pnlDroite.Controls.Add(this.lblTotalChargesT, 0, 7);
+            this.pnlDroite.Controls.Add(this.lblTotalCharges, 1, 7);
+            this.pnlDroite.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDroite.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.pnlDroite.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
+            this.pnlDroite.Tag = "carte";
+            this.pnlDroite.Name = "pnlDroite";
+            // 
+            // lblChargeTitre
+            // 
+            this.lblChargeTitre.Text = "Dépenses";
+            this.lblChargeTitre.AutoSize = true;
+            this.lblChargeTitre.Tag = "section";
+            this.lblChargeTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.lblChargeTitre.Name = "lblChargeTitre";
+            // 
+            // lblCOGST
+            // 
+            this.lblCOGST.Text = "Achat des produits vendus";
+            this.lblCOGST.AutoSize = true;
+            this.lblCOGST.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCOGST.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblCOGST.Name = "lblCOGST";
+            // 
+            // lblCOGS
+            // 
+            this.lblCOGS.Text = "";
+            this.lblCOGS.AutoSize = true;
+            this.lblCOGS.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCOGS.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblCOGS.Name = "lblCOGS";
+            // 
+            // lblSalairesT
+            // 
+            this.lblSalairesT.Text = "Salaires";
+            this.lblSalairesT.AutoSize = true;
+            this.lblSalairesT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSalairesT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblSalairesT.Name = "lblSalairesT";
+            // 
+            // lblSalaires
+            // 
+            this.lblSalaires.Text = "";
+            this.lblSalaires.AutoSize = true;
+            this.lblSalaires.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSalaires.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblSalaires.Name = "lblSalaires";
+            // 
+            // lblLoyerT
+            // 
+            this.lblLoyerT.Text = "Loyer";
+            this.lblLoyerT.AutoSize = true;
+            this.lblLoyerT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblLoyerT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblLoyerT.Name = "lblLoyerT";
+            // 
+            // lblLoyer
+            // 
+            this.lblLoyer.Text = "";
+            this.lblLoyer.AutoSize = true;
+            this.lblLoyer.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblLoyer.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblLoyer.Name = "lblLoyer";
+            // 
+            // lblFacturesT
+            // 
+            this.lblFacturesT.Text = "Factures";
+            this.lblFacturesT.AutoSize = true;
+            this.lblFacturesT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFacturesT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblFacturesT.Name = "lblFacturesT";
+            // 
+            // lblFactures
+            // 
+            this.lblFactures.Text = "";
+            this.lblFactures.AutoSize = true;
+            this.lblFactures.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblFactures.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblFactures.Name = "lblFactures";
+            // 
+            // lblFournituresT
+            // 
+            this.lblFournituresT.Text = "Fournitures";
+            this.lblFournituresT.AutoSize = true;
+            this.lblFournituresT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFournituresT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblFournituresT.Name = "lblFournituresT";
+            // 
+            // lblFournitures
+            // 
+            this.lblFournitures.Text = "";
+            this.lblFournitures.AutoSize = true;
+            this.lblFournitures.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblFournitures.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblFournitures.Name = "lblFournitures";
+            // 
+            // lblAutresT
+            // 
+            this.lblAutresT.Text = "Autres";
+            this.lblAutresT.AutoSize = true;
+            this.lblAutresT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblAutresT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblAutresT.Name = "lblAutresT";
+            // 
+            // lblAutres
+            // 
+            this.lblAutres.Text = "";
+            this.lblAutres.AutoSize = true;
+            this.lblAutres.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblAutres.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblAutres.Name = "lblAutres";
+            // 
+            // lblTotalChargesT
+            // 
+            this.lblTotalChargesT.Text = "Total des dépenses";
+            this.lblTotalChargesT.AutoSize = true;
+            this.lblTotalChargesT.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTotalChargesT.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.lblTotalChargesT.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalChargesT.Name = "lblTotalChargesT";
+            // 
+            // lblTotalCharges
+            // 
+            this.lblTotalCharges.Text = "";
+            this.lblTotalCharges.AutoSize = true;
+            this.lblTotalCharges.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblTotalCharges.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblTotalCharges.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalCharges.Name = "lblTotalCharges";
+            // 
+            // pnlResultat
+            // 
+            this.pnlResultat.ColumnCount = 1;
+            this.pnlResultat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlResultat.RowCount = 3;
+            this.pnlResultat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlResultat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlResultat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlResultat.Controls.Add(this.lblBeneficeLabel, 0, 0);
+            this.pnlResultat.Controls.Add(this.lblBeneficeNet, 0, 1);
+            this.pnlResultat.Controls.Add(this.lblMarge, 0, 2);
+            this.pnlResultat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlResultat.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.pnlResultat.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.pnlResultat.Tag = "carte";
+            this.pnlResultat.Name = "pnlResultat";
+            // 
+            // lblBeneficeLabel
+            // 
+            this.lblBeneficeLabel.Text = "Bénéfice du mois";
+            this.lblBeneficeLabel.AutoSize = true;
+            this.lblBeneficeLabel.Tag = "section";
+            this.lblBeneficeLabel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.lblBeneficeLabel.Name = "lblBeneficeLabel";
+            // 
+            // lblBeneficeNet
+            // 
+            this.lblBeneficeNet.Text = "";
+            this.lblBeneficeNet.AutoSize = true;
+            this.lblBeneficeNet.Tag = "kpi";
+            this.lblBeneficeNet.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.lblBeneficeNet.Name = "lblBeneficeNet";
+            // 
+            // lblMarge
+            // 
+            this.lblMarge.Text = "";
+            this.lblMarge.AutoSize = true;
+            this.lblMarge.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.lblMarge.Name = "lblMarge";
+            // 
+            // tabAnnuel
+            // 
+            this.tabAnnuel.Controls.Add(this.tlpAnnuel);
+            this.tabAnnuel.Text = "Résultat de l'année";
+            this.tabAnnuel.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.tabAnnuel.UseVisualStyleBackColor = true;
+            this.tabAnnuel.Name = "tabAnnuel";
+            // 
+            // tlpAnnuel
+            // 
+            this.tlpAnnuel.ColumnCount = 1;
+            this.tlpAnnuel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpAnnuel.RowCount = 2;
+            this.tlpAnnuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpAnnuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpAnnuel.Controls.Add(this.pnlFiltreAnnuel, 0, 0);
+            this.tlpAnnuel.Controls.Add(this.dgvAnnuel, 0, 1);
+            this.tlpAnnuel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpAnnuel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpAnnuel.Name = "tlpAnnuel";
+            // 
+            // pnlFiltreAnnuel
+            // 
+            this.pnlFiltreAnnuel.Controls.Add(this.lblAnneeAnnuelLabel);
+            this.pnlFiltreAnnuel.Controls.Add(this.cbAnneeAnnuel);
+            this.pnlFiltreAnnuel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFiltreAnnuel.AutoSize = true;
+            this.pnlFiltreAnnuel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlFiltreAnnuel.WrapContents = true;
+            this.pnlFiltreAnnuel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.pnlFiltreAnnuel.Name = "pnlFiltreAnnuel";
+            // 
+            // lblAnneeAnnuelLabel
+            // 
+            this.lblAnneeAnnuelLabel.Text = "Année";
+            this.lblAnneeAnnuelLabel.AutoSize = true;
+            this.lblAnneeAnnuelLabel.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblAnneeAnnuelLabel.Name = "lblAnneeAnnuelLabel";
+            // 
+            // cbAnneeAnnuel
+            // 
+            this.cbAnneeAnnuel.Width = 90;
+            this.cbAnneeAnnuel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbAnneeAnnuel.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbAnneeAnnuel.Name = "cbAnneeAnnuel";
+            // 
+            // dgvAnnuel
+            // 
+            this.dgvAnnuel.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colMois,
+            this.colCA,
+            this.colCOGS,
+            this.colDepenses,
+            this.colBenefice,
+            this.colMarge});
+            this.dgvAnnuel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvAnnuel.AutoGenerateColumns = false;
+            this.dgvAnnuel.ReadOnly = true;
+            this.dgvAnnuel.Name = "dgvAnnuel";
+            this.dgvAnnuel.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvAnnuel_CellFormatting);
+            // 
+            // tabHistorique
+            // 
+            this.tabHistorique.Controls.Add(this.tlpHisto);
+            this.tabHistorique.Text = "Dépenses saisies";
+            this.tabHistorique.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.tabHistorique.UseVisualStyleBackColor = true;
+            this.tabHistorique.Name = "tabHistorique";
+            // 
+            // tlpHisto
+            // 
+            this.tlpHisto.ColumnCount = 1;
+            this.tlpHisto.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpHisto.RowCount = 3;
+            this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpHisto.Controls.Add(this.pnlFiltreHisto, 0, 0);
+            this.tlpHisto.Controls.Add(this.dgvHistorique, 0, 1);
+            this.tlpHisto.Controls.Add(this.lblTotalHistorique, 0, 2);
+            this.tlpHisto.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHisto.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpHisto.Name = "tlpHisto";
+            // 
+            // pnlFiltreHisto
+            // 
+            this.pnlFiltreHisto.Controls.Add(this.lblFiltreHistoLabel);
+            this.pnlFiltreHisto.Controls.Add(this.cbFiltreHistoCat);
+            this.pnlFiltreHisto.Controls.Add(this.btnSupprimerDep);
+            this.pnlFiltreHisto.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFiltreHisto.AutoSize = true;
+            this.pnlFiltreHisto.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlFiltreHisto.WrapContents = true;
+            this.pnlFiltreHisto.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.pnlFiltreHisto.Name = "pnlFiltreHisto";
+            // 
+            // lblFiltreHistoLabel
+            // 
+            this.lblFiltreHistoLabel.Text = "Catégorie";
+            this.lblFiltreHistoLabel.AutoSize = true;
+            this.lblFiltreHistoLabel.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblFiltreHistoLabel.Name = "lblFiltreHistoLabel";
+            // 
+            // cbFiltreHistoCat
+            // 
+            this.cbFiltreHistoCat.Width = 160;
+            this.cbFiltreHistoCat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFiltreHistoCat.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbFiltreHistoCat.Name = "cbFiltreHistoCat";
+            // 
+            // btnSupprimerDep
+            // 
+            this.btnSupprimerDep.Text = "Supprimer la dépense";
+            this.btnSupprimerDep.Tag = "danger";
+            this.btnSupprimerDep.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.btnSupprimerDep.Name = "btnSupprimerDep";
+            // 
+            // dgvHistorique
+            // 
+            this.dgvHistorique.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colHistoId,
+            this.colHistoDate,
+            this.colHistoCat,
+            this.colHistoDesc,
+            this.colHistoMontant,
+            this.colHistoUser});
+            this.dgvHistorique.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvHistorique.AutoGenerateColumns = false;
+            this.dgvHistorique.ReadOnly = true;
+            this.dgvHistorique.Name = "dgvHistorique";
+            // 
+            // lblTotalHistorique
+            // 
+            this.lblTotalHistorique.Text = "";
+            this.lblTotalHistorique.AutoSize = true;
+            this.lblTotalHistorique.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalHistorique.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.lblTotalHistorique.Name = "lblTotalHistorique";
+            // 
+            // colMois
+            // 
+            this.colMois.HeaderText = "Mois";
+            this.colMois.Name = "Mois";
+            this.colMois.DataPropertyName = "Mois";
+            this.colMois.FillWeight = 14F;
+            this.colMois.MinimumWidth = 70;
+            this.colMois.ReadOnly = true;
+            // 
+            // colCA
+            // 
+            this.colCA.HeaderText = "Ventes";
+            this.colCA.Name = "CA";
+            this.colCA.DataPropertyName = "CA";
+            this.colCA.FillWeight = 20F;
+            this.colCA.MinimumWidth = 100;
+            this.colCA.ReadOnly = true;
+            this.colCA.Tag = "montant";
+            // 
+            // colCOGS
+            // 
+            this.colCOGS.HeaderText = "Achat des produits vendus";
+            this.colCOGS.Name = "Cogs";
+            this.colCOGS.DataPropertyName = "Cogs";
+            this.colCOGS.FillWeight = 22F;
+            this.colCOGS.MinimumWidth = 120;
+            this.colCOGS.ReadOnly = true;
+            this.colCOGS.Tag = "montant";
+            // 
+            // colDepenses
+            // 
+            this.colDepenses.HeaderText = "Dépenses";
+            this.colDepenses.Name = "Depenses";
+            this.colDepenses.DataPropertyName = "Depenses";
+            this.colDepenses.FillWeight = 18F;
+            this.colDepenses.MinimumWidth = 100;
+            this.colDepenses.ReadOnly = true;
+            this.colDepenses.Tag = "montant";
+            // 
+            // colBenefice
+            // 
+            this.colBenefice.HeaderText = "Bénéfice";
+            this.colBenefice.Name = "Benefice";
+            this.colBenefice.DataPropertyName = "Benefice";
+            this.colBenefice.FillWeight = 18F;
+            this.colBenefice.MinimumWidth = 100;
+            this.colBenefice.ReadOnly = true;
+            this.colBenefice.Tag = "montant";
+            // 
+            // colMarge
+            // 
+            this.colMarge.HeaderText = "Marge";
+            this.colMarge.Name = "Marge";
+            this.colMarge.DataPropertyName = "Marge";
+            this.colMarge.FillWeight = 8F;
+            this.colMarge.MinimumWidth = 70;
+            this.colMarge.ReadOnly = true;
+            // 
+            // colHistoId
+            // 
+            this.colHistoId.HeaderText = "Id";
+            this.colHistoId.Name = "Id";
+            this.colHistoId.DataPropertyName = "Id";
+            this.colHistoId.FillWeight = 100F;
+            this.colHistoId.MinimumWidth = 60;
+            this.colHistoId.ReadOnly = true;
+            this.colHistoId.Visible = false;
+            // 
+            // colHistoDate
+            // 
+            this.colHistoDate.HeaderText = "Date";
+            this.colHistoDate.Name = "Date";
+            this.colHistoDate.DataPropertyName = "Date";
+            this.colHistoDate.FillWeight = 14F;
+            this.colHistoDate.MinimumWidth = 90;
+            this.colHistoDate.ReadOnly = true;
+            // 
+            // colHistoCat
+            // 
+            this.colHistoCat.HeaderText = "Catégorie";
+            this.colHistoCat.Name = "Categorie";
+            this.colHistoCat.DataPropertyName = "Categorie";
+            this.colHistoCat.FillWeight = 16F;
+            this.colHistoCat.MinimumWidth = 100;
+            this.colHistoCat.ReadOnly = true;
+            // 
+            // colHistoDesc
+            // 
+            this.colHistoDesc.HeaderText = "Description";
+            this.colHistoDesc.Name = "Description";
+            this.colHistoDesc.DataPropertyName = "Description";
+            this.colHistoDesc.FillWeight = 36F;
+            this.colHistoDesc.MinimumWidth = 140;
+            this.colHistoDesc.ReadOnly = true;
+            // 
+            // colHistoMontant
+            // 
+            this.colHistoMontant.HeaderText = "Montant";
+            this.colHistoMontant.Name = "Montant";
+            this.colHistoMontant.DataPropertyName = "Montant";
+            this.colHistoMontant.FillWeight = 18F;
+            this.colHistoMontant.MinimumWidth = 100;
+            this.colHistoMontant.ReadOnly = true;
+            this.colHistoMontant.Tag = "montant";
+            // 
+            // colHistoUser
+            // 
+            this.colHistoUser.HeaderText = "Saisi par";
+            this.colHistoUser.Name = "Utilisateur";
+            this.colHistoUser.DataPropertyName = "Utilisateur";
+            this.colHistoUser.FillWeight = 16F;
+            this.colHistoUser.MinimumWidth = 100;
+            this.colHistoUser.ReadOnly = true;
+            // 
+            // Uc_Depenses
+            // 
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Size = new System.Drawing.Size(1146, 700);
+            this.Name = "Uc_Depenses";
+            this.ResumeLayout(false);
+            this.pnlFiltreHisto.ResumeLayout(false);
+            this.pnlFiltreHisto.PerformLayout();
+            this.tlpHisto.ResumeLayout(false);
+            this.tlpHisto.PerformLayout();
+            this.tabHistorique.ResumeLayout(false);
+            this.pnlFiltreAnnuel.ResumeLayout(false);
+            this.pnlFiltreAnnuel.PerformLayout();
+            this.tlpAnnuel.ResumeLayout(false);
+            this.tlpAnnuel.PerformLayout();
+            this.tabAnnuel.ResumeLayout(false);
+            this.pnlResultat.ResumeLayout(false);
+            this.pnlResultat.PerformLayout();
+            this.pnlDroite.ResumeLayout(false);
+            this.pnlDroite.PerformLayout();
+            this.pnlGauche.ResumeLayout(false);
+            this.pnlGauche.PerformLayout();
+            this.tlpCorps.ResumeLayout(false);
+            this.tlpCorps.PerformLayout();
+            this.pnlFiltreMensuel.ResumeLayout(false);
+            this.pnlFiltreMensuel.PerformLayout();
+            this.tlpMensuel.ResumeLayout(false);
+            this.tlpMensuel.PerformLayout();
+            this.tabMensuel.ResumeLayout(false);
+            this.tabMain.ResumeLayout(false);
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvHistorique)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAnnuel)).EndInit();
 
-            pnlGauche = new Panel();
-
-            lblRevTitre = new Label();
-            lblEspecesT = new Label(); lblEspeces = new Label();
-            lblCBT = new Label(); lblCB = new Label();
-            lblAvancesT = new Label(); lblAvancesCredit = new Label();
-            lblMutuellePT = new Label(); lblMutuelleP = new Label();
-            lblMutuelleET = new Label(); lblMutuelleE = new Label();
-            lblSepRevenus = new Label();
-            lblTotalRevenusT = new Label(); lblTotalRevenus = new Label();
-            lblChargeTitre = new Label();
-            lblCOGST = new Label(); lblCOGS = new Label();
-            lblSalairesT = new Label(); lblSalaires = new Label();
-            lblLoyerT = new Label(); lblLoyer = new Label();
-            lblFacturesT = new Label(); lblFactures = new Label();
-            lblFournituresT = new Label(); lblFournitures = new Label();
-            lblAutresT = new Label(); lblAutres = new Label();
-            lblSepCharges = new Label();
-            lblTotalChargesT = new Label(); lblTotalCharges = new Label();
-            pnlResultat = new Panel();
-            lblBeneficeLabel = new Label(); lblBeneficeNet = new Label(); lblMarge = new Label();
-
-            pnlFiltreAnnuel = new Panel();
-            lblAnneeAnnuelLabel = new Label(); cbAnneeAnnuel = new ComboBox();
-            dgvAnnuel = new DataGridView();
-            colMois = new DataGridViewTextBoxColumn();
-            colCA = new DataGridViewTextBoxColumn();
-            colCOGS = new DataGridViewTextBoxColumn();
-            colDepenses = new DataGridViewTextBoxColumn();
-            colBenefice = new DataGridViewTextBoxColumn();
-            colMarge = new DataGridViewTextBoxColumn();
-
-            pnlFiltreHisto = new Panel();
-            lblFiltreHistoCat = new Label(); cbFiltreHistoCat = new ComboBox();
-            btnSupprimerDep = new Button(); lblTotalHistorique = new Label();
-            dgvHistorique = new DataGridView();
-            colHistId = new DataGridViewTextBoxColumn();
-            colHistDate = new DataGridViewTextBoxColumn();
-            colHistCat = new DataGridViewTextBoxColumn();
-            colHistDesc = new DataGridViewTextBoxColumn();
-            colHistMontant = new DataGridViewTextBoxColumn();
-            colHistSaisi = new DataGridViewTextBoxColumn();
-
-
-            ((System.ComponentModel.ISupportInitialize)dgvAnnuel).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvHistorique).BeginInit();
-            tabMain.SuspendLayout();
-            SuspendLayout();
-
-            // ── HEADER ────────────────────────────────────────────────────
-            lblTitre.Text = "  Dépenses & Résultat";
-            lblTitre.Dock = DockStyle.Fill;
-            lblTitre.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            lblTitre.ForeColor = Color.White;
-            lblTitre.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblTitre.Padding = new Padding(14, 0, 0, 0);
-            pnlHeader.BackColor = Color.FromArgb(183, 28, 28);
-            pnlHeader.Controls.Add(lblTitre);
-            pnlHeader.Dock = DockStyle.Top;
-            pnlHeader.Height = 55;
-
-            // ── TABCONTROL ────────────────────────────────────────────────
-            tabMain.Dock = DockStyle.Fill;
-            tabMain.Font = new Font("Segoe UI", 10F);
-            tabMensuel.Text = "  Résultat mensuel";
-            tabAnnuel.Text = "  Tableau annuel";
-            tabHistorique.Text = "  Historique dépenses";
-            tabMain.TabPages.AddRange(new TabPage[] { tabMensuel, tabAnnuel, tabHistorique });
-
-            // ══════════════════════════════════════════════════════════════
-            // ONGLET 1 — RÉSULTAT MENSUEL
-            // ══════════════════════════════════════════════════════════════
-
-            // Barre filtres (Dock Top)
-            pnlFiltreMensuel.Dock = DockStyle.Top;
-            pnlFiltreMensuel.Height = 50;
-            pnlFiltreMensuel.BackColor = Color.FromArgb(250, 250, 250);
-
-            lblMoisLabel.Text = "Mois :";
-            lblMoisLabel.Location = new Point(10, 15);
-            lblMoisLabel.Size = new Size(44, 22);
-            lblMoisLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-
-            cbMois.Location = new Point(57, 12);
-            cbMois.Size = new Size(140, 28);
-            cbMois.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbMois.Font = new Font("Segoe UI", 9.5F);
-
-            lblAnneeLabel.Text = "Année :";
-            lblAnneeLabel.Location = new Point(210, 15);
-            lblAnneeLabel.Size = new Size(52, 22);
-            lblAnneeLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-
-            cbAnnee.Location = new Point(266, 12);
-            cbAnnee.Size = new Size(90, 28);
-            cbAnnee.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbAnnee.Font = new Font("Segoe UI", 9.5F);
-
-            btnActualiser.Text = "Actualiser";
-            btnActualiser.Location = new Point(370, 11);
-            btnActualiser.Size = new Size(110, 30);
-            btnActualiser.BackColor = Color.FromArgb(69, 90, 100);
-            btnActualiser.ForeColor = Color.White;
-            btnActualiser.FlatStyle = FlatStyle.Flat;
-            btnActualiser.FlatAppearance.BorderSize = 0;
-            btnActualiser.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-
-            btnNouvelleDepense.Text = "+ Saisir une dépense";
-            btnNouvelleDepense.Location = new Point(492, 9);
-            btnNouvelleDepense.Size = new Size(190, 34);
-            btnNouvelleDepense.BackColor = Color.FromArgb(183, 28, 28);
-            btnNouvelleDepense.ForeColor = Color.White;
-            btnNouvelleDepense.FlatStyle = FlatStyle.Flat;
-            btnNouvelleDepense.FlatAppearance.BorderSize = 0;
-            btnNouvelleDepense.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-
-            lblPeriodeMensuel.Text = "";
-            lblPeriodeMensuel.Location = new Point(696, 15);
-            lblPeriodeMensuel.Size = new Size(500, 22);
-            lblPeriodeMensuel.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
-            lblPeriodeMensuel.ForeColor = Color.DimGray;
-
-            pnlFiltreMensuel.Controls.AddRange(new Control[] {
-                lblMoisLabel, cbMois, lblAnneeLabel, cbAnnee,
-                btnActualiser, btnNouvelleDepense, lblPeriodeMensuel });
-
-            // Panel droit — résultat net (Dock Right, largeur fixe)
-            pnlDroite = new Panel();
-            pnlDroite.Dock = DockStyle.Right;
-            pnlDroite.Width = 280;
-            pnlDroite.BackColor = Color.FromArgb(245, 245, 245);
-
-            // ── PANEL GAUCHE — lignes P&L avec Dock empilées ──────────────
-            pnlGauche.Dock = DockStyle.Fill;
-            pnlGauche.BackColor = Color.White;
-            pnlGauche.AutoScroll = true;
-            pnlGauche.Padding = new Padding(20, 12, 20, 12);
-
-            // Helper : crée une ligne titre+valeur en FlowLayout
-            int rowH = 32;
-            int yPos = 12;
-
-            Panel MakeLigne(Label lt, string titre, Label lv, bool isTitre = false, bool isTotal = false)
-            {
-                var pnl = new Panel { Height = rowH, Dock = DockStyle.Top };
-
-                lt.Text = titre;
-                lt.Dock = DockStyle.Fill;
-                lt.Font = isTotal
-                    ? new Font("Segoe UI", 10F, FontStyle.Bold)
-                    : isTitre
-                        ? new Font("Segoe UI", 10F, FontStyle.Bold | FontStyle.Underline)
-                        : new Font("Segoe UI", 9.5F);
-                lt.ForeColor = isTotal
-                    ? Color.FromArgb(50, 50, 50)
-                    : isTitre
-                        ? Color.FromArgb(30, 30, 30)
-                        : Color.FromArgb(70, 70, 70);
-                lt.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-                lt.Padding = new Padding(isTitre ? 0 : 16, 0, 0, 0);
-
-                lv.Text = "—";
-                lv.Dock = DockStyle.Right;
-                lv.Width = 180;
-                lv.Font = isTotal
-                    ? new Font("Segoe UI", 10F, FontStyle.Bold)
-                    : new Font("Segoe UI", 9.5F, FontStyle.Bold);
-                lv.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-                lv.ForeColor = Color.FromArgb(50, 50, 50);
-
-                pnl.Controls.Add(lt);
-                pnl.Controls.Add(lv);
-                return pnl;
-            }
-
-            Panel MakeSep(Color c) => new Panel
-            {
-                Height = 2,
-                Dock = DockStyle.Top,
-                BackColor = c
-            };
-
-            Panel MakeEspace(int h = 8) => new Panel { Height = h, Dock = DockStyle.Top };
-
-            // ── Titre Revenus ─────────────────────────────────────────────
-            lblRevTitre.Text = "📈  REVENUS ENCAISSÉS";
-            lblRevTitre.Dock = DockStyle.Top;
-            lblRevTitre.Height = 36;
-            lblRevTitre.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblRevTitre.ForeColor = Color.White;
-            lblRevTitre.BackColor = Color.FromArgb(27, 94, 32);
-            lblRevTitre.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblRevTitre.Padding = new Padding(14, 0, 0, 0);
-
-            var pnlEspeces = MakeLigne(lblEspecesT, "Ventes comptant (espèces)", lblEspeces);
-            var pnlCB = MakeLigne(lblCBT, "CB / Chèque / Mobile", lblCB);
-            var pnlAvances = MakeLigne(lblAvancesT, "Avances crédit reçues", lblAvancesCredit);
-            var pnlMutP = MakeLigne(lblMutuellePT, "Mutuelle — part patient", lblMutuelleP);
-            var pnlMutE = MakeLigne(lblMutuelleET, "Mutuelle — part entreprise", lblMutuelleE);
-            var pnlTotalR = MakeLigne(lblTotalRevenusT, "TOTAL REVENUS", lblTotalRevenus, false, true);
-
-            // ── Titre Charges ─────────────────────────────────────────────
-            lblChargeTitre.Text = "📉  CHARGES";
-            lblChargeTitre.Dock = DockStyle.Top;
-            lblChargeTitre.Height = 36;
-            lblChargeTitre.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblChargeTitre.ForeColor = Color.White;
-            lblChargeTitre.BackColor = Color.FromArgb(183, 28, 28);
-            lblChargeTitre.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblChargeTitre.Padding = new Padding(14, 0, 0, 0);
-
-            var pnlCOGS = MakeLigne(lblCOGST, "Coût d'achat produits vendus", lblCOGS);
-            var pnlSalaires = MakeLigne(lblSalairesT, "Salaires", lblSalaires);
-            var pnlLoyer = MakeLigne(lblLoyerT, "Loyer", lblLoyer);
-            var pnlFactures = MakeLigne(lblFacturesT, "Factures (eau, électricité...)", lblFactures);
-            var pnlFournitures = MakeLigne(lblFournituresT, "Fournitures & matériel", lblFournitures);
-            var pnlAutres = MakeLigne(lblAutresT, "Autres dépenses", lblAutres);
-            var pnlTotalC = MakeLigne(lblTotalChargesT, "TOTAL CHARGES", lblTotalCharges, false, true);
-
-            // Ordre Dock.Top : le DERNIER ajouté apparaît en HAUT
-            // Donc on ajoute dans l'ordre inverse d'affichage
-            pnlGauche.Controls.Add(pnlTotalC);
-            pnlGauche.Controls.Add(MakeSep(Color.FromArgb(183, 28, 28)));
-            pnlGauche.Controls.Add(pnlAutres);
-            pnlGauche.Controls.Add(pnlFournitures);
-            pnlGauche.Controls.Add(pnlFactures);
-            pnlGauche.Controls.Add(pnlLoyer);
-            pnlGauche.Controls.Add(pnlSalaires);
-            pnlGauche.Controls.Add(pnlCOGS);
-            pnlGauche.Controls.Add(MakeEspace(6));
-            pnlGauche.Controls.Add(lblChargeTitre);
-            pnlGauche.Controls.Add(MakeEspace(10));
-            pnlGauche.Controls.Add(pnlTotalR);
-            pnlGauche.Controls.Add(MakeSep(Color.FromArgb(27, 94, 32)));
-            pnlGauche.Controls.Add(pnlMutE);
-            pnlGauche.Controls.Add(pnlMutP);
-            pnlGauche.Controls.Add(pnlAvances);
-            pnlGauche.Controls.Add(pnlCB);
-            pnlGauche.Controls.Add(pnlEspeces);
-            pnlGauche.Controls.Add(MakeEspace(6));
-            pnlGauche.Controls.Add(lblRevTitre);
-
-
-
-            // ── PANEL DROIT — Résultat net ────────────────────────────────
-            pnlResultat.Dock = DockStyle.Fill;
-            pnlResultat.BackColor = Color.FromArgb(245, 245, 245);
-            pnlResultat.Padding = new Padding(24, 30, 24, 20);
-
-            var barreResultat = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 5,
-                BackColor = Color.FromArgb(183, 28, 28)
-            };
-
-            lblBeneficeLabel.Text = "BÉNÉFICE NET DU MOIS";
-            lblBeneficeLabel.Dock = DockStyle.Top;
-            lblBeneficeLabel.Height = 36;
-            lblBeneficeLabel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblBeneficeLabel.ForeColor = Color.FromArgb(60, 60, 60);
-            lblBeneficeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
-            lblBeneficeNet.Text = "—";
-            lblBeneficeNet.Dock = DockStyle.Top;
-            lblBeneficeNet.Height = 70;
-            lblBeneficeNet.Font = new Font("Segoe UI", 28F, FontStyle.Bold);
-            lblBeneficeNet.ForeColor = Color.FromArgb(27, 94, 32);
-            lblBeneficeNet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
-            lblMarge.Text = "";
-            lblMarge.Dock = DockStyle.Top;
-            lblMarge.Height = 30;
-            lblMarge.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblMarge.ForeColor = Color.DimGray;
-            lblMarge.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
-            // Ordre inverse pour Dock.Top
-            pnlDroite.Controls.Add(lblMarge);
-            pnlDroite.Controls.Add(lblBeneficeNet);
-            pnlDroite.Controls.Add(lblBeneficeLabel);
-            pnlDroite.Controls.Add(barreResultat);
-
-            tabMensuel.Controls.Add(pnlGauche);
-            tabMensuel.Controls.Add(pnlDroite);
-            tabMensuel.Controls.Add(pnlFiltreMensuel);
-
-            // ══════════════════════════════════════════════════════════════
-            // ONGLET 2 — TABLEAU ANNUEL
-            // ══════════════════════════════════════════════════════════════
-
-            pnlFiltreAnnuel.Dock = DockStyle.Top; pnlFiltreAnnuel.Height = 50;
-            pnlFiltreAnnuel.BackColor = Color.FromArgb(250, 250, 250);
-            lblAnneeAnnuelLabel.Text = "Année :"; lblAnneeAnnuelLabel.Location = new Point(10, 15); lblAnneeAnnuelLabel.Size = new Size(52, 22); lblAnneeAnnuelLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cbAnneeAnnuel.Location = new Point(65, 12); cbAnneeAnnuel.Size = new Size(90, 28); cbAnneeAnnuel.DropDownStyle = ComboBoxStyle.DropDownList; cbAnneeAnnuel.Font = new Font("Segoe UI", 9.5F);
-            pnlFiltreAnnuel.Controls.Add(lblAnneeAnnuelLabel);
-            pnlFiltreAnnuel.Controls.Add(cbAnneeAnnuel);
-
-            colMois.Name = "colMois"; colMois.HeaderText = "Mois"; colMois.FillWeight = 50F;
-            colCA.Name = "colCA"; colCA.HeaderText = "CA (KMF)"; colCA.FillWeight = 90F;
-            colCOGS.Name = "colCOGS"; colCOGS.HeaderText = "Achats (KMF)"; colCOGS.FillWeight = 90F;
-            colDepenses.Name = "colDepenses"; colDepenses.HeaderText = "Dépenses (KMF)"; colDepenses.FillWeight = 90F;
-            colBenefice.Name = "colBenefice"; colBenefice.HeaderText = "Bénéfice net"; colBenefice.FillWeight = 90F;
-            colMarge.Name = "colMarge"; colMarge.HeaderText = "Marge %"; colMarge.FillWeight = 40F;
-
-            dgvAnnuel.Columns.AddRange(new DataGridViewColumn[] {
-                colMois, colCA, colCOGS, colDepenses, colBenefice, colMarge });
-            dgvAnnuel.Dock = DockStyle.Fill;
-            dgvAnnuel.ReadOnly = true;
-            dgvAnnuel.AllowUserToAddRows = false;
-            dgvAnnuel.RowHeadersVisible = false;
-            dgvAnnuel.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvAnnuel.BackgroundColor = Color.White;
-            dgvAnnuel.BorderStyle = BorderStyle.None;
-            dgvAnnuel.Font = new Font("Segoe UI", 10F);
-            dgvAnnuel.RowTemplate.Height = 38;
-            dgvAnnuel.ColumnHeadersHeight = 40;
-            dgvAnnuel.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(183, 28, 28);
-            dgvAnnuel.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvAnnuel.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvAnnuel.EnableHeadersVisualStyles = false;
-            dgvAnnuel.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(255, 248, 248);
-
-            tabAnnuel.Controls.Add(dgvAnnuel);
-            tabAnnuel.Controls.Add(pnlFiltreAnnuel);
-
-            // ══════════════════════════════════════════════════════════════
-            // ONGLET 3 — HISTORIQUE
-            // ══════════════════════════════════════════════════════════════
-
-            pnlFiltreHisto.Dock = DockStyle.Top; pnlFiltreHisto.Height = 50;
-            pnlFiltreHisto.BackColor = Color.FromArgb(250, 250, 250);
-            lblFiltreHistoCat.Text = "Catégorie :"; lblFiltreHistoCat.Location = new Point(10, 15); lblFiltreHistoCat.Size = new Size(80, 22); lblFiltreHistoCat.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            cbFiltreHistoCat.Location = new Point(93, 12); cbFiltreHistoCat.Size = new Size(150, 28); cbFiltreHistoCat.DropDownStyle = ComboBoxStyle.DropDownList; cbFiltreHistoCat.Font = new Font("Segoe UI", 9.5F);
-            btnSupprimerDep.Text = "Supprimer"; btnSupprimerDep.Location = new Point(256, 12); btnSupprimerDep.Size = new Size(110, 28);
-            btnSupprimerDep.BackColor = Color.FromArgb(211, 47, 47); btnSupprimerDep.ForeColor = Color.White;
-            btnSupprimerDep.FlatStyle = FlatStyle.Flat; btnSupprimerDep.FlatAppearance.BorderSize = 0;
-            btnSupprimerDep.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblTotalHistorique.Text = ""; lblTotalHistorique.Location = new Point(380, 15); lblTotalHistorique.Size = new Size(500, 22);
-            lblTotalHistorique.Font = new Font("Segoe UI", 9F, FontStyle.Bold); lblTotalHistorique.ForeColor = Color.FromArgb(183, 28, 28);
-            pnlFiltreHisto.Controls.AddRange(new Control[] {
-                lblFiltreHistoCat, cbFiltreHistoCat, btnSupprimerDep, lblTotalHistorique });
-
-            colHistId.Name = "colHistId"; colHistId.Visible = false;
-            colHistDate.Name = "colHistDate"; colHistDate.HeaderText = "Date"; colHistDate.FillWeight = 55F;
-            colHistCat.Name = "colHistCat"; colHistCat.HeaderText = "Catégorie"; colHistCat.FillWeight = 70F;
-            colHistDesc.Name = "colHistDesc"; colHistDesc.HeaderText = "Description"; colHistDesc.FillWeight = 180F;
-            colHistMontant.Name = "colHistMontant"; colHistMontant.HeaderText = "Montant"; colHistMontant.FillWeight = 60F;
-            colHistSaisi.Name = "colHistSaisi"; colHistSaisi.HeaderText = "Saisi par"; colHistSaisi.FillWeight = 70F;
-
-            dgvHistorique.Columns.AddRange(new DataGridViewColumn[] {
-                colHistId, colHistDate, colHistCat, colHistDesc, colHistMontant, colHistSaisi });
-            dgvHistorique.Dock = DockStyle.Fill;
-            dgvHistorique.ReadOnly = true;
-            dgvHistorique.AllowUserToAddRows = false;
-            dgvHistorique.RowHeadersVisible = false;
-            dgvHistorique.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvHistorique.BackgroundColor = Color.White;
-            dgvHistorique.BorderStyle = BorderStyle.None;
-            dgvHistorique.Font = new Font("Segoe UI", 9.5F);
-            dgvHistorique.RowTemplate.Height = 34;
-            dgvHistorique.ColumnHeadersHeight = 36;
-            dgvHistorique.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(183, 28, 28);
-            dgvHistorique.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvHistorique.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dgvHistorique.EnableHeadersVisualStyles = false;
-            dgvHistorique.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(255, 245, 245);
-
-            tabHistorique.Controls.Add(dgvHistorique);
-            tabHistorique.Controls.Add(pnlFiltreHisto);
-
-            // ── ASSEMBLAGE FINAL ───────────────────────────────────────────
-            Controls.Add(tabMain);
-            Controls.Add(pnlHeader);
-
-            BackColor = Color.White;
-            Size = new Size(1200, 750);
-            Name = "Uc_Depenses";
-
-
-            tabMain.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvAnnuel).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvHistorique).EndInit();
-            ResumeLayout(false);
         }
+
+        #endregion
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.Label lblTitre;
+        private System.Windows.Forms.TabControl tabMain;
+        private System.Windows.Forms.TabPage tabMensuel;
+        private System.Windows.Forms.TableLayoutPanel tlpMensuel;
+        private System.Windows.Forms.FlowLayoutPanel pnlFiltreMensuel;
+        private System.Windows.Forms.Label lblMoisLabel;
+        private System.Windows.Forms.ComboBox cbMois;
+        private System.Windows.Forms.Label lblAnneeLabel;
+        private System.Windows.Forms.ComboBox cbAnnee;
+        private System.Windows.Forms.Button btnActualiser;
+        private System.Windows.Forms.Button btnNouvelleDepense;
+        private System.Windows.Forms.Label lblPeriodeMensuel;
+        private System.Windows.Forms.TableLayoutPanel tlpCorps;
+        private System.Windows.Forms.TableLayoutPanel pnlGauche;
+        private System.Windows.Forms.Label lblRevTitre;
+        private System.Windows.Forms.Label lblEspecesT;
+        private System.Windows.Forms.Label lblEspeces;
+        private System.Windows.Forms.Label lblCBT;
+        private System.Windows.Forms.Label lblCB;
+        private System.Windows.Forms.Label lblAvancesT;
+        private System.Windows.Forms.Label lblAvancesCredit;
+        private System.Windows.Forms.Label lblMutuellePT;
+        private System.Windows.Forms.Label lblMutuelleP;
+        private System.Windows.Forms.Label lblMutuelleET;
+        private System.Windows.Forms.Label lblMutuelleE;
+        private System.Windows.Forms.Label lblTotalRevenusT;
+        private System.Windows.Forms.Label lblTotalRevenus;
+        private System.Windows.Forms.TableLayoutPanel pnlDroite;
+        private System.Windows.Forms.Label lblChargeTitre;
+        private System.Windows.Forms.Label lblCOGST;
+        private System.Windows.Forms.Label lblCOGS;
+        private System.Windows.Forms.Label lblSalairesT;
+        private System.Windows.Forms.Label lblSalaires;
+        private System.Windows.Forms.Label lblLoyerT;
+        private System.Windows.Forms.Label lblLoyer;
+        private System.Windows.Forms.Label lblFacturesT;
+        private System.Windows.Forms.Label lblFactures;
+        private System.Windows.Forms.Label lblFournituresT;
+        private System.Windows.Forms.Label lblFournitures;
+        private System.Windows.Forms.Label lblAutresT;
+        private System.Windows.Forms.Label lblAutres;
+        private System.Windows.Forms.Label lblTotalChargesT;
+        private System.Windows.Forms.Label lblTotalCharges;
+        private System.Windows.Forms.TableLayoutPanel pnlResultat;
+        private System.Windows.Forms.Label lblBeneficeLabel;
+        private System.Windows.Forms.Label lblBeneficeNet;
+        private System.Windows.Forms.Label lblMarge;
+        private System.Windows.Forms.TabPage tabAnnuel;
+        private System.Windows.Forms.TableLayoutPanel tlpAnnuel;
+        private System.Windows.Forms.FlowLayoutPanel pnlFiltreAnnuel;
+        private System.Windows.Forms.Label lblAnneeAnnuelLabel;
+        private System.Windows.Forms.ComboBox cbAnneeAnnuel;
+        private System.Windows.Forms.DataGridView dgvAnnuel;
+        private System.Windows.Forms.TabPage tabHistorique;
+        private System.Windows.Forms.TableLayoutPanel tlpHisto;
+        private System.Windows.Forms.FlowLayoutPanel pnlFiltreHisto;
+        private System.Windows.Forms.Label lblFiltreHistoLabel;
+        private System.Windows.Forms.ComboBox cbFiltreHistoCat;
+        private System.Windows.Forms.Button btnSupprimerDep;
+        private System.Windows.Forms.DataGridView dgvHistorique;
+        private System.Windows.Forms.Label lblTotalHistorique;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMois;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCA;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCOGS;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDepenses;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colBenefice;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMarge;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHistoId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHistoDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHistoCat;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHistoDesc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHistoMontant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colHistoUser;
     }
 }

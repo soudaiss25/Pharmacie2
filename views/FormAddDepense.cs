@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -10,6 +12,8 @@ namespace Pharmacie2.views
         public FormAddDepense()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
+            cbCategorie.SelectedIndex = -1;
         }
 
         private void btnEnregistrer_Click(object sender, EventArgs e)
@@ -22,14 +26,12 @@ namespace Pharmacie2.views
                 cbCategorie.Focus(); return;
             }
 
-            if (!decimal.TryParse(txtMontant.Text.Replace(" ", "").Replace(",", "."),
-                    System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    out decimal montant) || montant <= 0)
+            decimal montant = numMontant.Value;
+            if (montant <= 0)
             {
-                MessageBox.Show("Saisissez un montant valide (supérieur à 0).", "Validation",
+                MessageBox.Show("Saisissez un montant supérieur à 0.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtMontant.Focus(); return;
+                numMontant.Focus(); return;
             }
 
             try
@@ -47,12 +49,7 @@ namespace Pharmacie2.views
                     ctx.SaveChanges();
                 }
 
-                MessageBox.Show(
-                    $"✅ Dépense enregistrée !\n\n" +
-                    $"Catégorie : {cbCategorie.Text}\n" +
-                    $"Montant   : {montant:N0} KMF\n" +
-                    $"Date      : {dtpDate.Value:dd/MM/yyyy}",
-                    "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes($"Dépense enregistrée : {cbCategorie.Text}, {Format.Montant(montant)}");
 
                 DialogResult = DialogResult.OK;
                 Close();
