@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 /// <summary>Aides pour piloter des formulaires WinForms sans les afficher (tests).</summary>
@@ -30,6 +30,12 @@ public static class UiHelper
                     {
                         PostMessage(h, 0x0111, (IntPtr)6, IntPtr.Zero);   // WM_COMMAND IDYES
                         PostMessage(h, 0x0111, (IntPtr)1, IntPtr.Zero);   // WM_COMMAND IDOK
+                    }
+                    else
+                    {
+                        PostMessage(h, 0x0111, (IntPtr)7, IntPtr.Zero);   // WM_COMMAND IDNO
+                        PostMessage(h, 0x0111, (IntPtr)1, IntPtr.Zero);   // WM_COMMAND IDOK
+                        PostMessage(h, 0x0111, (IntPtr)2, IntPtr.Zero);   // WM_COMMAND IDCANCEL
                     }
                     PostMessage(h, 0x0010, IntPtr.Zero, IntPtr.Zero);     // WM_CLOSE (secours)
                 }

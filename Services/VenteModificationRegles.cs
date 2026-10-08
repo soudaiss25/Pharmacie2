@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 
 namespace Pharmacie2.Services
 {
@@ -17,6 +17,10 @@ namespace Pharmacie2.Services
                 throw new InvalidOperationException(MessageVenteReglee);
         }
 
+        /// <summary>Part prise en charge par la mutuelle, en KMF entiers (pas de centimes).</summary>
+        public static decimal PartMutuelle(decimal total, decimal tauxPourcent)
+            => Math.Round(total * tauxPourcent / 100m, 0, MidpointRounding.AwayFromZero);
+
         /// <summary>
         /// Applique la mutuelle choisie à la vente. MutuelleReglee ne repasse à false que si la mutuelle
         /// ou le montant de la part mutuelle change réellement. Le taux d'origine est conservé tant que
@@ -28,7 +32,7 @@ namespace Pharmacie2.Services
             {
                 bool memeMutuelle = vente.MutuelId == mutuelle.IdMutuel;
                 decimal taux = memeMutuelle && vente.TauxMutuelle > 0 ? vente.TauxMutuelle : mutuelle.TauxPriseEnCharge;
-                decimal montant = Math.Round(total * taux / 100m, 2);
+                decimal montant = PartMutuelle(total, taux);
 
                 bool change = !memeMutuelle || vente.MontantMutuelle != montant;
 

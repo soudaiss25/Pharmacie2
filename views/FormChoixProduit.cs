@@ -13,10 +13,18 @@ namespace Pharmacie2.views
         public int QuantiteSelectionnee { get; private set; }
         public string UniteSelectionnee { get; private set; } = "Boîte";
 
+        /// <summary>Texte de recherche pré-rempli à l'ouverture (saisi dans la fenêtre de vente).</summary>
+        public string FiltreInitial { get; set; } = "";
+
         public FormChoixProduit()
         {
             InitializeComponent();
             ChargerProduits();
+            Load += (s, e) =>
+            {
+                if (!string.IsNullOrEmpty(FiltreInitial))
+                    txtRecherche.Text = FiltreInitial;   // relance la recherche
+            };
         }
 
         private void ChargerProduits(string filtre = "")

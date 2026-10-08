@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Printing;
-using System.Linq;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
     public partial class FormVente : Form
     {
-        private List<LigneVente> _lignes = new List<LigneVente>();
+        private readonly List<LigneVente> _lignes = new List<LigneVente>();
         private List<Mutuel> _mutuels = new List<Mutuel>();
+        private decimal _total;
+        private bool _enMiseAJour;
+
+        // ID de la dernière vente sauvegardée (pour impression immédiate)
+        private int _derniereVenteId = -1;
+
         /// <summary>Prochain numéro de vente, calculé depuis la base (appelé dans la transaction).</summary>
         private static string GetProchainNumeroVente(AppDbContext ctx)
         {
@@ -29,28 +32,20 @@ namespace Pharmacie2.views
             return "V-" + num.ToString("D6");
         }
 
-        // ID de la dernière vente sauvegardée (pour impression immédiate)
-        private int _derniereVenteId = -1;
-
         public FormVente()
         {
             InitializeComponent();
-            InitListView();
+            Theme.Appliquer(this);
+
+            lblVendeur.Text = "Vendeur : " + SessionUtilisateur.NomComplet;
+            ActiveControl = txtRecherche;   // focus sur la recherche produit dès l'ouverture
+
             ChargerMutuelles();
             InitComboMoyenPaiement();
-            MettreAJourAffichagePaiement();
+            RecalculerTotal();
         }
 
-        private void InitListView()
-        {
-            lvProduits.View = View.Details;
-            lvProduits.FullRowSelect = true;
-            lvProduits.Columns.Add("Produit", 160);
-            lvProduits.Columns.Add("Unité", 70);
-            lvProduits.Columns.Add("Qté", 50);
-            lvProduits.Columns.Add("Prix U.", 90);
-            lvProduits.Columns.Add("Sous-total", 90);
-        }
+        private void FormVente_Shown(object sender, EventArgs e) => txtRecherche.Focus();
 
         private void ChargerMutuelles()
         {
@@ -65,13 +60,50 @@ namespace Pharmacie2.views
             cbPaiement.SelectedIndex = 0;
         }
 
+        // ── Raccourcis clavier ────────────────────────────────────────────
+
+        private void FormVente_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F3)
+            {
+                e.Handled = true;
+                AjouterProduit();
+            }
+            else if (e.KeyCode == Keys.F9)
+            {
+                e.Handled = true;
+                btnValider_Click(sender, EventArgs.Empty);
+            }
+        }
+
+        private void txtRecherche_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;   // Entrée ouvre le choix du produit au lieu de valider la vente
+                AjouterProduit();
+            }
+        }
+
+        private void dgvProduits_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                e.Handled = true;
+                RetirerLigne();
+            }
+        }
+
         // ── Produits ──────────────────────────────────────────────────────
 
-        private void btnAjouter_Click(object sender, EventArgs e)
+        private void btnAjouter_Click(object sender, EventArgs e) => AjouterProduit();
+
+        private void AjouterProduit()
         {
-            using (var form = new FormChoixProduit())
+            using (var form = new FormChoixProduit { FiltreInitial = txtRecherche.Text.Trim() })
             {
-                if (form.ShowDialog() != DialogResult.OK) return;
+                if (form.ShowDialog(this) != DialogResult.OK) return;
 
                 var produit = form.ProduitSelectionne;
                 int qte = form.QuantiteSelectionnee;
@@ -96,7 +128,7 @@ namespace Pharmacie2.views
                 }
 
                 // Prix unitaire selon l'unité choisie
-                decimal prixU = unite == "Boîte"
+                decimal prixU = unite == StockService.UniteBoite
                     ? produit.PrixVente
                     : produit.PrixUnitaireVente;
 
@@ -116,80 +148,86 @@ namespace Pharmacie2.views
                         UniteVendue = unite
                     });
 
-                RafraichirListView();
-                CalculerTotal();
+                txtRecherche.Clear();
+                RafraichirGrille();
+                RecalculerTotal();
+                txtRecherche.Focus();
             }
         }
 
-        private void btnSupprimer_Click(object sender, EventArgs e)
+        private void btnSupprimer_Click(object sender, EventArgs e) => RetirerLigne();
+
+        private void RetirerLigne()
         {
-            if (lvProduits.SelectedItems.Count == 0) return;
-            _lignes.RemoveAt(lvProduits.SelectedItems[0].Index);
-            RafraichirListView();
-            CalculerTotal();
+            if (dgvProduits.SelectedRows.Count == 0) return;
+            _lignes.RemoveAt(dgvProduits.SelectedRows[0].Index);
+            RafraichirGrille();
+            RecalculerTotal();
         }
 
-        private void RafraichirListView()
+        private void RafraichirGrille()
         {
-            lvProduits.Items.Clear();
-            foreach (var l in _lignes)
+            dgvProduits.DataSource = _lignes.Select(l => new
             {
-                var item = new ListViewItem(l.Produit?.Nom ?? "");
-                item.SubItems.Add(l.UniteVendue);
-                item.SubItems.Add(l.Quantite.ToString());
-                item.SubItems.Add(l.PrixUnitaire.ToString("0.00"));
-                item.SubItems.Add(l.SousTotal.ToString("0.00"));
-                lvProduits.Items.Add(item);
-            }
+                Produit = l.Produit?.Nom ?? "",
+                Unite = l.UniteVendue,
+                l.Quantite,
+                l.PrixUnitaire,
+                SousTotal = l.SousTotal
+            }).ToList();
         }
 
-        private void CalculerTotal()
+        private void RecalculerTotal()
         {
-            decimal total = _lignes.Sum(l => l.SousTotal);
-            txtMontantTotal.Text = total.ToString("0.00");
+            _total = _lignes.Sum(l => l.SousTotal);
+            lblMontantTotal.Text = Format.Montant(_total);
             MettreAJourAffichagePaiement();
         }
 
         // ── Paiement ──────────────────────────────────────────────────────
 
+        private string ModeChoisi => cbPaiement.SelectedItem?.ToString() ?? ModesPaiement.Comptant;
+
         private void cbPaiement_SelectedIndexChanged(object sender, EventArgs e)
             => MettreAJourAffichagePaiement();
 
+        private void DefinirEspeces(decimal valeur)
+        {
+            _enMiseAJour = true;
+            numEspeces.Value = Math.Min(numEspeces.Maximum, Math.Max(numEspeces.Minimum, valeur));
+            _enMiseAJour = false;
+        }
+
         private void MettreAJourAffichagePaiement()
         {
-            decimal total = 0;
-            decimal.TryParse(txtMontantTotal.Text, out total);
-            string mode = cbPaiement.SelectedItem?.ToString() ?? "Comptant";
+            if (cbPaiement.SelectedIndex < 0) return;
 
             pnlMutuelle.Visible = false;
             pnlEspeces.Visible = false;
             pnlMatricule.Visible = false;
-            txtMontantVerse.Text = "0.00";
 
-            switch (mode)
+            switch (ModeChoisi)
             {
-                case "Comptant":
+                case ModesPaiement.Comptant:
                     pnlEspeces.Visible = true;
-                    lblEspeces.Text = "Espèces :";
-                    txtMontantEspeces.Text = total.ToString("0.00");
-                    lblMontantRendu.ForeColor = System.Drawing.Color.DarkGreen;
-                    CalculerRendu();
+                    lblEspeces.Text = "Espèces reçues";
+                    DefinirEspeces(Math.Ceiling(_total));
+                    ActualiserMessageEspeces();
                     break;
 
-                case "Crédit":
-                    // ✅ Avance partielle possible en crédit
+                case ModesPaiement.Credit:
+                    // Avance partielle possible en crédit
                     pnlEspeces.Visible = true;
-                    lblEspeces.Text = "Avance (optionnel) :";
-                    txtMontantEspeces.Text = "0.00";   // 0 = crédit total
-                    txtMontantVerse.Text = "0.00";
-                    lblMontantRendu.Text = "Laisser 0 = crédit total  |  Saisir une avance = crédit partiel";
-                    lblMontantRendu.ForeColor = System.Drawing.Color.FromArgb(25, 118, 210);
+                    lblEspeces.Text = "Avance (facultatif)";
+                    DefinirEspeces(0);
+                    ActualiserMessageEspeces();
                     break;
 
-                case "Mutuelle":
+                case ModesPaiement.Mutuelle:
                     pnlMutuelle.Visible = true;
                     pnlEspeces.Visible = true;
                     pnlMatricule.Visible = true;
+                    lblEspeces.Text = "Espèces reçues du patient";
                     cbMutuelle.DataSource = null;
                     cbMutuelle.DataSource = _mutuels;
                     cbMutuelle.DisplayMember = "NomEmployeur";
@@ -197,12 +235,7 @@ namespace Pharmacie2.views
                     AppliquerTauxMutuelle();
                     break;
 
-                case "Chèque":
-                case "Carte bancaire":
-                case ModesPaiement.Mvola:
-                case ModesPaiement.HuriMoney:
-                    txtMontantVerse.Text = total.ToString("0.00");
-                    break;
+                    // Chèque, carte, Mvola, Huri Money : réglés en totalité, aucune saisie
             }
         }
 
@@ -213,67 +246,62 @@ namespace Pharmacie2.views
         {
             if (cbMutuelle.SelectedItem is Mutuel m)
             {
-                decimal total = 0;
-                decimal.TryParse(txtMontantTotal.Text, out total);
+                decimal partMutuelle = VenteModificationRegles.PartMutuelle(_total, m.TauxPriseEnCharge);
+                decimal partPatient = _total - partMutuelle;
 
-                decimal partMutuelle = Math.Round(total * m.TauxPriseEnCharge / 100m, 2);
-                decimal partPatient = total - partMutuelle;
-
-                txtTauxMutuelle.Text = m.TauxPriseEnCharge.ToString("0.00");
-                lblPartMutuelle.Text = $"Pris en charge mutuelle : {partMutuelle:0.00} KMF (crédit entreprise)";
-                lblRestePatient.Text = $"À payer par le patient : {partPatient:0.00} KMF";
-                txtMontantEspeces.Text = partPatient.ToString("0.00");
+                txtTauxMutuelle.Text = m.TauxPriseEnCharge.ToString("0.##");
+                lblPartMutuelle.Text = $"Pris en charge par la mutuelle : {Format.Montant(partMutuelle)} (crédit de l'entreprise)";
+                lblRestePatient.Text = $"À payer par le patient : {Format.Montant(partPatient)}";
+                DefinirEspeces(Math.Ceiling(partPatient));
+                ActualiserMessageEspeces();
             }
         }
 
-        private void txtMontantEspeces_TextChanged(object sender, EventArgs e)
+        private void numEspeces_ValueChanged(object sender, EventArgs e)
         {
-            string mode = cbPaiement.SelectedItem?.ToString() ?? "";
+            if (_enMiseAJour) return;
+            ActualiserMessageEspeces();
+        }
 
-            if (mode == "Mutuelle")
+        /// <summary>Texte sous le champ « espèces » : rendu à rendre, manque ou reste à crédit selon le mode.</summary>
+        private void ActualiserMessageEspeces()
+        {
+            decimal especes = numEspeces.Value;
+
+            switch (ModeChoisi)
             {
-                decimal total = 0; decimal.TryParse(txtMontantTotal.Text, out total);
-                decimal taux = 0; decimal.TryParse(txtTauxMutuelle.Text, out taux);
-                decimal partPatient = total - Math.Round(total * taux / 100m, 2);
-                CalculerRenduMutuelle(partPatient);
+                case ModesPaiement.Comptant:
+                    AfficherRendu(especes, _total, "Rendu au client");
+                    break;
+
+                case ModesPaiement.Mutuelle:
+                    if (cbMutuelle.SelectedItem is Mutuel m)
+                        AfficherRendu(especes, _total - VenteModificationRegles.PartMutuelle(_total, m.TauxPriseEnCharge), "Rendu au patient");
+                    break;
+
+                case ModesPaiement.Credit:
+                    decimal avance = Math.Min(especes, _total);
+                    decimal reste = _total - avance;
+                    lblMontantRendu.Text = reste > 0
+                        ? $"Reste à payer plus tard (crédit) : {Format.Montant(reste)}"
+                        : "Payé en totalité";
+                    lblMontantRendu.ForeColor = reste > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
+                    break;
             }
-            else if (mode == "Crédit")
-            {
-                // En crédit : afficher le reste après avance
-                decimal.TryParse(txtMontantTotal.Text, out decimal total);
-                decimal.TryParse(txtMontantEspeces.Text, out decimal avance);
-                avance = Math.Max(0, Math.Min(avance, total));
-                decimal reste = total - avance;
+        }
 
-                txtMontantVerse.Text = avance.ToString("0.00");
-                lblMontantRendu.Text = reste > 0
-                    ? $"Reste en crédit : {reste:N0} KMF"
-                    : "✅ Payé en totalité";
-                lblMontantRendu.ForeColor = reste > 0
-                    ? System.Drawing.Color.OrangeRed
-                    : System.Drawing.Color.ForestGreen;
+        private void AfficherRendu(decimal recu, decimal aPayer, string libelle)
+        {
+            if (recu >= aPayer)
+            {
+                lblMontantRendu.Text = $"{libelle} : {Format.Montant(recu - aPayer)}";
+                lblMontantRendu.ForeColor = Theme.SuccesTexte;
             }
             else
-                CalculerRendu();
-        }
-
-        private void CalculerRendu()
-        {
-            if (!decimal.TryParse(txtMontantTotal.Text, out decimal total)) return;
-            if (!decimal.TryParse(txtMontantEspeces.Text, out decimal especes))
-            { lblMontantRendu.Text = "Rendu : 0.00 KMF"; return; }
-            decimal rendu = especes > total ? especes - total : 0;
-            lblMontantRendu.Text = $"Rendu : {rendu:0.00} KMF";
-            txtMontantVerse.Text = (especes >= total ? total : especes).ToString("0.00");
-        }
-
-        private void CalculerRenduMutuelle(decimal partPatient)
-        {
-            if (!decimal.TryParse(txtMontantEspeces.Text, out decimal especes))
-            { lblMontantRendu.Text = "Rendu : 0.00 KMF"; return; }
-            decimal rendu = especes > partPatient ? especes - partPatient : 0;
-            lblMontantRendu.Text = $"Rendu patient : {rendu:0.00} KMF";
-            txtMontantVerse.Text = (especes >= partPatient ? partPatient : especes).ToString("0.00");
+            {
+                lblMontantRendu.Text = $"Il manque : {Format.Montant(aPayer - recu)}";
+                lblMontantRendu.ForeColor = Theme.UrgentTexte;
+            }
         }
 
         // ── Validation ────────────────────────────────────────────────────
@@ -284,74 +312,74 @@ namespace Pharmacie2.views
             {
                 MessageBox.Show("Ajoutez au moins un médicament.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtRecherche.Focus();
                 return;
             }
 
-            string mode = cbPaiement.SelectedItem?.ToString() ?? "Comptant";
-
-            if (!decimal.TryParse(txtMontantTotal.Text, out decimal total))
-            {
-                MessageBox.Show("Montant total invalide.", "Erreur",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
+            string mode = ModeChoisi;
+            decimal total = _total;
             decimal especes = 0, rendu = 0, verse = 0, partMutuelle = 0;
+            Mutuel? mutuelleChoisie = null;
 
-            if (mode == "Comptant")
+            if (mode == ModesPaiement.Comptant)
             {
-                if (!decimal.TryParse(txtMontantEspeces.Text, out especes) || especes < total)
+                especes = numEspeces.Value;
+                if (especes < total)
                 {
-                    MessageBox.Show("Le montant en espèces est insuffisant.", "Validation",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Le montant reçu en espèces est insuffisant : il manque {Format.Montant(total - especes)}.",
+                        "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numEspeces.Focus();
                     return;
                 }
                 rendu = especes - total;
                 verse = total;
             }
-            else if (mode == "Mutuelle")
+            else if (mode == ModesPaiement.Mutuelle)
             {
-                if (cbMutuelle.SelectedItem is Mutuel m)
+                mutuelleChoisie = cbMutuelle.SelectedItem as Mutuel;
+                if (mutuelleChoisie == null)
                 {
-                    partMutuelle = Math.Round(total * m.TauxPriseEnCharge / 100m, 2);
-                    decimal partPatient = total - partMutuelle;
-
-                    if (!decimal.TryParse(txtMontantEspeces.Text, out especes))
-                        especes = 0;
-
-                    if (especes < partPatient)
-                    {
-                        MessageBox.Show(
-                            $"Espèces insuffisantes pour la part patient.\nAttendu : {partPatient:0.00} KMF",
-                            "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                    rendu = especes - partPatient;
-                    verse = partPatient;
+                    MessageBox.Show("Choisissez la mutuelle qui prend en charge cette vente.", "Validation",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cbMutuelle.Focus();
+                    return;
                 }
+
+                partMutuelle = VenteModificationRegles.PartMutuelle(total, mutuelleChoisie.TauxPriseEnCharge);
+                decimal partPatient = total - partMutuelle;
+                especes = numEspeces.Value;
+
+                if (especes < partPatient)
+                {
+                    MessageBox.Show(
+                        $"Espèces insuffisantes pour la part du patient.\nAttendu : {Format.Montant(partPatient)}",
+                        "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numEspeces.Focus();
+                    return;
+                }
+                rendu = especes - partPatient;
+                verse = partPatient;
             }
-            else if (mode == "Crédit")
+            else if (mode == ModesPaiement.Credit)
             {
                 // Avance optionnelle — le client peut verser une partie maintenant
-                decimal.TryParse(txtMontantEspeces.Text, out especes);
-                especes = Math.Max(0, especes);
-
+                especes = numEspeces.Value;
                 if (especes > total)
                 {
                     MessageBox.Show(
-                        $"L'avance ({especes:N0} KMF) ne peut pas dépasser le total ({total:N0} KMF).",
+                        $"L'avance ({Format.Montant(especes)}) ne peut pas dépasser le total ({Format.Montant(total)}).",
                         "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numEspeces.Focus();
                     return;
                 }
 
                 verse = especes;     // ce qui est versé maintenant
                 rendu = 0;           // pas de rendu en crédit
-                // MontantRestant = total - verse sera calculé automatiquement
             }
             else
             {
-                // Chèque, CB, Mvola, Huri Money → versé en totalité
-                decimal.TryParse(txtMontantVerse.Text, out verse);
+                // Chèque, carte, Mvola, Huri Money → versé en totalité (aucun champ à saisir : jamais 0 par erreur)
+                verse = total;
                 especes = verse;
             }
 
@@ -390,24 +418,24 @@ namespace Pharmacie2.views
                         PrenomClient = txtPrenom.Text.Trim(),
                         TelephoneClient = txtTelephone.Text.Trim(),
                         MotifAchat = txtMotif.Text.Trim(),
-                        MatriculeEmploye = mode == "Mutuelle" ? txtMatricule.Text.Trim() : "N/A",
+                        MatriculeEmploye = mode == ModesPaiement.Mutuelle ? txtMatricule.Text.Trim() : "N/A",
                         MoyenPaiement = mode,
                         Type = mode,
                         MontantTotal = total,
                         MontantEspeces = especes,
                         MontantRendu = rendu,
                         MontantMutuelle = partMutuelle,
-                        // ✅ La part mutuelle est un CRÉDIT ENTREPRISE — pas encore réglée
+                        // La part mutuelle est un CRÉDIT ENTREPRISE — pas encore réglée
                         MutuelleReglee = false,
                         Statut = "Active",
                         DateVente = DateTime.Now,
                         UserId = SessionUtilisateur.IdCourant
                     };
 
-                    if (mode == "Mutuelle" && cbMutuelle.SelectedItem is Mutuel m)
+                    if (mutuelleChoisie != null)
                     {
-                        vente.MutuelId = m.IdMutuel;
-                        vente.TauxMutuelle = m.TauxPriseEnCharge;
+                        vente.MutuelId = mutuelleChoisie.IdMutuel;
+                        vente.TauxMutuelle = mutuelleChoisie.TauxPriseEnCharge;
                     }
 
                     ctx.ventes.Add(vente);
@@ -438,14 +466,15 @@ namespace Pharmacie2.views
                 }
 
                 VenteEvenements.Notifier(this);   // Uc_Vente, Uc_Caisse et « Ma journée » se rafraîchissent
+                BandeauNotification.Succes("Vente enregistrée");
 
-                // ── Message de succès + proposition d'impression ──────────
-                string msg = "✅ Vente enregistrée avec succès !";
-                if (rendu > 0) msg += $"\n\n💵 Rendu au client : {rendu:0.00} KMF";
-                if (mode == "Crédit" && verse > 0) msg += $"\n\n💵 Avance reçue : {verse:N0} KMF\n⚠️ Reste à payer : {(total - verse):N0} KMF";
-                if (mode == "Crédit" && verse == 0) msg += $"\n\n⚠️ Vente entièrement à crédit : {total:N0} KMF à récupérer";
-                if (mode == "Mutuelle") msg += $"\n\n🏢 Part entreprise (crédit) : {partMutuelle:0.00} KMF";
-                msg += "\n\n🖨️ Voulez-vous imprimer la facture ?";
+                // ── Récapitulatif + proposition d'impression ──────────────
+                string msg = "Vente enregistrée.";
+                if (rendu > 0) msg += $"\n\nRendu au client : {Format.Montant(rendu)}";
+                if (mode == ModesPaiement.Credit && verse > 0) msg += $"\n\nAvance reçue : {Format.Montant(verse)}\nReste à payer : {Format.Montant(total - verse)}";
+                if (mode == ModesPaiement.Credit && verse == 0) msg += $"\n\nVente entièrement à crédit : {Format.Montant(total)} à récupérer";
+                if (mode == ModesPaiement.Mutuelle) msg += $"\n\nPart de l'entreprise (crédit) : {Format.Montant(partMutuelle)}";
+                msg += "\n\nVoulez-vous imprimer la facture ?";
 
                 var res = MessageBox.Show(msg, "Vente enregistrée",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -561,7 +590,7 @@ namespace Pharmacie2.views
             // 1. EN-TÊTE — bande verte pleine largeur
             // ══════════════════════════════════════════════════════════════
             g.FillRectangle(brushVert, x, y, largeur, 80f);
-            g.DrawString("LIGUAPHARME", fontNom, brushBlanc, x + 16, y + 8);
+            g.DrawString(AppInfo.NomPharmacie, fontNom, brushBlanc, x + 16, y + 8);
             g.DrawString("Votre santé, notre priorité — Pharmacie agréée",
                 fontSlogan, brushBlanc, x + 16, y + 56);
             g.DrawString($"Facture  {vente.numeroVente ?? "—"}",
@@ -640,8 +669,8 @@ namespace Pharmacie2.views
                 g.DrawString(nom, fontNormal, brushNoir, cx[0], y + 3);
                 g.DrawString(l.UniteVendue, fontNormal, brushNoir, cx[1], y + 3);
                 g.DrawString(l.Quantite.ToString(), fontNormal, brushNoir, cx[2], y + 3);
-                g.DrawString($"{l.PrixUnitaire:N0} KMF", fontNormal, brushNoir, cx[3], y + 3);
-                g.DrawString($"{l.SousTotal:N0} KMF", fontGras, brushNoir, cx[4], y + 3);
+                g.DrawString(Format.Montant(l.PrixUnitaire), fontNormal, brushNoir, cx[3], y + 3);
+                g.DrawString(Format.Montant(l.SousTotal), fontGras, brushNoir, cx[4], y + 3);
 
                 // Posologie sous le nom du médicament
                 if (hasPoso)
@@ -685,7 +714,7 @@ namespace Pharmacie2.views
             // Total principal
             g.FillRectangle(brushLG, x + largeur - 360, y - 4, 360, 32);
             g.DrawString("TOTAL", fontTotal, brushNoir, xLbl, y);
-            g.DrawString($"{vente.MontantTotal:N0} KMF", fontTotal, brushVert2, xVal, y);
+            g.DrawString(Format.Montant(vente.MontantTotal), fontTotal, brushVert2, xVal, y);
             y += 36;
 
             // Mutuelle
@@ -693,27 +722,27 @@ namespace Pharmacie2.views
             {
                 string nomMut = vente.Mutuel?.NomEmployeur ?? "Mutuelle";
                 decimal partPat = vente.MontantTotal - vente.MontantMutuelle;
-                LigneT($"Part {nomMut} :", $"{vente.MontantMutuelle:N0} KMF",
+                LigneT($"Part {nomMut} :", Format.Montant(vente.MontantMutuelle),
                     fontNormal, fontGras, brushGris, brushGris);
-                LigneT("Part patient :", $"{partPat:N0} KMF",
+                LigneT("Part patient :", Format.Montant(partPat),
                     fontNormal, fontGras, brushNoir, brushNoir);
             }
 
             // Avance crédit
             if (vente.Type == "Crédit" && vente.MontantVerse > 0)
-                LigneT("Avance reçue :", $"{vente.MontantVerse:N0} KMF",
+                LigneT("Avance reçue :", Format.Montant(vente.MontantVerse),
                     fontNormal, fontGras, brushGris, brushGris);
 
             // Reste à payer
             if (vente.MontantRestant > 0)
             {
                 g.FillRectangle(brushRedL, x + largeur - 360, y - 2, 360, 28);
-                LigneT("RESTE À PAYER :", $"{vente.MontantRestant:N0} KMF",
+                LigneT("RESTE À PAYER :", Format.Montant(vente.MontantRestant),
                     fontGras, fontGras, brushRed, brushRed);
             }
             else if (vente.Type == "Crédit")
             {
-                g.DrawString("✅  Soldé intégralement", fontGras, brushVert2, xLbl, y);
+                g.DrawString("Soldé intégralement", fontGras, brushVert2, xLbl, y);
                 y += 22;
             }
 
@@ -727,7 +756,7 @@ namespace Pharmacie2.views
                 fontPetit, brushBlanc,
                 x + largeur / 2 - 230, yPied + 6);
             g.DrawString(
-                $"Document généré le {DateTime.Now:dd/MM/yyyy à HH:mm}  —  LIGUAPHARME",
+                $"Document généré le {DateTime.Now:dd/MM/yyyy à HH:mm}  —  " + AppInfo.NomPharmacie,
                 fontPetit, brushBlanc,
                 x + largeur / 2 - 175, yPied + 20);
         }
