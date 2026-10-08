@@ -70,7 +70,7 @@ public class ArchivageMigrationTests
             foreach (var t in TestDb.TablesMetier) avant[t] = Dump(c, t);
         }
 
-        TestDb.MigrerTout();
+        TestDb.MigrerJusqua("20261008192700_AjoutArchivage");   // seulement cette migration
 
         using var c2 = TestDb.Ouvrir();
         var comptesApres = TestDb.Comptes(c2, TestDb.TablesMetier);
