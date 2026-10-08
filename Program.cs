@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +13,7 @@ namespace Pharmacie2
 
             // Doit passer AVANT tout accès à la base.
             MigrationEmplacementBase.Executer();
+            SauvegardeAutomatique.Executer();
 
             bool firstLaunch;
             using (var context = new AppDbContext())

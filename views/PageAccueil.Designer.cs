@@ -81,7 +81,7 @@ namespace Pharmacie2.views
             panelMenu.Controls.Add(lblTitre);
 
             // Boutons dans l'ordre vertical
-            int y = 68, gap = 48;
+            int y = 68, gap = 44;
             BtnMenu(btnProduits, "💊 Enregistrer Produits", y, btnProduits_Click); y += gap;
             BtnMenu(btnFournisseurs, "🏭 Fournisseurs", y, btnFournisseurs_Click); y += gap;
             BtnMenu(btnCommandes, "📦 Commandes", y, btnCommandes_Click); y += gap; // ← NOUVEAU
@@ -97,6 +97,8 @@ namespace Pharmacie2.views
             // Déconnexion (tout en bas)
             var btnSauvegarde2 = new Button();
             BtnMenu(btnSauvegarde2, "💾 Sauvegarder données", y, btnSauvegarde_Click); y += gap;
+            var btnDossierSauvegardes = new Button();
+            BtnMenu(btnDossierSauvegardes, "📂 Dossier des sauvegardes", y, btnOuvrirDossierSauvegardes_Click); y += gap;
             BtnMenu(btnDeconnexion, "🚪 Déconnexion", y + 10, btnDeconnexion_Click_1);
 
             // Agrandir le panel pour contenir tous les boutons

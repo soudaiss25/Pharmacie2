@@ -28,6 +28,7 @@ namespace Pharmacie2.Services
             ExporterMutuelPaiements(ctx, dossier);
             ExporterSessions(ctx, dossier);
             ExporterUtilisateurs(ctx, dossier);
+            ExporterDepensesAnnexes(ctx, dossier);
 
             // Fichier README
             File.WriteAllText(
@@ -172,6 +173,18 @@ namespace Pharmacie2.Services
                     $"{s.FondOuverture};{s.MontantCompteCloture};{s.Statut}");
 
             Ecrire(Path.Combine(dossier, "sessions.csv"), sb.ToString());
+        }
+
+        private static void ExporterDepensesAnnexes(AppDbContext ctx, string dossier)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Id;Categorie;Description;Montant;DateDepense;UserId");
+
+            foreach (var d in ctx.DepensesAnnexes.AsNoTracking().ToList())
+                sb.AppendLine($"{d.Id};{Echap(d.Categorie)};{Echap(d.Description)};{d.Montant};" +
+                    $"{d.DateDepense:yyyy-MM-dd HH:mm:ss};{d.UserId}");
+
+            Ecrire(Path.Combine(dossier, "depenses_annexes.csv"), sb.ToString());
         }
 
         private static void ExporterUtilisateurs(AppDbContext ctx, string dossier)

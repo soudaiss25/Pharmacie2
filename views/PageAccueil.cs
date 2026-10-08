@@ -73,6 +73,24 @@ namespace Pharmacie2.views
                 System.Windows.Forms.MessageBoxIcon.Information);
         }
 
+        private void btnOuvrirDossierSauvegardes_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = Services.CheminsApp.DossierSauvegardes,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                Services.Journal.Erreur("Ouverture du dossier des sauvegardes", ex);
+                MessageBox.Show("Impossible d'ouvrir le dossier des sauvegardes :\n" + Services.CheminsApp.DossierSauvegardes,
+                    "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnDeconnexion_Click(object sender, EventArgs e)
         {
             this.Hide();
