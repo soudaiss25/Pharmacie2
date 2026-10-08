@@ -121,6 +121,11 @@ namespace Pharmacie2.views
 
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
+            if (dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() == "Reçu partiellement"
+                && CommandeService.EstPartielleHeritee(cmdId))
+                MessageBox.Show(CommandeService.MessageQuantiteInconnue, "Attention",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             using (var ctx = new AppDbContext())
             {
                 var lignes = ctx.LigneCommandes
@@ -157,7 +162,7 @@ namespace Pharmacie2.views
             string statut = dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() ?? "";
 
             btnMarquerRecu.Enabled = statut == "En attente" || statut == "Reçu partiellement";
-            btnMarquerPartiel.Enabled = statut == "En attente";
+            btnMarquerPartiel.Enabled = statut == "En attente" || statut == "Reçu partiellement";
             btnAnnuler.Enabled = statut == "En attente" || statut == "Reçu partiellement";
         }
 
@@ -181,26 +186,7 @@ namespace Pharmacie2.views
 
             try
             {
-                using (var ctx = new AppDbContext())
-                {
-                    var commande = ctx.commandes
-                        .Include(c => c.Lignes).ThenInclude(l => l.Produit)
-                        .FirstOrDefault(c => c.Id == cmdId);
-
-                    if (commande == null) return;
-
-                    // Mise à jour stock pour chaque ligne
-                    foreach (var ligne in commande.Lignes)
-                    {
-                        var produit = ctx.produits.Find(ligne.ProduitId);
-                        if (produit != null)
-                            produit.QuantiteEnStock += ligne.Quantite;
-                    }
-
-                    commande.Statut = "Reçu";
-                    commande.DateReception = DateTime.Now;
-                    ctx.SaveChanges();
-                }
+                CommandeService.Receptionner(cmdId);
 
                 MessageBox.Show(
                     "✅ Commande marquée comme reçue.\nLe stock a été mis à jour.",
@@ -225,51 +211,52 @@ namespace Pharmacie2.views
 
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
-            // Demander la quantité réellement reçue pour chaque ligne
-            using (var ctx = new AppDbContext())
+            // Demander la quantité réellement reçue (en boîtes) pour chaque ligne
+            try
             {
-                var commande = ctx.commandes
-                    .Include(c => c.Lignes).ThenInclude(l => l.Produit)
-                    .FirstOrDefault(c => c.Id == cmdId);
-
-                if (commande == null) return;
-
-                bool auMoinsUne = false;
-
-                foreach (var ligne in commande.Lignes)
+                List<LigneCommande> lignes;
+                using (var ctx = new AppDbContext())
                 {
+                    lignes = ctx.LigneCommandes
+                        .Include(l => l.Produit)
+                        .Where(l => l.CommandeId == cmdId)
+                        .ToList();
+                }
+
+                bool legacy = CommandeService.EstPartielleHeritee(cmdId);
+                var quantites = new Dictionary<int, int>();
+                foreach (var ligne in lignes)
+                {
+                    int reste = ligne.Quantite - ligne.QuantiteRecue;
+                    if (reste <= 0) continue;
+
                     string nomProduit = ligne.Produit?.Nom ?? $"Produit #{ligne.ProduitId}";
 
                     string input = Microsoft.VisualBasic.Interaction.InputBox(
-                        $"Quantité reçue pour « {nomProduit} » :\n(commandée : {ligne.Quantite})",
+                        $"Quantité reçue (en boîtes) pour « {nomProduit} » :\n(commandée : {ligne.Quantite}, déjà reçue : {ligne.QuantiteRecue})",
                         "Réception partielle",
-                        ligne.Quantite.ToString());
+                        legacy ? "" : reste.ToString());
 
                     if (!int.TryParse(input, out int qteRecue) || qteRecue <= 0)
                         continue;
 
-                    qteRecue = Math.Min(qteRecue, ligne.Quantite);
-
-                    var produit = ctx.produits.Find(ligne.ProduitId);
-                    if (produit != null)
-                    {
-                        produit.QuantiteEnStock += qteRecue;
-                        auMoinsUne = true;
-                    }
+                    quantites[ligne.Id] = qteRecue;
                 }
 
-                if (auMoinsUne)
+                if (quantites.Count > 0 && CommandeService.Receptionner(cmdId, quantites) > 0)
                 {
-                    commande.Statut = "Reçu partiellement";
-                    commande.DateReception = DateTime.Now;
-                    ctx.SaveChanges();
-
                     MessageBox.Show(
-                        "✅ Réception partielle enregistrée.\nLe stock a été mis à jour.",
+                        "✅ Réception enregistrée.\nLe stock a été mis à jour.",
                         "Réception partielle",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                 }
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Réception partielle de la commande " + cmdId, ex);
+                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             ChargerCommandes();

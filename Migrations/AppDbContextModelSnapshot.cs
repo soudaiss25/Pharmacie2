@@ -117,6 +117,9 @@ namespace Pharmacie2.Migrations
                     b.Property<int>("Quantite")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("QuantiteRecue")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CommandeId");
@@ -492,8 +495,7 @@ namespace Pharmacie2.Migrations
                 {
                     b.HasOne("Pharmacie2.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

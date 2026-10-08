@@ -11,8 +11,8 @@ using Pharmacie2.Models;
 namespace Pharmacie2.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261008180826_AjoutQuantiteUnitesLigneVente")]
-    partial class AjoutQuantiteUnitesLigneVente
+    [Migration("20261008182428_AjoutQuantiteRecueLigneCommande")]
+    partial class AjoutQuantiteRecueLigneCommande
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,6 +118,9 @@ namespace Pharmacie2.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantite")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuantiteRecue")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

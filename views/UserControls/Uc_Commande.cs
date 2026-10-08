@@ -155,6 +155,11 @@ namespace Pharmacie2.views.UserControls
 
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
+            if (dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() == "Reçu partiellement"
+                && CommandeService.EstPartielleHeritee(cmdId))
+                MessageBox.Show(CommandeService.MessageQuantiteInconnue, "Attention",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             try
             {
                 using (var ctx = new AppDbContext())
@@ -215,25 +220,7 @@ namespace Pharmacie2.views.UserControls
 
             try
             {
-                using (var ctx = new AppDbContext())
-                {
-                    var cmd = ctx.commandes
-                        .Include(c => c.Lignes).ThenInclude(l => l.Produit)
-                        .FirstOrDefault(c => c.Id == cmdId);
-
-                    if (cmd == null) return;
-
-                    foreach (var l in cmd.Lignes)
-                    {
-                        var p = ctx.produits.Find(l.ProduitId);
-                        if (p != null)
-                            p.QuantiteEnStock += l.Quantite;
-                    }
-
-                    cmd.Statut = "Reçu";
-                    cmd.DateReception = DateTime.Now;
-                    ctx.SaveChanges();
-                }
+                CommandeService.Receptionner(cmdId);
 
                 MessageBox.Show("✅ Commande reçue. Stock mis à jour.",
                     "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -242,6 +229,7 @@ namespace Pharmacie2.views.UserControls
             }
             catch (Exception ex)
             {
+                Journal.Erreur("Réception de la commande " + cmdId, ex);
                 MessageBox.Show("Erreur : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

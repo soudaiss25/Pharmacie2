@@ -33,8 +33,8 @@ namespace Pharmacie2.views
 
                 if (produit != null)
                 {
-                    // Quantité suggérée = seuil - stock actuel + 1 (au minimum 1)
-                    int qteManquante = produit.SeuilAlerte - produit.QuantiteEnStock + 1;
+                    // Quantité suggérée en BOÎTES = seuil - boîtes pleines en stock + 1 (au minimum 1)
+                    int qteManquante = produit.SeuilAlerte - produit.NbBoitesEnStock + 1;
                     numQuantite.Value = Math.Max(1, qteManquante);
 
                     // Prix achat pré-rempli
