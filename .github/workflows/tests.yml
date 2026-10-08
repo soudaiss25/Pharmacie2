@@ -9,11 +9,12 @@ on:
 jobs:
   tests:
     runs-on: windows-latest
-    env:
-      # Dossier de données isolé : les tests n'utilisent jamais le vrai dossier Pharmacie2Data
-      PHARMACIE2_DATA_DIR: ${{ runner.temp }}\pharmacie2-tests
     steps:
       - uses: actions/checkout@v4
+      # Dossier de données isolé : les tests n'utilisent jamais le vrai dossier Pharmacie2Data
+      - name: Isoler le dossier de données des tests
+        shell: pwsh
+        run: echo "PHARMACIE2_DATA_DIR=$env:RUNNER_TEMP\pharmacie2-tests" >> $env:GITHUB_ENV
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
@@ -24,10 +25,11 @@ jobs:
   # Teste la proposition de migration AlignementDepensesAnnexes sur une base remplie (non appliquée en production)
   alignement:
     runs-on: windows-latest
-    env:
-      PHARMACIE2_DATA_DIR: ${{ runner.temp }}\pharmacie2-alignement
     steps:
       - uses: actions/checkout@v4
+      - name: Isoler le dossier de données des tests
+        shell: pwsh
+        run: echo "PHARMACIE2_DATA_DIR=$env:RUNNER_TEMP\pharmacie2-alignement" >> $env:GITHUB_ENV
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
