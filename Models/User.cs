@@ -25,6 +25,11 @@ namespace Pharmacie2.Models
         [Required, MaxLength(250)]
         public string MotDePasse { get; set; }
 
+        // ── Clé de secours (administrateurs) : seul son hash BCrypt est conservé ──
+        public string? CleSecoursHash { get; set; }
+        public int EssaisCleEchoues { get; set; }
+        public DateTime? BlocageCleJusqua { get; set; }
+
         /// <summary>false = archivé : n'apparaît plus dans les choix, mais reste dans l'historique.</summary>
         public bool Actif { get; set; } = true;
     }

@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -96,7 +96,7 @@ public static class TestDb
                 string nom = r.GetString(1), type = r.GetString(2).ToUpperInvariant();
                 bool notnull = r.GetInt32(3) == 1;
                 if (v.TryGetValue(nom, out var val)) { cols.Add(nom); vals.Add(val); }
-                else if (notnull && r.GetInt32(5) == 0)
+                else if (notnull && r.GetInt32(5) == 0 && r.IsDBNull(4))   // pas de valeur par défaut en base
                 {
                     cols.Add(nom);
                     vals.Add(nom.StartsWith("Date") ? "2030-01-01 00:00:00"

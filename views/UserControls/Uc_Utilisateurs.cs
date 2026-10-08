@@ -50,7 +50,6 @@ namespace Pharmacie2.views.UserControls
                             u.Nom,
                             u.Prenom,
                             u.Login,
-                            u.MotDePasse,
                             u.Role,
                             Statut = u.Actif ? "" : "📦 Archivé"
                         })
@@ -65,7 +64,6 @@ namespace Pharmacie2.views.UserControls
                     SetHeader("Nom", "Nom");
                     SetHeader("Prenom", "Prénom");
                     SetHeader("Login", "Login");
-                    SetHeader("MotDePasse", "Mot de passe");
                     SetHeader("Role", "Rôle");
 
                     ColorerColonneRole();
@@ -138,7 +136,7 @@ namespace Pharmacie2.views.UserControls
                 txtNom.Text = u.Nom;
                 txtPrenom.Text = u.Prenom;
                 txtLogin.Text = u.Login;
-                txtMotDePasse.Text = u.MotDePasse;  // affiché en clair
+                txtMotDePasse.Clear();   // le mot de passe n'est jamais affiché
                 cbRole.SelectedItem = u.Role;
                 _idEnCours = u.Id;
             }
@@ -194,7 +192,7 @@ namespace Pharmacie2.views.UserControls
                             Nom = txtNom.Text.Trim(),
                             Prenom = txtPrenom.Text.Trim(),
                             Login = txtLogin.Text.Trim(),
-                            MotDePasse = txtMotDePasse.Text.Trim(),
+                            MotDePasse = MotDePasseService.Hacher(txtMotDePasse.Text.Trim()),
                             Role = cbRole.SelectedItem.ToString()
                         });
 
@@ -223,7 +221,9 @@ namespace Pharmacie2.views.UserControls
                         u.Nom = txtNom.Text.Trim();
                         u.Prenom = txtPrenom.Text.Trim();
                         u.Login = txtLogin.Text.Trim();
-                        u.MotDePasse = txtMotDePasse.Text.Trim(); // admin fixe le mdp
+                        // Champ vide = mot de passe inchangé ; sinon l'administrateur définit un nouveau mot de passe
+                        if (!string.IsNullOrWhiteSpace(txtMotDePasse.Text))
+                            u.MotDePasse = MotDePasseService.Hacher(txtMotDePasse.Text.Trim());
                         u.Role = cbRole.SelectedItem.ToString();
 
                         ctx.SaveChanges();
@@ -276,7 +276,7 @@ namespace Pharmacie2.views.UserControls
             if (string.IsNullOrWhiteSpace(txtLogin.Text))
             { MessageBox.Show("Login obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtLogin.Focus(); return false; }
 
-            if (string.IsNullOrWhiteSpace(txtMotDePasse.Text))
+            if (_mode == Mode.Ajout && string.IsNullOrWhiteSpace(txtMotDePasse.Text))
             { MessageBox.Show("Mot de passe obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtMotDePasse.Focus(); return false; }
 
             if (cbRole.SelectedIndex < 0)
@@ -295,6 +295,9 @@ namespace Pharmacie2.views.UserControls
 
         private void ActiverFormulaire(bool actif)
         {
+            txtMotDePasse.UseSystemPasswordChar = true;
+            txtMotDePasse.PlaceholderText = _mode == Mode.Modification ? "(laisser vide = inchangé)" : "";
+            lblMdp.Text = _mode == Mode.Modification ? "Nouveau mot de passe" : "Mot de passe *";
             txtNom.Enabled = actif;
             txtPrenom.Enabled = actif;
             txtLogin.Enabled = actif;

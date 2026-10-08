@@ -185,3 +185,52 @@ Préparer : deux mutuelles (A « Aaa » 30 %, Z « Zzz » 50 %, A première dans
 - [ ] Dans l'écran Mutuelles, régler les ventes de Z (« Régler »).
 - [ ] Tenter de modifier une de ces ventes : message « La mutuelle a déjà réglé cette vente : elle ne peut plus être modifiée. » et l'écran se ferme sans rien changer.
 - [ ] L'annulation d'une telle vente (si autorisée par ailleurs) n'est pas concernée par ce changement.
+
+---
+
+# Mots de passe hachés et clé de secours (phase 8)
+
+## 21. Préparer : base avec des mots de passe encore en clair
+1. Sauvegarder (renommer) `%LOCALAPPDATA%\Pharmacie2Data` pour repartir d'une base de développement.
+2. `git checkout 92fd639` (dernier commit **avant** la phase 8), lancer (F5), créer l'administrateur `admin` / `1234`, puis dans Utilisateurs :
+   `fatima` (Caissier) / `Mot de passe é à ç`, `ali` (Pharmacien) / `a b  c d` (espaces au milieu), `hamidou` (Caissier) / `p@ss;w'ord`.
+3. Fermer l'application, copier le fichier `PharmacieDB.sqlite` (copie de référence), puis `git checkout fiabilisation` et relancer (F5).
+
+## 22. Conversion automatique
+- [ ] Au démarrage, aucun message d'erreur ; la fenêtre de connexion s'affiche.
+- [ ] Se connecter avec **chaque** compte et **son ancien mot de passe** (admin/1234, fatima, ali, hamidou) : tous fonctionnent. Mauvais mot de passe : « Login ou mot de passe incorrect ».
+- [ ] Ouvrir la base avec un outil SQLite : la colonne `MotDePasse` de `Users` ne contient que des valeurs commençant par `$2` (aucun mot de passe lisible).
+- [ ] Fermer et relancer l'application deux fois : les valeurs `MotDePasse` sont **identiques** à celles de la première conversion (pas de re-hachage) et les connexions fonctionnent toujours.
+- [ ] Le journal (`Logs`) indique « N mot(s) de passe converti(s) » **sans** aucun mot de passe.
+
+## 23. Écran Utilisateurs
+- [ ] La grille n'a **plus** de colonne « Mot de passe ».
+- [ ] Sélectionner un utilisateur : le champ mot de passe est **vide** (jamais affiché) ; le champ est masqué (●).
+- [ ] Modifier le nom d'un utilisateur en laissant le mot de passe **vide** : enregistré, et l'utilisateur se connecte toujours avec son mot de passe.
+- [ ] Modifier un **caissier** en saisissant un nouveau mot de passe : il se connecte avec le nouveau, plus avec l'ancien (recours normal de l'administrateur).
+- [ ] Créer un utilisateur : mot de passe obligatoire ; il peut se connecter ensuite.
+- [ ] Un administrateur peut aussi définir un nouveau mot de passe pour un autre **administrateur**.
+
+## 24. Clé de secours : première connexion
+- [ ] Première connexion de `admin` après la mise à jour : une fenêtre **« Votre clé de secours »** s'affiche avec une clé du type `K7MQ-4XRT-9WPA-H3ZD` (4 groupes de 4, jamais de 0, O, 1, I, L), en grand.
+- [ ] Le texte « Notez cette clé sur papier et rangez-la en lieu sûr… » est présent. Le bouton « Continuer » est **grisé** tant que « J'ai noté la clé » n'est pas cochée.
+- [ ] Impossible de fermer la fenêtre autrement (pas de croix, Alt+F4 sans effet).
+- [ ] « Imprimer » ouvre la boîte d'impression (tester avec « Microsoft Print to PDF » : la clé est lisible, en grand).
+- [ ] **Notez la clé.** Se déconnecter puis reconnecter `admin` : la fenêtre ne réapparaît **pas**.
+- [ ] Fermer la fenêtre de clé en forçant l'arrêt de l'application avant de cocher (arrêter le débogage), puis relancer : à la connexion suivante la clé est proposée **de nouveau** (rien n'avait été enregistré).
+- [ ] Un Caissier ou un Pharmacien ne voit **pas** cette fenêtre.
+- [ ] Base neuve : création du premier administrateur (écran d'initialisation) → la clé s'affiche juste après.
+
+## 25. « Mot de passe oublié ? »
+- [ ] Lien « Mot de passe oublié ? » sous le bouton « Se connecter ».
+- [ ] Login `admin` + clé notée (avec ou sans tirets, majuscules ou minuscules) + nouveau mot de passe saisi **deux fois** : si les deux saisies diffèrent → refus.
+- [ ] Succès : message, puis une **NOUVELLE** clé s'affiche (même fenêtre qu'au §24). Se connecter avec le nouveau mot de passe : OK ; avec l'ancien : refusé.
+- [ ] Réutiliser l'**ancienne** clé : refusée.
+- [ ] Clé erronée : « Login ou clé de secours incorrect. Essais restants : N ».
+- [ ] **5 clés erronées** de suite : « Trop d'essais… réessayez dans 15 minutes ». Pendant ce temps, même la **bonne** clé est refusée. Le journal contient le blocage (login seulement, **jamais la clé**).
+- [ ] Après 15 minutes (ou en modifiant l'heure du PC), la bonne clé fonctionne à nouveau.
+- [ ] Login d'un Caissier ou login inexistant : même message d'erreur que pour une mauvaise clé (pas d'indice sur l'existence du compte).
+- [ ] Chercher dans le dossier `Logs`, dans les exports CSV (« Sauvegarder données ») et dans les sauvegardes : la clé n'apparaît nulle part.
+
+## 26. Comptes archivés
+- [ ] Un compte archivé qui saisit son bon mot de passe : « Ce compte a été archivé. Contactez un administrateur. »

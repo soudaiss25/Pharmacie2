@@ -12,6 +12,25 @@ namespace Pharmacie2
         public Form1()
         {
             InitializeComponent();
+
+            var lienOubli = new LinkLabel
+            {
+                Text = "Mot de passe oublié ?",
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                Location = new System.Drawing.Point(40, 368),
+                Size = new System.Drawing.Size(320, 24),
+                Font = new System.Drawing.Font("Segoe UI", 9.5F)
+            };
+            lienOubli.LinkClicked += (s, e) =>
+            {
+                using var f = new FormReinitialisationMdp(txtUsername.Text.Trim());
+                if (f.ShowDialog(this) == DialogResult.OK)
+                {
+                    txtPassword.Clear();
+                    txtPassword.Focus();
+                }
+            };
+            panelLogin.Controls.Add(lienOubli);
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -26,12 +45,10 @@ namespace Pharmacie2
                 return;
             }
 
-            using (var ctx = new AppDbContext())
             {
-                var user = ctx.Users.FirstOrDefault(u =>
-                    u.Login == login && u.MotDePasse == mdp);
+                var resultat = AuthentificationService.Authentifier(login, mdp, out var user);
 
-                if (user != null && !user.Actif)
+                if (resultat == ResultatConnexion.CompteArchive)
                 {
                     MessageBox.Show("Ce compte a été archivé. Contactez un administrateur.", "Connexion",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -39,7 +56,7 @@ namespace Pharmacie2
                     return;
                 }
 
-                if (user == null)
+                if (resultat != ResultatConnexion.Succes || user == null)
                 {
                     MessageBox.Show("Login ou mot de passe incorrect.", "Connexion",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -47,6 +64,10 @@ namespace Pharmacie2
                     txtPassword.Focus();
                     return;
                 }
+
+                // Administrateur sans clé de secours (première connexion après la mise à jour) : en créer une
+                if (user.Role == "Administrateur" && !CleSecoursService.AUneCle(user.Id))
+                    FormCleSecours.GenererAfficherEtEnregistrer(this, user.Id);
 
                 // ? Stocker l'utilisateur connecté en session
                 SessionUtilisateur.Courant = user;

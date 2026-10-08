@@ -23,6 +23,7 @@ namespace Pharmacie2
                 try
                 {
                     context.Database.Migrate();
+                    MotDePasseService.ConvertirMotsDePasseEnClair(context);   // idempotent
                     firstLaunch = !context.Users.Any();
                 }
                 catch (Exception ex)

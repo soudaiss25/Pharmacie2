@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
+using Pharmacie2.views;
 
 namespace Pharmacie2
 {
@@ -27,6 +29,7 @@ namespace Pharmacie2
                 return;
             }
 
+            int nouvelAdminId;
             using (var context = new AppDbContext())
             {
                 // Vérifier si login existe déjà
@@ -47,18 +50,22 @@ namespace Pharmacie2
                     Nom = txtNom.Text.Trim(),
                     Prenom = txtPrenom.Text.Trim(),
                     Login = txtLogin.Text.Trim(),
-                    MotDePasse = txtPassword.Text.Trim(), // ⚠️ On hash demain
+                    MotDePasse = MotDePasseService.Hacher(txtPassword.Text.Trim()),
                     Role = "Administrateur"
                 };
 
                 context.Users.Add(admin);
                 context.SaveChanges();
+                nouvelAdminId = admin.Id;
             }
 
             MessageBox.Show("Administrateur créé avec succès.",
                             "Succès",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
+
+            // Clé de secours du premier administrateur (affichée une seule fois)
+            FormCleSecours.GenererAfficherEtEnregistrer(this, nouvelAdminId);
 
             // Ouvre Form1
             this.Hide();
