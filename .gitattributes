@@ -61,3 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# Fichiers C# toujours en CRLF dans le depot
+*.cs text eol=crlf

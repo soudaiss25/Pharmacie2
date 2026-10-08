@@ -66,4 +66,4 @@ namespace Pharmacie2.Models
                 .OnDelete(DeleteBehavior.SetNull);
         }
     }
-}
+}
