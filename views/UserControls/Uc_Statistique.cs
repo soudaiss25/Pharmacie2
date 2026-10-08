@@ -345,7 +345,7 @@ namespace Pharmacie2.views.UserControls
 
             // Produits en alerte
             var alertes = ctx.produits.AsNoTracking()
-                .Where(p => p.QuantiteEnStock <= p.SeuilAlerte && p.QuantiteEnStock > 0)
+                .Where(p => p.QuantiteEnStock > 0 && p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1))
                 .OrderBy(p => p.QuantiteEnStock)
                 .Take(8).ToList();
 
@@ -354,11 +354,7 @@ namespace Pharmacie2.views.UserControls
                 sb.AppendLine("⚠️  PRODUITS EN ALERTE STOCK :");
                 foreach (var p in alertes)
                 {
-                    int qteAffichee = p.NbUniteParBoite > 1
-                        ? p.QuantiteEnStock / p.NbUniteParBoite
-                        : p.QuantiteEnStock;
-                    string unite = p.NbUniteParBoite > 1 ? "boîte(s)" : "unité(s)";
-                    sb.AppendLine($"  • {p.Nom} — {qteAffichee} {unite} restantes");
+                    sb.AppendLine($"  • {p.Nom} — {StockService.Formater(p)} restant(s)");
                 }
                 sb.AppendLine();
             }

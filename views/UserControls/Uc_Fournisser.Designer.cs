@@ -241,7 +241,7 @@ namespace Pharmacie2.views.UserControls
             colProduitId.Name = "colProduitId"; colProduitId.HeaderText = "ID"; colProduitId.Visible = false;
             colProduitNom.Name = "colProduitNom"; colProduitNom.HeaderText = "Produit";
             colProduitType.Name = "colProduitType"; colProduitType.HeaderText = "Type"; colProduitType.FillWeight = 60F;
-            colProduitQte.Name = "colProduitQte"; colProduitQte.HeaderText = "Stock"; colProduitQte.FillWeight = 40F;
+            colProduitQte.Name = "colProduitQte"; colProduitQte.HeaderText = "Stock"; colProduitQte.FillWeight = 90F;
             colProduitSeuil.Name = "colProduitSeuil"; colProduitSeuil.HeaderText = "Seuil"; colProduitSeuil.FillWeight = 40F;
             colProduitPrixAchat.Name = "colProduitPrixAchat"; colProduitPrixAchat.HeaderText = "Prix achat"; colProduitPrixAchat.FillWeight = 60F;
             colProduitPrixVente.Name = "colProduitPrixVente"; colProduitPrixVente.HeaderText = "Prix vente"; colProduitPrixVente.FillWeight = 60F;

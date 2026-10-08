@@ -101,6 +101,6 @@ namespace Pharmacie2.Models
         [ForeignKey("FournisseurId")]
         public Fournisseur? Fournisseur { get; set; }
 
-        public bool EstEnRupture() => QuantiteEnStock <= SeuilAlerte;
+        public bool EstEnRupture() => QuantiteEnStock <= Pharmacie2.Services.StockService.SeuilEnUnites(this);
     }
 }

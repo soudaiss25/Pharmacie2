@@ -1,4 +1,5 @@
 ﻿using Pharmacie2.Models;
+using Pharmacie2.Services;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -26,13 +27,13 @@ namespace Pharmacie2.views
                 if (!string.IsNullOrWhiteSpace(filtre))
                     query = query.Where(p => p.Nom.ToLower().Contains(filtre.ToLower()));
 
-                dgvProduits.DataSource = query.Select(p => new
+                dgvProduits.DataSource = query.ToList().Select(p => new
                 {
                     p.Id,
                     p.Nom,
                     p.Type,
                     p.PrixVente,
-                    Stock = p.QuantiteEnStock,
+                    Stock = StockService.Formater(p),
                     UniteVente = p.UniteVente,
                     ParBoite = p.NbUniteParBoite
                 }).ToList();

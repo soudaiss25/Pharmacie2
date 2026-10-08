@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -114,15 +115,15 @@ namespace Pharmacie2.views.UserControls
                 foreach (var p in produits)
                 {
                     string etat = p.QuantiteEnStock <= 0 ? "🔴 Rupture"
-                                : p.QuantiteEnStock <= p.SeuilAlerte ? "🟠 Alerte"
+                                : p.QuantiteEnStock <= StockService.SeuilEnUnites(p) ? "🟠 Alerte"
                                 : "🟢 OK";
 
                     int idx = dgvProduits.Rows.Add(
                         p.Id,
                         p.Nom,
                         p.Type,
-                        p.QuantiteEnStock,
-                        p.SeuilAlerte,
+                        StockService.Formater(p),
+                        $"{p.SeuilAlerte} boîte(s)",
                         $"{p.PrixAchat:N0} KMF",
                         $"{p.PrixVente:N0} KMF",
                         etat
@@ -132,13 +133,13 @@ namespace Pharmacie2.views.UserControls
                     if (p.QuantiteEnStock <= 0)
                         dgvProduits.Rows[idx].DefaultCellStyle.BackColor =
                             System.Drawing.Color.FromArgb(255, 205, 210);
-                    else if (p.QuantiteEnStock <= p.SeuilAlerte)
+                    else if (p.QuantiteEnStock <= StockService.SeuilEnUnites(p))
                         dgvProduits.Rows[idx].DefaultCellStyle.BackColor =
                             System.Drawing.Color.FromArgb(255, 224, 178);
                 }
 
                 int nbProduits = produits.Count;
-                int nbAlerte = produits.Count(p => p.QuantiteEnStock <= p.SeuilAlerte && p.QuantiteEnStock > 0);
+                int nbAlerte = produits.Count(p => p.QuantiteEnStock <= StockService.SeuilEnUnites(p) && p.QuantiteEnStock > 0);
                 int nbRupture = produits.Count(p => p.QuantiteEnStock <= 0);
 
                 lblProduitsTitre.Text =

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -48,8 +49,8 @@ namespace Pharmacie2.views.UserControls
                         PrixAchat = p.PrixAchat.ToString("0.00"),
                         PrixVente = p.PrixVente.ToString("0.00"),
                         Marge = p.MargeBeneficiaire.ToString("0.0") + "%",
-                        Stock = p.QuantiteEnStock,
-                        Seuil = p.SeuilAlerte,
+                        Stock = StockService.Formater(p),
+                        Seuil = $"{p.SeuilAlerte} boîte(s)",
                         UniteVente = p.UniteVente,
                         Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
                         Fournisseur = p.Fournisseur?.Nom ?? "—",

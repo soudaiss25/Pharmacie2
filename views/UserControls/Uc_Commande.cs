@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -170,7 +171,7 @@ namespace Pharmacie2.views.UserControls
                             l.Quantite,
                             $"{l.PrixAchatUnitaire:N0} KMF",
                             $"{l.TotalLigne:N0} KMF",
-                            l.Produit?.QuantiteEnStock.ToString() ?? "—"
+                            l.Produit != null ? StockService.Formater(l.Produit) : "—"
                         );
                     }
                 }

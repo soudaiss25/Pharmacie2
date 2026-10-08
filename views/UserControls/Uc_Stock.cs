@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -54,27 +55,21 @@ namespace Pharmacie2.views.UserControls
                 query = query.Where(p => p.QuantiteEnStock > 0);
 
             if (cbSeuil.Text == "Sous le seuil")
-                query = query.Where(p => p.QuantiteEnStock <= p.SeuilAlerte);
+                query = query.Where(p => p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
             else if (cbSeuil.Text == "Normal")
-                query = query.Where(p => p.QuantiteEnStock > p.SeuilAlerte);
+                query = query.Where(p => p.QuantiteEnStock > p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
 
-            var data = query.Select(p => new
+            var data = query.ToList().Select(p => new
             {
                 p.Id,
                 Produit = p.Nom,
                 p.Type,
                 Fournisseur = p.Fournisseur != null ? p.Fournisseur.Nom : "—",
-                // Afficher en boîtes pour la lisibilité admin
-                // Ex : 10 unités / 5 par boîte = 2 boîtes
-                Quantite = p.NbUniteParBoite > 1
-                              ? p.QuantiteEnStock / p.NbUniteParBoite
-                              : p.QuantiteEnStock,
-                Unite = p.UniteVente == "Boîte" || p.NbUniteParBoite <= 1
-                              ? "Boîte(s)"
-                              : $"Boîte(s) [{p.NbUniteParBoite} {p.UniteVente}/boîte]",
-                Seuil = p.SeuilAlerte,
+                // Ex : 9 unités (5/boîte) → « 1 boîte(s) + 4 plaquette(s) »
+                Quantite = StockService.Formater(p),
+                Seuil = $"{p.SeuilAlerte} boîte(s)",
                 Etat = p.QuantiteEnStock <= 0 ? "Rupture"
-                            : p.QuantiteEnStock <= p.SeuilAlerte ? "Alerte"
+                            : p.QuantiteEnStock <= StockService.SeuilEnUnites(p) ? "Alerte"
                             : "OK"
             }).ToList();
 
