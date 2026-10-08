@@ -1,54 +1,21 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views.UserControls
 {
     public partial class Uc_Stock : UserControl
     {
-        private CheckBox _chkArchives;
+        private readonly CheckBox _chkArchives;
 
         public Uc_Stock()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
 
-            dgvStock.AutoGenerateColumns = true;
-            dgvStock.MultiSelect = false;
-
-            cbSeuil.Items.Add("À vérifier");
-            cbSeuil.Items.Add("Périmés");
-            cbSeuil.Items.Add("Péremption proche");
             cbSeuil.SelectedIndex = 0;
             cbDisponibilite.SelectedIndex = 0;
-
-            txtSearchProduit.TextChanged += (s, e) => ChargerStock();
-            cbSeuil.SelectedIndexChanged += (s, e) => ChargerStock();
-            cbDisponibilite.SelectedIndexChanged += (s, e) => ChargerStock();
-            dgvStock.CellFormatting += dgvStock_CellFormatting;
-
-            btnAjouter.Click += btnAjouter_Click;
-            btnModifier.Click += btnModifier_Click;
-            btnSupprimer.Click += btnSupprimer_Click;
-            btnCommander.Click += btnCommander_Click;
-
-            // Feuille d'inventaire (bouton créé ici pour ne pas toucher au Designer)
-            var btnInventaire = new Button
-            {
-                Text = "🖨 Feuille d'inventaire",
-                Size = new System.Drawing.Size(190, 35),
-                Location = new System.Drawing.Point(btnCommander.Right + 10, btnCommander.Top),
-                BackColor = System.Drawing.Color.FromArgb(96, 125, 139),
-                ForeColor = System.Drawing.Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
-                UseVisualStyleBackColor = false
-            };
-            btnInventaire.FlatAppearance.BorderSize = 0;
-            panelButtons.Controls.Add(btnInventaire);
-            btnInventaire.Click += btnInventaire_Click;
 
             // Archivage (remplace la suppression)
             _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Produit, SelectionProduit, ChargerStock);
@@ -66,6 +33,10 @@ namespace Pharmacie2.views.UserControls
             else cbSeuil.SelectedItem = filtre;
         }
 
+        private void txtSearchProduit_TextChanged(object sender, EventArgs e) => ChargerStock();
+
+        private void Filtre_Changed(object sender, EventArgs e) => ChargerStock();
+
         private void btnInventaire_Click(object sender, EventArgs e)
         {
             using var dlg = new SaveFileDialog
@@ -79,8 +50,7 @@ namespace Pharmacie2.views.UserControls
             try
             {
                 InventaireExportService.Exporter(dlg.FileName);
-                MessageBox.Show("Feuille d'inventaire enregistrée :\n" + dlg.FileName,
-                    "Inventaire", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes("Feuille d'inventaire enregistrée : " + dlg.FileName);
             }
             catch (Exception ex)
             {
@@ -94,12 +64,16 @@ namespace Pharmacie2.views.UserControls
 
         private void ChargerStock()
         {
+            // Pendant la construction, les listes ne sont pas encore initialisées
+            if (_chkArchives == null || cbSeuil.SelectedIndex < 0 || cbDisponibilite.SelectedIndex < 0) return;
+
             string search = txtSearchProduit.Text.ToLower();
+            bool archives = _chkArchives.Checked;
+            DateTime aujourdhui = DateTime.Today;
+            DateTime limite = aujourdhui.AddDays(TableauDeBordService.JoursAvantPeremption);
 
-            bool archives = _chkArchives?.Checked ?? false;
-
-            using var _context = new AppDbContext();
-            var query = _context.produits
+            using var ctx = new AppDbContext();
+            var query = ctx.produits
                 .AsNoTracking()
                 .Include(p => p.Fournisseur)
                 .Where(p => p.Actif || archives)
@@ -118,10 +92,9 @@ namespace Pharmacie2.views.UserControls
             if (cbSeuil.Text == "Sous le seuil")
                 query = query.Where(p => p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
             else if (cbSeuil.Text == "Périmés")
-                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration < DateTime.Today);
+                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration < aujourdhui);
             else if (cbSeuil.Text == "Péremption proche")
-                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration >= DateTime.Today
-                                         && p.DateExpiration <= DateTime.Today.AddDays(TableauDeBordService.JoursAvantPeremption));
+                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration >= aujourdhui && p.DateExpiration <= limite);
             else if (cbSeuil.Text == "À vérifier")
                 query = query.Where(p => p.StockAVerifier && p.Actif);
             else if (cbSeuil.Text == "Normal")
@@ -131,62 +104,52 @@ namespace Pharmacie2.views.UserControls
                 .OrderByDescending(p => p.Actif)            // archivés en dernier
                 .ThenByDescending(p => p.StockAVerifier)    // produits « À vérifier » en premier
                 .ThenBy(p => p.Nom)
-                .ToList().Select(p => new
-            {
-                p.Id,
-                Produit = p.Nom,
-                p.Type,
-                Fournisseur = p.Fournisseur != null ? p.Fournisseur.Nom : "—",
-                // Ex : 9 unités (5/boîte) → « 1 boîte(s) + 4 plaquette(s) »
-                Quantite = StockService.Formater(p),
-                Seuil = $"{p.SeuilAlerte} boîte(s)",
-                Verification = !p.Actif ? "📦 Archivé" : p.StockAVerifier ? "⚠ À vérifier" : "",
-                Etat = p.QuantiteEnStock <= 0 ? "Rupture"
-                            : p.QuantiteEnStock <= StockService.SeuilEnUnites(p) ? "Alerte"
-                            : "OK"
-            }).ToList();
+                .ToList()
+                .Select(p => new
+                {
+                    p.Id,
+                    Produit = p.Nom,
+                    p.Type,
+                    Fournisseur = p.Fournisseur != null ? p.Fournisseur.Nom : "—",
+                    // Ex : 9 unités (5/boîte) → « 1 boîte(s) + 4 plaquette(s) »
+                    Quantite = StockService.Formater(p),
+                    Seuil = $"{p.SeuilAlerte} boîte(s)",
+                    Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
+                    Verification = !p.Actif ? "Archivé" : p.StockAVerifier ? "À vérifier" : "",
+                    Etat = !p.Actif ? "Archivé"
+                         : p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui ? "Périmé"
+                         : p.QuantiteEnStock <= 0 ? "Rupture"
+                         : p.QuantiteEnStock <= StockService.SeuilEnUnites(p) ? "Alerte"
+                         : "OK"
+                })
+                .ToList();
 
             dgvStock.DataSource = data;
-
-            if (dgvStock.Columns["Id"] != null)
-                dgvStock.Columns["Id"].Visible = false;
         }
 
         private void dgvStock_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || dgvStock.Columns["Etat"] == null) return;
+            if (e.RowIndex < 0 || e.RowIndex >= dgvStock.Rows.Count) return;
 
-            var etat = dgvStock.Rows[e.RowIndex].Cells["Etat"].Value?.ToString();
+            var ligne = dgvStock.Rows[e.RowIndex];
+            string etat = ligne.Cells["Etat"].Value?.ToString() ?? "";
+            string verif = ligne.Cells["Verification"].Value?.ToString() ?? "";
 
-            if (dgvStock.Columns["Verification"] != null
-                && dgvStock.Rows[e.RowIndex].Cells["Verification"].Value?.ToString() == "📦 Archivé")
+            // Rouge = urgent, orange = attention, gris = archivé
+            if (etat == "Archivé")
             {
-                dgvStock.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.Color.Gainsboro;
-                dgvStock.Rows[e.RowIndex].DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
-                return;
+                e.CellStyle.BackColor = Theme.InfoFond;
+                e.CellStyle.ForeColor = Theme.Neutre;
             }
-
-            if (dgvStock.Columns["Verification"] != null
-                && !string.IsNullOrEmpty(dgvStock.Rows[e.RowIndex].Cells["Verification"].Value?.ToString()))
+            else if (etat == "Périmé" || etat == "Rupture")
             {
-                dgvStock.Rows[e.RowIndex].DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(255, 243, 176);
-                return;
+                e.CellStyle.BackColor = Theme.UrgentFond;
+                e.CellStyle.ForeColor = Theme.UrgentTexte;
             }
-
-            switch (etat)
+            else if (etat == "Alerte" || verif == "À vérifier")
             {
-                case "Rupture":
-                    dgvStock.Rows[e.RowIndex].DefaultCellStyle.BackColor =
-                        System.Drawing.Color.FromArgb(255, 205, 210);
-                    break;
-                case "Alerte":
-                    dgvStock.Rows[e.RowIndex].DefaultCellStyle.BackColor =
-                        System.Drawing.Color.FromArgb(255, 224, 178);
-                    break;
-                default:
-                    dgvStock.Rows[e.RowIndex].DefaultCellStyle.BackColor =
-                        System.Drawing.Color.White;
-                    break;
+                e.CellStyle.BackColor = Theme.AttentionFond;
+                e.CellStyle.ForeColor = Theme.AttentionTexte;
             }
         }
 
@@ -196,7 +159,7 @@ namespace Pharmacie2.views.UserControls
         {
             using (var form = new FormAddProduit())
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog(this) == DialogResult.OK)
                     ChargerStock();
             }
         }
@@ -212,12 +175,11 @@ namespace Pharmacie2.views.UserControls
                 return;
             }
 
-            // ✅ On passe l'ID (int), pas l'objet Produit
             int id = Convert.ToInt32(dgvStock.SelectedRows[0].Cells["Id"].Value);
 
             using (var form = new FormAddProduit(id))
             {
-                if (form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog(this) == DialogResult.OK)
                     ChargerStock();
             }
         }
@@ -249,13 +211,12 @@ namespace Pharmacie2.views.UserControls
                 return;
             }
 
-            // ✅ On passe l'ID (int) et le nom (string) — correspond au constructeur existant
             int produitId = Convert.ToInt32(dgvStock.SelectedRows[0].Cells["Id"].Value);
             string nomProduit = dgvStock.SelectedRows[0].Cells["Produit"].Value?.ToString() ?? "";
 
             using (var form = new FormCommandeProduit(produitId, nomProduit))
             {
-                form.ShowDialog();
+                form.ShowDialog(this);
                 ChargerStock();
             }
         }

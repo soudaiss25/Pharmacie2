@@ -1,210 +1,355 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace Pharmacie2.views.UserControls
+﻿namespace Pharmacie2.views.UserControls
 {
-    public partial class Uc_Stock : UserControl
+    partial class Uc_Stock
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Code généré par le Concepteur Windows Form
+
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle headerStyle =
-                new System.Windows.Forms.DataGridViewCellStyle();
-
-            this.panelHeader = new System.Windows.Forms.Panel();
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.panelFilters = new System.Windows.Forms.Panel();
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTitre = new System.Windows.Forms.Label();
+            this.flpFiltres = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblRecherche = new System.Windows.Forms.Label();
             this.txtSearchProduit = new System.Windows.Forms.TextBox();
+            this.lblFiltre = new System.Windows.Forms.Label();
             this.cbSeuil = new System.Windows.Forms.ComboBox();
+            this.lblDisponibilite = new System.Windows.Forms.Label();
             this.cbDisponibilite = new System.Windows.Forms.ComboBox();
             this.dgvStock = new System.Windows.Forms.DataGridView();
-            this.panelButtons = new System.Windows.Forms.Panel();
+            this.flpActions = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAjouter = new System.Windows.Forms.Button();
             this.btnModifier = new System.Windows.Forms.Button();
             this.btnSupprimer = new System.Windows.Forms.Button();
             this.btnCommander = new System.Windows.Forms.Button();
-
-            this.panelHeader.SuspendLayout();
-            this.panelFilters.SuspendLayout();
-            this.panelButtons.SuspendLayout();
+            this.btnInventaire = new System.Windows.Forms.Button();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colProduit = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colFournisseur = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colQuantite = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSeuil = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colExpiration = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colVerification = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEtat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStock)).BeginInit();
+            this.tlpRoot.SuspendLayout();
+            this.flpFiltres.SuspendLayout();
+            this.flpActions.SuspendLayout();
             this.SuspendLayout();
-
-            // ── panelHeader ───────────────────────────────────────────────
-            this.panelHeader.BackColor = System.Drawing.Color.ForestGreen;
-            this.panelHeader.Controls.Add(this.lblTitle);
-            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelHeader.Name = "panelHeader";
-            this.panelHeader.Size = new System.Drawing.Size(900, 60);
-            this.panelHeader.TabIndex = 5;
-
-            // ── lblTitle ──────────────────────────────────────────────────
-            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F,
-                System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Text = "📦  Gestion du Stock";
-            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblTitle.TabIndex = 0;
-
-            // ── panelFilters ──────────────────────────────────────────────
-            this.panelFilters.Controls.Add(this.txtSearchProduit);
-            this.panelFilters.Controls.Add(this.cbSeuil);
-            this.panelFilters.Controls.Add(this.cbDisponibilite);
-            this.panelFilters.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelFilters.Name = "panelFilters";
-            this.panelFilters.Padding = new System.Windows.Forms.Padding(10);
-            this.panelFilters.Size = new System.Drawing.Size(900, 54);
-            this.panelFilters.TabIndex = 4;
-            this.panelFilters.BackColor = System.Drawing.Color.FromArgb(245, 250, 245);
-
-            // ── txtSearchProduit ──────────────────────────────────────────
-            this.txtSearchProduit.Location = new System.Drawing.Point(10, 14);
+            // 
+            // tlpRoot
+            // 
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 4;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.tlpRoot.Controls.Add(this.flpFiltres, 0, 1);
+            this.tlpRoot.Controls.Add(this.dgvStock, 0, 2);
+            this.tlpRoot.Controls.Add(this.flpActions, 0, 3);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
+            // 
+            // lblTitre
+            // 
+            this.lblTitre.Text = "Stock";
+            this.lblTitre.AutoSize = true;
+            this.lblTitre.Tag = "titre";
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Name = "lblTitre";
+            // 
+            // flpFiltres
+            // 
+            this.flpFiltres.Controls.Add(this.lblRecherche);
+            this.flpFiltres.Controls.Add(this.txtSearchProduit);
+            this.flpFiltres.Controls.Add(this.lblFiltre);
+            this.flpFiltres.Controls.Add(this.cbSeuil);
+            this.flpFiltres.Controls.Add(this.lblDisponibilite);
+            this.flpFiltres.Controls.Add(this.cbDisponibilite);
+            this.flpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpFiltres.AutoSize = true;
+            this.flpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpFiltres.WrapContents = true;
+            this.flpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.flpFiltres.Name = "flpFiltres";
+            // 
+            // lblRecherche
+            // 
+            this.lblRecherche.Text = "Rechercher";
+            this.lblRecherche.AutoSize = true;
+            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblRecherche.Name = "lblRecherche";
+            // 
+            // txtSearchProduit
+            // 
+            this.txtSearchProduit.Width = 260;
+            this.txtSearchProduit.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtSearchProduit.Margin = new System.Windows.Forms.Padding(0, 4, 16, 0);
             this.txtSearchProduit.Name = "txtSearchProduit";
-            this.txtSearchProduit.Size = new System.Drawing.Size(220, 26);
-            this.txtSearchProduit.TabIndex = 0;
-            this.txtSearchProduit.PlaceholderText = "🔍 Rechercher un produit…";
-            this.txtSearchProduit.Font = new System.Drawing.Font("Segoe UI", 9F);
-
-            // ── cbSeuil ───────────────────────────────────────────────────
+            this.txtSearchProduit.TextChanged += new System.EventHandler(this.txtSearchProduit_TextChanged);
+            // 
+            // lblFiltre
+            // 
+            this.lblFiltre.Text = "Afficher";
+            this.lblFiltre.AutoSize = true;
+            this.lblFiltre.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblFiltre.Name = "lblFiltre";
+            // 
+            // cbSeuil
+            // 
+            this.cbSeuil.Width = 190;
             this.cbSeuil.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbSeuil.Items.AddRange(new object[] { "Tous", "Sous le seuil", "Normal" });
-            this.cbSeuil.Location = new System.Drawing.Point(244, 14);
+            this.cbSeuil.Margin = new System.Windows.Forms.Padding(0, 4, 16, 0);
+            this.cbSeuil.Items.AddRange(new object[] {
+            "Tous",
+            "Sous le seuil",
+            "Normal",
+            "À vérifier",
+            "Périmés",
+            "Péremption proche"});
             this.cbSeuil.Name = "cbSeuil";
-            this.cbSeuil.Size = new System.Drawing.Size(160, 28);
-            this.cbSeuil.TabIndex = 1;
-            this.cbSeuil.Font = new System.Drawing.Font("Segoe UI", 9F);
-
-            // ── cbDisponibilite ───────────────────────────────────────────
+            this.cbSeuil.SelectedIndexChanged += new System.EventHandler(this.Filtre_Changed);
+            // 
+            // lblDisponibilite
+            // 
+            this.lblDisponibilite.Text = "Disponibilité";
+            this.lblDisponibilite.AutoSize = true;
+            this.lblDisponibilite.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblDisponibilite.Name = "lblDisponibilite";
+            // 
+            // cbDisponibilite
+            // 
+            this.cbDisponibilite.Width = 150;
             this.cbDisponibilite.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbDisponibilite.Items.AddRange(new object[] { "Tous", "En rupture", "Disponible" });
-            this.cbDisponibilite.Location = new System.Drawing.Point(420, 14);
+            this.cbDisponibilite.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.cbDisponibilite.Items.AddRange(new object[] {
+            "Tous",
+            "En rupture",
+            "Disponible"});
             this.cbDisponibilite.Name = "cbDisponibilite";
-            this.cbDisponibilite.Size = new System.Drawing.Size(160, 28);
-            this.cbDisponibilite.TabIndex = 2;
-            this.cbDisponibilite.Font = new System.Drawing.Font("Segoe UI", 9F);
-
-            // ── dgvStock ──────────────────────────────────────────────────
-            headerStyle.BackColor = System.Drawing.Color.FromArgb(46, 125, 50);
-            headerStyle.ForeColor = System.Drawing.Color.White;
-            headerStyle.Font = new System.Drawing.Font("Segoe UI", 9F,
-                System.Drawing.FontStyle.Bold);
-            headerStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            headerStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-
-            this.dgvStock.ColumnHeadersDefaultCellStyle = headerStyle;
-            this.dgvStock.ColumnHeadersHeightSizeMode =
-                System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.cbDisponibilite.SelectedIndexChanged += new System.EventHandler(this.Filtre_Changed);
+            // 
+            // dgvStock
+            // 
+            this.dgvStock.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colId,
+            this.colProduit,
+            this.colType,
+            this.colFournisseur,
+            this.colQuantite,
+            this.colSeuil,
+            this.colExpiration,
+            this.colVerification,
+            this.colEtat});
             this.dgvStock.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvStock.EnableHeadersVisualStyles = false;
-            this.dgvStock.BackgroundColor = System.Drawing.Color.White;
-            this.dgvStock.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvStock.Name = "dgvStock";
+            this.dgvStock.AutoGenerateColumns = false;
             this.dgvStock.ReadOnly = true;
-            this.dgvStock.RowHeadersWidth = 30;
-            this.dgvStock.RowTemplate.Height = 30;
-            this.dgvStock.SelectionMode =
-                System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStock.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.dgvStock.TabIndex = 0;
-            this.dgvStock.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.dgvStock.AlternatingRowsDefaultCellStyle.BackColor =
-                System.Drawing.Color.FromArgb(240, 248, 240);
-
-            // ── panelButtons ──────────────────────────────────────────────
-            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Height = 54;
-            this.panelButtons.BackColor = System.Drawing.Color.FromArgb(245, 250, 245);
-            this.panelButtons.Controls.Add(this.btnAjouter);
-            this.panelButtons.Controls.Add(this.btnModifier);
-            this.panelButtons.Controls.Add(this.btnSupprimer);
-            this.panelButtons.Controls.Add(this.btnCommander);
-            this.panelButtons.TabIndex = 6;
-
-            // ── btnAjouter ────────────────────────────────────────────────
-            this.btnAjouter.BackColor = System.Drawing.Color.FromArgb(46, 125, 50);
-            this.btnAjouter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAjouter.FlatAppearance.BorderSize = 0;
-            this.btnAjouter.ForeColor = System.Drawing.Color.White;
-            this.btnAjouter.Location = new System.Drawing.Point(10, 10);
+            this.dgvStock.Name = "dgvStock";
+            this.dgvStock.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvStock_CellFormatting);
+            // 
+            // flpActions
+            // 
+            this.flpActions.Controls.Add(this.btnAjouter);
+            this.flpActions.Controls.Add(this.btnModifier);
+            this.flpActions.Controls.Add(this.btnSupprimer);
+            this.flpActions.Controls.Add(this.btnCommander);
+            this.flpActions.Controls.Add(this.btnInventaire);
+            this.flpActions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpActions.AutoSize = true;
+            this.flpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpActions.WrapContents = true;
+            this.flpActions.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.flpActions.Name = "flpActions";
+            // 
+            // btnAjouter
+            // 
+            this.btnAjouter.Text = "Ajouter un produit";
+            this.btnAjouter.Tag = "primaire";
+            this.btnAjouter.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.btnAjouter.Name = "btnAjouter";
-            this.btnAjouter.Size = new System.Drawing.Size(130, 35);
-            this.btnAjouter.TabIndex = 1;
-            this.btnAjouter.Text = "➕ Ajouter";
-            this.btnAjouter.Font = new System.Drawing.Font("Segoe UI", 9F,
-                System.Drawing.FontStyle.Bold);
-            this.btnAjouter.UseVisualStyleBackColor = false;
-
-            // ── btnModifier ───────────────────────────────────────────────
-            this.btnModifier.BackColor = System.Drawing.Color.FromArgb(25, 118, 210);
-            this.btnModifier.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnModifier.FlatAppearance.BorderSize = 0;
-            this.btnModifier.ForeColor = System.Drawing.Color.White;
-            this.btnModifier.Location = new System.Drawing.Point(150, 10);
+            this.btnAjouter.Click += new System.EventHandler(this.btnAjouter_Click);
+            // 
+            // btnModifier
+            // 
+            this.btnModifier.Text = "Modifier";
+            this.btnModifier.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.btnModifier.Name = "btnModifier";
-            this.btnModifier.Size = new System.Drawing.Size(130, 35);
-            this.btnModifier.TabIndex = 2;
-            this.btnModifier.Text = "✏️ Modifier";
-            this.btnModifier.Font = new System.Drawing.Font("Segoe UI", 9F,
-                System.Drawing.FontStyle.Bold);
-            this.btnModifier.UseVisualStyleBackColor = false;
-
-            // ── btnSupprimer ──────────────────────────────────────────────
-            this.btnSupprimer.BackColor = System.Drawing.Color.FromArgb(198, 40, 40);
-            this.btnSupprimer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSupprimer.FlatAppearance.BorderSize = 0;
-            this.btnSupprimer.ForeColor = System.Drawing.Color.White;
-            this.btnSupprimer.Location = new System.Drawing.Point(290, 10);
+            this.btnModifier.Click += new System.EventHandler(this.btnModifier_Click);
+            // 
+            // btnSupprimer
+            // 
+            this.btnSupprimer.Text = "Archiver";
+            this.btnSupprimer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.btnSupprimer.Name = "btnSupprimer";
-            this.btnSupprimer.Size = new System.Drawing.Size(130, 35);
-            this.btnSupprimer.TabIndex = 3;
-            this.btnSupprimer.Text = "🗑️ Supprimer";
-            this.btnSupprimer.Font = new System.Drawing.Font("Segoe UI", 9F,
-                System.Drawing.FontStyle.Bold);
-            this.btnSupprimer.UseVisualStyleBackColor = false;
-
-            // ── btnCommander ──────────────────────────────────────────────
-            this.btnCommander.BackColor = System.Drawing.Color.FromArgb(230, 120, 0);
-            this.btnCommander.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCommander.FlatAppearance.BorderSize = 0;
-            this.btnCommander.ForeColor = System.Drawing.Color.White;
-            this.btnCommander.Location = new System.Drawing.Point(430, 10);
+            this.btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click);
+            // 
+            // btnCommander
+            // 
+            this.btnCommander.Text = "Commander au fournisseur";
+            this.btnCommander.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.btnCommander.Name = "btnCommander";
-            this.btnCommander.Size = new System.Drawing.Size(200, 35);
-            this.btnCommander.TabIndex = 4;
-            this.btnCommander.Text = "🛒 Commander au fournisseur";
-            this.btnCommander.Font = new System.Drawing.Font("Segoe UI", 9F,
-                System.Drawing.FontStyle.Bold);
-            this.btnCommander.UseVisualStyleBackColor = false;
-
-            // ── UserControl ───────────────────────────────────────────────
-            this.Controls.Add(this.dgvStock);
-            this.Controls.Add(this.panelButtons);
-            this.Controls.Add(this.panelFilters);
-            this.Controls.Add(this.panelHeader);
+            this.btnCommander.Click += new System.EventHandler(this.btnCommander_Click);
+            // 
+            // btnInventaire
+            // 
+            this.btnInventaire.Text = "Feuille d'inventaire";
+            this.btnInventaire.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnInventaire.Name = "btnInventaire";
+            this.btnInventaire.Click += new System.EventHandler(this.btnInventaire_Click);
+            // 
+            // colId
+            // 
+            this.colId.HeaderText = "Id";
+            this.colId.Name = "Id";
+            this.colId.DataPropertyName = "Id";
+            this.colId.FillWeight = 100F;
+            this.colId.MinimumWidth = 60;
+            this.colId.ReadOnly = true;
+            this.colId.Visible = false;
+            // 
+            // colProduit
+            // 
+            this.colProduit.HeaderText = "Produit";
+            this.colProduit.Name = "Produit";
+            this.colProduit.DataPropertyName = "Produit";
+            this.colProduit.FillWeight = 34F;
+            this.colProduit.MinimumWidth = 140;
+            this.colProduit.ReadOnly = true;
+            // 
+            // colType
+            // 
+            this.colType.HeaderText = "Type";
+            this.colType.Name = "Type";
+            this.colType.DataPropertyName = "Type";
+            this.colType.FillWeight = 12F;
+            this.colType.MinimumWidth = 80;
+            this.colType.ReadOnly = true;
+            // 
+            // colFournisseur
+            // 
+            this.colFournisseur.HeaderText = "Fournisseur";
+            this.colFournisseur.Name = "Fournisseur";
+            this.colFournisseur.DataPropertyName = "Fournisseur";
+            this.colFournisseur.FillWeight = 18F;
+            this.colFournisseur.MinimumWidth = 100;
+            this.colFournisseur.ReadOnly = true;
+            // 
+            // colQuantite
+            // 
+            this.colQuantite.HeaderText = "En stock";
+            this.colQuantite.Name = "Quantite";
+            this.colQuantite.DataPropertyName = "Quantite";
+            this.colQuantite.FillWeight = 24F;
+            this.colQuantite.MinimumWidth = 130;
+            this.colQuantite.ReadOnly = true;
+            // 
+            // colSeuil
+            // 
+            this.colSeuil.HeaderText = "Seuil d'alerte";
+            this.colSeuil.Name = "Seuil";
+            this.colSeuil.DataPropertyName = "Seuil";
+            this.colSeuil.FillWeight = 10F;
+            this.colSeuil.MinimumWidth = 90;
+            this.colSeuil.ReadOnly = true;
+            // 
+            // colExpiration
+            // 
+            this.colExpiration.HeaderText = "Expiration";
+            this.colExpiration.Name = "Expiration";
+            this.colExpiration.DataPropertyName = "Expiration";
+            this.colExpiration.FillWeight = 11F;
+            this.colExpiration.MinimumWidth = 90;
+            this.colExpiration.ReadOnly = true;
+            // 
+            // colVerification
+            // 
+            this.colVerification.HeaderText = "Vérification";
+            this.colVerification.Name = "Verification";
+            this.colVerification.DataPropertyName = "Verification";
+            this.colVerification.FillWeight = 11F;
+            this.colVerification.MinimumWidth = 90;
+            this.colVerification.ReadOnly = true;
+            // 
+            // colEtat
+            // 
+            this.colEtat.HeaderText = "État";
+            this.colEtat.Name = "Etat";
+            this.colEtat.DataPropertyName = "Etat";
+            this.colEtat.FillWeight = 9F;
+            this.colEtat.MinimumWidth = 70;
+            this.colEtat.ReadOnly = true;
+            // 
+            // Uc_Stock
+            // 
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Size = new System.Drawing.Size(1146, 700);
             this.Name = "Uc_Stock";
-            this.Size = new System.Drawing.Size(900, 560);
-
-            this.panelHeader.ResumeLayout(false);
-            this.panelFilters.ResumeLayout(false);
-            this.panelFilters.PerformLayout();
-            this.panelButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStock)).EndInit();
             this.ResumeLayout(false);
+            this.flpActions.ResumeLayout(false);
+            this.flpActions.PerformLayout();
+            this.flpFiltres.ResumeLayout(false);
+            this.flpFiltres.PerformLayout();
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvStock)).EndInit();
+
         }
 
-        // ── Déclaration des champs ────────────────────────────────────────
-        private System.Windows.Forms.Panel panelHeader;
-        private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Panel panelFilters;
+        #endregion
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.Label lblTitre;
+        private System.Windows.Forms.FlowLayoutPanel flpFiltres;
+        private System.Windows.Forms.Label lblRecherche;
         private System.Windows.Forms.TextBox txtSearchProduit;
+        private System.Windows.Forms.Label lblFiltre;
         private System.Windows.Forms.ComboBox cbSeuil;
+        private System.Windows.Forms.Label lblDisponibilite;
         private System.Windows.Forms.ComboBox cbDisponibilite;
         private System.Windows.Forms.DataGridView dgvStock;
-        private System.Windows.Forms.Panel panelButtons;
+        private System.Windows.Forms.FlowLayoutPanel flpActions;
         private System.Windows.Forms.Button btnAjouter;
         private System.Windows.Forms.Button btnModifier;
         private System.Windows.Forms.Button btnSupprimer;
         private System.Windows.Forms.Button btnCommander;
+        private System.Windows.Forms.Button btnInventaire;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colProduit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colFournisseur;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colQuantite;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSeuil;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colExpiration;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colVerification;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEtat;
     }
 }

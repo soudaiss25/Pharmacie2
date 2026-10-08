@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -18,32 +18,29 @@ namespace Pharmacie2.views
         public static CheckBox Installer(Button boutonArchiver, TypeElement type,
             Func<(int id, string nom, bool actif)?> selection, Action recharger)
         {
-            boutonArchiver.Text = "📦 Archiver";
+            boutonArchiver.Text = "Archiver";
 
             var parent = boutonArchiver.Parent;
-            int droite = parent.Controls.OfType<Button>().Max(b => b.Right);
+            bool enFlux = parent is FlowLayoutPanel;
 
-            var btnReactiver = new Button
-            {
-                Text = "♻ Réactiver",
-                Size = new Size(Math.Max(110, boutonArchiver.Width), boutonArchiver.Height),
-                Location = new Point(droite + 10, boutonArchiver.Top),
-                BackColor = Color.FromArgb(0, 121, 107),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = boutonArchiver.Font,
-                UseVisualStyleBackColor = false
-            };
-            btnReactiver.FlatAppearance.BorderSize = 0;
+            var btnReactiver = new Button { Text = "Réactiver", Margin = boutonArchiver.Margin };
+            Theme.Style(btnReactiver, StyleBouton.Secondaire);
 
             var chk = new CheckBox
             {
                 Text = "Afficher les archivés",
                 AutoSize = true,
-                Font = new Font("Segoe UI", 9F),
-                Location = new Point(btnReactiver.Right + 12, boutonArchiver.Top + Math.Max(0, (boutonArchiver.Height - 20) / 2))
+                Margin = new Padding(12, 8, 0, 0)
             };
             chk.CheckedChanged += (s, e) => recharger();
+
+            if (!enFlux)
+            {
+                // Parent à positionnement libre (anciens écrans) : à droite des boutons existants
+                int droite = parent.Controls.OfType<Button>().Max(b => b.Right);
+                btnReactiver.Location = new Point(droite + 10, boutonArchiver.Top);
+                chk.Location = new Point(btnReactiver.Right + 12, boutonArchiver.Top + 8);
+            }
 
             btnReactiver.Click += (s, e) =>
             {
