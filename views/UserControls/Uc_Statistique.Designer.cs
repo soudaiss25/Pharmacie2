@@ -360,6 +360,8 @@
             this.tlpTables.Controls.Add(this.tlpMutuelles, 1, 1);
             this.tlpMutuelles.TabIndex = 3;
             this.tlpTables.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTables.AutoSize = true;
+            this.tlpTables.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpTables.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpTables.Name = "tlpTables";
             // 

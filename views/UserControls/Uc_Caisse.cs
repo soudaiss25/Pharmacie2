@@ -454,6 +454,43 @@ namespace Pharmacie2.views.UserControls
         /// <summary>Mode compact : colonnes secondaires masquées dans les deux tableaux détaillés.</summary>
         public void DefinirCompact(bool compact)
         {
+            var m = (int a, int b, int c, int d) => new Padding(a, b, c, d);
+            tlpRapport.SuspendLayout();
+            if (compact)
+            {
+                // une seule colonne : filtres, cartes, tiroir, moyens de paiement, détail ; l'onglet défile verticalement
+                tabRapport.AutoScroll = true;
+                tlpRapport.Dock = DockStyle.Top;
+                tlpRapport.AutoSize = true;
+                tlpRapport.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                foreach (var c in new Control[] { pnlFiltres, pnlCartes, pnlCaisse })
+                {
+                    tlpRapport.SetColumnSpan(c, 1);
+                    tlpRapport.SetRowSpan(c, 1);
+                }
+                tlpVentilation.Dock = DockStyle.Top;
+                tlpVentilation.Height = Theme.Px(this, 190);
+                dgvDetail.Dock = DockStyle.Top;
+                dgvDetail.Height = Theme.Px(this, 260);
+                ModeCompact.Recomposer(tlpRapport, new[] { "P100" }, new[] { "A", "A", "A", "A", "A", "A" },
+                    (pnlFiltres, 0, 0, pnlFiltres.Margin), (pnlCartes, 0, 1, m(0, 0, 0, 8)), (pnlCaisse, 0, 2, m(0, 0, 0, 8)),
+                    (tlpVentilation, 0, 3, m(0, 0, 0, 8)), (lblDetailVentes, 0, 4, lblDetailVentes.Margin), (dgvDetail, 0, 5, m(0, 0, 0, 0)));
+            }
+            else
+            {
+                tabRapport.AutoScroll = false;
+                tlpRapport.Dock = DockStyle.Fill;
+                tlpRapport.AutoSize = false;
+                tlpVentilation.Dock = DockStyle.Fill;
+                dgvDetail.Dock = DockStyle.Fill;
+                ModeCompact.Recomposer(tlpRapport, new[] { "P36", "P64" }, new[] { "A", "A", "P45", "A", "P55" },
+                    (pnlFiltres, 0, 0, pnlFiltres.Margin), (pnlCartes, 0, 1, m(0, 0, 0, 8)), (pnlCaisse, 0, 2, m(0, 0, 12, 0)),
+                    (tlpVentilation, 1, 2, tlpVentilation.Margin), (lblDetailVentes, 1, 3, lblDetailVentes.Margin), (dgvDetail, 1, 4, m(0, 0, 0, 0)));
+                tlpRapport.SetColumnSpan(pnlFiltres, 2);
+                tlpRapport.SetColumnSpan(pnlCartes, 2);
+                tlpRapport.SetRowSpan(pnlCaisse, 3);
+            }
+            tlpRapport.ResumeLayout(true);
             ModeCompact.MasquerColonnes(dgvDetail, compact, "Motif", "Especes", "Rendu", "Vendeur");
             ModeCompact.MasquerColonnes(dgvSessions, compact, "Fond", "Theorique", "Compte", "NbVentes");
             ModeCompact.MasquerColonnes(dgvDetailSession, compact, "Verse");

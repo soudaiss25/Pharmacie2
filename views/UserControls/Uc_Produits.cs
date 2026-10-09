@@ -14,6 +14,7 @@ namespace Pharmacie2.views.UserControls
         {
             InitializeComponent();
             Theme.Appliquer(this);
+            dgvProduits.Resize += (s, e) => AppliquerColonnes();
 
             cmbTypeFiltre.SelectedIndex = 0;
             txtRecherche.TextChanged += (s, e) => ChargerProduits();
@@ -150,9 +151,28 @@ namespace Pharmacie2.views.UserControls
         }
     
         /// <summary>Mode compact : les colonnes secondaires sont masquées, l'essentiel reste visible.</summary>
+        private bool _compact;
+        private int _etatColonnes = -1;
+
         public void DefinirCompact(bool compact)
         {
-            ModeCompact.MasquerColonnes(dgvProduits, compact, "Type", "PrixAchat", "Marge", "Seuil", "UniteVente", "Fournisseur");
+            _compact = compact;
+            AppliquerColonnes();
+        }
+
+        /// <summary>
+        /// Trop de colonnes écrasent le nom du produit : l'unité de vente n'a pas sa colonne (elle figure dans « En stock »),
+        /// la marge et le seuil disparaissent sous 1300 unités de large, le reste en mode compact.
+        /// </summary>
+        private void AppliquerColonnes()
+        {
+            double largeur = dgvProduits.Width / Theme.Echelle(dgvProduits);
+            int etat = (_compact ? 2 : 0) + (largeur < 1300 ? 1 : 0);
+            if (etat == _etatColonnes) return;
+            _etatColonnes = etat;
+            ModeCompact.MasquerColonnes(dgvProduits, true, "UniteVente");
+            ModeCompact.MasquerColonnes(dgvProduits, etat != 0, "Marge", "Seuil");
+            ModeCompact.MasquerColonnes(dgvProduits, _compact, "Type", "PrixAchat", "Fournisseur");
             Theme.AjusterColonnes(dgvProduits);
         }
 
