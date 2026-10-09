@@ -248,6 +248,11 @@ namespace Pharmacie2.Services
                     voulu = Math.Max(voulu, LargeurTexte("00/00 00:00", policeCellule));
                 if (col.MinimumWidth != voulu) col.MinimumWidth = voulu;
             }
+
+            // Barre horizontale seulement quand les minimums ne tiennent vraiment pas (le mode « Remplir » dépasse parfois de quelques pixels)
+            int somme = g.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible).Sum(c => c.MinimumWidth);
+            var voulue = somme > g.ClientSize.Width ? ScrollBars.Both : ScrollBars.Vertical;
+            if (g.ScrollBars != voulue) g.ScrollBars = voulue;
         }
 
         /// <summary>Style commun des tableaux (règle B0.8). À compléter par colonne : montants avec MarquerMontant.</summary>
