@@ -45,8 +45,7 @@ namespace Pharmacie2.views
             panelContent.Controls.Clear();
             foreach (var a in anciens) a.Dispose();
 
-            uc.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(uc);
+            Hebergement.Heberger(panelContent, uc);   // zone défilante : l'écran prend max(zone, taille minimale)
 
             if (_boutonActif != null) _boutonActif.Actif = false;
             _boutonActif = bouton;
@@ -118,7 +117,14 @@ namespace Pharmacie2.views
 
         private void BtnCaisse_Click_1(object sender, EventArgs e) => Ouvrir(new Uc_Caisse(), BtnCaisse);
 
-        private void BtnGestionUtilisateur_Click(object sender, EventArgs e) => Ouvrir(new Uc_Utilisateurs(), BtnGestionUtilisateur);
+        private void btnAdministration_Click(object sender, EventArgs e)
+        {
+            var admin = new Uc_Administration();
+            admin.UtilisateursDemande += () => Ouvrir(new Uc_Utilisateurs(), btnAdministration);
+            admin.SauvegardeDemande += () => btnSauvegarde_Click(this, EventArgs.Empty);
+            admin.DossierDemande += () => btnOuvrirDossierSauvegardes_Click(this, EventArgs.Empty);
+            Ouvrir(admin, btnAdministration);
+        }
 
         private void btnCommandes_Click(object sender, EventArgs e) => Ouvrir(new Uc_Commande(), btnCommandes);
 

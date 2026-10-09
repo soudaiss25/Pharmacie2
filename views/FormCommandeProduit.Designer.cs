@@ -146,8 +146,8 @@
             // 
             // txtFournisseur
             // 
-            this.txtFournisseur.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFournisseur.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtFournisseur.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtFournisseur.Width = 380;
             this.txtFournisseur.PlaceholderText = "Nom du fournisseur…";
             this.txtFournisseur.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtFournisseur.Name = "txtFournisseur";
@@ -228,8 +228,8 @@
             // 
             // txtNote
             // 
-            this.txtNote.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNote.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtNote.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtNote.Width = 380;
             this.txtNote.PlaceholderText = "Ex : urgence, référence du fournisseur…";
             this.txtNote.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtNote.Name = "txtNote";
@@ -272,8 +272,8 @@
             // FormCommandeProduit
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClientSize = new System.Drawing.Size(600, 440);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

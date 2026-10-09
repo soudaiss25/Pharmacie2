@@ -107,8 +107,8 @@
             // 
             // txtLogin
             // 
-            this.txtLogin.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLogin.MaximumSize = new System.Drawing.Size(420, 0);
+            this.txtLogin.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtLogin.Width = 420;
             this.txtLogin.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.txtLogin.Name = "txtLogin";
             // 
@@ -121,8 +121,8 @@
             // 
             // txtCle
             // 
-            this.txtCle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCle.MaximumSize = new System.Drawing.Size(420, 0);
+            this.txtCle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCle.Width = 420;
             this.txtCle.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.txtCle.Name = "txtCle";
             // 
@@ -135,8 +135,8 @@
             // 
             // txtMdp
             // 
-            this.txtMdp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtMdp.MaximumSize = new System.Drawing.Size(420, 0);
+            this.txtMdp.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtMdp.Width = 420;
             this.txtMdp.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.txtMdp.UseSystemPasswordChar = true;
             this.txtMdp.Name = "txtMdp";
@@ -150,8 +150,8 @@
             // 
             // txtMdp2
             // 
-            this.txtMdp2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtMdp2.MaximumSize = new System.Drawing.Size(420, 0);
+            this.txtMdp2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtMdp2.Width = 420;
             this.txtMdp2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.txtMdp2.UseSystemPasswordChar = true;
             this.txtMdp2.Name = "txtMdp2";
@@ -195,8 +195,8 @@
             // 
             this.Controls.Add(this.tlpRoot);
             this.tlpRoot.TabIndex = 0;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClientSize = new System.Drawing.Size(480, 460);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

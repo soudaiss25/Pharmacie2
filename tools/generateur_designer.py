@@ -330,8 +330,8 @@ class Ecran:
 # ── Propriétés communes des formulaires / contrôles utilisateur (règle B0.1) ──
 def base_ecran(form=True, **extra):
     p = {
-        'AutoScaleDimensions': R('new System.Drawing.SizeF(7F, 15F)'),
-        'AutoScaleMode': E('AutoScaleMode', 'Font'),
+        'AutoScaleDimensions': R('new System.Drawing.SizeF(96F, 96F)'),
+        'AutoScaleMode': E('AutoScaleMode', 'Dpi'),
         'Font': font(10),
     }
     p.update(extra)

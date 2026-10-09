@@ -208,7 +208,6 @@
             // txtRecherche
             // 
             this.txtRecherche.Width = 300;
-            this.txtRecherche.MaximumSize = new System.Drawing.Size(400, 0);
             this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
             this.txtRecherche.PlaceholderText = "Tapez le nom puis Entrée";
             this.txtRecherche.Name = "txtRecherche";
@@ -374,8 +373,8 @@
             // 
             // txtNom
             // 
-            this.txtNom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNom.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtNom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtNom.Width = 400;
             this.txtNom.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtNom.Name = "txtNom";
             // 
@@ -389,8 +388,8 @@
             // 
             // txtPrenom
             // 
-            this.txtPrenom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtPrenom.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtPrenom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtPrenom.Width = 400;
             this.txtPrenom.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtPrenom.Name = "txtPrenom";
             // 
@@ -404,8 +403,8 @@
             // 
             // txtTelephone
             // 
-            this.txtTelephone.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtTelephone.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtTelephone.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtTelephone.Width = 400;
             this.txtTelephone.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtTelephone.Name = "txtTelephone";
             // 
@@ -419,8 +418,8 @@
             // 
             // txtMotif
             // 
-            this.txtMotif.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtMotif.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtMotif.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtMotif.Width = 400;
             this.txtMotif.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtMotif.PlaceholderText = "Ex : hypertension, grippe, ordonnance du Dr Ahmed";
             this.txtMotif.Name = "txtMotif";
@@ -495,8 +494,8 @@
             // 
             // txtMatricule
             // 
-            this.txtMatricule.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtMatricule.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtMatricule.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtMatricule.Width = 400;
             this.txtMatricule.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtMatricule.PlaceholderText = "N° matricule";
             this.txtMatricule.Name = "txtMatricule";
@@ -715,8 +714,8 @@
             // FormVente
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClientSize = new System.Drawing.Size(1180, 660);
             this.MinimumSize = new System.Drawing.Size(1000, 600);

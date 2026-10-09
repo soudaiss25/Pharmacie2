@@ -126,8 +126,8 @@
             // 
             // txtNomEmployeur
             // 
-            this.txtNomEmployeur.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNomEmployeur.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtNomEmployeur.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtNomEmployeur.Width = 380;
             this.txtNomEmployeur.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtNomEmployeur.Name = "txtNomEmployeur";
             // 
@@ -168,8 +168,8 @@
             // 
             // txtEmail
             // 
-            this.txtEmail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtEmail.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtEmail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtEmail.Width = 380;
             this.txtEmail.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtEmail.Name = "txtEmail";
             // 
@@ -183,8 +183,8 @@
             // 
             // txtTelephone
             // 
-            this.txtTelephone.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtTelephone.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtTelephone.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtTelephone.Width = 380;
             this.txtTelephone.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtTelephone.Name = "txtTelephone";
             // 
@@ -226,8 +226,8 @@
             // FormAddMutuelle
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClientSize = new System.Drawing.Size(560, 340);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

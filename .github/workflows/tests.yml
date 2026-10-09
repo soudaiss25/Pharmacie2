@@ -14,7 +14,9 @@ jobs:
       # Dossier de données isolé : les tests n'utilisent jamais le vrai dossier Pharmacie2Data
       - name: Isoler le dossier de données des tests
         shell: pwsh
-        run: echo "PHARMACIE2_DATA_DIR=$env:RUNNER_TEMP\pharmacie2-tests" >> $env:GITHUB_ENV
+        run: |
+          echo "PHARMACIE2_DATA_DIR=$env:RUNNER_TEMP\pharmacie2-tests" >> $env:GITHUB_ENV
+          echo "CAPTURES_DIR=$env:RUNNER_TEMP\captures-ecrans" >> $env:GITHUB_ENV
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
@@ -36,3 +38,11 @@ jobs:
               Write-Output "::error title=$($r.testName)::$m"
             }
           }
+      # Captures d'écran de chaque écran dans chaque configuration (à relire à chaque lot)
+      - name: Publier les captures d'écran
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures-ecrans
+          path: ${{ runner.temp }}\captures-ecrans
+          if-no-files-found: ignore

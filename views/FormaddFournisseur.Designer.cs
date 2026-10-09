@@ -107,8 +107,8 @@
             // 
             // txtNom
             // 
-            this.txtNom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtNom.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtNom.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtNom.Width = 380;
             this.txtNom.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtNom.Name = "txtNom";
             // 
@@ -122,8 +122,8 @@
             // 
             // txtContact
             // 
-            this.txtContact.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtContact.MaximumSize = new System.Drawing.Size(380, 0);
+            this.txtContact.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtContact.Width = 380;
             this.txtContact.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtContact.Name = "txtContact";
             // 
@@ -165,8 +165,8 @@
             // FormaddFournisseur
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClientSize = new System.Drawing.Size(560, 280);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

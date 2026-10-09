@@ -47,12 +47,11 @@
             this.btnDepenses = new Pharmacie2.views.Composants.BoutonMenu();
             this.btnStatistiques = new Pharmacie2.views.Composants.BoutonMenu();
             this.lblSectionAdministration = new System.Windows.Forms.Label();
-            this.BtnGestionUtilisateur = new Pharmacie2.views.Composants.BoutonMenu();
-            this.btnSauvegarde = new Pharmacie2.views.Composants.BoutonMenu();
-            this.btnDossierSauvegardes = new Pharmacie2.views.Composants.BoutonMenu();
+            this.btnAdministration = new Pharmacie2.views.Composants.BoutonMenu();
             this.tlpBas = new System.Windows.Forms.TableLayoutPanel();
+            this.traitMenu = new System.Windows.Forms.Panel();
             this.lblUtilisateur = new System.Windows.Forms.Label();
-            this.btnDeconnexion = new System.Windows.Forms.Button();
+            this.btnDeconnexion = new Pharmacie2.views.Composants.BoutonMenu();
             this.tlpContenu = new System.Windows.Forms.TableLayoutPanel();
             this.bandeau = new Pharmacie2.views.Composants.BandeauNotification();
             this.panelContent = new System.Windows.Forms.Panel();
@@ -61,6 +60,7 @@
             this.tlpMenu.SuspendLayout();
             this.flpMenu.SuspendLayout();
             this.tlpBas.SuspendLayout();
+            this.traitMenu.SuspendLayout();
             this.tlpContenu.SuspendLayout();
             this.panelContent.SuspendLayout();
             this.SuspendLayout();
@@ -104,6 +104,7 @@
             this.tlpMenu.Controls.Add(this.tlpBas, 0, 2);
             this.tlpBas.TabIndex = 2;
             this.tlpMenu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMenu.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpMenu.Name = "tlpMenu";
             // 
             // lblNomPharmacie
@@ -111,8 +112,8 @@
             this.lblNomPharmacie.Text = "LIGUAPHARME";
             this.lblNomPharmacie.AutoSize = true;
             this.lblNomPharmacie.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblNomPharmacie.Padding = new System.Windows.Forms.Padding(16, 16, 8, 8);
-            this.lblNomPharmacie.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNomPharmacie.Padding = new System.Windows.Forms.Padding(12, 14, 8, 8);
+            this.lblNomPharmacie.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNomPharmacie.ForeColor = System.Drawing.Color.White;
             this.lblNomPharmacie.Tag = "menuinfo";
             this.lblNomPharmacie.Name = "lblNomPharmacie";
@@ -147,17 +148,13 @@
             this.btnStatistiques.TabIndex = 12;
             this.flpMenu.Controls.Add(this.lblSectionAdministration);
             this.lblSectionAdministration.TabIndex = 13;
-            this.flpMenu.Controls.Add(this.BtnGestionUtilisateur);
-            this.BtnGestionUtilisateur.TabIndex = 14;
-            this.flpMenu.Controls.Add(this.btnSauvegarde);
-            this.btnSauvegarde.TabIndex = 15;
-            this.flpMenu.Controls.Add(this.btnDossierSauvegardes);
-            this.btnDossierSauvegardes.TabIndex = 16;
+            this.flpMenu.Controls.Add(this.btnAdministration);
+            this.btnAdministration.TabIndex = 14;
             this.flpMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMenu.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpMenu.WrapContents = false;
-            this.flpMenu.AutoScroll = true;
-            this.flpMenu.Padding = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.flpMenu.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.flpMenu.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.flpMenu.Name = "flpMenu";
             // 
             // lblSectionQuotidien
@@ -165,56 +162,56 @@
             this.lblSectionQuotidien.Text = "AU QUOTIDIEN";
             this.lblSectionQuotidien.AutoSize = true;
             this.lblSectionQuotidien.Tag = "menusection";
-            this.lblSectionQuotidien.Margin = new System.Windows.Forms.Padding(8, 14, 0, 4);
+            this.lblSectionQuotidien.Margin = new System.Windows.Forms.Padding(12, 8, 0, 2);
             this.lblSectionQuotidien.ForeColor = System.Drawing.Color.FromArgb(165, 214, 167);
-            this.lblSectionQuotidien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSectionQuotidien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSectionQuotidien.Name = "lblSectionQuotidien";
             // 
             // btnMaJournee
             // 
             this.btnMaJournee.Text = "Ma journée";
-            this.btnMaJournee.Size = new System.Drawing.Size(206, 40);
-            this.btnMaJournee.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnMaJournee.Size = new System.Drawing.Size(206, 32);
+            this.btnMaJournee.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnMaJournee.Name = "btnMaJournee";
             this.btnMaJournee.Click += new System.EventHandler(this.btnMaJournee_Click);
             // 
             // btnVentes
             // 
             this.btnVentes.Text = "Vendre";
-            this.btnVentes.Size = new System.Drawing.Size(206, 40);
-            this.btnVentes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnVentes.Size = new System.Drawing.Size(206, 32);
+            this.btnVentes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnVentes.Name = "btnVentes";
             this.btnVentes.Click += new System.EventHandler(this.btnVentes_Click);
             // 
             // BtnCaisse
             // 
             this.BtnCaisse.Text = "Caisse";
-            this.BtnCaisse.Size = new System.Drawing.Size(206, 40);
-            this.BtnCaisse.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.BtnCaisse.Size = new System.Drawing.Size(206, 32);
+            this.BtnCaisse.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.BtnCaisse.Name = "BtnCaisse";
             this.BtnCaisse.Click += new System.EventHandler(this.BtnCaisse_Click_1);
             // 
             // btn_stock
             // 
             this.btn_stock.Text = "Stock";
-            this.btn_stock.Size = new System.Drawing.Size(206, 40);
-            this.btn_stock.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btn_stock.Size = new System.Drawing.Size(206, 32);
+            this.btn_stock.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btn_stock.Name = "btn_stock";
             this.btn_stock.Click += new System.EventHandler(this.btn_stock_Click);
             // 
             // btnCredits
             // 
             this.btnCredits.Text = "Crédits clients";
-            this.btnCredits.Size = new System.Drawing.Size(206, 40);
-            this.btnCredits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnCredits.Size = new System.Drawing.Size(206, 32);
+            this.btnCredits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnCredits.Name = "btnCredits";
             this.btnCredits.Click += new System.EventHandler(this.btnCredits_Click);
             // 
             // btnMutuelles
             // 
             this.btnMutuelles.Text = "Mutuelles";
-            this.btnMutuelles.Size = new System.Drawing.Size(206, 40);
-            this.btnMutuelles.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnMutuelles.Size = new System.Drawing.Size(206, 32);
+            this.btnMutuelles.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnMutuelles.Name = "btnMutuelles";
             this.btnMutuelles.Click += new System.EventHandler(this.btnMutuelles_Click);
             // 
@@ -223,48 +220,48 @@
             this.lblSectionGestion.Text = "GESTION";
             this.lblSectionGestion.AutoSize = true;
             this.lblSectionGestion.Tag = "menusection";
-            this.lblSectionGestion.Margin = new System.Windows.Forms.Padding(8, 14, 0, 4);
+            this.lblSectionGestion.Margin = new System.Windows.Forms.Padding(12, 8, 0, 2);
             this.lblSectionGestion.ForeColor = System.Drawing.Color.FromArgb(165, 214, 167);
-            this.lblSectionGestion.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSectionGestion.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSectionGestion.Name = "lblSectionGestion";
             // 
             // btnCommandes
             // 
             this.btnCommandes.Text = "Commandes";
-            this.btnCommandes.Size = new System.Drawing.Size(206, 40);
-            this.btnCommandes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnCommandes.Size = new System.Drawing.Size(206, 32);
+            this.btnCommandes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnCommandes.Name = "btnCommandes";
             this.btnCommandes.Click += new System.EventHandler(this.btnCommandes_Click);
             // 
             // btnFournisseurs
             // 
             this.btnFournisseurs.Text = "Fournisseurs";
-            this.btnFournisseurs.Size = new System.Drawing.Size(206, 40);
-            this.btnFournisseurs.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnFournisseurs.Size = new System.Drawing.Size(206, 32);
+            this.btnFournisseurs.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnFournisseurs.Name = "btnFournisseurs";
             this.btnFournisseurs.Click += new System.EventHandler(this.btnFournisseurs_Click);
             // 
             // btnProduits
             // 
             this.btnProduits.Text = "Catalogue produits";
-            this.btnProduits.Size = new System.Drawing.Size(206, 40);
-            this.btnProduits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnProduits.Size = new System.Drawing.Size(206, 32);
+            this.btnProduits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnProduits.Name = "btnProduits";
             this.btnProduits.Click += new System.EventHandler(this.btnProduits_Click);
             // 
             // btnDepenses
             // 
             this.btnDepenses.Text = "Dépenses";
-            this.btnDepenses.Size = new System.Drawing.Size(206, 40);
-            this.btnDepenses.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnDepenses.Size = new System.Drawing.Size(206, 32);
+            this.btnDepenses.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnDepenses.Name = "btnDepenses";
             this.btnDepenses.Click += new System.EventHandler(this.btnDepenses_Click);
             // 
             // btnStatistiques
             // 
             this.btnStatistiques.Text = "Statistiques";
-            this.btnStatistiques.Size = new System.Drawing.Size(206, 40);
-            this.btnStatistiques.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.btnStatistiques.Size = new System.Drawing.Size(206, 32);
+            this.btnStatistiques.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnStatistiques.Name = "btnStatistiques";
             this.btnStatistiques.Click += new System.EventHandler(this.btnStatistiques_Click);
             // 
@@ -273,49 +270,47 @@
             this.lblSectionAdministration.Text = "ADMINISTRATION";
             this.lblSectionAdministration.AutoSize = true;
             this.lblSectionAdministration.Tag = "menusection";
-            this.lblSectionAdministration.Margin = new System.Windows.Forms.Padding(8, 14, 0, 4);
+            this.lblSectionAdministration.Margin = new System.Windows.Forms.Padding(12, 8, 0, 2);
             this.lblSectionAdministration.ForeColor = System.Drawing.Color.FromArgb(165, 214, 167);
-            this.lblSectionAdministration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSectionAdministration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSectionAdministration.Name = "lblSectionAdministration";
             // 
-            // BtnGestionUtilisateur
+            // btnAdministration
             // 
-            this.BtnGestionUtilisateur.Text = "Utilisateurs";
-            this.BtnGestionUtilisateur.Size = new System.Drawing.Size(206, 40);
-            this.BtnGestionUtilisateur.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
-            this.BtnGestionUtilisateur.Name = "BtnGestionUtilisateur";
-            this.BtnGestionUtilisateur.Click += new System.EventHandler(this.BtnGestionUtilisateur_Click);
-            // 
-            // btnSauvegarde
-            // 
-            this.btnSauvegarde.Text = "Sauvegarder les données";
-            this.btnSauvegarde.Size = new System.Drawing.Size(206, 40);
-            this.btnSauvegarde.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
-            this.btnSauvegarde.Name = "btnSauvegarde";
-            this.btnSauvegarde.Click += new System.EventHandler(this.btnSauvegarde_Click);
-            // 
-            // btnDossierSauvegardes
-            // 
-            this.btnDossierSauvegardes.Text = "Dossier des sauvegardes";
-            this.btnDossierSauvegardes.Size = new System.Drawing.Size(206, 40);
-            this.btnDossierSauvegardes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
-            this.btnDossierSauvegardes.Name = "btnDossierSauvegardes";
-            this.btnDossierSauvegardes.Click += new System.EventHandler(this.btnOuvrirDossierSauvegardes_Click);
+            this.btnAdministration.Text = "Administration";
+            this.btnAdministration.Size = new System.Drawing.Size(206, 32);
+            this.btnAdministration.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnAdministration.Name = "btnAdministration";
+            this.btnAdministration.Click += new System.EventHandler(this.btnAdministration_Click);
             // 
             // tlpBas
             // 
             this.tlpBas.ColumnCount = 1;
             this.tlpBas.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpBas.RowCount = 2;
+            this.tlpBas.RowCount = 3;
             this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpBas.Controls.Add(this.lblUtilisateur, 0, 0);
-            this.lblUtilisateur.TabIndex = 0;
-            this.tlpBas.Controls.Add(this.btnDeconnexion, 0, 1);
-            this.btnDeconnexion.TabIndex = 1;
+            this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpBas.Controls.Add(this.traitMenu, 0, 0);
+            this.traitMenu.TabIndex = 0;
+            this.tlpBas.Controls.Add(this.lblUtilisateur, 0, 1);
+            this.lblUtilisateur.TabIndex = 1;
+            this.tlpBas.Controls.Add(this.btnDeconnexion, 0, 2);
+            this.btnDeconnexion.TabIndex = 2;
             this.tlpBas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpBas.Padding = new System.Windows.Forms.Padding(12, 8, 12, 12);
+            this.tlpBas.AutoSize = true;
+            this.tlpBas.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpBas.Padding = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpBas.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpBas.Name = "tlpBas";
+            // 
+            // traitMenu
+            // 
+            this.traitMenu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.traitMenu.Height = 1;
+            this.traitMenu.BackColor = System.Drawing.Color.FromArgb(76, 140, 80);
+            this.traitMenu.Margin = new System.Windows.Forms.Padding(12, 0, 12, 8);
+            this.traitMenu.Name = "traitMenu";
             // 
             // lblUtilisateur
             // 
@@ -325,14 +320,13 @@
             this.lblUtilisateur.Tag = "menuinfo";
             this.lblUtilisateur.ForeColor = System.Drawing.Color.White;
             this.lblUtilisateur.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUtilisateur.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblUtilisateur.Margin = new System.Windows.Forms.Padding(12, 0, 8, 4);
             this.lblUtilisateur.Name = "lblUtilisateur";
             // 
             // btnDeconnexion
             // 
-            this.btnDeconnexion.Text = "Déconnexion";
+            this.btnDeconnexion.Text = "Se déconnecter";
             this.btnDeconnexion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnDeconnexion.Tag = "danger";
             this.btnDeconnexion.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnDeconnexion.Name = "btnDeconnexion";
             this.btnDeconnexion.Click += new System.EventHandler(this.btnDeconnexion_Click);
@@ -361,18 +355,20 @@
             // panelContent
             // 
             this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelContent.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.panelContent.AutoScroll = true;
+            this.panelContent.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.panelContent.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.panelContent.Name = "panelContent";
             // 
             // PageAccueil
             // 
             this.Controls.Add(this.tlpPrincipal);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.tlpPrincipal.TabIndex = 0;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClientSize = new System.Drawing.Size(1280, 720);
-            this.MinimumSize = new System.Drawing.Size(1024, 640);
+            this.ClientSize = new System.Drawing.Size(1280, 640);
+            this.MinimumSize = new System.Drawing.Size(1024, 600);
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.KeyPreview = true;
@@ -384,6 +380,7 @@
             this.panelContent.ResumeLayout(false);
             this.tlpContenu.ResumeLayout(false);
             this.tlpContenu.PerformLayout();
+            this.traitMenu.ResumeLayout(false);
             this.tlpBas.ResumeLayout(false);
             this.tlpBas.PerformLayout();
             this.flpMenu.ResumeLayout(false);
@@ -417,12 +414,11 @@
         private Pharmacie2.views.Composants.BoutonMenu btnDepenses;
         private Pharmacie2.views.Composants.BoutonMenu btnStatistiques;
         private System.Windows.Forms.Label lblSectionAdministration;
-        private Pharmacie2.views.Composants.BoutonMenu BtnGestionUtilisateur;
-        private Pharmacie2.views.Composants.BoutonMenu btnSauvegarde;
-        private Pharmacie2.views.Composants.BoutonMenu btnDossierSauvegardes;
+        private Pharmacie2.views.Composants.BoutonMenu btnAdministration;
         private System.Windows.Forms.TableLayoutPanel tlpBas;
+        private System.Windows.Forms.Panel traitMenu;
         private System.Windows.Forms.Label lblUtilisateur;
-        private System.Windows.Forms.Button btnDeconnexion;
+        private Pharmacie2.views.Composants.BoutonMenu btnDeconnexion;
         private System.Windows.Forms.TableLayoutPanel tlpContenu;
         private Pharmacie2.views.Composants.BandeauNotification bandeau;
         private System.Windows.Forms.Panel panelContent;

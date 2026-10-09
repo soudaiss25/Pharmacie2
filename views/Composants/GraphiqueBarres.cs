@@ -3,7 +3,7 @@ using Pharmacie2.Services;
 
 namespace Pharmacie2.views.Composants
 {
-    /// <summary>Graphique en barres dessiné en GDI+ (sans bibliothèque), redimensionnable.</summary>
+    /// <summary>Graphique en barres dessiné en GDI+ (sans bibliothèque), redimensionnable et sensible au zoom Windows.</summary>
     public class GraphiqueBarres : Control
     {
         private List<(string etiquette, decimal valeur)> _donnees = new();
@@ -13,11 +13,14 @@ namespace Pharmacie2.views.Composants
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer
                      | ControlStyles.ResizeRedraw, true);
-            MinimumSize = new Size(280, 150);
+            MinimumSize = new Size(240, 120);
             Size = new Size(480, 220);
         }
 
         public string Titre { get => _titre; set { _titre = value; Invalidate(); } }
+
+        /// <summary>Message affiché quand toutes les valeurs sont à zéro (au lieu d'un axe vide).</summary>
+        public string MessageSiVide { get; set; } = "Aucune donnée";
 
         public void Definir(IEnumerable<(string etiquette, decimal valeur)> donnees)
         {
@@ -34,20 +37,27 @@ namespace Pharmacie2.views.Composants
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             g.Clear(Theme.Blanc);
             using (var bord = new Pen(Theme.Bordure)) g.DrawRectangle(bord, 0, 0, Width - 1, Height - 1);
+            float k = Theme.Echelle(this);
+            int Px(float v) => (int)Math.Round(v * k);
 
-            int hautTitre = string.IsNullOrEmpty(_titre) ? 8 : 34;
+            using var police = Theme.Adapter(Theme.Note);
+            using var fSection = Theme.Adapter(Theme.TitreSection);
+            using var fTexte = Theme.Adapter(Theme.Texte10);
+
+            int hautTitre = string.IsNullOrEmpty(_titre) ? Px(8) : Px(8) + fSection.Height + Px(6);
             if (!string.IsNullOrEmpty(_titre))
                 using (var br = new SolidBrush(Theme.Principal))
-                    g.DrawString(_titre, Theme.TitreSection, br, 12, 8);
+                    g.DrawString(_titre, fSection, br, Px(12), Px(8));
 
-            if (_donnees.Count == 0)
+            if (_donnees.Count == 0 || _donnees.All(d => d.valeur <= 0))
             {
                 using var br = new SolidBrush(Theme.Neutre);
-                g.DrawString("Aucune donnée", Theme.Texte10, br, 12, hautTitre + 8);
+                var fmtV = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                g.DrawString(_donnees.Count == 0 ? "Aucune donnée" : MessageSiVide, fTexte, br,
+                             new RectangleF(0, hautTitre, Width, Height - hautTitre), fmtV);
                 return;
             }
 
-            var police = Theme.Note;
             decimal max = _donnees.Max(d => d.valeur);
             if (max <= 0) max = 1;
 
@@ -56,9 +66,10 @@ namespace Pharmacie2.views.Composants
             decimal sommet = Math.Ceiling(max / pas) * pas;
             if (sommet <= 0) sommet = pas;
 
-            int margeGauche = (int)g.MeasureString(Format.Nombre(sommet), police).Width + 14;
-            var zone = new Rectangle(margeGauche, hautTitre + 12, Width - margeGauche - 12, Height - hautTitre - 12 - 30);
-            if (zone.Width < 40 || zone.Height < 40) return;
+            int hEtiquette = police.Height + Px(8);
+            int margeGauche = (int)g.MeasureString(Format.Nombre(sommet), police).Width + Px(14);
+            var zone = new Rectangle(margeGauche, hautTitre + Px(10), Width - margeGauche - Px(12), Height - hautTitre - Px(10) - hEtiquette);
+            if (zone.Width < Px(40) || zone.Height < Px(30)) return;
 
             // lignes de repère
             using (var gris = new Pen(Color.FromArgb(224, 230, 224)))
@@ -70,14 +81,14 @@ namespace Pharmacie2.views.Composants
                     g.DrawLine(gris, zone.Left, y, zone.Right, y);
                     var txt = Format.Nombre(v);
                     var tm = g.MeasureString(txt, police);
-                    g.DrawString(txt, police, brGris, zone.Left - tm.Width - 4, y - tm.Height / 2);
+                    g.DrawString(txt, police, brGris, zone.Left - tm.Width - Px(4), y - tm.Height / 2);
                 }
             }
 
             // barres
             int n = _donnees.Count;
             float pasX = zone.Width / (float)n;
-            float largeur = Math.Min(pasX * 0.6f, 90f);
+            float largeur = Math.Min(pasX * 0.6f, Px(90));
             for (int i = 0; i < n; i++)
             {
                 var (etiquette, valeur) = _donnees[i];
@@ -93,9 +104,9 @@ namespace Pharmacie2.views.Composants
                 {
                     var txt = Format.Nombre(valeur);
                     var tm = g.MeasureString(txt, police);
-                    if (tm.Width < pasX)
+                    if (tm.Width < pasX && valeur > 0)
                         g.DrawString(txt, police, br, x + largeur / 2f, rect.Top - tm.Height - 1, fmtC);
-                    g.DrawString(etiquette, police, br, new RectangleF(zone.Left + pasX * i, zone.Bottom + 4, pasX, 22), fmtC);
+                    g.DrawString(etiquette, police, br, new RectangleF(zone.Left + pasX * i, zone.Bottom + Px(4), pasX, police.Height + Px(4)), fmtC);
                 }
             }
         }

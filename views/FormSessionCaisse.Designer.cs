@@ -181,8 +181,8 @@
             // 
             // txtCommentaire
             // 
-            this.txtCommentaire.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtCommentaire.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtCommentaire.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtCommentaire.Width = 400;
             this.txtCommentaire.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtCommentaire.Name = "txtCommentaire";
             // 
@@ -234,8 +234,8 @@
             // FormSessionCaisse
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClientSize = new System.Drawing.Size(560, 440);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

@@ -1,4 +1,4 @@
-using Pharmacie2.Services;
+﻿using Pharmacie2.Services;
 
 namespace Pharmacie2.views.Composants
 {
@@ -12,9 +12,9 @@ namespace Pharmacie2.views.Composants
             FlatStyle = FlatStyle.Flat;
             FlatAppearance.BorderSize = 0;
             TextAlign = ContentAlignment.MiddleLeft;
-            Padding = new Padding(20, 0, 8, 0);
+            Padding = new Padding(16, 0, 8, 0);
             Margin = new Padding(0, 0, 0, 2);
-            Height = 40;
+            Height = 32;
             Cursor = Cursors.Hand;
             Tag = "menu";
             UseVisualStyleBackColor = false;
@@ -42,7 +42,7 @@ namespace Pharmacie2.views.Composants
             if (_actif)
             {
                 using var barre = new SolidBrush(ColorTranslator.FromHtml("#A5D6A7"));
-                pevent.Graphics.FillRectangle(barre, 0, 0, 5, Height);
+                pevent.Graphics.FillRectangle(barre, 0, 0, Theme.Px(this, 4), Height);
             }
         }
     }

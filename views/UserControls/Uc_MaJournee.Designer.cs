@@ -68,7 +68,7 @@
             this.lblBonjour.Text = "Bonjour";
             this.lblBonjour.AutoSize = true;
             this.lblBonjour.Tag = "titre";
-            this.lblBonjour.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.lblBonjour.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.lblBonjour.Name = "lblBonjour";
             // 
             // tlpKpi
@@ -89,35 +89,37 @@
             this.tlpKpi.Controls.Add(this.carteBenefice, 3, 0);
             this.carteBenefice.TabIndex = 3;
             this.tlpKpi.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpKpi.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpKpi.AutoSize = true;
+            this.tlpKpi.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpKpi.Margin = new System.Windows.Forms.Padding(0, 0, 0, 12);
             this.tlpKpi.Name = "tlpKpi";
             // 
             // carteEncaisse
             // 
             this.carteEncaisse.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteEncaisse.Titre = "Encaissé aujourd'hui";
-            this.carteEncaisse.Margin = new System.Windows.Forms.Padding(0, 8, 12, 8);
+            this.carteEncaisse.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteEncaisse.Name = "carteEncaisse";
             // 
             // carteVentes
             // 
             this.carteVentes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteVentes.Titre = "Ventes aujourd'hui";
-            this.carteVentes.Margin = new System.Windows.Forms.Padding(0, 8, 12, 8);
+            this.carteVentes.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteVentes.Name = "carteVentes";
             // 
             // carteARecuperer
             // 
             this.carteARecuperer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteARecuperer.Titre = "Argent à récupérer";
-            this.carteARecuperer.Margin = new System.Windows.Forms.Padding(0, 8, 12, 8);
+            this.carteARecuperer.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteARecuperer.Name = "carteARecuperer";
             // 
             // carteBenefice
             // 
             this.carteBenefice.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteBenefice.Titre = "Bénéfice du mois";
-            this.carteBenefice.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
+            this.carteBenefice.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.carteBenefice.Name = "carteBenefice";
             // 
             // tlpBas
@@ -145,7 +147,7 @@
             this.lblAFaire.Text = "À faire maintenant";
             this.lblAFaire.AutoSize = true;
             this.lblAFaire.Tag = "section";
-            this.lblAFaire.Margin = new System.Windows.Forms.Padding(0, 4, 0, 8);
+            this.lblAFaire.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
             this.lblAFaire.Name = "lblAFaire";
             // 
             // lblGraphique
@@ -153,7 +155,7 @@
             this.lblGraphique.Text = "Argent reçu ces 7 derniers jours";
             this.lblGraphique.AutoSize = true;
             this.lblGraphique.Tag = "section";
-            this.lblGraphique.Margin = new System.Windows.Forms.Padding(12, 4, 0, 8);
+            this.lblGraphique.Margin = new System.Windows.Forms.Padding(12, 0, 0, 6);
             this.lblGraphique.Name = "lblGraphique";
             // 
             // listeActions
@@ -164,17 +166,20 @@
             // 
             // graphique
             // 
-            this.graphique.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.graphique.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.graphique.Height = 220;
             this.graphique.Margin = new System.Windows.Forms.Padding(12, 0, 0, 0);
             this.graphique.Name = "graphique";
             // 
             // Uc_MaJournee
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.tlpRoot.TabIndex = 0;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Size = new System.Drawing.Size(1146, 700);
+            this.Size = new System.Drawing.Size(1000, 520);
+            this.MinimumSize = new System.Drawing.Size(900, 500);
             this.Name = "Uc_MaJournee";
             this.ResumeLayout(false);
             this.tlpBas.ResumeLayout(false);

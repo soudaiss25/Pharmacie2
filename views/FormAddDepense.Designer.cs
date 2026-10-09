@@ -157,8 +157,8 @@
             // 
             // txtDescription
             // 
-            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDescription.MaximumSize = new System.Drawing.Size(420, 0);
+            this.txtDescription.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtDescription.Width = 420;
             this.txtDescription.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtDescription.Name = "txtDescription";
             // 
@@ -236,8 +236,8 @@
             // FormAddDepense
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ClientSize = new System.Drawing.Size(560, 400);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

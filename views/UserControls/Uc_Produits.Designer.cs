@@ -118,7 +118,6 @@
             // txtRecherche
             // 
             this.txtRecherche.Width = 280;
-            this.txtRecherche.MaximumSize = new System.Drawing.Size(400, 0);
             this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 4, 12, 0);
             this.txtRecherche.PlaceholderText = "Nom, type ou fournisseur";
             this.txtRecherche.Name = "txtRecherche";
@@ -332,8 +331,9 @@
             // Uc_Produits
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.MinimumSize = new System.Drawing.Size(900, 480);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Size = new System.Drawing.Size(1146, 700);
             this.Name = "Uc_Produits";

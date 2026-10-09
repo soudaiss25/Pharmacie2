@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Pharmacie2.views.Composants;
@@ -21,10 +21,21 @@ namespace Pharmacie2.views.UserControls
             InitializeComponent();
             Theme.Appliquer(this);
 
+            graphique.MessageSiVide = "Aucune vente ces 7 derniers jours";
+            tlpBas.Resize += (s, e) => AjusterGraphique();
+            AjusterGraphique();
+
             VenteEvenements.VenteModifiee += SurVenteModifiee;
             Disposed += (s, e) => VenteEvenements.VenteModifiee -= SurVenteModifiee;
 
             Actualiser();
+        }
+
+        /// <summary>Le graphique occupe environ 45 % de la hauteur disponible : la liste « À faire » reste l'élément principal.</summary>
+        private void AjusterGraphique()
+        {
+            int disponible = tlpBas.ClientSize.Height - lblGraphique.Height - lblGraphique.Margin.Vertical;
+            graphique.Height = Math.Max(Theme.Px(this, 150), (int)(disponible * 0.75));
         }
 
         private void SurVenteModifiee(object? sender, EventArgs e)
@@ -46,11 +57,11 @@ namespace Pharmacie2.views.UserControls
                 var k = TableauDeBordService.Kpis(maintenant);
 
                 carteEncaisse.Valeur = Format.Montant(k.EncaisseAujourdhui);
-                carteEncaisse.Detail = Format.Evolution(k.EncaisseAujourdhui, k.EncaisseHier) + " par rapport à hier, à la même heure";
+                carteEncaisse.Detail = Format.Evolution(k.EncaisseAujourdhui, k.EncaisseHier) + " vs hier";
                 carteEncaisse.Tendance = Format.Tendance(k.EncaisseAujourdhui, k.EncaisseHier);
 
                 carteVentes.Valeur = k.VentesAujourdhui.ToString(Fr);
-                carteVentes.Detail = Format.Evolution(k.VentesAujourdhui, k.VentesHier) + " par rapport à hier, à la même heure";
+                carteVentes.Detail = Format.Evolution(k.VentesAujourdhui, k.VentesHier) + " vs hier";
                 carteVentes.Tendance = Format.Tendance(k.VentesAujourdhui, k.VentesHier);
 
                 carteARecuperer.Valeur = Format.Montant(k.ArgentARecuperer);
@@ -59,7 +70,7 @@ namespace Pharmacie2.views.UserControls
                 carteARecuperer.HausseEstBonne = false;
 
                 carteBenefice.Valeur = Format.Montant(k.BeneficeMois);
-                carteBenefice.Detail = Format.Evolution(k.BeneficeMois, k.BeneficeMoisPrecedent) + " par rapport au mois dernier (même période)";
+                carteBenefice.Detail = Format.Evolution(k.BeneficeMois, k.BeneficeMoisPrecedent) + " vs mois dernier";
                 carteBenefice.Tendance = Format.Tendance(k.BeneficeMois, k.BeneficeMoisPrecedent);
 
                 var aFaire = TableauDeBordService.AFaireMaintenant(maintenant)

@@ -29,18 +29,19 @@
         private void InitializeComponent()
         {
             this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpEntete = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.flpFiltres = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblRecherche = new System.Windows.Forms.Label();
-            this.txtSearchVente = new System.Windows.Forms.TextBox();
-            this.chkACaisser = new System.Windows.Forms.CheckBox();
-            this.dgvVentes = new System.Windows.Forms.DataGridView();
-            this.flpActions = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpEnteteActions = new System.Windows.Forms.FlowLayoutPanel();
             this.btnNouvelleVente = new System.Windows.Forms.Button();
             this.btnDetail = new System.Windows.Forms.Button();
             this.btnEnregistrerPaiement = new System.Windows.Forms.Button();
             this.btnModifierVente = new System.Windows.Forms.Button();
             this.btnAnnuler = new System.Windows.Forms.Button();
+            this.tlpFiltres = new System.Windows.Forms.TableLayoutPanel();
+            this.lblRecherche = new System.Windows.Forms.Label();
+            this.txtSearchVente = new System.Windows.Forms.TextBox();
+            this.chkACaisser = new System.Windows.Forms.CheckBox();
+            this.dgvVentes = new System.Windows.Forms.DataGridView();
             this.flpPied = new System.Windows.Forms.FlowLayoutPanel();
             this.lblNombreVentes = new System.Windows.Forms.Label();
             this.lblTotalVentes = new System.Windows.Forms.Label();
@@ -58,8 +59,9 @@
             this.colStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVentes)).BeginInit();
             this.tlpRoot.SuspendLayout();
-            this.flpFiltres.SuspendLayout();
-            this.flpActions.SuspendLayout();
+            this.tlpEntete.SuspendLayout();
+            this.tlpEnteteActions.SuspendLayout();
+            this.tlpFiltres.SuspendLayout();
             this.flpPied.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,61 +69,140 @@
             // 
             this.tlpRoot.ColumnCount = 1;
             this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpRoot.RowCount = 5;
+            this.tlpRoot.RowCount = 4;
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.Controls.Add(this.lblTitle, 0, 0);
-            this.lblTitle.TabIndex = 0;
-            this.tlpRoot.Controls.Add(this.flpFiltres, 0, 1);
-            this.flpFiltres.TabIndex = 1;
+            this.tlpRoot.Controls.Add(this.tlpEntete, 0, 0);
+            this.tlpEntete.TabIndex = 0;
+            this.tlpRoot.Controls.Add(this.tlpFiltres, 0, 1);
+            this.tlpFiltres.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.dgvVentes, 0, 2);
             this.dgvVentes.TabIndex = 2;
-            this.tlpRoot.Controls.Add(this.flpActions, 0, 3);
-            this.flpActions.TabIndex = 3;
-            this.tlpRoot.Controls.Add(this.flpPied, 0, 4);
-            this.flpPied.TabIndex = 4;
+            this.tlpRoot.Controls.Add(this.flpPied, 0, 3);
+            this.flpPied.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
+            // 
+            // tlpEntete
+            // 
+            this.tlpEntete.ColumnCount = 3;
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.RowCount = 1;
+            this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.Controls.Add(this.lblTitle, 0, 0);
+            this.lblTitle.TabIndex = 0;
+            this.tlpEntete.Controls.Add(this.tlpEnteteActions, 2, 0);
+            this.tlpEnteteActions.TabIndex = 1;
+            this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.Name = "tlpEntete";
             // 
             // lblTitle
             // 
             this.lblTitle.Text = "Ventes";
             this.lblTitle.AutoSize = true;
             this.lblTitle.Tag = "titre";
-            this.lblTitle.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblTitle.Name = "lblTitle";
             // 
-            // flpFiltres
+            // tlpEnteteActions
             // 
-            this.flpFiltres.Controls.Add(this.lblRecherche);
+            this.tlpEnteteActions.Controls.Add(this.btnNouvelleVente);
+            this.btnNouvelleVente.TabIndex = 0;
+            this.tlpEnteteActions.Controls.Add(this.btnDetail);
+            this.btnDetail.TabIndex = 1;
+            this.tlpEnteteActions.Controls.Add(this.btnEnregistrerPaiement);
+            this.btnEnregistrerPaiement.TabIndex = 2;
+            this.tlpEnteteActions.Controls.Add(this.btnModifierVente);
+            this.btnModifierVente.TabIndex = 3;
+            this.tlpEnteteActions.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 4;
+            this.tlpEnteteActions.AutoSize = true;
+            this.tlpEnteteActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteActions.WrapContents = false;
+            this.tlpEnteteActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteActions.Name = "tlpEnteteActions";
+            // 
+            // btnNouvelleVente
+            // 
+            this.btnNouvelleVente.Text = "Nouvelle vente (F2)";
+            this.btnNouvelleVente.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnNouvelleVente.Tag = "primaire";
+            this.btnNouvelleVente.Name = "btnNouvelleVente";
+            this.btnNouvelleVente.Click += new System.EventHandler(this.btnNouvelleVente_Click);
+            // 
+            // btnDetail
+            // 
+            this.btnDetail.Text = "Détail";
+            this.btnDetail.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnDetail.Name = "btnDetail";
+            this.btnDetail.Click += new System.EventHandler(this.btnDetail_Click);
+            // 
+            // btnEnregistrerPaiement
+            // 
+            this.btnEnregistrerPaiement.Text = "Encaisser";
+            this.btnEnregistrerPaiement.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnEnregistrerPaiement.Name = "btnEnregistrerPaiement";
+            this.btnEnregistrerPaiement.Click += new System.EventHandler(this.btnEnregistrerPaiement_Click);
+            // 
+            // btnModifierVente
+            // 
+            this.btnModifierVente.Text = "Modifier";
+            this.btnModifierVente.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnModifierVente.Name = "btnModifierVente";
+            this.btnModifierVente.Click += new System.EventHandler(this.btnModifierVente_Click);
+            // 
+            // btnAnnuler
+            // 
+            this.btnAnnuler.Text = "Annuler la vente";
+            this.btnAnnuler.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnAnnuler.Tag = "danger";
+            this.btnAnnuler.Name = "btnAnnuler";
+            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
+            // 
+            // tlpFiltres
+            // 
+            this.tlpFiltres.ColumnCount = 4;
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpFiltres.RowCount = 1;
+            this.tlpFiltres.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.Controls.Add(this.lblRecherche, 0, 0);
             this.lblRecherche.TabIndex = 0;
-            this.flpFiltres.Controls.Add(this.txtSearchVente);
+            this.tlpFiltres.Controls.Add(this.txtSearchVente, 1, 0);
             this.txtSearchVente.TabIndex = 1;
-            this.flpFiltres.Controls.Add(this.chkACaisser);
+            this.tlpFiltres.Controls.Add(this.chkACaisser, 2, 0);
             this.chkACaisser.TabIndex = 2;
-            this.flpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpFiltres.AutoSize = true;
-            this.flpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpFiltres.WrapContents = true;
-            this.flpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
-            this.flpFiltres.Name = "flpFiltres";
+            this.tlpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpFiltres.AutoSize = true;
+            this.tlpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpFiltres.Name = "tlpFiltres";
             // 
             // lblRecherche
             // 
             this.lblRecherche.Text = "Rechercher";
             this.lblRecherche.AutoSize = true;
-            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblRecherche.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.lblRecherche.Name = "lblRecherche";
             // 
             // txtSearchVente
             // 
-            this.txtSearchVente.Width = 300;
-            this.txtSearchVente.MaximumSize = new System.Drawing.Size(400, 0);
-            this.txtSearchVente.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.txtSearchVente.Width = 320;
+            this.txtSearchVente.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtSearchVente.Margin = new System.Windows.Forms.Padding(0, 0, 16, 0);
             this.txtSearchVente.PlaceholderText = "Nom, prénom, téléphone ou n° de vente";
             this.txtSearchVente.Name = "txtSearchVente";
             this.txtSearchVente.TextChanged += new System.EventHandler(this.txtSearchVente_TextChanged);
@@ -130,7 +211,8 @@
             // 
             this.chkACaisser.Text = "Seulement les ventes à encaisser";
             this.chkACaisser.AutoSize = true;
-            this.chkACaisser.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
+            this.chkACaisser.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkACaisser.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.chkACaisser.Name = "chkACaisser";
             this.chkACaisser.CheckedChanged += new System.EventHandler(this.chkACaisser_CheckedChanged);
             // 
@@ -153,62 +235,6 @@
             this.dgvVentes.ReadOnly = true;
             this.dgvVentes.Name = "dgvVentes";
             this.dgvVentes.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvVentes_CellFormatting);
-            // 
-            // flpActions
-            // 
-            this.flpActions.Controls.Add(this.btnNouvelleVente);
-            this.btnNouvelleVente.TabIndex = 0;
-            this.flpActions.Controls.Add(this.btnDetail);
-            this.btnDetail.TabIndex = 1;
-            this.flpActions.Controls.Add(this.btnEnregistrerPaiement);
-            this.btnEnregistrerPaiement.TabIndex = 2;
-            this.flpActions.Controls.Add(this.btnModifierVente);
-            this.btnModifierVente.TabIndex = 3;
-            this.flpActions.Controls.Add(this.btnAnnuler);
-            this.btnAnnuler.TabIndex = 4;
-            this.flpActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpActions.AutoSize = true;
-            this.flpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpActions.WrapContents = true;
-            this.flpActions.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.flpActions.Name = "flpActions";
-            // 
-            // btnNouvelleVente
-            // 
-            this.btnNouvelleVente.Text = "Nouvelle vente (F2)";
-            this.btnNouvelleVente.Tag = "primaire";
-            this.btnNouvelleVente.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnNouvelleVente.Name = "btnNouvelleVente";
-            this.btnNouvelleVente.Click += new System.EventHandler(this.btnNouvelleVente_Click);
-            // 
-            // btnDetail
-            // 
-            this.btnDetail.Text = "Voir le détail";
-            this.btnDetail.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnDetail.Name = "btnDetail";
-            this.btnDetail.Click += new System.EventHandler(this.btnDetail_Click);
-            // 
-            // btnEnregistrerPaiement
-            // 
-            this.btnEnregistrerPaiement.Text = "Encaisser un paiement";
-            this.btnEnregistrerPaiement.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnEnregistrerPaiement.Name = "btnEnregistrerPaiement";
-            this.btnEnregistrerPaiement.Click += new System.EventHandler(this.btnEnregistrerPaiement_Click);
-            // 
-            // btnModifierVente
-            // 
-            this.btnModifierVente.Text = "Modifier la vente";
-            this.btnModifierVente.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnModifierVente.Name = "btnModifierVente";
-            this.btnModifierVente.Click += new System.EventHandler(this.btnModifierVente_Click);
-            // 
-            // btnAnnuler
-            // 
-            this.btnAnnuler.Text = "Annuler la vente";
-            this.btnAnnuler.Tag = "danger";
-            this.btnAnnuler.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnAnnuler.Name = "btnAnnuler";
-            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
             // 
             // flpPied
             // 
@@ -353,18 +379,22 @@
             // Uc_Vente
             // 
             this.Controls.Add(this.tlpRoot);
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.tlpRoot.TabIndex = 0;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Size = new System.Drawing.Size(1146, 700);
+            this.Size = new System.Drawing.Size(1000, 520);
+            this.MinimumSize = new System.Drawing.Size(900, 480);
             this.Name = "Uc_Vente";
             this.ResumeLayout(false);
             this.flpPied.ResumeLayout(false);
             this.flpPied.PerformLayout();
-            this.flpActions.ResumeLayout(false);
-            this.flpActions.PerformLayout();
-            this.flpFiltres.ResumeLayout(false);
-            this.flpFiltres.PerformLayout();
+            this.tlpFiltres.ResumeLayout(false);
+            this.tlpFiltres.PerformLayout();
+            this.tlpEnteteActions.ResumeLayout(false);
+            this.tlpEnteteActions.PerformLayout();
+            this.tlpEntete.ResumeLayout(false);
+            this.tlpEntete.PerformLayout();
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVentes)).EndInit();
@@ -374,18 +404,19 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.TableLayoutPanel tlpEntete;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.FlowLayoutPanel flpFiltres;
-        private System.Windows.Forms.Label lblRecherche;
-        private System.Windows.Forms.TextBox txtSearchVente;
-        private System.Windows.Forms.CheckBox chkACaisser;
-        private System.Windows.Forms.DataGridView dgvVentes;
-        private System.Windows.Forms.FlowLayoutPanel flpActions;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteActions;
         private System.Windows.Forms.Button btnNouvelleVente;
         private System.Windows.Forms.Button btnDetail;
         private System.Windows.Forms.Button btnEnregistrerPaiement;
         private System.Windows.Forms.Button btnModifierVente;
         private System.Windows.Forms.Button btnAnnuler;
+        private System.Windows.Forms.TableLayoutPanel tlpFiltres;
+        private System.Windows.Forms.Label lblRecherche;
+        private System.Windows.Forms.TextBox txtSearchVente;
+        private System.Windows.Forms.CheckBox chkACaisser;
+        private System.Windows.Forms.DataGridView dgvVentes;
         private System.Windows.Forms.FlowLayoutPanel flpPied;
         private System.Windows.Forms.Label lblNombreVentes;
         private System.Windows.Forms.Label lblTotalVentes;

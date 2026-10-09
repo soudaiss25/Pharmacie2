@@ -1,11 +1,11 @@
-﻿using System.Drawing.Drawing2D;
+using System.Drawing.Drawing2D;
 using Pharmacie2.Services;
 
 namespace Pharmacie2.views.Composants
 {
     /// <summary>
-    /// Carte de chiffre clé : titre, valeur en 22 pt gras, détail (comparaison) avec flèche de tendance.
-    /// Se dessine elle-même et s'élargit avec sa cellule.
+    /// Carte de chiffre clé : titre, valeur en gras, détail (comparaison) avec flèche de tendance.
+    /// Se dessine elle-même ; toutes les distances sont en pixels à 96 DPI, mises à l'échelle du zoom Windows.
     /// </summary>
     public class CarteKpi : Control
     {
@@ -20,13 +20,12 @@ namespace Pharmacie2.views.Composants
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer
                      | ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
-            Size = new Size(220, 104);
-            AutoSize = true;   // les rangées automatiques mesurent GetPreferredSize, pas la taille mise à l'échelle
+            Size = new Size(220, 96);
+            AutoSize = true;   // les rangées automatiques mesurent GetPreferredSize
             Cursor = Cursors.Default;
         }
 
-        /// <summary>Hauteur et largeur utiles fixes en pixels : le dessin est en pixels, pas en échelle de police.</summary>
-        public override Size GetPreferredSize(Size proposedSize) => new Size(170, 104);
+        public override Size GetPreferredSize(Size proposedSize) => new Size(Theme.Px(this, 170), Theme.Px(this, 96));
 
         public string Titre { get => _titre; set { _titre = value; Invalidate(); } }
         public string Valeur { get => _valeur; set { _valeur = value; Invalidate(); } }
@@ -51,6 +50,8 @@ namespace Pharmacie2.views.Composants
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+            float k = Theme.Echelle(this);
+            int Px(float v) => (int)Math.Round(v * k);
 
             var r = new Rectangle(0, 0, Width - 1, Height - 1);
             using (var fond = new SolidBrush(Theme.Blanc)) g.FillRectangle(fond, r);
@@ -58,37 +59,41 @@ namespace Pharmacie2.views.Composants
 
             var (texteNiveau, _) = Theme.Niveau(string.IsNullOrEmpty(_niveau) ? "succes" : _niveau);
             using (var barre = new SolidBrush(string.IsNullOrEmpty(_niveau) ? Theme.Accent : texteNiveau))
-                g.FillRectangle(barre, 0, 0, 5, Height);
+                g.FillRectangle(barre, 0, 0, Px(4), Height);
 
-            int x = 16, y = 10, w = Width - x - 8;
+            int x = Px(14), w = Width - x - Px(8);
+            using var fTitre = Theme.Adapter(Theme.Police(9.5f, FontStyle.Bold));
+            using var fValeur = Theme.Adapter(Theme.Police(20, FontStyle.Bold));
+            using var fDetail = Theme.Adapter(Theme.Note);
             var fmt = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
 
+            // trois lignes centrées verticalement : titre, valeur, détail
+            int hTitre = fTitre.Height, hValeur = fValeur.Height, hDetail = fDetail.Height;
+            int total = hTitre + hValeur + hDetail + Px(6);
+            int y = Math.Max(Px(4), (Height - total) / 2);
+
             using (var br = new SolidBrush(Theme.Neutre))
-                g.DrawString(_titre, Theme.Police(10, FontStyle.Bold), br, new RectangleF(x, y, w, 20), fmt);
+                g.DrawString(_titre, fTitre, br, new RectangleF(x, y, w, hTitre), fmt);
 
             using (var br = new SolidBrush(Theme.Texte))
-                g.DrawString(_valeur, Theme.Kpi, br, new RectangleF(x, y + 22, w, 38), fmt);
+                g.DrawString(_valeur, fValeur, br, new RectangleF(x, y + hTitre + Px(2), w, hValeur), fmt);
 
-            int yDetail = y + 22 + 40;
+            int yDetail = y + hTitre + hValeur + Px(4);
             int xTexte = x;
+            Color couleurDetail = Theme.Neutre;
             if (_tendance != 0)
             {
                 bool bon = (_tendance > 0) == _hausseEstBonne;
-                var couleur = bon ? Theme.SuccesTexte : Theme.UrgentTexte;
-                var haut = _tendance > 0;
-                var pts = haut
-                    ? new[] { new Point(x, yDetail + 12), new Point(x + 12, yDetail + 12), new Point(x + 6, yDetail + 2) }
-                    : new[] { new Point(x, yDetail + 2), new Point(x + 12, yDetail + 2), new Point(x + 6, yDetail + 12) };
-                using (var b = new SolidBrush(couleur)) g.FillPolygon(b, pts);
-                xTexte = x + 18;
-                using var brT = new SolidBrush(couleur);
-                g.DrawString(_detail, Theme.Note, brT, new RectangleF(xTexte, yDetail, w - 18, 20), fmt);
+                couleurDetail = bon ? Theme.SuccesTexte : Theme.UrgentTexte;
+                int t = Px(10), h = Px(8), dy = (hDetail - h) / 2;
+                var pts = _tendance > 0
+                    ? new[] { new Point(x, yDetail + dy + h), new Point(x + t, yDetail + dy + h), new Point(x + t / 2, yDetail + dy) }
+                    : new[] { new Point(x, yDetail + dy), new Point(x + t, yDetail + dy), new Point(x + t / 2, yDetail + dy + h) };
+                using (var b = new SolidBrush(couleurDetail)) g.FillPolygon(b, pts);
+                xTexte = x + t + Px(6);
             }
-            else
-            {
-                using var brT = new SolidBrush(Theme.Neutre);
-                g.DrawString(_detail, Theme.Note, brT, new RectangleF(xTexte, yDetail, w, 20), fmt);
-            }
+            using (var brT = new SolidBrush(couleurDetail))
+                g.DrawString(_detail, fDetail, brT, new RectangleF(xTexte, yDetail, w - (xTexte - x), hDetail), fmt);
         }
     }
 }
