@@ -14,6 +14,11 @@ namespace Pharmacie2
             InitializeComponent();
             Theme.Appliquer(this);
             Text = AppInfo.Titre("Connexion");
+            btnLogin.AutoSize = false;            // le bouton prend toute la largeur de la carte
+            btnLogin.Dock = DockStyle.Fill;
+            btnLogin.Height = Theme.Px(this, 38);
+            lnkOubli.LinkColor = Theme.Accent;
+            lnkOubli.ActiveLinkColor = Theme.Principal;
             lblWelcome.Text = AppInfo.NomPharmacie;
 
             // Logo facultatif : s'il manque, la fenêtre s'ouvre quand même

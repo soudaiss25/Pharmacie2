@@ -341,3 +341,84 @@ Pour **chaque écran** listé en §30, faire les contrôles suivants :
 
 ## 40. Rapport de fin à vérifier avec l'équipe
 - [ ] Parcourir une journée complète type (ouverture de caisse, 5 ventes dont 1 mutuelle et 1 crédit, une commande reçue partiellement, clôture) sur le PC de la pharmacie, en gardant la sauvegarde automatique de la veille.
+
+---
+
+# Nouvelle cible d'écran et mode compact
+
+**Cible garantie** : 1280 × 640 unités logiques (écran 1920 × 1080 en zoom 150 %, barre des tâches comprise). Doit aussi marcher en 1366 × 768 à 100 %, 1920 × 1080 à 100 %, et sur petit écran 1024 × 600 (ou portable 1366 × 768 en zoom 125 %) en **mode compact**. Zooms Windows à contrôler : 100 %, 125 %, 150 % (Paramètres → Affichage → Échelle ; fermer puis rouvrir le logiciel après chaque changement).
+
+## 41. Règles communes à tous les tableaux
+- [ ] Aucun **en-tête** de colonne n'est coupé ni sur deux lignes (« Seuil d'alerte », « Reste à payer »…).
+- [ ] Aucune **date** n'est coupée : « 09/10/2026 10:00 » si la place le permet, sinon « 09/10 10:00 ».
+- [ ] Les **noms** (produit, client, fournisseur) ne sont pas coupés tant qu'une autre colonne a de la place en trop.
+- [ ] Texte **noir** partout ; seul l'**état** (« Alerte », « Rupture », « Périmé »…) est en gras coloré, et il a la **même taille** que le reste du texte (à 125 % et 150 % aussi). Le fond de ligne est léger (rouge pâle, orange pâle).
+- [ ] Colonne **Téléphone** des Ventes : absente si aucune vente affichée n'a de téléphone ; jamais affichée en mode compact.
+- [ ] Vrais **pluriels** partout : « 1 boîte + 4 plaquettes », « 2 boîtes », « 1 mutuelle n'a pas réglé sa part », « 2 mutuelles n'ont pas réglé leur part ». Plus aucun « (s) » dans les écrans (y compris le message « À vérifier » d'une fiche produit ancienne).
+- [ ] Un nombre n'est jamais séparé de son unité par un retour à la ligne (« 500 mg », « 2 400 KMF », « 30 jours ») dans les listes « À faire » et les bandeaux.
+- [ ] Boutons « Annuler… » : contour rouge sur fond blanc ; seule l'action principale d'un écran est en vert plein.
+
+## 42. Mode compact (fenêtre de moins de 1200 unités de large)
+Régler Windows en 1366 × 768 + zoom 125 %, ou réduire la fenêtre à la main sous ~1200 unités de large.
+- [ ] Le **menu** devient une colonne étroite d'icônes ; au survol, une infobulle donne le libellé ; la page active reste surlignée.
+- [ ] Le bouton **Menu** (trois barres) déplie le menu **par-dessus** le contenu, avec un trait net à son bord droit et un **voile sombre** sur le contenu : un clic sur le voile, la touche Échap ou le choix d'une page le referme.
+- [ ] **Ma journée** : les 4 cartes en 2 × 2 ; « À faire maintenant » et le graphique l'un sous l'autre ; l'écran défile verticalement, jamais horizontalement.
+- [ ] **Stock, Catalogue produits, Ventes, Commandes** : les colonnes secondaires (Type, Fournisseur, Seuil, Téléphone, Vendeur…) sont masquées ; produit/client, montant ou stock, état restent visibles.
+- [ ] **Caisse** : le rapport tient sur une colonne et défile ; **Statistiques** : tableaux l'un sous l'autre, tous lisibles (au moins 4 lignes visibles).
+- [ ] **Nouvelle vente** : panier d'au moins **5 lignes** visibles ; le **total** et les boutons Valider / Annuler restent **fixes en bas** ; seuls les blocs Client et Paiement défilent, dans un cadre bien délimité.
+- [ ] **Fiche produit** : une seule colonne, la fenêtre tient dans l'écran.
+- [ ] Redimensionner la fenêtre de 1920 de large à 1024 puis de nouveau à 1920 : tout revient exactement à la disposition normale, sans perdre ce qui était saisi (par exemple le texte de la recherche).
+- [ ] Au clavier seul (Tab, Entrée, F2, F3, F9), on peut faire une vente complète en 1024 × 600, sans barre de défilement horizontale.
+
+## 43. Nouvelle vente : client facultatif
+- [ ] Vente comptant : la section « Client (facultatif) + » est **repliée**, on peut vendre sans la toucher.
+- [ ] Choisir **Crédit** ou **Mutuelle** : la section s'ouvre toute seule (« Client (obligatoire) »). Valider sans nom ni prénom → message « Indiquez le nom du client… », la vente n'est pas enregistrée.
+- [ ] Panier vide : « Tapez le nom d'un produit puis appuyez sur F3 pour l'ajouter » s'affiche en gris au centre de la grille.
+
+## 44. Comparaisons (Ma journée, Statistiques)
+- [ ] Les cartes disent « … vs hier à la même heure » (la comparaison se fait à heure égale) ; sans base de comparaison : « pas de vente hier à cette heure », « pas de vente le mois dernier », « rien sur la période précédente » (jamais « nouveau »).
+
+---
+
+# Sauvegarde hors du PC (7a)
+
+## 45. Première configuration
+- [ ] Administration → « Sauvegarde hors du PC » : message orange « Aucune sauvegarde hors du PC n'est configurée… ». Ma journée affiche la même alerte orange.
+- [ ] « Choisir le dossier externe… » : si « Mon Drive » (Google Drive pour ordinateur) existe, il est proposé ; sinon sélecteur de dossier (clé USB possible).
+- [ ] Première fois : saisie de la **phrase secrète** deux fois (8 caractères au moins). Refus si les deux saisies diffèrent. Noter la phrase sur papier.
+- [ ] Une copie chiffrée apparaît dans le dossier : `PharmacieDB_aaaa-mm-jj.sqlite.chiffre`. Ouvrir ce fichier avec un éditeur : illisible. L'état « Dernière copie réussie : … » s'affiche en vert.
+
+## 46. Copie quotidienne et clé débranchée
+- [ ] Relancer le logiciel : pas de seconde copie le même jour ; le lendemain, une nouvelle copie.
+- [ ] Débrancher la clé (ou renommer le dossier) puis relancer : le logiciel démarre normalement, sans erreur. Rebrancher et relancer : la copie du jour part.
+- [ ] Plus de 30 copies : seules les 30 plus récentes restent.
+- [ ] Sans copie réussie depuis plus de 7 jours : « Aucune sauvegarde externe depuis N jours » en orange dans Ma journée ; un clic ouvre Administration.
+
+## 47. Restauration (à tester sur une COPIE, pas sur la vraie pharmacie)
+- [ ] « Restaurer une sauvegarde… » : choisir un fichier `.chiffre` du dossier externe, saisir une **mauvaise** phrase → « La phrase secrète est incorrecte… », rien n'est modifié.
+- [ ] Avec la bonne phrase puis confirmation : message, le logiciel redémarre, les données sont celles de la sauvegarde ; un fichier « avant-restauration » est apparu dans le dossier des sauvegardes.
+- [ ] Choisir un fichier qui n'est pas une base (un .txt renommé) : refusé, rien n'est modifié.
+- [ ] On peut aussi restaurer une sauvegarde locale non chiffrée (`.sqlite`).
+
+---
+
+# Rapport pour le développeur (7b)
+
+## 48. Rapport
+- [ ] Administration → « Préparer un rapport pour le développeur » : un ZIP `Rapport_LIGUAPHARME_aaaa-mm-jj_hhmm.zip` apparaît sur le Bureau, l'Explorateur le montre sélectionné, et le message « Le rapport est sur le Bureau. Envoyez-le au développeur par WhatsApp ou par e-mail. » s'affiche.
+- [ ] Ouvrir le ZIP : `infos.txt` (version, Windows, écran et zoom, espace disque, taille de la base, migrations, dates de sauvegarde, nombre de lignes par table) et `journaux/` (30 derniers jours). **Aucun** nom de client, montant, mot de passe, clé de secours, phrase secrète ; les identifiants et noms sont remplacés par « [masqué] » dans les journaux ; pas de fichier de base.
+- [ ] Lors d'une erreur inattendue, le message propose « Voulez-vous préparer un rapport… » ; « Oui » crée le même ZIP.
+
+---
+
+# Verrouillage automatique (7c)
+
+## 49. Verrouillage
+- [ ] Administration → Sécurité : délai réglable (0 à 60 minutes, 5 par défaut, 0 = jamais).
+- [ ] Mettre 1 minute, ne toucher à rien : au bout d'une minute, un **écran plein** cache tout, avec le nom de l'utilisateur et un champ mot de passe. Bouger la souris pendant l'attente repousse le verrouillage.
+- [ ] Mauvais mot de passe : « Mot de passe incorrect. » Après **5 erreurs de suite**, 30 secondes d'attente entre les essais (même le bon mot de passe est refusé pendant ce délai) ; la ligne apparaît dans le journal, sans le mot de passe.
+- [ ] Bon mot de passe + Entrée : retour exactement là où on était. Avec une **vente en cours** (produits dans le panier, fenêtre de vente ouverte) : le panier est intact après déverrouillage.
+- [ ] **Ctrl+L** et le bouton « Verrouiller (Ctrl+L) » du menu (ou de la page du Caissier) verrouillent tout de suite, y compris depuis la fenêtre de vente.
+- [ ] « Changer d'utilisateur » sans vente en cours : retour à la connexion. Avec une vente en cours : « Une vente est en cours : elle sera abandonnée. Continuer ? » ; Non → l'écran reste verrouillé ; Oui → vente abandonnée, retour à la connexion.
+- [ ] « Mot de passe oublié ? » reste disponible sur l'écran de verrouillage (clé de secours).
+- [ ] Alt+F4 ne contourne pas le verrouillage.

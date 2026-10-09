@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Pharmacie2.views.Composants;
 
@@ -26,6 +26,14 @@ namespace Pharmacie2.views
             InitializeComponent();
             Theme.Appliquer(this);
             BackColor = Theme.Principal;          // fond sombre : rien du contenu n'est visible
+            foreach (var b in new[] { btnDeverrouiller, btnChangerUtilisateur })
+            {
+                b.AutoSize = false;               // les deux boutons prennent toute la largeur de la carte
+                b.Dock = DockStyle.Fill;
+                b.Height = Theme.Px(this, 38);
+            }
+            lnkOubli.LinkColor = Theme.Accent;
+            lnkOubli.ActiveLinkColor = Theme.Principal;
             lblUtilisateur.Text = $"{utilisateur.Prenom} {utilisateur.Nom}";
             FormClosing += (s, e) =>
             {
