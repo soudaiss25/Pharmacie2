@@ -29,16 +29,18 @@
         private void InitializeComponent()
         {
             this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpEntete = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitre = new System.Windows.Forms.Label();
-            this.flpActions = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpEnteteActions = new System.Windows.Forms.FlowLayoutPanel();
             this.btnNouvelleMutuelle = new System.Windows.Forms.Button();
             this.btnModifier = new System.Windows.Forms.Button();
             this.btnSupprimer = new System.Windows.Forms.Button();
             this.btnExportExcel = new System.Windows.Forms.Button();
             this.btnActualiser = new System.Windows.Forms.Button();
             this.dgvMutuelles = new System.Windows.Forms.DataGridView();
+            this.tlpEnteteReglement = new System.Windows.Forms.TableLayoutPanel();
             this.lblRecapImpaye = new System.Windows.Forms.Label();
-            this.flpReglement = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpEnteteReglementActions = new System.Windows.Forms.FlowLayoutPanel();
             this.btnReglertout = new System.Windows.Forms.Button();
             this.btnReglerSelection = new System.Windows.Forms.Button();
             this.dgvVentesImpayees = new System.Windows.Forms.DataGridView();
@@ -61,63 +63,78 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvMutuelles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVentesImpayees)).BeginInit();
             this.tlpRoot.SuspendLayout();
-            this.flpActions.SuspendLayout();
-            this.flpReglement.SuspendLayout();
+            this.tlpEntete.SuspendLayout();
+            this.tlpEnteteActions.SuspendLayout();
+            this.tlpEnteteReglement.SuspendLayout();
+            this.tlpEnteteReglementActions.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpRoot
             // 
             this.tlpRoot.ColumnCount = 1;
             this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpRoot.RowCount = 6;
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowCount = 4;
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
-            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
-            this.lblTitre.TabIndex = 0;
-            this.tlpRoot.Controls.Add(this.flpActions, 0, 1);
-            this.flpActions.TabIndex = 1;
-            this.tlpRoot.Controls.Add(this.dgvMutuelles, 0, 2);
-            this.dgvMutuelles.TabIndex = 2;
-            this.tlpRoot.Controls.Add(this.lblRecapImpaye, 0, 3);
-            this.lblRecapImpaye.TabIndex = 3;
-            this.tlpRoot.Controls.Add(this.flpReglement, 0, 4);
-            this.flpReglement.TabIndex = 4;
-            this.tlpRoot.Controls.Add(this.dgvVentesImpayees, 0, 5);
-            this.dgvVentesImpayees.TabIndex = 5;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
+            this.tlpRoot.Controls.Add(this.tlpEntete, 0, 0);
+            this.tlpEntete.TabIndex = 0;
+            this.tlpRoot.Controls.Add(this.dgvMutuelles, 0, 1);
+            this.dgvMutuelles.TabIndex = 1;
+            this.tlpRoot.Controls.Add(this.tlpEnteteReglement, 0, 2);
+            this.tlpEnteteReglement.TabIndex = 2;
+            this.tlpRoot.Controls.Add(this.dgvVentesImpayees, 0, 3);
+            this.dgvVentesImpayees.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
+            // 
+            // tlpEntete
+            // 
+            this.tlpEntete.ColumnCount = 3;
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.RowCount = 1;
+            this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
+            this.tlpEntete.Controls.Add(this.tlpEnteteActions, 2, 0);
+            this.tlpEnteteActions.TabIndex = 1;
+            this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.Name = "tlpEntete";
             // 
             // lblTitre
             // 
             this.lblTitre.Text = "Mutuelles";
             this.lblTitre.AutoSize = true;
             this.lblTitre.Tag = "titre";
-            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblTitre.Name = "lblTitre";
             // 
-            // flpActions
+            // tlpEnteteActions
             // 
-            this.flpActions.Controls.Add(this.btnNouvelleMutuelle);
+            this.tlpEnteteActions.Controls.Add(this.btnNouvelleMutuelle);
             this.btnNouvelleMutuelle.TabIndex = 0;
-            this.flpActions.Controls.Add(this.btnModifier);
+            this.tlpEnteteActions.Controls.Add(this.btnModifier);
             this.btnModifier.TabIndex = 1;
-            this.flpActions.Controls.Add(this.btnSupprimer);
+            this.tlpEnteteActions.Controls.Add(this.btnSupprimer);
             this.btnSupprimer.TabIndex = 2;
-            this.flpActions.Controls.Add(this.btnExportExcel);
+            this.tlpEnteteActions.Controls.Add(this.btnExportExcel);
             this.btnExportExcel.TabIndex = 3;
-            this.flpActions.Controls.Add(this.btnActualiser);
+            this.tlpEnteteActions.Controls.Add(this.btnActualiser);
             this.btnActualiser.TabIndex = 4;
-            this.flpActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpActions.AutoSize = true;
-            this.flpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpActions.WrapContents = true;
-            this.flpActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
-            this.flpActions.Name = "flpActions";
+            this.tlpEnteteActions.AutoSize = true;
+            this.tlpEnteteActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteActions.WrapContents = false;
+            this.tlpEnteteActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteActions.Name = "tlpEnteteActions";
             // 
             // btnNouvelleMutuelle
             // 
@@ -171,26 +188,45 @@
             this.dgvMutuelles.Name = "dgvMutuelles";
             this.dgvMutuelles.SelectionChanged += new System.EventHandler(this.DgvMutuelles_SelectionChanged);
             // 
+            // tlpEnteteReglement
+            // 
+            this.tlpEnteteReglement.ColumnCount = 3;
+            this.tlpEnteteReglement.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEnteteReglement.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEnteteReglement.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEnteteReglement.RowCount = 1;
+            this.tlpEnteteReglement.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEnteteReglement.Controls.Add(this.lblRecapImpaye, 0, 0);
+            this.lblRecapImpaye.TabIndex = 0;
+            this.tlpEnteteReglement.Controls.Add(this.tlpEnteteReglementActions, 2, 0);
+            this.tlpEnteteReglementActions.TabIndex = 1;
+            this.tlpEnteteReglement.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEnteteReglement.AutoSize = true;
+            this.tlpEnteteReglement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteReglement.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEnteteReglement.Name = "tlpEnteteReglement";
+            // 
             // lblRecapImpaye
             // 
             this.lblRecapImpaye.Text = "Sélectionnez une mutuelle pour voir ses ventes à régler.";
             this.lblRecapImpaye.AutoSize = true;
             this.lblRecapImpaye.Tag = "section";
-            this.lblRecapImpaye.Margin = new System.Windows.Forms.Padding(0, 8, 0, 4);
+            this.lblRecapImpaye.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRecapImpaye.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblRecapImpaye.Name = "lblRecapImpaye";
             // 
-            // flpReglement
+            // tlpEnteteReglementActions
             // 
-            this.flpReglement.Controls.Add(this.btnReglertout);
+            this.tlpEnteteReglementActions.Controls.Add(this.btnReglertout);
             this.btnReglertout.TabIndex = 0;
-            this.flpReglement.Controls.Add(this.btnReglerSelection);
+            this.tlpEnteteReglementActions.Controls.Add(this.btnReglerSelection);
             this.btnReglerSelection.TabIndex = 1;
-            this.flpReglement.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpReglement.AutoSize = true;
-            this.flpReglement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpReglement.WrapContents = true;
-            this.flpReglement.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.flpReglement.Name = "flpReglement";
+            this.tlpEnteteReglementActions.AutoSize = true;
+            this.tlpEnteteReglementActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteReglementActions.WrapContents = false;
+            this.tlpEnteteReglementActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteReglementActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteReglementActions.Name = "tlpEnteteReglementActions";
             // 
             // btnReglertout
             // 
@@ -378,17 +414,22 @@
             // Uc_Mutuelle
             // 
             this.Controls.Add(this.tlpRoot);
+            this.tlpRoot.TabIndex = 0;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.MinimumSize = new System.Drawing.Size(900, 520);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Size = new System.Drawing.Size(1146, 700);
+            this.Size = new System.Drawing.Size(1000, 560);
+            this.MinimumSize = new System.Drawing.Size(840, 520);
             this.Name = "Uc_Mutuelle";
             this.ResumeLayout(false);
-            this.flpReglement.ResumeLayout(false);
-            this.flpReglement.PerformLayout();
-            this.flpActions.ResumeLayout(false);
-            this.flpActions.PerformLayout();
+            this.tlpEnteteReglementActions.ResumeLayout(false);
+            this.tlpEnteteReglementActions.PerformLayout();
+            this.tlpEnteteReglement.ResumeLayout(false);
+            this.tlpEnteteReglement.PerformLayout();
+            this.tlpEnteteActions.ResumeLayout(false);
+            this.tlpEnteteActions.PerformLayout();
+            this.tlpEntete.ResumeLayout(false);
+            this.tlpEntete.PerformLayout();
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVentesImpayees)).EndInit();
@@ -399,16 +440,18 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.TableLayoutPanel tlpEntete;
         private System.Windows.Forms.Label lblTitre;
-        private System.Windows.Forms.FlowLayoutPanel flpActions;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteActions;
         private System.Windows.Forms.Button btnNouvelleMutuelle;
         private System.Windows.Forms.Button btnModifier;
         private System.Windows.Forms.Button btnSupprimer;
         private System.Windows.Forms.Button btnExportExcel;
         private System.Windows.Forms.Button btnActualiser;
         private System.Windows.Forms.DataGridView dgvMutuelles;
+        private System.Windows.Forms.TableLayoutPanel tlpEnteteReglement;
         private System.Windows.Forms.Label lblRecapImpaye;
-        private System.Windows.Forms.FlowLayoutPanel flpReglement;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteReglementActions;
         private System.Windows.Forms.Button btnReglertout;
         private System.Windows.Forms.Button btnReglerSelection;
         private System.Windows.Forms.DataGridView dgvVentesImpayees;

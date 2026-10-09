@@ -29,11 +29,27 @@ namespace Pharmacie2.views
 
         // ── Constructeurs ─────────────────────────────────────────────────
 
+        /// <summary>
+        /// Petit écran (largeur logique &lt; 1200) : les deux colonnes passent l'une sous l'autre, la fenêtre se réduit
+        /// et la zone centrale défile verticalement ; les boutons restent fixes en bas.
+        /// </summary>
+        private void AppliquerMode()
+        {
+            if (!ModeCompact.EstEcranPetit(this)) return;
+            var ecran = Theme.EcranLogique(this);
+            // tailles en unités logiques : la mise à l'échelle (DPI) s'applique ensuite à l'ouverture de la fenêtre
+            ClientSize = new Size(Math.Min(ClientSize.Width, Math.Min(640, (int)(ecran.Width * 0.85))),
+                                  Math.Min(ClientSize.Height, Math.Min(520, (int)(ecran.Height * 0.8))));
+            ModeCompact.Recomposer(tlpContenu, new[] { "P100" }, new[] { "A", "A" },
+                (tlpGauche, 0, 0, tlpGauche.Margin), (tlpDroite, 0, 1, tlpDroite.Margin));
+        }
+
         public FormAddProduit()
         {
             _produitId = null;
             InitializeComponent();
             Theme.Appliquer(this);
+            AppliquerMode();
             cmbUniteVente.SelectedIndex = 0;
             ChargerFournisseurs();
             WireEvents();
@@ -45,6 +61,7 @@ namespace Pharmacie2.views
             _produitId = produitId;
             InitializeComponent();
             Theme.Appliquer(this);
+            AppliquerMode();
             cmbUniteVente.SelectedIndex = 0;
             ChargerFournisseurs();
             WireEvents();

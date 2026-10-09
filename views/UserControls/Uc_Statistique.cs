@@ -21,7 +21,7 @@ namespace Pharmacie2.views.UserControls
             Theme.Appliquer(this);
 
             listeAlertes.AutoScroll = false;   // les alertes s'affichent toutes ; c'est l'écran entier qui défile
-            ModeCompact.CartesAdaptatives(tlpKpi);
+            ModeCompact.CartesAdaptatives(tlpKpi, 190);
 
             cbPeriode.SelectedIndex = 2;   // « Ce mois » par défaut (déclenche le premier calcul)
             ToggleCustomDates();
@@ -109,28 +109,29 @@ namespace Pharmacie2.views.UserControls
                 var p = StatistiquesService.Calculer(prevStart, prevEnd);
                 _stats = s;
 
-                const string vs = " par rapport à la période précédente";
+                const string vs = " vs période précédente";
+                const string sansBase = "rien sur la période précédente";
 
                 carteCA.Valeur = Format.Montant(s.CA);
-                carteCA.Detail = Format.Evolution(s.CA, p.CA) + vs;
-                carteCA.Tendance = Format.Tendance(s.CA, p.CA);
+                carteCA.Detail = Format.EvolutionOuTexte(s.CA, p.CA, sansBase) + (p.CA == 0 ? "" : vs);
+                carteCA.Tendance = p.CA == 0 ? 0 : Format.Tendance(s.CA, p.CA);
 
                 carteBenefice.Valeur = Format.Montant(s.BeneficeNet);
-                carteBenefice.Detail = Format.Evolution(s.BeneficeNet, p.BeneficeNet) + vs;
-                carteBenefice.Tendance = Format.Tendance(s.BeneficeNet, p.BeneficeNet);
+                carteBenefice.Detail = Format.EvolutionOuTexte(s.BeneficeNet, p.BeneficeNet, sansBase) + (p.BeneficeNet == 0 ? "" : vs);
+                carteBenefice.Tendance = p.BeneficeNet == 0 ? 0 : Format.Tendance(s.BeneficeNet, p.BeneficeNet);
                 carteBenefice.Niveau = s.BeneficeNet >= 0 ? "succes" : "urgent";
 
                 carteVentes.Valeur = s.NbVentes.ToString();
-                carteVentes.Detail = Format.Evolution(s.NbVentes, p.NbVentes) + vs;
-                carteVentes.Tendance = Format.Tendance(s.NbVentes, p.NbVentes);
+                carteVentes.Detail = Format.EvolutionOuTexte(s.NbVentes, p.NbVentes, sansBase) + (p.NbVentes == 0 ? "" : vs);
+                carteVentes.Tendance = p.NbVentes == 0 ? 0 : Format.Tendance(s.NbVentes, p.NbVentes);
 
                 carteASolder.Valeur = s.NbVentesASolder.ToString();
                 carteASolder.Detail = "ventes pas encore soldées";
                 carteASolder.Niveau = s.NbVentesASolder > 0 ? "attention" : "succes";
 
                 carteARecuperer.Valeur = Format.Montant(s.ArgentARecuperer);
-                carteARecuperer.Detail = Format.Evolution(s.ArgentARecuperer, p.ArgentARecuperer) + vs;
-                carteARecuperer.Tendance = Format.Tendance(s.ArgentARecuperer, p.ArgentARecuperer);
+                carteARecuperer.Detail = Format.EvolutionOuTexte(s.ArgentARecuperer, p.ArgentARecuperer, sansBase) + (p.ArgentARecuperer == 0 ? "" : vs);
+                carteARecuperer.Tendance = p.ArgentARecuperer == 0 ? 0 : Format.Tendance(s.ArgentARecuperer, p.ArgentARecuperer);
                 carteARecuperer.HausseEstBonne = false;
                 carteARecuperer.Niveau = s.ArgentARecuperer > 0 ? "attention" : "succes";
 

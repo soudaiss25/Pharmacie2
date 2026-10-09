@@ -14,6 +14,9 @@ namespace Pharmacie2.views.Composants
     {
         public const int Seuil = 1200;
 
+        /// <summary>Pour les fenêtres de dialogue : le mode dépend de la taille de l'ÉCRAN, pas de celle de la fenêtre.</summary>
+        public static bool EstEcranPetit(Control c) => Theme.EcranLogique(c).Width < Seuil;
+
         public static bool Est(Control fenetre) => fenetre.ClientSize.Width / Theme.Echelle(fenetre) < Seuil;
 
         /// <summary>Replace des contrôles dans un tableau : colonnes, lignes et cellules, sans en créer ni en perdre.</summary>

@@ -61,6 +61,18 @@ namespace Pharmacie2.Services
         /// <summary>Uniquement pour les tests : simule un zoom Windows (1,25 ; 1,5) sans changer le DPI réel.</summary>
         public static float? EchelleTest { get; set; }
 
+        /// <summary>Uniquement pour les tests : taille de l'écran simulée, en pixels logiques (null = écran réel).</summary>
+        public static Size? EcranTest { get; set; }
+
+        /// <summary>Taille de l'écran où se trouve le contrôle, en pixels logiques (zone de travail, hors barre des tâches).</summary>
+        public static Size EcranLogique(Control c)
+        {
+            if (EcranTest is Size s) return s;
+            var zone = Screen.FromControl(c).WorkingArea;
+            float k = Echelle(c);
+            return new Size((int)(zone.Width / k), (int)(zone.Height / k));
+        }
+
         /// <summary>Facteur d'échelle d'un contrôle : zoom Windows réel (DPI / 96), ou zoom simulé par les tests.</summary>
         public static float Echelle(Control c) => EchelleTest ?? Math.Max(1f, c.DeviceDpi / 96f);
 
@@ -239,6 +251,23 @@ namespace Pharmacie2.Services
                 if (!_policesGrille.TryGetValue(cle, out var f))
                     _policesGrille[cle] = f = new Font(b.FontFamily, b.SizeInPoints, style, GraphicsUnit.Point);
                 return f;
+            }
+        }
+
+        /// <summary>
+        /// Ligne d'une grille selon son niveau (« urgent », « attention », « info », ou vide) : fond de ligne léger, texte noir,
+        /// et seule la cellule de la colonne d'état porte la couleur forte, en gras (badge).
+        /// </summary>
+        public static void ColorerEtat(DataGridView g, DataGridViewCellFormattingEventArgs e, string niveau, string colonneEtat = "Etat")
+        {
+            if (string.IsNullOrEmpty(niveau)) return;
+            var (texte, fond) = Niveau(niveau);
+            e.CellStyle.BackColor = fond;
+            e.CellStyle.ForeColor = Texte;
+            if (g.Columns[e.ColumnIndex].Name == colonneEtat)
+            {
+                e.CellStyle.ForeColor = niveau == "info" ? Neutre : texte;
+                e.CellStyle.Font = PoliceGrille(g, FontStyle.Bold);
             }
         }
 

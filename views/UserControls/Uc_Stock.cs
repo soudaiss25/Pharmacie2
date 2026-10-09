@@ -141,17 +141,7 @@ namespace Pharmacie2.views.UserControls
             string niveau = etat == "Archivé" ? "info"
                 : etat == "Périmé" || etat == "Rupture" ? "urgent"
                 : etat == "Alerte" || verif == "À vérifier" ? "attention" : "";
-            if (niveau != "")
-            {
-                var (texte, fond) = Theme.Niveau(niveau);
-                e.CellStyle.BackColor = fond;
-                e.CellStyle.ForeColor = Theme.Texte;
-                if (dgvStock.Columns[e.ColumnIndex].Name == "Etat")
-                {
-                    e.CellStyle.ForeColor = niveau == "info" ? Theme.Neutre : texte;
-                    e.CellStyle.Font = Theme.PoliceGrille(dgvStock, FontStyle.Bold);
-                }
-            }
+            Theme.ColorerEtat(dgvStock, e, niveau);
         }
 
         // ── Ajouter ───────────────────────────────────────────────────────

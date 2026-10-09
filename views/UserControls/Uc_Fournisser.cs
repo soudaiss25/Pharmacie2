@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 
@@ -126,16 +126,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (e.RowIndex < 0 || e.RowIndex >= dgvProduits.Rows.Count) return;
             string etat = dgvProduits.Rows[e.RowIndex].Cells["Etat"].Value?.ToString() ?? "";
-            if (etat == "Rupture")
-            {
-                e.CellStyle.BackColor = Theme.UrgentFond;
-                e.CellStyle.ForeColor = Theme.UrgentTexte;
-            }
-            else if (etat == "Alerte")
-            {
-                e.CellStyle.BackColor = Theme.AttentionFond;
-                e.CellStyle.ForeColor = Theme.AttentionTexte;
-            }
+            Theme.ColorerEtat(dgvProduits, e, etat == "Rupture" ? "urgent" : etat == "Alerte" ? "attention" : "");
         }
 
         // ── Commander un produit depuis la fiche fournisseur ─────────────

@@ -13,6 +13,7 @@ namespace Pharmacie2.views.UserControls
         {
             InitializeComponent();
             ModeCompact.CartesAdaptatives(pnlCartes);
+            dgvDetail.Resize += (s, e) => AppliquerColonnesDetail();
             Theme.Appliquer(this);
 
             InitFiltresCombos();
@@ -452,6 +453,20 @@ namespace Pharmacie2.views.UserControls
         private void dgvDetailSession_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) => ColorerLigneVente(dgvDetailSession, e);
     
         /// <summary>Mode compact : colonnes secondaires masquées dans les deux tableaux détaillés.</summary>
+        private bool _compact;
+        private int _etatDetail = -1;
+
+        /// <summary>Détail des ventes : colonnes secondaires masquées quand la place manque (mode compact ou tableau étroit).</summary>
+        private void AppliquerColonnesDetail()
+        {
+            double largeur = dgvDetail.Width / Theme.Echelle(dgvDetail);
+            int etat = (_compact || largeur < 900) ? 1 : 0;
+            if (etat == _etatDetail) return;
+            _etatDetail = etat;
+            ModeCompact.MasquerColonnes(dgvDetail, etat == 1, "Motif", "Especes", "Rendu", "Vendeur");
+            Theme.AjusterColonnes(dgvDetail);
+        }
+
         public void DefinirCompact(bool compact)
         {
             var m = (int a, int b, int c, int d) => new Padding(a, b, c, d);
@@ -468,6 +483,8 @@ namespace Pharmacie2.views.UserControls
                     tlpRapport.SetColumnSpan(c, 1);
                     tlpRapport.SetRowSpan(c, 1);
                 }
+                pnlCaisse.AutoSize = true;
+                pnlCaisse.AutoSizeMode = AutoSizeMode.GrowAndShrink;
                 tlpVentilation.Dock = DockStyle.Top;
                 tlpVentilation.Height = Theme.Px(this, 190);
                 dgvDetail.Dock = DockStyle.Top;
@@ -481,6 +498,7 @@ namespace Pharmacie2.views.UserControls
                 tabRapport.AutoScroll = false;
                 tlpRapport.Dock = DockStyle.Fill;
                 tlpRapport.AutoSize = false;
+                pnlCaisse.AutoSize = false;
                 tlpVentilation.Dock = DockStyle.Fill;
                 dgvDetail.Dock = DockStyle.Fill;
                 ModeCompact.Recomposer(tlpRapport, new[] { "P36", "P64" }, new[] { "A", "A", "P45", "A", "P55" },
@@ -491,7 +509,8 @@ namespace Pharmacie2.views.UserControls
                 tlpRapport.SetRowSpan(pnlCaisse, 3);
             }
             tlpRapport.ResumeLayout(true);
-            ModeCompact.MasquerColonnes(dgvDetail, compact, "Motif", "Especes", "Rendu", "Vendeur");
+            _compact = compact;
+            AppliquerColonnesDetail();
             ModeCompact.MasquerColonnes(dgvSessions, compact, "Fond", "Theorique", "Compte", "NbVentes");
             ModeCompact.MasquerColonnes(dgvDetailSession, compact, "Verse");
             Theme.AjusterColonnes(dgvDetail);

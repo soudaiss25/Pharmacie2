@@ -21,6 +21,7 @@ namespace Pharmacie2.views.UserControls
         {
             InitializeComponent();
             Theme.Appliquer(this);
+            dgvCommandes.CellFormatting += dgvCommandes_CellFormatting;
             this.Load += (s, e) =>
             {
                 ChargerFournisseursFiltres();
@@ -36,6 +37,14 @@ namespace Pharmacie2.views.UserControls
         // ══════════════════════════════════════════════════════════════════
         // CHARGEMENT
         // ══════════════════════════════════════════════════════════════════
+
+        private void dgvCommandes_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvCommandes.Rows.Count) return;
+            string statut = dgvCommandes.Rows[e.RowIndex].Cells["colStatut"].Value?.ToString() ?? "";
+            string niveau = statut switch { "Reçu" => "succes", "Reçu partiellement" => "attention", "Annulée" => "info", _ => "" };
+            Theme.ColorerEtat(dgvCommandes, e, niveau, "colStatut");
+        }
 
         private void ChargerFournisseursFiltres()
         {
@@ -99,25 +108,8 @@ namespace Pharmacie2.views.UserControls
                             string.IsNullOrWhiteSpace(cmd.NoteCommande) ? "—" : cmd.NoteCommande
                         );
 
-                        // Coloration selon statut
-                        var row = dgvCommandes.Rows[idx];
-                        switch (cmd.Statut)
-                        {
-                            case "Reçu":
-                                row.DefaultCellStyle.BackColor = Theme.SuccesFond;
-                                row.DefaultCellStyle.ForeColor = Theme.SuccesTexte;
-                                break;
-                            case "Reçu partiellement":
-                                row.DefaultCellStyle.BackColor = Theme.AttentionFond;
-                                row.DefaultCellStyle.ForeColor = Theme.AttentionTexte;
-                                break;
-                            case "Annulée":
-                                row.DefaultCellStyle.ForeColor = Theme.Neutre;
-                                break;
-                            case "En attente":
-                                row.DefaultCellStyle.BackColor = Theme.InfoFond;
-                                break;
-                        }
+                        // la coloration selon le statut se fait à l'affichage (cellule « Statut » en gras, fond de ligne léger)
+
                     }
 
                     // Récap

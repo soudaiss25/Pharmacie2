@@ -29,21 +29,23 @@
         private void InitializeComponent()
         {
             this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpEntete = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitre = new System.Windows.Forms.Label();
-            this.flpFiltres = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblRecherche = new System.Windows.Forms.Label();
-            this.txtSearch = new System.Windows.Forms.TextBox();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.dgvFournisseurs = new System.Windows.Forms.DataGridView();
-            this.flpActionsF = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpEnteteActions = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnVoirCommandes = new System.Windows.Forms.Button();
+            this.tlpFiltres = new System.Windows.Forms.TableLayoutPanel();
+            this.lblRecherche = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.dgvFournisseurs = new System.Windows.Forms.DataGridView();
+            this.tlpEnteteProduits = new System.Windows.Forms.TableLayoutPanel();
             this.lblProduitsTitre = new System.Windows.Forms.Label();
-            this.dgvProduits = new System.Windows.Forms.DataGridView();
-            this.flpActionsP = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpEnteteProduitsActions = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCommanderProduit = new System.Windows.Forms.Button();
+            this.dgvProduits = new System.Windows.Forms.DataGridView();
             this.colNom = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colContact = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colProduitId = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -57,120 +59,86 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFournisseurs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProduits)).BeginInit();
             this.tlpRoot.SuspendLayout();
-            this.flpFiltres.SuspendLayout();
-            this.flpActionsF.SuspendLayout();
-            this.flpActionsP.SuspendLayout();
+            this.tlpEntete.SuspendLayout();
+            this.tlpEnteteActions.SuspendLayout();
+            this.tlpFiltres.SuspendLayout();
+            this.tlpEnteteProduits.SuspendLayout();
+            this.tlpEnteteProduitsActions.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpRoot
             // 
             this.tlpRoot.ColumnCount = 1;
             this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpRoot.RowCount = 7;
+            this.tlpRoot.RowCount = 5;
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
-            this.lblTitre.TabIndex = 0;
-            this.tlpRoot.Controls.Add(this.flpFiltres, 0, 1);
-            this.flpFiltres.TabIndex = 1;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0F));
+            this.tlpRoot.Controls.Add(this.tlpEntete, 0, 0);
+            this.tlpEntete.TabIndex = 0;
+            this.tlpRoot.Controls.Add(this.tlpFiltres, 0, 1);
+            this.tlpFiltres.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.dgvFournisseurs, 0, 2);
             this.dgvFournisseurs.TabIndex = 2;
-            this.tlpRoot.Controls.Add(this.flpActionsF, 0, 3);
-            this.flpActionsF.TabIndex = 3;
-            this.tlpRoot.Controls.Add(this.lblProduitsTitre, 0, 4);
-            this.lblProduitsTitre.TabIndex = 4;
-            this.tlpRoot.Controls.Add(this.dgvProduits, 0, 5);
-            this.dgvProduits.TabIndex = 5;
-            this.tlpRoot.Controls.Add(this.flpActionsP, 0, 6);
-            this.flpActionsP.TabIndex = 6;
+            this.tlpRoot.Controls.Add(this.tlpEnteteProduits, 0, 3);
+            this.tlpEnteteProduits.TabIndex = 3;
+            this.tlpRoot.Controls.Add(this.dgvProduits, 0, 4);
+            this.dgvProduits.TabIndex = 4;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
+            // 
+            // tlpEntete
+            // 
+            this.tlpEntete.ColumnCount = 3;
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.RowCount = 1;
+            this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
+            this.tlpEntete.Controls.Add(this.tlpEnteteActions, 2, 0);
+            this.tlpEnteteActions.TabIndex = 1;
+            this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.Name = "tlpEntete";
             // 
             // lblTitre
             // 
             this.lblTitre.Text = "Fournisseurs";
             this.lblTitre.AutoSize = true;
             this.lblTitre.Tag = "titre";
-            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblTitre.Name = "lblTitre";
             // 
-            // flpFiltres
+            // tlpEnteteActions
             // 
-            this.flpFiltres.Controls.Add(this.lblRecherche);
-            this.lblRecherche.TabIndex = 0;
-            this.flpFiltres.Controls.Add(this.txtSearch);
-            this.txtSearch.TabIndex = 1;
-            this.flpFiltres.Controls.Add(this.btnClear);
-            this.btnClear.TabIndex = 2;
-            this.flpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpFiltres.AutoSize = true;
-            this.flpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpFiltres.WrapContents = true;
-            this.flpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
-            this.flpFiltres.Name = "flpFiltres";
-            // 
-            // lblRecherche
-            // 
-            this.lblRecherche.Text = "Rechercher";
-            this.lblRecherche.AutoSize = true;
-            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
-            this.lblRecherche.Name = "lblRecherche";
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Width = 280;
-            this.txtSearch.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
-            this.txtSearch.PlaceholderText = "Nom ou contact";
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Text = "Effacer";
-            this.btnClear.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // dgvFournisseurs
-            // 
-            this.dgvFournisseurs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colNom,
-            this.colContact});
-            this.dgvFournisseurs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvFournisseurs.AutoGenerateColumns = false;
-            this.dgvFournisseurs.ReadOnly = true;
-            this.dgvFournisseurs.Name = "dgvFournisseurs";
-            this.dgvFournisseurs.SelectionChanged += new System.EventHandler(this.dgvFournisseurs_SelectionChanged);
-            this.dgvFournisseurs.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvFournisseurs_CellFormatting);
-            // 
-            // flpActionsF
-            // 
-            this.flpActionsF.Controls.Add(this.btnAdd);
+            this.tlpEnteteActions.Controls.Add(this.btnAdd);
             this.btnAdd.TabIndex = 0;
-            this.flpActionsF.Controls.Add(this.btnEdit);
+            this.tlpEnteteActions.Controls.Add(this.btnEdit);
             this.btnEdit.TabIndex = 1;
-            this.flpActionsF.Controls.Add(this.btnDelete);
+            this.tlpEnteteActions.Controls.Add(this.btnDelete);
             this.btnDelete.TabIndex = 2;
-            this.flpActionsF.Controls.Add(this.btnVoirCommandes);
+            this.tlpEnteteActions.Controls.Add(this.btnVoirCommandes);
             this.btnVoirCommandes.TabIndex = 3;
-            this.flpActionsF.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpActionsF.AutoSize = true;
-            this.flpActionsF.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpActionsF.WrapContents = true;
-            this.flpActionsF.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
-            this.flpActionsF.Name = "flpActionsF";
+            this.tlpEnteteActions.AutoSize = true;
+            this.tlpEnteteActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteActions.WrapContents = false;
+            this.tlpEnteteActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteActions.Name = "tlpEnteteActions";
             // 
             // btnAdd
             // 
             this.btnAdd.Text = "Nouveau fournisseur";
-            this.btnAdd.Tag = "primaire";
             this.btnAdd.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnAdd.Tag = "primaire";
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
@@ -196,13 +164,110 @@
             this.btnVoirCommandes.Name = "btnVoirCommandes";
             this.btnVoirCommandes.Click += new System.EventHandler(this.btnVoirCommandes_Click);
             // 
+            // tlpFiltres
+            // 
+            this.tlpFiltres.ColumnCount = 4;
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpFiltres.RowCount = 1;
+            this.tlpFiltres.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.Controls.Add(this.lblRecherche, 0, 0);
+            this.lblRecherche.TabIndex = 0;
+            this.tlpFiltres.Controls.Add(this.txtSearch, 1, 0);
+            this.txtSearch.TabIndex = 1;
+            this.tlpFiltres.Controls.Add(this.btnClear, 2, 0);
+            this.btnClear.TabIndex = 2;
+            this.tlpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpFiltres.AutoSize = true;
+            this.tlpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpFiltres.Name = "tlpFiltres";
+            // 
+            // lblRecherche
+            // 
+            this.lblRecherche.Text = "Rechercher";
+            this.lblRecherche.AutoSize = true;
+            this.lblRecherche.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.lblRecherche.Name = "lblRecherche";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Width = 280;
+            this.txtSearch.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtSearch.Margin = new System.Windows.Forms.Padding(0, 0, 16, 0);
+            this.txtSearch.PlaceholderText = "Nom ou contact";
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Text = "Effacer";
+            this.btnClear.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnClear.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // dgvFournisseurs
+            // 
+            this.dgvFournisseurs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colNom,
+            this.colContact});
+            this.dgvFournisseurs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvFournisseurs.AutoGenerateColumns = false;
+            this.dgvFournisseurs.ReadOnly = true;
+            this.dgvFournisseurs.Name = "dgvFournisseurs";
+            this.dgvFournisseurs.SelectionChanged += new System.EventHandler(this.dgvFournisseurs_SelectionChanged);
+            this.dgvFournisseurs.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvFournisseurs_CellFormatting);
+            // 
+            // tlpEnteteProduits
+            // 
+            this.tlpEnteteProduits.ColumnCount = 3;
+            this.tlpEnteteProduits.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEnteteProduits.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEnteteProduits.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEnteteProduits.RowCount = 1;
+            this.tlpEnteteProduits.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEnteteProduits.Controls.Add(this.lblProduitsTitre, 0, 0);
+            this.lblProduitsTitre.TabIndex = 0;
+            this.tlpEnteteProduits.Controls.Add(this.tlpEnteteProduitsActions, 2, 0);
+            this.tlpEnteteProduitsActions.TabIndex = 1;
+            this.tlpEnteteProduits.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEnteteProduits.AutoSize = true;
+            this.tlpEnteteProduits.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteProduits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEnteteProduits.Name = "tlpEnteteProduits";
+            // 
             // lblProduitsTitre
             // 
             this.lblProduitsTitre.Text = "Sélectionnez un fournisseur pour voir ses produits";
             this.lblProduitsTitre.AutoSize = true;
             this.lblProduitsTitre.Tag = "section";
-            this.lblProduitsTitre.Margin = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblProduitsTitre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblProduitsTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblProduitsTitre.Name = "lblProduitsTitre";
+            // 
+            // tlpEnteteProduitsActions
+            // 
+            this.tlpEnteteProduitsActions.Controls.Add(this.btnCommanderProduit);
+            this.btnCommanderProduit.TabIndex = 0;
+            this.tlpEnteteProduitsActions.AutoSize = true;
+            this.tlpEnteteProduitsActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteProduitsActions.WrapContents = false;
+            this.tlpEnteteProduitsActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteProduitsActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteProduitsActions.Name = "tlpEnteteProduitsActions";
+            // 
+            // btnCommanderProduit
+            // 
+            this.btnCommanderProduit.Text = "Commander ce produit";
+            this.btnCommanderProduit.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnCommanderProduit.Tag = "primaire";
+            this.btnCommanderProduit.Enabled = false;
+            this.btnCommanderProduit.Name = "btnCommanderProduit";
+            this.btnCommanderProduit.Click += new System.EventHandler(this.btnCommanderProduit_Click);
             // 
             // dgvProduits
             // 
@@ -220,26 +285,6 @@
             this.dgvProduits.ReadOnly = true;
             this.dgvProduits.Name = "dgvProduits";
             this.dgvProduits.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvProduits_CellFormatting);
-            // 
-            // flpActionsP
-            // 
-            this.flpActionsP.Controls.Add(this.btnCommanderProduit);
-            this.btnCommanderProduit.TabIndex = 0;
-            this.flpActionsP.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpActionsP.AutoSize = true;
-            this.flpActionsP.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpActionsP.WrapContents = true;
-            this.flpActionsP.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.flpActionsP.Name = "flpActionsP";
-            // 
-            // btnCommanderProduit
-            // 
-            this.btnCommanderProduit.Text = "Commander ce produit";
-            this.btnCommanderProduit.Tag = "primaire";
-            this.btnCommanderProduit.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnCommanderProduit.Enabled = false;
-            this.btnCommanderProduit.Name = "btnCommanderProduit";
-            this.btnCommanderProduit.Click += new System.EventHandler(this.btnCommanderProduit_Click);
             // 
             // colNom
             // 
@@ -337,19 +382,24 @@
             // Uc_Fournisser
             // 
             this.Controls.Add(this.tlpRoot);
+            this.tlpRoot.TabIndex = 0;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.MinimumSize = new System.Drawing.Size(900, 520);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Size = new System.Drawing.Size(1146, 700);
+            this.Size = new System.Drawing.Size(1000, 560);
+            this.MinimumSize = new System.Drawing.Size(840, 520);
             this.Name = "Uc_Fournisser";
             this.ResumeLayout(false);
-            this.flpActionsP.ResumeLayout(false);
-            this.flpActionsP.PerformLayout();
-            this.flpActionsF.ResumeLayout(false);
-            this.flpActionsF.PerformLayout();
-            this.flpFiltres.ResumeLayout(false);
-            this.flpFiltres.PerformLayout();
+            this.tlpEnteteProduitsActions.ResumeLayout(false);
+            this.tlpEnteteProduitsActions.PerformLayout();
+            this.tlpEnteteProduits.ResumeLayout(false);
+            this.tlpEnteteProduits.PerformLayout();
+            this.tlpFiltres.ResumeLayout(false);
+            this.tlpFiltres.PerformLayout();
+            this.tlpEnteteActions.ResumeLayout(false);
+            this.tlpEnteteActions.PerformLayout();
+            this.tlpEntete.ResumeLayout(false);
+            this.tlpEntete.PerformLayout();
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProduits)).EndInit();
@@ -360,21 +410,23 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.TableLayoutPanel tlpEntete;
         private System.Windows.Forms.Label lblTitre;
-        private System.Windows.Forms.FlowLayoutPanel flpFiltres;
-        private System.Windows.Forms.Label lblRecherche;
-        private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.DataGridView dgvFournisseurs;
-        private System.Windows.Forms.FlowLayoutPanel flpActionsF;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteActions;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnVoirCommandes;
+        private System.Windows.Forms.TableLayoutPanel tlpFiltres;
+        private System.Windows.Forms.Label lblRecherche;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.DataGridView dgvFournisseurs;
+        private System.Windows.Forms.TableLayoutPanel tlpEnteteProduits;
         private System.Windows.Forms.Label lblProduitsTitre;
-        private System.Windows.Forms.DataGridView dgvProduits;
-        private System.Windows.Forms.FlowLayoutPanel flpActionsP;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteProduitsActions;
         private System.Windows.Forms.Button btnCommanderProduit;
+        private System.Windows.Forms.DataGridView dgvProduits;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNom;
         private System.Windows.Forms.DataGridViewTextBoxColumn colContact;
         private System.Windows.Forms.DataGridViewTextBoxColumn colProduitId;

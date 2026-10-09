@@ -29,19 +29,20 @@
         private void InitializeComponent()
         {
             this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpEntete = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitre = new System.Windows.Forms.Label();
-            this.flpFiltres = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpEnteteActions = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnNouveauProduit = new System.Windows.Forms.Button();
+            this.btnModifier = new System.Windows.Forms.Button();
+            this.btnSupprimer = new System.Windows.Forms.Button();
+            this.tlpFiltres = new System.Windows.Forms.TableLayoutPanel();
             this.lblRecherche = new System.Windows.Forms.Label();
             this.txtRecherche = new System.Windows.Forms.TextBox();
             this.lblTypeFiltre = new System.Windows.Forms.Label();
             this.cmbTypeFiltre = new System.Windows.Forms.ComboBox();
             this.btnEffacer = new System.Windows.Forms.Button();
-            this.dgvProduits = new System.Windows.Forms.DataGridView();
-            this.pnlActions = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnNouveauProduit = new System.Windows.Forms.Button();
-            this.btnModifier = new System.Windows.Forms.Button();
-            this.btnSupprimer = new System.Windows.Forms.Button();
             this.lblCompteur = new System.Windows.Forms.Label();
+            this.dgvProduits = new System.Windows.Forms.DataGridView();
             this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNom = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -56,69 +57,136 @@
             this.colEtat = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProduits)).BeginInit();
             this.tlpRoot.SuspendLayout();
-            this.flpFiltres.SuspendLayout();
-            this.pnlActions.SuspendLayout();
+            this.tlpEntete.SuspendLayout();
+            this.tlpEnteteActions.SuspendLayout();
+            this.tlpFiltres.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpRoot
             // 
             this.tlpRoot.ColumnCount = 1;
             this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpRoot.RowCount = 4;
+            this.tlpRoot.RowCount = 3;
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
-            this.lblTitre.TabIndex = 0;
-            this.tlpRoot.Controls.Add(this.flpFiltres, 0, 1);
-            this.flpFiltres.TabIndex = 1;
+            this.tlpRoot.Controls.Add(this.tlpEntete, 0, 0);
+            this.tlpEntete.TabIndex = 0;
+            this.tlpRoot.Controls.Add(this.tlpFiltres, 0, 1);
+            this.tlpFiltres.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.dgvProduits, 0, 2);
             this.dgvProduits.TabIndex = 2;
-            this.tlpRoot.Controls.Add(this.pnlActions, 0, 3);
-            this.pnlActions.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
+            // 
+            // tlpEntete
+            // 
+            this.tlpEntete.ColumnCount = 3;
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.RowCount = 1;
+            this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
+            this.tlpEntete.Controls.Add(this.tlpEnteteActions, 2, 0);
+            this.tlpEnteteActions.TabIndex = 1;
+            this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.Name = "tlpEntete";
             // 
             // lblTitre
             // 
             this.lblTitre.Text = "Catalogue produits";
             this.lblTitre.AutoSize = true;
             this.lblTitre.Tag = "titre";
-            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblTitre.Name = "lblTitre";
             // 
-            // flpFiltres
+            // tlpEnteteActions
             // 
-            this.flpFiltres.Controls.Add(this.lblRecherche);
+            this.tlpEnteteActions.Controls.Add(this.btnNouveauProduit);
+            this.btnNouveauProduit.TabIndex = 0;
+            this.tlpEnteteActions.Controls.Add(this.btnModifier);
+            this.btnModifier.TabIndex = 1;
+            this.tlpEnteteActions.Controls.Add(this.btnSupprimer);
+            this.btnSupprimer.TabIndex = 2;
+            this.tlpEnteteActions.AutoSize = true;
+            this.tlpEnteteActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteActions.WrapContents = false;
+            this.tlpEnteteActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteActions.Name = "tlpEnteteActions";
+            // 
+            // btnNouveauProduit
+            // 
+            this.btnNouveauProduit.Text = "Nouveau produit";
+            this.btnNouveauProduit.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnNouveauProduit.Tag = "primaire";
+            this.btnNouveauProduit.Name = "btnNouveauProduit";
+            this.btnNouveauProduit.Click += new System.EventHandler(this.btnNouveauProduit_Click);
+            // 
+            // btnModifier
+            // 
+            this.btnModifier.Text = "Modifier";
+            this.btnModifier.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnModifier.Name = "btnModifier";
+            this.btnModifier.Click += new System.EventHandler(this.btnModifier_Click);
+            // 
+            // btnSupprimer
+            // 
+            this.btnSupprimer.Text = "Archiver";
+            this.btnSupprimer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnSupprimer.Name = "btnSupprimer";
+            this.btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click);
+            // 
+            // tlpFiltres
+            // 
+            this.tlpFiltres.ColumnCount = 7;
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpFiltres.RowCount = 1;
+            this.tlpFiltres.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.Controls.Add(this.lblRecherche, 0, 0);
             this.lblRecherche.TabIndex = 0;
-            this.flpFiltres.Controls.Add(this.txtRecherche);
+            this.tlpFiltres.Controls.Add(this.txtRecherche, 1, 0);
             this.txtRecherche.TabIndex = 1;
-            this.flpFiltres.Controls.Add(this.lblTypeFiltre);
+            this.tlpFiltres.Controls.Add(this.lblTypeFiltre, 2, 0);
             this.lblTypeFiltre.TabIndex = 2;
-            this.flpFiltres.Controls.Add(this.cmbTypeFiltre);
+            this.tlpFiltres.Controls.Add(this.cmbTypeFiltre, 3, 0);
             this.cmbTypeFiltre.TabIndex = 3;
-            this.flpFiltres.Controls.Add(this.btnEffacer);
+            this.tlpFiltres.Controls.Add(this.btnEffacer, 4, 0);
             this.btnEffacer.TabIndex = 4;
-            this.flpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpFiltres.AutoSize = true;
-            this.flpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpFiltres.WrapContents = true;
-            this.flpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
-            this.flpFiltres.Name = "flpFiltres";
+            this.tlpFiltres.Controls.Add(this.lblCompteur, 5, 0);
+            this.lblCompteur.TabIndex = 5;
+            this.tlpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpFiltres.AutoSize = true;
+            this.tlpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpFiltres.Name = "tlpFiltres";
             // 
             // lblRecherche
             // 
             this.lblRecherche.Text = "Rechercher";
             this.lblRecherche.AutoSize = true;
-            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblRecherche.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.lblRecherche.Name = "lblRecherche";
             // 
             // txtRecherche
             // 
             this.txtRecherche.Width = 280;
-            this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 4, 12, 0);
+            this.txtRecherche.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 16, 0);
             this.txtRecherche.PlaceholderText = "Nom, type ou fournisseur";
             this.txtRecherche.Name = "txtRecherche";
             // 
@@ -126,14 +194,16 @@
             // 
             this.lblTypeFiltre.Text = "Type";
             this.lblTypeFiltre.AutoSize = true;
-            this.lblTypeFiltre.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblTypeFiltre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTypeFiltre.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
             this.lblTypeFiltre.Name = "lblTypeFiltre";
             // 
             // cmbTypeFiltre
             // 
             this.cmbTypeFiltre.Width = 190;
             this.cmbTypeFiltre.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTypeFiltre.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cmbTypeFiltre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmbTypeFiltre.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.cmbTypeFiltre.Items.AddRange(new object[] {
             "Tous",
             "Médicament",
@@ -145,8 +215,18 @@
             // btnEffacer
             // 
             this.btnEffacer.Text = "Effacer les filtres";
-            this.btnEffacer.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnEffacer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnEffacer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.btnEffacer.Name = "btnEffacer";
+            // 
+            // lblCompteur
+            // 
+            this.lblCompteur.Text = "";
+            this.lblCompteur.AutoSize = true;
+            this.lblCompteur.Tag = "note";
+            this.lblCompteur.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCompteur.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.lblCompteur.Name = "lblCompteur";
             // 
             // dgvProduits
             // 
@@ -169,53 +249,6 @@
             this.dgvProduits.Name = "dgvProduits";
             this.dgvProduits.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvProduits_CellFormatting);
             this.dgvProduits.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProduits_CellDoubleClick);
-            // 
-            // pnlActions
-            // 
-            this.pnlActions.Controls.Add(this.btnNouveauProduit);
-            this.btnNouveauProduit.TabIndex = 0;
-            this.pnlActions.Controls.Add(this.btnModifier);
-            this.btnModifier.TabIndex = 1;
-            this.pnlActions.Controls.Add(this.btnSupprimer);
-            this.btnSupprimer.TabIndex = 2;
-            this.pnlActions.Controls.Add(this.lblCompteur);
-            this.lblCompteur.TabIndex = 3;
-            this.pnlActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlActions.AutoSize = true;
-            this.pnlActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.pnlActions.WrapContents = true;
-            this.pnlActions.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.pnlActions.Name = "pnlActions";
-            // 
-            // btnNouveauProduit
-            // 
-            this.btnNouveauProduit.Text = "Nouveau produit";
-            this.btnNouveauProduit.Tag = "primaire";
-            this.btnNouveauProduit.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnNouveauProduit.Name = "btnNouveauProduit";
-            this.btnNouveauProduit.Click += new System.EventHandler(this.btnNouveauProduit_Click);
-            // 
-            // btnModifier
-            // 
-            this.btnModifier.Text = "Modifier";
-            this.btnModifier.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnModifier.Name = "btnModifier";
-            this.btnModifier.Click += new System.EventHandler(this.btnModifier_Click);
-            // 
-            // btnSupprimer
-            // 
-            this.btnSupprimer.Text = "Archiver";
-            this.btnSupprimer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnSupprimer.Name = "btnSupprimer";
-            this.btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click);
-            // 
-            // lblCompteur
-            // 
-            this.lblCompteur.Text = "";
-            this.lblCompteur.AutoSize = true;
-            this.lblCompteur.Tag = "note";
-            this.lblCompteur.Margin = new System.Windows.Forms.Padding(12, 8, 0, 0);
-            this.lblCompteur.Name = "lblCompteur";
             // 
             // colId
             // 
@@ -331,17 +364,20 @@
             // Uc_Produits
             // 
             this.Controls.Add(this.tlpRoot);
+            this.tlpRoot.TabIndex = 0;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.MinimumSize = new System.Drawing.Size(900, 480);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Size = new System.Drawing.Size(1146, 700);
+            this.Size = new System.Drawing.Size(1000, 560);
+            this.MinimumSize = new System.Drawing.Size(840, 480);
             this.Name = "Uc_Produits";
             this.ResumeLayout(false);
-            this.pnlActions.ResumeLayout(false);
-            this.pnlActions.PerformLayout();
-            this.flpFiltres.ResumeLayout(false);
-            this.flpFiltres.PerformLayout();
+            this.tlpFiltres.ResumeLayout(false);
+            this.tlpFiltres.PerformLayout();
+            this.tlpEnteteActions.ResumeLayout(false);
+            this.tlpEnteteActions.PerformLayout();
+            this.tlpEntete.ResumeLayout(false);
+            this.tlpEntete.PerformLayout();
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProduits)).EndInit();
@@ -351,19 +387,20 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.TableLayoutPanel tlpEntete;
         private System.Windows.Forms.Label lblTitre;
-        private System.Windows.Forms.FlowLayoutPanel flpFiltres;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteActions;
+        private System.Windows.Forms.Button btnNouveauProduit;
+        private System.Windows.Forms.Button btnModifier;
+        private System.Windows.Forms.Button btnSupprimer;
+        private System.Windows.Forms.TableLayoutPanel tlpFiltres;
         private System.Windows.Forms.Label lblRecherche;
         private System.Windows.Forms.TextBox txtRecherche;
         private System.Windows.Forms.Label lblTypeFiltre;
         private System.Windows.Forms.ComboBox cmbTypeFiltre;
         private System.Windows.Forms.Button btnEffacer;
-        private System.Windows.Forms.DataGridView dgvProduits;
-        private System.Windows.Forms.FlowLayoutPanel pnlActions;
-        private System.Windows.Forms.Button btnNouveauProduit;
-        private System.Windows.Forms.Button btnModifier;
-        private System.Windows.Forms.Button btnSupprimer;
         private System.Windows.Forms.Label lblCompteur;
+        private System.Windows.Forms.DataGridView dgvProduits;
         private System.Windows.Forms.DataGridViewTextBoxColumn colId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNom;
         private System.Windows.Forms.DataGridViewTextBoxColumn colType;

@@ -26,6 +26,7 @@ namespace Pharmacie2.views
         {
             InitializeComponent();
             Theme.Appliquer(this);
+            dgvCommandes.CellFormatting += dgvCommandes_CellFormatting;
             _fournisseurId = fournisseurId;
             _fournisseurNom = fournisseurNom;
             lblTitre.Text = $"Commandes — {fournisseurNom}";
@@ -36,6 +37,14 @@ namespace Pharmacie2.views
         }
 
         // ── Chargement commandes ──────────────────────────────────────────
+
+        private void dgvCommandes_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvCommandes.Rows.Count) return;
+            string statut = dgvCommandes.Rows[e.RowIndex].Cells["colStatut"].Value?.ToString() ?? "";
+            string niveau = statut switch { "Reçu" => "succes", "Reçu partiellement" => "attention", "Annulée" => "info", _ => "" };
+            Theme.ColorerEtat(dgvCommandes, e, niveau, "colStatut");
+        }
 
         private void ChargerCommandes()
         {
@@ -75,22 +84,8 @@ namespace Pharmacie2.views
                         string.IsNullOrWhiteSpace(cmd.NoteCommande) ? "—" : cmd.NoteCommande
                     );
 
-                    // Coloration selon statut
-                    var row = dgvCommandes.Rows[idx];
-                    switch (cmd.Statut)
-                    {
-                        case "Reçu":
-                            row.DefaultCellStyle.BackColor = Theme.SuccesFond;
-                            row.DefaultCellStyle.ForeColor = Theme.SuccesTexte;
-                            break;
-                        case "Reçu partiellement":
-                            row.DefaultCellStyle.BackColor = Theme.AttentionFond;
-                            row.DefaultCellStyle.ForeColor = Theme.AttentionTexte;
-                            break;
-                        case "Annulée":
-                            row.DefaultCellStyle.ForeColor = Theme.Neutre;
-                            break;
-                    }
+                    // la coloration selon le statut se fait à l'affichage (cellule « Statut » en gras, fond de ligne léger)
+
                 }
 
                 int nbTotal = commandes.Count;

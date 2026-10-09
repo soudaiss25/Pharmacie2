@@ -29,14 +29,16 @@
         private void InitializeComponent()
         {
             this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpEntete = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitre = new System.Windows.Forms.Label();
-            this.flpBarre = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblRecherche = new System.Windows.Forms.Label();
-            this.txtRecherche = new System.Windows.Forms.TextBox();
-            this.btnEffacerRecherche = new System.Windows.Forms.Button();
+            this.tlpEnteteActions = new System.Windows.Forms.FlowLayoutPanel();
             this.btnNouvel = new System.Windows.Forms.Button();
             this.btnModifier = new System.Windows.Forms.Button();
             this.btnSupprimer = new System.Windows.Forms.Button();
+            this.tlpFiltres = new System.Windows.Forms.TableLayoutPanel();
+            this.lblRecherche = new System.Windows.Forms.Label();
+            this.txtRecherche = new System.Windows.Forms.TextBox();
+            this.btnEffacerRecherche = new System.Windows.Forms.Button();
             this.tlpCorps = new System.Windows.Forms.TableLayoutPanel();
             this.dgvUtilisateurs = new System.Windows.Forms.DataGridView();
             this.pnlFormulaire = new System.Windows.Forms.TableLayoutPanel();
@@ -63,7 +65,9 @@
             this.colStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUtilisateurs)).BeginInit();
             this.tlpRoot.SuspendLayout();
-            this.flpBarre.SuspendLayout();
+            this.tlpEntete.SuspendLayout();
+            this.tlpEnteteActions.SuspendLayout();
+            this.tlpFiltres.SuspendLayout();
             this.tlpCorps.SuspendLayout();
             this.pnlFormulaire.SuspendLayout();
             this.flpBoutonsFormulaire.SuspendLayout();
@@ -78,10 +82,10 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
-            this.lblTitre.TabIndex = 0;
-            this.tlpRoot.Controls.Add(this.flpBarre, 0, 1);
-            this.flpBarre.TabIndex = 1;
+            this.tlpRoot.Controls.Add(this.tlpEntete, 0, 0);
+            this.tlpEntete.TabIndex = 0;
+            this.tlpRoot.Controls.Add(this.tlpFiltres, 0, 1);
+            this.tlpFiltres.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.tlpCorps, 0, 2);
             this.tlpCorps.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.lblCompteur, 0, 3);
@@ -90,56 +94,47 @@
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
             // 
+            // tlpEntete
+            // 
+            this.tlpEntete.ColumnCount = 3;
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.RowCount = 1;
+            this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
+            this.tlpEntete.Controls.Add(this.tlpEnteteActions, 2, 0);
+            this.tlpEnteteActions.TabIndex = 1;
+            this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.Name = "tlpEntete";
+            // 
             // lblTitre
             // 
             this.lblTitre.Text = "Utilisateurs";
             this.lblTitre.AutoSize = true;
             this.lblTitre.Tag = "titre";
-            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblTitre.Name = "lblTitre";
             // 
-            // flpBarre
+            // tlpEnteteActions
             // 
-            this.flpBarre.Controls.Add(this.lblRecherche);
-            this.lblRecherche.TabIndex = 0;
-            this.flpBarre.Controls.Add(this.txtRecherche);
-            this.txtRecherche.TabIndex = 1;
-            this.flpBarre.Controls.Add(this.btnEffacerRecherche);
-            this.btnEffacerRecherche.TabIndex = 2;
-            this.flpBarre.Controls.Add(this.btnNouvel);
-            this.btnNouvel.TabIndex = 3;
-            this.flpBarre.Controls.Add(this.btnModifier);
-            this.btnModifier.TabIndex = 4;
-            this.flpBarre.Controls.Add(this.btnSupprimer);
-            this.btnSupprimer.TabIndex = 5;
-            this.flpBarre.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpBarre.AutoSize = true;
-            this.flpBarre.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpBarre.WrapContents = true;
-            this.flpBarre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
-            this.flpBarre.Name = "flpBarre";
-            // 
-            // lblRecherche
-            // 
-            this.lblRecherche.Text = "Rechercher";
-            this.lblRecherche.AutoSize = true;
-            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
-            this.lblRecherche.Name = "lblRecherche";
-            // 
-            // txtRecherche
-            // 
-            this.txtRecherche.Width = 260;
-            this.txtRecherche.PlaceholderText = "Nom, prénom, identifiant ou rôle";
-            this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
-            this.txtRecherche.Name = "txtRecherche";
-            this.txtRecherche.TextChanged += new System.EventHandler(this.txtRecherche_TextChanged);
-            // 
-            // btnEffacerRecherche
-            // 
-            this.btnEffacerRecherche.Text = "Effacer";
-            this.btnEffacerRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnEffacerRecherche.Name = "btnEffacerRecherche";
-            this.btnEffacerRecherche.Click += new System.EventHandler(this.btnEffacerRecherche_Click);
+            this.tlpEnteteActions.Controls.Add(this.btnNouvel);
+            this.btnNouvel.TabIndex = 0;
+            this.tlpEnteteActions.Controls.Add(this.btnModifier);
+            this.btnModifier.TabIndex = 1;
+            this.tlpEnteteActions.Controls.Add(this.btnSupprimer);
+            this.btnSupprimer.TabIndex = 2;
+            this.tlpEnteteActions.AutoSize = true;
+            this.tlpEnteteActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteActions.WrapContents = false;
+            this.tlpEnteteActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteActions.Name = "tlpEnteteActions";
             // 
             // btnNouvel
             // 
@@ -162,6 +157,52 @@
             this.btnSupprimer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.btnSupprimer.Name = "btnSupprimer";
             this.btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click);
+            // 
+            // tlpFiltres
+            // 
+            this.tlpFiltres.ColumnCount = 4;
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpFiltres.RowCount = 1;
+            this.tlpFiltres.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpFiltres.Controls.Add(this.lblRecherche, 0, 0);
+            this.lblRecherche.TabIndex = 0;
+            this.tlpFiltres.Controls.Add(this.txtRecherche, 1, 0);
+            this.txtRecherche.TabIndex = 1;
+            this.tlpFiltres.Controls.Add(this.btnEffacerRecherche, 2, 0);
+            this.btnEffacerRecherche.TabIndex = 2;
+            this.tlpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpFiltres.AutoSize = true;
+            this.tlpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpFiltres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpFiltres.Name = "tlpFiltres";
+            // 
+            // lblRecherche
+            // 
+            this.lblRecherche.Text = "Rechercher";
+            this.lblRecherche.AutoSize = true;
+            this.lblRecherche.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.lblRecherche.Name = "lblRecherche";
+            // 
+            // txtRecherche
+            // 
+            this.txtRecherche.Width = 260;
+            this.txtRecherche.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 16, 0);
+            this.txtRecherche.PlaceholderText = "Nom, prénom, identifiant ou rôle";
+            this.txtRecherche.Name = "txtRecherche";
+            this.txtRecherche.TextChanged += new System.EventHandler(this.txtRecherche_TextChanged);
+            // 
+            // btnEffacerRecherche
+            // 
+            this.btnEffacerRecherche.Text = "Effacer";
+            this.btnEffacerRecherche.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnEffacerRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnEffacerRecherche.Name = "btnEffacerRecherche";
+            this.btnEffacerRecherche.Click += new System.EventHandler(this.btnEffacerRecherche_Click);
             // 
             // tlpCorps
             // 
@@ -420,11 +461,12 @@
             // Uc_Utilisateurs
             // 
             this.Controls.Add(this.tlpRoot);
+            this.tlpRoot.TabIndex = 0;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.MinimumSize = new System.Drawing.Size(900, 480);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Size = new System.Drawing.Size(1146, 700);
+            this.Size = new System.Drawing.Size(1000, 560);
+            this.MinimumSize = new System.Drawing.Size(840, 480);
             this.Name = "Uc_Utilisateurs";
             this.ResumeLayout(false);
             this.flpBoutonsFormulaire.ResumeLayout(false);
@@ -433,8 +475,12 @@
             this.pnlFormulaire.PerformLayout();
             this.tlpCorps.ResumeLayout(false);
             this.tlpCorps.PerformLayout();
-            this.flpBarre.ResumeLayout(false);
-            this.flpBarre.PerformLayout();
+            this.tlpFiltres.ResumeLayout(false);
+            this.tlpFiltres.PerformLayout();
+            this.tlpEnteteActions.ResumeLayout(false);
+            this.tlpEnteteActions.PerformLayout();
+            this.tlpEntete.ResumeLayout(false);
+            this.tlpEntete.PerformLayout();
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUtilisateurs)).EndInit();
@@ -444,14 +490,16 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.TableLayoutPanel tlpEntete;
         private System.Windows.Forms.Label lblTitre;
-        private System.Windows.Forms.FlowLayoutPanel flpBarre;
-        private System.Windows.Forms.Label lblRecherche;
-        private System.Windows.Forms.TextBox txtRecherche;
-        private System.Windows.Forms.Button btnEffacerRecherche;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteActions;
         private System.Windows.Forms.Button btnNouvel;
         private System.Windows.Forms.Button btnModifier;
         private System.Windows.Forms.Button btnSupprimer;
+        private System.Windows.Forms.TableLayoutPanel tlpFiltres;
+        private System.Windows.Forms.Label lblRecherche;
+        private System.Windows.Forms.TextBox txtRecherche;
+        private System.Windows.Forms.Button btnEffacerRecherche;
         private System.Windows.Forms.TableLayoutPanel tlpCorps;
         private System.Windows.Forms.DataGridView dgvUtilisateurs;
         private System.Windows.Forms.TableLayoutPanel pnlFormulaire;

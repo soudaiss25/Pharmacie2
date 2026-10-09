@@ -21,6 +21,7 @@ public sealed class Hote : IDisposable
     public void Dispose()
     {
         Theme.EchelleTest = null;
+        Theme.EcranTest = null;
         try { Fenetre.Close(); } catch { }
         Fenetre.Dispose();
     }
@@ -83,6 +84,7 @@ public static class EcranHote
     public static Hote Ouvrir(Type type, LayoutSeed.Ids ids, Config cfg)
     {
         Theme.EchelleTest = cfg.Zoom;
+        Theme.EcranTest = new Size(cfg.W, cfg.H + 40);   // l'écran dépasse la fenêtre de la barre des tâches
         var ecran = Creer(type, ids);
         var hote = new Hote { Ecran = ecran };
 

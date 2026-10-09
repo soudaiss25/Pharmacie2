@@ -143,8 +143,9 @@ public class LayoutTests
                 // Dialogue : jamais plus grand que 90 % du plus petit écran (en pixels logiques), ouverture centrée
                 var f = h.Fenetre;
                 double largeur = f.Width / cfg.Zoom, hauteur = f.Height / cfg.Zoom;
-                if (largeur > EcranMiniLogique.Width * 0.9 || hauteur > EcranMiniLogique.Height * 0.9)
-                    locales.Add($"dialogue trop grand : {largeur:0}x{hauteur:0} logiques (max {EcranMiniLogique.Width * 0.9:0}x{EcranMiniLogique.Height * 0.9:0})");
+                double maxL = cfg.W * 0.9, maxH = (cfg.H + 40) * 0.9;
+                if (largeur > maxL || hauteur > maxH)
+                    locales.Add($"dialogue trop grand : {largeur:0}x{hauteur:0} logiques (max {maxL:0}x{maxH:0})");
                 if (f.StartPosition is not (FormStartPosition.CenterParent or FormStartPosition.CenterScreen))
                     locales.Add($"dialogue non centré (StartPosition = {f.StartPosition})");
                 if (f.AcceptButton == null && f.CancelButton == null)

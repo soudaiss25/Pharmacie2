@@ -43,7 +43,8 @@ namespace Pharmacie2.views
             FormClosed += (s, e) => { if (ReferenceEquals(BandeauNotification.Courant, bandeau)) BandeauNotification.Courant = null; };
 
             OuvrirMaJournee();   // plus d'écran vide à l'ouverture
-            AppliquerMode(true);
+            // le mode se calcule à l'ouverture (après la mise à l'échelle DPI de la fenêtre), puis à chaque changement de taille
+            Shown += (s, e) => AppliquerMode(true);
         }
 
         // ── Mode compact (largeur < 1200 unités logiques) ─────────────────

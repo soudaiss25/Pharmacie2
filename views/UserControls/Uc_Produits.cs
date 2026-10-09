@@ -90,21 +90,7 @@ namespace Pharmacie2.views.UserControls
             if (e.RowIndex < 0 || e.RowIndex >= dgvProduits.Rows.Count) return;
             string etat = dgvProduits.Rows[e.RowIndex].Cells["Etat"].Value?.ToString() ?? "";
 
-            if (etat == "Archivé")
-            {
-                e.CellStyle.BackColor = Theme.InfoFond;
-                e.CellStyle.ForeColor = Theme.Neutre;
-            }
-            else if (etat == "Périmé")
-            {
-                e.CellStyle.BackColor = Theme.UrgentFond;
-                e.CellStyle.ForeColor = Theme.UrgentTexte;
-            }
-            else if (etat == "Alerte")
-            {
-                e.CellStyle.BackColor = Theme.AttentionFond;
-                e.CellStyle.ForeColor = Theme.AttentionTexte;
-            }
+            Theme.ColorerEtat(dgvProduits, e, etat == "Archivé" ? "info" : etat == "Périmé" ? "urgent" : etat == "Alerte" ? "attention" : "");
         }
 
         private void dgvProduits_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
