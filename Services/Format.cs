@@ -7,7 +7,7 @@ namespace Pharmacie2.Services
     {
         private static readonly NumberFormatInfo _nombre = new NumberFormatInfo
         {
-            NumberGroupSeparator = " ",
+            NumberGroupSeparator = "\u00A0",   // espace insécable : « 2 400 » ne se coupe jamais
             NumberDecimalSeparator = ",",
             NumberGroupSizes = new[] { 3 },
             NegativeSign = "-"
@@ -16,9 +16,20 @@ namespace Pharmacie2.Services
         public const string Unite = "KMF";
 
         /// <summary>« 12 500 KMF » : aucune décimale, espace pour les milliers.</summary>
-        public static string Montant(decimal montant) => Nombre(montant) + " " + Unite;
+        public static string Montant(decimal montant) => Nombre(montant) + "\u00A0" + Unite;
 
         public static string Montant(decimal? montant) => montant.HasValue ? Montant(montant.Value) : "—";
+
+        private static readonly System.Text.RegularExpressions.Regex _nombreUnite = new(
+            @"(?<=\d) (?=(?:KMF|mg|g|kg|ml|mL|l|L|cl|µg|mcg|UI|%|jours?|j|h|mois|ans?|comprimés?|gélules?|boîtes?|plaquettes?|flacons?|ampoules?|sachets?|\d{3}\b)(?![\p{L}]))",
+            System.Text.RegularExpressions.RegexOptions.Compiled);
+
+        /// <summary>
+        /// Remplace par une espace insécable l'espace entre un nombre et son unité ou sa devise (« 1 g », « 2 400 KMF », « 30 jours »),
+        /// pour qu'un retour à la ligne ne sépare jamais le nombre de son unité.
+        /// </summary>
+        public static string Insecable(string? texte)
+            => string.IsNullOrEmpty(texte) ? "" : _nombreUnite.Replace(texte, "\u00A0");
 
         /// <summary>« 12 500 » : même format, sans l'unité (colonnes dont l'en-tête indique déjà KMF).</summary>
         public static string Nombre(decimal valeur)

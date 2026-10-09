@@ -103,15 +103,16 @@
             // 
             this.tlpRoot.ColumnCount = 1;
             this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpRoot.RowCount = 3;
+            this.tlpRoot.RowCount = 4;
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.tlpEntete, 0, 0);
             this.tlpEntete.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.tlpPrincipal, 0, 1);
             this.tlpPrincipal.TabIndex = 1;
-            this.tlpRoot.Controls.Add(this.flpBoutons, 0, 2);
+            this.tlpRoot.Controls.Add(this.flpBoutons, 0, 3);
             this.flpBoutons.TabIndex = 2;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);

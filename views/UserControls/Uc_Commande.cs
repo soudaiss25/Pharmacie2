@@ -307,6 +307,7 @@ namespace Pharmacie2.views.UserControls
         public void DefinirCompact(bool compact)
         {
             ModeCompact.MasquerColonnes(dgvCommandes, compact, "colNbProd", "colReception", "colNote");
+            Theme.AjusterColonnes(dgvCommandes);
         }
     }
 

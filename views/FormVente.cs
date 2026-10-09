@@ -45,6 +45,7 @@ namespace Pharmacie2.views
             lblClient.Font = Theme.TitreSection;
             DefinirSectionClient(false);
 
+            dgvProduits.Paint += DessinerPanierVide;
             ClientSizeChanged += (s, e) => AppliquerMode(false);
             AppliquerMode(true);
 
@@ -54,6 +55,16 @@ namespace Pharmacie2.views
             ChargerMutuelles();
             InitComboMoyenPaiement();
             RecalculerTotal();
+        }
+
+        /// <summary>Panier vide : consigne grise au centre de la grille.</summary>
+        private void DessinerPanierVide(object? sender, PaintEventArgs e)
+        {
+            if (dgvProduits.Rows.Count > 0) return;
+            var zone = new Rectangle(0, dgvProduits.ColumnHeadersHeight, dgvProduits.ClientSize.Width, Math.Max(0, dgvProduits.ClientSize.Height - dgvProduits.ColumnHeadersHeight));
+            using var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+            using var pinceau = new SolidBrush(Theme.Neutre);
+            e.Graphics.DrawString("Tapez le nom d'un produit puis appuyez sur F3 pour l'ajouter", dgvProduits.DefaultCellStyle.Font ?? dgvProduits.Font, pinceau, zone, format);
         }
 
         // ── Mode compact : panier au-dessus, paiement en dessous, défilement vertical au milieu ──
@@ -72,9 +83,19 @@ namespace Pharmacie2.views
             tlpPrincipal.SuspendLayout();
             if (compact)
             {
+                // le total reste fixe sous la zone qui défile (avec les boutons Valider / Annuler)
+                tlpPanier.Controls.Remove(tlpTotal);
+                tlpRoot.Controls.Add(tlpTotal, 0, 2);
+                tlpTotal.Dock = DockStyle.Fill;
+                ModeCompact.Recomposer(tlpPanier, new[] { "P100" }, new[] { "A", "P100" },
+                    (flpRecherche, 0, 0, flpRecherche.Margin), (dgvProduits, 0, 1, dgvProduits.Margin));
+                tlpPrincipal.BorderStyle = BorderStyle.FixedSingle;   // la zone qui défile se termine nettement
+                tlpPrincipal.Padding = new Padding(Theme.Px(this, 6));
                 tlpPrincipal.AutoScroll = true;
                 panelDroit.AutoScroll = false;
-                ModeCompact.Recomposer(tlpPrincipal, new[] { "P100" }, new[] { "F260", "A" },
+                // panier : au moins 5 lignes visibles (recherche + en-tête + 5 lignes de 30)
+                int hauteurPanier = flpRecherche.Height + flpRecherche.Margin.Vertical + dgvProduits.ColumnHeadersHeight + 5 * dgvProduits.RowTemplate.Height + Theme.Px(this, 16);
+                ModeCompact.Recomposer(tlpPrincipal, new[] { "P100" }, new[] { "F" + (int)(hauteurPanier / Theme.Echelle(this)), "A" },
                     (tlpPanier, 0, 0, new Padding(0, 0, 0, 8)), (panelDroit, 0, 1, _margeDroit));
                 tlpDroite.SizeChanged += AjusterHauteurDroite;
                 AjusterHauteurDroite(null, EventArgs.Empty);
@@ -82,6 +103,16 @@ namespace Pharmacie2.views
             else
             {
                 tlpDroite.SizeChanged -= AjusterHauteurDroite;
+                if (tlpTotal.Parent == tlpRoot)
+                {
+                    tlpRoot.Controls.Remove(tlpTotal);
+                    tlpPanier.Controls.Add(tlpTotal, 0, 2);
+                    tlpTotal.Dock = DockStyle.Fill;
+                    ModeCompact.Recomposer(tlpPanier, new[] { "P100" }, new[] { "A", "P100", "A" },
+                        (flpRecherche, 0, 0, flpRecherche.Margin), (dgvProduits, 0, 1, dgvProduits.Margin), (tlpTotal, 0, 2, tlpTotal.Margin));
+                }
+                tlpPrincipal.BorderStyle = BorderStyle.None;
+                tlpPrincipal.Padding = Padding.Empty;
                 tlpPrincipal.AutoScroll = false;
                 panelDroit.AutoScroll = true;
                 ModeCompact.Recomposer(tlpPrincipal, new[] { "P58", "P42" }, new[] { "P100" },

@@ -13,6 +13,7 @@ namespace Pharmacie2.views
         private bool _compact;
         private bool _menuDeplie;
         private Panel? _reserveMenu;
+        private VoileMenu? _voile;
         private readonly ToolTip _infobulles = new ToolTip();
 
         public bool DeconnexionDemandee { get; private set; }
@@ -31,6 +32,14 @@ namespace Pharmacie2.views
             flpMenu.Resize += (s, e) => AjusterBoutonsMenu();
             AjusterBoutonsMenu();
             ClientSizeChanged += (s, e) => AppliquerMode(false);
+            LocationChanged += (s, e) => { if (_menuDeplie) BasculerMenu(); };
+            // bordure nette sur le bord droit du menu quand il est déplié par-dessus le contenu
+            panelMenu.Paint += (s, e) =>
+            {
+                if (!_menuDeplie) return;
+                using var trait = new Pen(ColorTranslator.FromHtml("#A5D6A7"), Math.Max(2, Theme.Px(this, 2)));
+                e.Graphics.DrawLine(trait, panelMenu.Width - 1, 0, panelMenu.Width - 1, panelMenu.Height);
+            };
             FormClosed += (s, e) => { if (ReferenceEquals(BandeauNotification.Courant, bandeau)) BandeauNotification.Courant = null; };
 
             OuvrirMaJournee();   // plus d'écran vide à l'ouverture
@@ -75,6 +84,25 @@ namespace Pharmacie2.views
 
         private void btnMenu_Click(object sender, EventArgs e) => BasculerMenu();
 
+        /// <summary>Voile semi-transparent sur le contenu : un clic dessus referme le menu.</summary>
+        private void AfficherVoile()
+        {
+            FermerVoile();
+            int gauche = Theme.Px(this, 56);
+            var origine = PointToScreen(new Point(gauche, 0));
+            _voile = new VoileMenu { Bounds = new Rectangle(origine, new Size(Math.Max(1, ClientSize.Width - gauche), ClientSize.Height)) };
+            _voile.Clique += () => { if (_menuDeplie) BasculerMenu(); };
+            _voile.Show(this);
+        }
+
+        private void FermerVoile()
+        {
+            if (_voile == null) return;
+            _voile.Close();
+            _voile.Dispose();
+            _voile = null;
+        }
+
         private void BasculerMenu()
         {
             if (!_compact && !_menuDeplie) return;
@@ -90,6 +118,7 @@ namespace Pharmacie2.views
                 Controls.Add(panelMenu);
                 panelMenu.SetBounds(0, 0, Theme.Px(this, 230), ClientSize.Height);
                 panelMenu.BringToFront();
+                AfficherVoile();
             }
             else
             {
@@ -103,7 +132,9 @@ namespace Pharmacie2.views
                     _reserveMenu = null;
                 }
                 tlpPrincipal.Controls.Add(panelMenu, 0, 0);
+                FermerVoile();
             }
+            panelMenu.Invalidate();
             AppliquerPresentationMenu();
         }
 

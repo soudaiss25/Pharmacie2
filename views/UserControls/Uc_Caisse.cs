@@ -334,7 +334,7 @@ namespace Pharmacie2.views.UserControls
             if (dgvSessions.Columns[e.ColumnIndex].Name == "Ecart" && ligne.Cells["Ecart"].Value is decimal ecart && ecart < 0)
             {
                 e.CellStyle.ForeColor = Theme.UrgentTexte;
-                e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
+                e.CellStyle.Font = Theme.PoliceGrille(dgvSessions, FontStyle.Bold);
             }
         }
 

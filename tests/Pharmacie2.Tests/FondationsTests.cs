@@ -1,4 +1,4 @@
-using Pharmacie2.Services;
+﻿using Pharmacie2.Services;
 using Xunit;
 
 public class FormatTests
@@ -10,15 +10,25 @@ public class FormatTests
     [InlineData(1234567, "1 234 567 KMF")]
     [InlineData(-1200, "-1 200 KMF")]
     public void Montant_sans_decimales_avec_espace_pour_les_milliers(int valeur, string attendu)
-        => Assert.Equal(attendu, Format.Montant((decimal)valeur));
+        => Assert.Equal(attendu, Format.Montant((decimal)valeur).Replace(' ', ' '));
 
     [Fact]
     public void Montant_arrondit_et_gere_les_valeurs_vides()
     {
-        Assert.Equal("12 500 KMF", Format.Montant(12500.4m));
-        Assert.Equal("1 000 KMF", Format.Montant(999.5m));
-        Assert.Equal("—", Format.Montant((decimal?)null));
-        Assert.Equal("12 500", Format.Nombre(12500m));
+        Assert.Equal("12 500 KMF", Format.Montant(12500.4m).Replace(' ', ' '));
+        Assert.Equal("1 000 KMF", Format.Montant(999.5m).Replace(' ', ' '));
+        Assert.Equal("—", Format.Montant((decimal?)null).Replace(' ', ' '));
+        Assert.Equal("12 500", Format.Nombre(12500m).Replace(' ', ' '));
+    }
+
+    [Fact]
+    public void Espace_insecable_entre_un_nombre_et_son_unite()
+    {
+        Assert.Equal("Paracétamol 1 g", Format.Insecable("Paracétamol 1 g"));
+        Assert.Equal("500 mg et 30 jours", Format.Insecable("500 mg et 30 jours"));
+        Assert.Equal("2 400 KMF", Format.Insecable("2 400 KMF"));
+        Assert.Equal("Il reste 3 boîtes ici", Format.Insecable("Il reste 3 boîtes ici").Replace(' ', ' '));
+        Assert.Equal("1 g", Format.Montant(0).Length > 0 ? Format.Insecable("1 g") : "");   // jamais d'exception sur les montants
     }
 
     [Fact]

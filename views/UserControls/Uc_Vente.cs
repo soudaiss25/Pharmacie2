@@ -84,6 +84,9 @@ namespace Pharmacie2.views.UserControls
                     v.Statut
                 }).ToList();
 
+                _telephones = ventes.Any(v => !string.IsNullOrWhiteSpace(v.TelephoneClient));
+                AppliquerColonnes();
+
                 // ── Barre du bas — cohérente avec Uc_Caisse ───────────────
                 var actives = ventes.Where(v => v.Statut == "Active").ToList();
                 decimal totalCA = actives.Sum(v => v.MontantTotal);
@@ -117,7 +120,7 @@ namespace Pharmacie2.views.UserControls
             else if (dgvVentes.Columns[e.ColumnIndex].Name == "Restant" && ligne.Cells["Restant"].Value is decimal reste && reste > 0)
             {
                 e.CellStyle.ForeColor = Theme.AttentionTexte;
-                e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
+                e.CellStyle.Font = Theme.PoliceGrille(dgvVentes, FontStyle.Bold);
             }
         }
 
@@ -240,7 +243,19 @@ namespace Pharmacie2.views.UserControls
         /// <summary>Mode compact : les colonnes secondaires sont masquées, l'essentiel reste visible.</summary>
         public void DefinirCompact(bool compact)
         {
-            ModeCompact.MasquerColonnes(dgvVentes, compact, "Tel", "Vendeur");
+            _compact = compact;
+            AppliquerColonnes();
+        }
+
+        private bool _compact;
+        private bool _telephones = true;
+
+        /// <summary>Téléphone : seulement s'il y en a au moins un à afficher (et jamais en mode compact) ; le reste se répartit selon le contenu.</summary>
+        private void AppliquerColonnes()
+        {
+            if (dgvVentes.Columns["Tel"] is DataGridViewColumn tel) tel.Visible = _telephones && !_compact;
+            if (dgvVentes.Columns["Vendeur"] is DataGridViewColumn vendeur) vendeur.Visible = !_compact;
+            Theme.AjusterColonnes(dgvVentes);
         }
 
     }

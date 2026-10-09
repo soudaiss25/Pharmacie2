@@ -245,12 +245,12 @@ namespace Pharmacie2.views.UserControls
             if (total)
             {
                 e.CellStyle.BackColor = Theme.InfoFond;
-                e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
+                e.CellStyle.Font = Theme.PoliceGrille(dgvAnnuel, FontStyle.Bold);
             }
             if (dgvAnnuel.Columns[e.ColumnIndex].Name == "Benefice" && ligne.Cells["Benefice"].Value is decimal b)
             {
                 e.CellStyle.ForeColor = b >= 0 ? Theme.SuccesTexte : Theme.UrgentTexte;
-                e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
+                e.CellStyle.Font = Theme.PoliceGrille(dgvAnnuel, FontStyle.Bold);
             }
         }
 

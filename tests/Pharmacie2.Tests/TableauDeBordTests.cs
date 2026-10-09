@@ -1,4 +1,4 @@
-using Pharmacie2.Models;
+﻿using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Xunit;
 
@@ -157,7 +157,7 @@ public class TableauDeBordTests
         Assert.Equal(2, a[1].Nombre);   // « Rupture » + « Périmé mais plus de stock » (archivés exclus)
         Assert.Equal(1, a[3].Nombre);
         Assert.Equal(1, a[4].Nombre);     // la vente de 45 jours compte, pas celle de 5 jours
-        Assert.Contains("800 KMF", a[4].Texte);
+        Assert.Contains("800 KMF", a[4].Texte);
     }
 
     [Fact]

@@ -73,6 +73,7 @@ namespace Pharmacie2.views.UserControls
                     }).ToList();
 
                     dgvProduits.DataSource = data;
+                    Theme.AjusterColonnes(dgvProduits);
                     lblCompteur.Text = $"{Format.Compte(data.Count, "produit")}";
                 }
             }
@@ -152,6 +153,7 @@ namespace Pharmacie2.views.UserControls
         public void DefinirCompact(bool compact)
         {
             ModeCompact.MasquerColonnes(dgvProduits, compact, "Type", "PrixAchat", "Marge", "Seuil", "UniteVente", "Fournisseur");
+            Theme.AjusterColonnes(dgvProduits);
         }
 
     }

@@ -153,7 +153,7 @@ public class LayoutTests
 
             Verifier(h.Fenetre, type.Name, locales);
             VerifierOnglets(h.Fenetre, type.Name, locales);
-            VerifierGrilles(h.Fenetre, type.Name, locales);
+            VerifierGrilles(h.Fenetre, type.Name, locales, cfg);
             erreurs.AddRange(locales.Select(e => $"[{cfg}] {e}"));
             etirables[cfg] = Etirables(h.Fenetre, cfg.Zoom);
         }
@@ -209,12 +209,52 @@ public class LayoutTests
     }
 
     /// <summary>Aucun en-tête de colonne ni cellule de date tronqué : texte mesuré ≤ largeur de la colonne.</summary>
-    private static void VerifierGrilles(Control racine, string chemin, List<string> erreurs)
+    private static readonly string[] ColonnesNoms = { "Produit", "Client", "Fournisseur", "Nom", "Mutuelle", "Mutuelle / Employeur", "Description" };
+
+    private static void VerifierGrilles(Control racine, string chemin, List<string> erreurs, Config cfg)
     {
         foreach (Control c in racine.Controls)
         {
             if (c is DataGridView g && g.Visible)
             {
+                // 1. Polices des styles de cellule : toujours celle de la grille (même taille), à chaque configuration
+                var baseFont = g.DefaultCellStyle.Font ?? g.Font;
+                bool signale = false;
+                DataGridViewCellFormattingEventHandler suivi = (s, e) =>
+                {
+                    if (!signale && e.RowIndex >= 0 && e.CellStyle.Font != null && Math.Abs(e.CellStyle.Font.SizeInPoints - baseFont.SizeInPoints) > 0.05f)
+                    {
+                        signale = true;
+                        erreurs.Add($"{chemin}/{g.Name} : police de cellule {e.CellStyle.Font.SizeInPoints}pt différente de celle de la grille ({baseFont.SizeInPoints}pt)");
+                    }
+                };
+                g.CellFormatting += suivi;
+                try
+                {
+                    using var bmp = new Bitmap(Math.Max(1, g.Width), Math.Max(1, g.Height));
+                    g.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));   // le dessin déclenche CellFormatting
+                }
+                finally { g.CellFormatting -= suivi; }
+
+                // 2. Les noms (produit, client, fournisseur…) ne sont jamais tronqués en 1366 × 700 et 1920 × 1040 à 100 %
+                if (cfg.Zoom == 1f && cfg.W >= 1366)
+                {
+                    var policeNom = g.DefaultCellStyle.Font ?? g.Font;
+                    foreach (DataGridViewColumn col in g.Columns)
+                    {
+                        if (!col.Visible || !ColonnesNoms.Contains(col.HeaderText)) continue;
+                        foreach (DataGridViewRow r in g.Rows)
+                        {
+                            string t = Convert.ToString(r.Cells[col.Index].FormattedValue) ?? "";
+                            if (TextRenderer.MeasureText(t, policeNom).Width + 8 > col.Width)
+                            {
+                                erreurs.Add($"{chemin}/{g.Name} : « {t} » tronqué dans la colonne {col.HeaderText} ({col.Width}px)");
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 var policeEntete = g.ColumnHeadersDefaultCellStyle.Font ?? g.Font;
                 var policeCellule = g.DefaultCellStyle.Font ?? g.Font;
                 foreach (DataGridViewColumn col in g.Columns)
@@ -235,7 +275,7 @@ public class LayoutTests
                         }
                 }
             }
-            VerifierGrilles(c, chemin, erreurs);
+            VerifierGrilles(c, chemin, erreurs, cfg);
         }
     }
 

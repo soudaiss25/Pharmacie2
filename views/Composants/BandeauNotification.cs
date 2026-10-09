@@ -1,4 +1,4 @@
-using Pharmacie2.Services;
+﻿using Pharmacie2.Services;
 
 namespace Pharmacie2.views.Composants
 {
@@ -34,7 +34,7 @@ namespace Pharmacie2.views.Composants
             BackColor = fond;
             _texte.ForeColor = texte;
             _texte.BackColor = fond;
-            _texte.Text = message;
+            _texte.Text = Format.Insecable(message);
             Visible = true;
             _minuteur.Stop();
             _minuteur.Start();

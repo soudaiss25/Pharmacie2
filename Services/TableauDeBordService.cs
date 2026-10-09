@@ -210,7 +210,7 @@ namespace Pharmacie2.Services
         {
             var liste = noms.Take(3).ToList();
             string suite = n > 3 ? $" et {Format.Compte(n - 3, "autre")}" : "";
-            return $"{n} {(n > 1 ? pluriel : singulier)} : {string.Join(", ", liste)}{suite}";
+            return Format.Insecable($"{n} {(n > 1 ? pluriel : singulier)} : {string.Join(", ", liste.Select(Format.Insecable))}{suite}");
         }
     }
 }

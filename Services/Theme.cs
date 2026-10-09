@@ -224,6 +224,48 @@ namespace Pharmacie2.Services
             if (l.BackColor == SystemColors.Control) l.BackColor = Color.Transparent;
         }
 
+        private static readonly Dictionary<(string, float, FontStyle), Font> _policesGrille = new();
+
+        /// <summary>
+        /// Police d'un style de cellule : toujours dérivée de la police de la grille (même taille, autre style).
+        /// Jamais de taille fixe : elle suit le zoom et le changement de DPI.
+        /// </summary>
+        public static Font PoliceGrille(DataGridView g, FontStyle style)
+        {
+            var b = g.DefaultCellStyle.Font ?? g.Font;
+            var cle = (b.FontFamily.Name, b.SizeInPoints, style);
+            lock (_policesGrille)
+            {
+                if (!_policesGrille.TryGetValue(cle, out var f))
+                    _policesGrille[cle] = f = new Font(b.FontFamily, b.SizeInPoints, style, GraphicsUnit.Point);
+                return f;
+            }
+        }
+
+        /// <summary>
+        /// Répartit la largeur selon le contenu réel : le poids de chaque colonne est la largeur de son texte le plus long
+        /// (en-tête compris, 300 premières lignes). Une colonne n'est donc tronquée que si TOUT manque de place.
+        /// </summary>
+        public static void AjusterColonnes(DataGridView g)
+        {
+            var police = g.DefaultCellStyle.Font ?? g.Font;
+            var entete = g.ColumnHeadersDefaultCellStyle.Font ?? g.Font;
+            float echelle = EchelleTest ?? Math.Max(1f, g.DeviceDpi / 96f);
+            int plafond = (int)(420 * echelle);
+            int lignes = Math.Min(g.Rows.Count, 300);
+            foreach (DataGridViewColumn col in g.Columns)
+            {
+                if (!col.Visible) continue;
+                int besoin = LargeurTexte(col.HeaderText, entete);
+                for (int i = 0; i < lignes; i++)
+                {
+                    string t = Convert.ToString(g.Rows[i].Cells[col.Index].FormattedValue) ?? "";
+                    if (t.Length > 0) besoin = Math.Max(besoin, LargeurTexte(t, police) + 6);
+                }
+                col.FillWeight = Math.Max(10, Math.Min(besoin, plafond));
+            }
+        }
+
         /// <summary>Largeur nécessaire pour afficher un texte dans une colonne (marges comprises).</summary>
         public static int LargeurTexte(string texte, Font police) => TextRenderer.MeasureText(texte, police).Width + 22;
 

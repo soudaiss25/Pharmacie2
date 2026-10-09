@@ -51,7 +51,7 @@ namespace Pharmacie2.views.Composants
             var (texte, fond) = Theme.Niveau(el.Niveau);
             var ligne = new Label
             {
-                Text = el.Texte + (el.Action != null ? "   ›" : ""),
+                Text = Format.Insecable(el.Texte) + (el.Action != null ? "   ›" : ""),
                 AutoSize = false,
                 Height = HauteurLigne,
                 Margin = new Padding(0, 0, 0, 4),

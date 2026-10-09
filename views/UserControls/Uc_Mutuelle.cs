@@ -23,6 +23,14 @@ namespace Pharmacie2.views.UserControls
             _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Mutuelle, SelectionMutuelle, ChargerMutuelles);
 
             this.Load += (s, e) => ChargerMutuelles();
+            dgvMutuelles.CellFormatting += (s, e) =>
+            {
+                if (e.RowIndex >= 0 && dgvMutuelles.Columns[e.ColumnIndex].Name == "TotalImpaye" && e.Value is decimal d && d > 0)
+                {
+                    e.CellStyle.ForeColor = Theme.AttentionTexte;
+                    e.CellStyle.Font = Theme.PoliceGrille(dgvMutuelles, FontStyle.Bold);
+                }
+            };
         }
 
         private void btnActualiser_Click(object sender, EventArgs e)
@@ -99,15 +107,6 @@ namespace Pharmacie2.views.UserControls
                     dgvMutuelles.DataSource = null;
                     dgvMutuelles.DataSource = data;
 
-                    foreach (DataGridViewRow row in dgvMutuelles.Rows)
-                    {
-                        var impaye = row.Cells["TotalImpaye"].Value;
-                        if (impaye != null && Convert.ToDecimal(impaye) > 0)
-                        {
-                            row.Cells["TotalImpaye"].Style.ForeColor = Theme.AttentionTexte;
-                            row.Cells["TotalImpaye"].Style.Font = Theme.Police(10, System.Drawing.FontStyle.Bold);
-                        }
-                    }
                 }
             }
             catch (Exception ex)

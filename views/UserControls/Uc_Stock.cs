@@ -125,6 +125,7 @@ namespace Pharmacie2.views.UserControls
                 .ToList();
 
             dgvStock.DataSource = data;
+            Theme.AjusterColonnes(dgvStock);
         }
 
         private void dgvStock_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -148,7 +149,7 @@ namespace Pharmacie2.views.UserControls
                 if (dgvStock.Columns[e.ColumnIndex].Name == "Etat")
                 {
                     e.CellStyle.ForeColor = niveau == "info" ? Theme.Neutre : texte;
-                    e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
+                    e.CellStyle.Font = Theme.PoliceGrille(dgvStock, FontStyle.Bold);
                 }
             }
         }
@@ -225,6 +226,7 @@ namespace Pharmacie2.views.UserControls
         public void DefinirCompact(bool compact)
         {
             ModeCompact.MasquerColonnes(dgvStock, compact, "Type", "Fournisseur", "Seuil");
+            Theme.AjusterColonnes(dgvStock);
         }
 
     }

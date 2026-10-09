@@ -85,7 +85,11 @@ public class CapturesTests
             surcouche.DrawToBitmap(haut, new Rectangle(0, 0, haut.Width, haut.Height));
             var origine = f.PointToScreen(Point.Empty);
             using var g = Graphics.FromImage(bmp);
-            g.DrawImage(haut, origine.X - f.Location.X + surcouche.Left, origine.Y - f.Location.Y + surcouche.Top);
+            int dx = origine.X - f.Location.X, dy = origine.Y - f.Location.Y;
+            g.DrawImage(haut, dx + surcouche.Left, dy + surcouche.Top);
+            // le voile (fenêtre à part, invisible pour DrawToBitmap) est simulé : 35 % de noir sur le contenu à droite du menu
+            using var voile = new SolidBrush(Color.FromArgb(90, 0, 0, 0));
+            g.FillRectangle(voile, dx + surcouche.Right, dy, bmp.Width - dx - surcouche.Right, f.ClientSize.Height);
         }
         bmp.Save(chemin, ImageFormat.Png);
 
