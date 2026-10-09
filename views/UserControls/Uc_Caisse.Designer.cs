@@ -171,7 +171,7 @@
             this.tabRapport.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.tabRapport.UseVisualStyleBackColor = true;
             this.tabRapport.AutoScroll = true;
-            this.tabRapport.AutoScrollMinSize = new System.Drawing.Size(0, 660);
+            this.tabRapport.AutoScrollMinSize = new System.Drawing.Size(0, 720);
             this.tabRapport.Name = "tabRapport";
             // 
             // tlpRapport
