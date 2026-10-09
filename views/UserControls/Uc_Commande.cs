@@ -15,7 +15,7 @@ namespace Pharmacie2.views.UserControls
     /// Filtres : statut, fournisseur, période.
     /// Actions : voir détail, marquer reçue, annuler.
     /// </summary>
-    public partial class Uc_Commande : UserControl
+    public partial class Uc_Commande : UserControl, IModeCompact
     {
         public Uc_Commande()
         {
@@ -302,6 +302,12 @@ namespace Pharmacie2.views.UserControls
             dtpFin.Enabled = chkPeriode.Checked;
             ChargerCommandes();
         }
+
+        /// <summary>Mode compact : les colonnes secondaires sont masquées, l'essentiel reste visible.</summary>
+        public void DefinirCompact(bool compact)
+        {
+            ModeCompact.MasquerColonnes(dgvCommandes, compact, "colNbProd", "colReception", "colNote");
+        }
     }
 
     internal class FournisseurItem
@@ -310,5 +316,5 @@ namespace Pharmacie2.views.UserControls
         public string Nom { get; }
         public FournisseurItem(int id, string nom) { Id = id; Nom = nom; }
         public override string ToString() => Nom;
-    }
+        }
 }

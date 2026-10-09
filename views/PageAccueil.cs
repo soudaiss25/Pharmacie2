@@ -9,6 +9,11 @@ namespace Pharmacie2.views
     {
         private readonly User _user;
         private BoutonMenu? _boutonActif;
+        private UserControl? _ecranCourant;
+        private bool _compact;
+        private bool _menuDeplie;
+        private Panel? _reserveMenu;
+        private readonly ToolTip _infobulles = new ToolTip();
 
         public bool DeconnexionDemandee { get; private set; }
 
@@ -25,27 +30,105 @@ namespace Pharmacie2.views
 
             flpMenu.Resize += (s, e) => AjusterBoutonsMenu();
             AjusterBoutonsMenu();
+            ClientSizeChanged += (s, e) => AppliquerMode(false);
             FormClosed += (s, e) => { if (ReferenceEquals(BandeauNotification.Courant, bandeau)) BandeauNotification.Courant = null; };
 
             OuvrirMaJournee();   // plus d'écran vide à l'ouverture
+            AppliquerMode(true);
+        }
+
+        // ── Mode compact (largeur < 1200 unités logiques) ─────────────────
+
+        /// <summary>Mode actuel (pour les tests).</summary>
+        public bool EstCompact => _compact;
+
+        private void AppliquerMode(bool forcer)
+        {
+            bool compact = ModeCompact.Est(this);
+            if (!forcer && compact == _compact) return;
+            _compact = compact;
+            if (!compact && _menuDeplie) BasculerMenu();
+            AppliquerPresentationMenu();
+            (_ecranCourant as IModeCompact)?.DefinirCompact(compact);
+        }
+
+        private IEnumerable<BoutonMenu> BoutonsMenu
+            => flpMenu.Controls.OfType<BoutonMenu>().Concat(new[] { btnDeconnexion, btnMenu });
+
+        /// <summary>Menu large (icône + libellé) ou réduit à une colonne d'icônes ; déplié par-dessus le contenu au clic sur le bouton Menu.</summary>
+        private void AppliquerPresentationMenu()
+        {
+            bool reduit = _compact && !_menuDeplie;
+            tlpPrincipal.ColumnStyles[0].Width = Theme.Px(this, _compact ? 56 : 230);
+            btnMenu.Visible = _compact;
+            lblNomPharmacie.Visible = !_compact;
+            lblUtilisateur.Visible = !reduit;
+            lblSectionQuotidien.Visible = lblSectionGestion.Visible = !reduit;
+            traitAdmin.Width = Theme.Px(this, reduit ? 32 : 182);
+            foreach (var b in BoutonsMenu)
+            {
+                b.Reduit = reduit;
+                _infobulles.SetToolTip(b, reduit ? b.Text : "");
+            }
+            AjusterBoutonsMenu();
+        }
+
+        private void btnMenu_Click(object sender, EventArgs e) => BasculerMenu();
+
+        private void BasculerMenu()
+        {
+            if (!_compact && !_menuDeplie) return;
+            _menuDeplie = !_menuDeplie;
+            if (_menuDeplie)
+            {
+                // le menu passe par-dessus le contenu ; une réserve verte garde la colonne réduite en place
+                _reserveMenu = new Panel { BackColor = panelMenu.BackColor, Dock = DockStyle.Fill, Margin = Padding.Empty };
+                tlpPrincipal.Controls.Remove(panelMenu);
+                tlpPrincipal.Controls.Add(_reserveMenu, 0, 0);
+                panelMenu.Dock = DockStyle.None;
+                panelMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom;
+                Controls.Add(panelMenu);
+                panelMenu.SetBounds(0, 0, Theme.Px(this, 230), ClientSize.Height);
+                panelMenu.BringToFront();
+            }
+            else
+            {
+                Controls.Remove(panelMenu);
+                panelMenu.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                panelMenu.Dock = DockStyle.Fill;
+                if (_reserveMenu != null)
+                {
+                    tlpPrincipal.Controls.Remove(_reserveMenu);
+                    _reserveMenu.Dispose();
+                    _reserveMenu = null;
+                }
+                tlpPrincipal.Controls.Add(panelMenu, 0, 0);
+            }
+            AppliquerPresentationMenu();
         }
 
         // ── Navigation ────────────────────────────────────────────────────
 
         private void AjusterBoutonsMenu()
         {
-            int largeur = Math.Max(120, flpMenu.ClientSize.Width);
+            int largeur = Math.Max(Theme.Px(this, 48), flpMenu.ClientSize.Width);
             foreach (Control c in flpMenu.Controls)
                 if (c is BoutonMenu) c.Width = largeur;
         }
 
+        /// <summary>Ouvre un écran dans la zone de contenu (sans bouton du menu surligné).</summary>
+        public void Afficher(UserControl uc) => Ouvrir(uc, null);
+
         private void Ouvrir(UserControl uc, BoutonMenu? bouton)
         {
+            if (_menuDeplie) BasculerMenu();   // une navigation replie le menu déplié
             var anciens = panelContent.Controls.Cast<Control>().ToList();
             panelContent.Controls.Clear();
             foreach (var a in anciens) a.Dispose();
 
             Hebergement.Heberger(panelContent, uc);   // zone défilante : l'écran prend max(zone, taille minimale)
+            _ecranCourant = uc;
+            (uc as IModeCompact)?.DefinirCompact(_compact);
 
             if (_boutonActif != null) _boutonActif.Actif = false;
             _boutonActif = bouton;
@@ -132,7 +215,12 @@ namespace Pharmacie2.views
 
         private void PageAccueil_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F2)
+            if (e.KeyCode == Keys.Escape && _menuDeplie)
+            {
+                e.Handled = true;
+                BasculerMenu();
+            }
+            else if (e.KeyCode == Keys.F2)
             {
                 e.Handled = true;
                 using var form = new FormVente();

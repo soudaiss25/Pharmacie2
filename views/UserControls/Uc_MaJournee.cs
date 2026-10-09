@@ -9,7 +9,7 @@ namespace Pharmacie2.views.UserControls
     /// « Ma journée » : ce qu'il faut savoir en quelques secondes — argent reçu, ce qui manque ou va périmer,
     /// qui doit de l'argent. Écran d'ouverture de l'application.
     /// </summary>
-    public partial class Uc_MaJournee : UserControl
+    public partial class Uc_MaJournee : UserControl, IModeCompact
     {
         private static readonly CultureInfo Fr = new CultureInfo("fr-FR");
 
@@ -34,6 +34,7 @@ namespace Pharmacie2.views.UserControls
         /// <summary>Le graphique occupe environ 45 % de la hauteur disponible : la liste « À faire » reste l'élément principal.</summary>
         private void AjusterGraphique()
         {
+            if (_compact) return;
             int disponible = tlpBas.ClientSize.Height - lblGraphique.Height - lblGraphique.Margin.Vertical;
             graphique.Height = Math.Max(Theme.Px(this, 150), (int)(disponible * 0.75));
         }
@@ -85,5 +86,62 @@ namespace Pharmacie2.views.UserControls
                 listeActions.Definir(new[] { new ElementAction("Les chiffres n'ont pas pu être calculés. Voir le journal.", "urgent", null) });
             }
         }
+    
+        private bool _compact;
+
+        /// <summary>Compact : cartes 2 × 2 ; « À faire » et graphique empilés ; l'écran défile verticalement.</summary>
+        public void DefinirCompact(bool compact)
+        {
+            _compact = compact;
+            SuspendLayout();
+            var m = (int a, int b, int c, int d) => new Padding(a, b, c, d);
+            if (compact)
+            {
+                AutoScroll = true;
+                tlpRoot.Dock = DockStyle.Top;
+                tlpRoot.AutoSize = true;
+                tlpRoot.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                ModeCompact.Recomposer(tlpRoot, new[] { "P100" }, new[] { "A", "A", "A" },
+                    (lblBonjour, 0, 0, lblBonjour.Margin), (tlpKpi, 0, 1, tlpKpi.Margin), (tlpBas, 0, 2, tlpBas.Margin));
+                ModeCompact.Recomposer(tlpKpi, new[] { "P50", "P50" }, new[] { "A", "A" },
+                    (carteEncaisse, 0, 0, m(0, 0, 12, 12)), (carteVentes, 1, 0, m(0, 0, 0, 12)),
+                    (carteARecuperer, 0, 1, m(0, 0, 12, 0)), (carteBenefice, 1, 1, m(0, 0, 0, 0)));
+                tlpBas.Dock = DockStyle.Top;
+                tlpBas.AutoSize = true;
+                tlpBas.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                listeActions.Dock = DockStyle.None;
+                listeActions.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                listeActions.AutoScroll = false;
+                listeActions.AutoSize = true;
+                listeActions.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                ModeCompact.Recomposer(tlpBas, new[] { "P100" }, new[] { "A", "A", "A", "A" },
+                    (lblAFaire, 0, 0, m(0, 0, 0, 6)), (listeActions, 0, 1, m(0, 0, 0, 0)),
+                    (lblGraphique, 0, 2, m(0, 12, 0, 6)), (graphique, 0, 3, m(0, 0, 0, 0)));
+                graphique.Height = Theme.Px(this, 240);
+            }
+            else
+            {
+                AutoScroll = false;
+                tlpRoot.Dock = DockStyle.Fill;
+                tlpRoot.AutoSize = false;
+                ModeCompact.Recomposer(tlpRoot, new[] { "P100" }, new[] { "A", "A", "P100" },
+                    (lblBonjour, 0, 0, lblBonjour.Margin), (tlpKpi, 0, 1, tlpKpi.Margin), (tlpBas, 0, 2, tlpBas.Margin));
+                ModeCompact.Recomposer(tlpKpi, new[] { "P25", "P25", "P25", "P25" }, new[] { "A" },
+                    (carteEncaisse, 0, 0, m(0, 0, 12, 0)), (carteVentes, 1, 0, m(0, 0, 12, 0)),
+                    (carteARecuperer, 2, 0, m(0, 0, 12, 0)), (carteBenefice, 3, 0, m(0, 0, 0, 0)));
+                tlpBas.Dock = DockStyle.Fill;
+                tlpBas.AutoSize = false;
+                listeActions.AutoSize = false;
+                listeActions.AutoScroll = true;
+                listeActions.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                listeActions.Dock = DockStyle.Fill;
+                ModeCompact.Recomposer(tlpBas, new[] { "P55", "P45" }, new[] { "A", "P100" },
+                    (lblAFaire, 0, 0, m(0, 0, 0, 6)), (lblGraphique, 1, 0, m(12, 0, 0, 6)),
+                    (listeActions, 0, 1, m(0, 0, 12, 0)), (graphique, 1, 1, m(12, 0, 0, 0)));
+                AjusterGraphique();
+            }
+            ResumeLayout(true);
+        }
+
     }
 }

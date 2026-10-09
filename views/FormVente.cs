@@ -47,12 +47,56 @@ namespace Pharmacie2.views
             lblClient.Padding = new Padding(0);
             DefinirSectionClient(false);
 
+            ClientSizeChanged += (s, e) => AppliquerMode(false);
+            AppliquerMode(true);
+
             lblVendeur.Text = "Vendeur : " + SessionUtilisateur.NomComplet;
             ActiveControl = txtRecherche;   // focus sur la recherche produit dès l'ouverture
 
             ChargerMutuelles();
             InitComboMoyenPaiement();
             RecalculerTotal();
+        }
+
+        // ── Mode compact : panier au-dessus, paiement en dessous, défilement vertical au milieu ──
+
+        private bool _compact;
+        private Padding _margePanier, _margeDroit;
+        private bool _margesLues;
+
+        private void AppliquerMode(bool forcer)
+        {
+            bool compact = ModeCompact.Est(this);
+            if (!forcer && compact == _compact) return;
+            if (!_margesLues) { _margePanier = tlpPanier.Margin; _margeDroit = panelDroit.Margin; _margesLues = true; }
+            _compact = compact;
+
+            tlpPrincipal.SuspendLayout();
+            if (compact)
+            {
+                tlpPrincipal.AutoScroll = true;
+                panelDroit.AutoScroll = false;
+                ModeCompact.Recomposer(tlpPrincipal, new[] { "P100" }, new[] { "F260", "A" },
+                    (tlpPanier, 0, 0, new Padding(0, 0, 0, 8)), (panelDroit, 0, 1, _margeDroit));
+                tlpDroite.SizeChanged += AjusterHauteurDroite;
+                AjusterHauteurDroite(null, EventArgs.Empty);
+            }
+            else
+            {
+                tlpDroite.SizeChanged -= AjusterHauteurDroite;
+                tlpPrincipal.AutoScroll = false;
+                panelDroit.AutoScroll = true;
+                ModeCompact.Recomposer(tlpPrincipal, new[] { "P58", "P42" }, new[] { "P100" },
+                    (tlpPanier, 0, 0, _margePanier), (panelDroit, 1, 0, _margeDroit));
+            }
+            tlpPrincipal.ResumeLayout(true);
+        }
+
+        /// <summary>En mode compact, la rangée du bas prend exactement la hauteur du bloc de paiement.</summary>
+        private void AjusterHauteurDroite(object? sender, EventArgs e)
+        {
+            if (!_compact || tlpPrincipal.RowStyles.Count < 2) return;
+            tlpPrincipal.RowStyles[1] = new RowStyle(SizeType.Absolute, tlpDroite.Height + panelDroit.Margin.Vertical + Theme.Px(this, 4));
         }
 
         // ── Section client repliable ──────────────────────────────────────

@@ -1,3 +1,4 @@
+﻿using Pharmacie2.views.Composants;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
@@ -5,7 +6,7 @@ using Pharmacie2.Services;
 namespace Pharmacie2.views.UserControls
 {
     /// <summary>Catalogue des produits : prix, marge, stock, fournisseur. L'état du stock détaillé est dans « Stock ».</summary>
-    public partial class Uc_Produits : UserControl
+    public partial class Uc_Produits : UserControl, IModeCompact
     {
         private readonly CheckBox _chkArchives;
 
@@ -146,5 +147,12 @@ namespace Pharmacie2.views.UserControls
             if (ArchivageUi.Archiver(TypeElement.Produit, SelectionProduit()))
                 ChargerProduits();
         }
+    
+        /// <summary>Mode compact : les colonnes secondaires sont masquées, l'essentiel reste visible.</summary>
+        public void DefinirCompact(bool compact)
+        {
+            ModeCompact.MasquerColonnes(dgvProduits, compact, "Type", "PrixAchat", "Marge", "Seuil", "UniteVente", "Fournisseur");
+        }
+
     }
 }

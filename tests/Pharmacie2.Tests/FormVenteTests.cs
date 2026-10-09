@@ -56,12 +56,14 @@ public class FormVenteTests
         UiHelper.EnSta(() =>
         {
             using var f = new FormVente();
-            var tlp = UiHelper.Champ<TableLayoutPanel>(f, "tlpClient");
-            Assert.False(tlp.Visible);                                          // comptant : rien à saisir côté client
+            var entete = UiHelper.Champ<Button>(f, "lblClient");
+            Assert.EndsWith("+", entete.Text);                                  // comptant : section repliée, rien à saisir côté client
+            Assert.Contains("facultatif", entete.Text);
             UiHelper.Champ<ComboBox>(f, "cbPaiement").SelectedItem = ModesPaiement.Credit;
-            Assert.True(tlp.Visible);                                           // crédit : le client est obligatoire
+            Assert.EndsWith("−", entete.Text);                             // crédit : ouverte automatiquement
+            Assert.Contains("obligatoire", entete.Text);
             UiHelper.Appeler(f, "lblClient_Click", null, EventArgs.Empty);      // l'utilisateur peut aussi la replier
-            Assert.False(tlp.Visible);
+            Assert.EndsWith("+", entete.Text);
         });
     }
 

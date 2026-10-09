@@ -31,6 +31,7 @@
             this.tlpPrincipal = new System.Windows.Forms.TableLayoutPanel();
             this.panelMenu = new System.Windows.Forms.Panel();
             this.tlpMenu = new System.Windows.Forms.TableLayoutPanel();
+            this.btnMenu = new Pharmacie2.views.Composants.BoutonMenu();
             this.lblNomPharmacie = new System.Windows.Forms.Label();
             this.flpMenu = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSectionQuotidien = new System.Windows.Forms.Label();
@@ -94,19 +95,32 @@
             // 
             this.tlpMenu.ColumnCount = 1;
             this.tlpMenu.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpMenu.RowCount = 3;
+            this.tlpMenu.RowCount = 4;
+            this.tlpMenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpMenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpMenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpMenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpMenu.Controls.Add(this.lblNomPharmacie, 0, 0);
-            this.lblNomPharmacie.TabIndex = 0;
-            this.tlpMenu.Controls.Add(this.flpMenu, 0, 1);
-            this.flpMenu.TabIndex = 1;
-            this.tlpMenu.Controls.Add(this.tlpBas, 0, 2);
-            this.tlpBas.TabIndex = 2;
+            this.tlpMenu.Controls.Add(this.btnMenu, 0, 0);
+            this.btnMenu.TabIndex = 0;
+            this.tlpMenu.Controls.Add(this.lblNomPharmacie, 0, 1);
+            this.lblNomPharmacie.TabIndex = 1;
+            this.tlpMenu.Controls.Add(this.flpMenu, 0, 2);
+            this.flpMenu.TabIndex = 2;
+            this.tlpMenu.Controls.Add(this.tlpBas, 0, 3);
+            this.tlpBas.TabIndex = 3;
             this.tlpMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMenu.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpMenu.Name = "tlpMenu";
+            // 
+            // btnMenu
+            // 
+            this.btnMenu.Text = "Menu";
+            this.btnMenu.Icone = "menu";
+            this.btnMenu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnMenu.Visible = false;
+            this.btnMenu.Margin = new System.Windows.Forms.Padding(0, 8, 0, 4);
+            this.btnMenu.Name = "btnMenu";
+            this.btnMenu.Click += new System.EventHandler(this.btnMenu_Click);
             // 
             // lblNomPharmacie
             // 
@@ -171,6 +185,7 @@
             // btnMaJournee
             // 
             this.btnMaJournee.Text = "Ma journée";
+            this.btnMaJournee.Icone = "accueil";
             this.btnMaJournee.Size = new System.Drawing.Size(206, 32);
             this.btnMaJournee.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnMaJournee.Name = "btnMaJournee";
@@ -179,6 +194,7 @@
             // btnVentes
             // 
             this.btnVentes.Text = "Vendre";
+            this.btnVentes.Icone = "vendre";
             this.btnVentes.Size = new System.Drawing.Size(206, 32);
             this.btnVentes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnVentes.Name = "btnVentes";
@@ -187,6 +203,7 @@
             // BtnCaisse
             // 
             this.BtnCaisse.Text = "Caisse";
+            this.BtnCaisse.Icone = "caisse";
             this.BtnCaisse.Size = new System.Drawing.Size(206, 32);
             this.BtnCaisse.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.BtnCaisse.Name = "BtnCaisse";
@@ -195,6 +212,7 @@
             // btn_stock
             // 
             this.btn_stock.Text = "Stock";
+            this.btn_stock.Icone = "stock";
             this.btn_stock.Size = new System.Drawing.Size(206, 32);
             this.btn_stock.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btn_stock.Name = "btn_stock";
@@ -203,6 +221,7 @@
             // btnCredits
             // 
             this.btnCredits.Text = "Crédits clients";
+            this.btnCredits.Icone = "credits";
             this.btnCredits.Size = new System.Drawing.Size(206, 32);
             this.btnCredits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnCredits.Name = "btnCredits";
@@ -211,6 +230,7 @@
             // btnMutuelles
             // 
             this.btnMutuelles.Text = "Mutuelles";
+            this.btnMutuelles.Icone = "mutuelles";
             this.btnMutuelles.Size = new System.Drawing.Size(206, 32);
             this.btnMutuelles.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnMutuelles.Name = "btnMutuelles";
@@ -229,6 +249,7 @@
             // btnCommandes
             // 
             this.btnCommandes.Text = "Commandes";
+            this.btnCommandes.Icone = "commandes";
             this.btnCommandes.Size = new System.Drawing.Size(206, 32);
             this.btnCommandes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnCommandes.Name = "btnCommandes";
@@ -237,6 +258,7 @@
             // btnFournisseurs
             // 
             this.btnFournisseurs.Text = "Fournisseurs";
+            this.btnFournisseurs.Icone = "fournisseurs";
             this.btnFournisseurs.Size = new System.Drawing.Size(206, 32);
             this.btnFournisseurs.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnFournisseurs.Name = "btnFournisseurs";
@@ -245,6 +267,7 @@
             // btnProduits
             // 
             this.btnProduits.Text = "Catalogue produits";
+            this.btnProduits.Icone = "catalogue";
             this.btnProduits.Size = new System.Drawing.Size(206, 32);
             this.btnProduits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnProduits.Name = "btnProduits";
@@ -253,6 +276,7 @@
             // btnDepenses
             // 
             this.btnDepenses.Text = "Dépenses";
+            this.btnDepenses.Icone = "depenses";
             this.btnDepenses.Size = new System.Drawing.Size(206, 32);
             this.btnDepenses.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnDepenses.Name = "btnDepenses";
@@ -261,6 +285,7 @@
             // btnStatistiques
             // 
             this.btnStatistiques.Text = "Statistiques";
+            this.btnStatistiques.Icone = "statistiques";
             this.btnStatistiques.Size = new System.Drawing.Size(206, 32);
             this.btnStatistiques.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnStatistiques.Name = "btnStatistiques";
@@ -277,6 +302,7 @@
             // btnAdministration
             // 
             this.btnAdministration.Text = "Administration";
+            this.btnAdministration.Icone = "administration";
             this.btnAdministration.Size = new System.Drawing.Size(206, 32);
             this.btnAdministration.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnAdministration.Name = "btnAdministration";
@@ -325,6 +351,7 @@
             // btnDeconnexion
             // 
             this.btnDeconnexion.Text = "Se déconnecter";
+            this.btnDeconnexion.Icone = "deconnexion";
             this.btnDeconnexion.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnDeconnexion.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnDeconnexion.Name = "btnDeconnexion";
@@ -398,6 +425,7 @@
         private System.Windows.Forms.TableLayoutPanel tlpPrincipal;
         private System.Windows.Forms.Panel panelMenu;
         private System.Windows.Forms.TableLayoutPanel tlpMenu;
+        private Pharmacie2.views.Composants.BoutonMenu btnMenu;
         private System.Windows.Forms.Label lblNomPharmacie;
         private System.Windows.Forms.FlowLayoutPanel flpMenu;
         private System.Windows.Forms.Label lblSectionQuotidien;

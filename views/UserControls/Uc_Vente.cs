@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Pharmacie2.views.Composants;
+using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
-    public partial class Uc_Vente : UserControl
+    public partial class Uc_Vente : UserControl, IModeCompact
     {
         /// <summary>
         /// Déclenché après toute modification de vente (paiement, annulation, modification).
@@ -235,5 +236,12 @@ namespace Pharmacie2.views.UserControls
                     ChargerVentes();
             }
         }
+    
+        /// <summary>Mode compact : les colonnes secondaires sont masquées, l'essentiel reste visible.</summary>
+        public void DefinirCompact(bool compact)
+        {
+            ModeCompact.MasquerColonnes(dgvVentes, compact, "Tel", "Vendeur");
+        }
+
     }
 }

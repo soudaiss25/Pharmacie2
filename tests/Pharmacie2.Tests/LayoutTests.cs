@@ -143,7 +143,8 @@ public class LayoutTests
             else if (h.Ecran is UserControl uc)
             {
                 // L'écran doit tenir dans la zone au minimum garanti, sans défilement horizontal ni vertical
-                var zone = h.Fenetre.Controls["zoneContenu"]!;
+                var zone = EcranHote.Chercher(h.Fenetre, "panelContent")!;
+                // (la page défile verticalement en mode compact : seule la largeur est contraignante)
                 if (uc.Width > zone.ClientSize.Width + 1)
                     locales.Add($"{h.Ecran.Name} : largeur minimale {uc.Width / cfg.Zoom:0} px logiques > zone disponible {zone.ClientSize.Width / cfg.Zoom:0}");
                 if (uc.Height > zone.ClientSize.Height + 1)

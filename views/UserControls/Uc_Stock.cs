@@ -5,7 +5,7 @@ using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views.UserControls
 {
-    public partial class Uc_Stock : UserControl
+    public partial class Uc_Stock : UserControl, IModeCompact
     {
         private readonly CheckBox _chkArchives;
 
@@ -220,5 +220,12 @@ namespace Pharmacie2.views.UserControls
                 ChargerStock();
             }
         }
+    
+        /// <summary>Mode compact : les colonnes secondaires sont masquées, l'essentiel reste visible.</summary>
+        public void DefinirCompact(bool compact)
+        {
+            ModeCompact.MasquerColonnes(dgvStock, compact, "Type", "Fournisseur", "Seuil");
+        }
+
     }
 }

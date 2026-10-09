@@ -16,6 +16,7 @@ public sealed class Hote : IDisposable
 {
     public Form Fenetre = null!;
     public Control Ecran = null!;
+    public Pharmacie2.views.PageAccueil? Page;
     public bool Dialogue;
     public void Dispose()
     {
@@ -37,7 +38,9 @@ public static class EcranHote
     /// <summary>1280 × 640 logiques à 150 % (écran 1920 × 1080 avec barre des tâches), 1366 × 700 à 100 %, 1920 × 1040 à 100 %.</summary>
     public static readonly Config[] Matrice =
     {
-        new(1280, 640, 1.5f), new(1366, 700, 1.0f), new(1920, 1040, 1.0f)
+        new(1280, 640, 1.5f), new(1366, 700, 1.0f), new(1920, 1040, 1.0f),
+        // petits écrans (mode compact, largeur logique < 1200) : vieux PC et portable 1366 × 768 à 125 %
+        new(1024, 600, 1.0f), new(1093, 614, 1.25f)
     };
 
     public static Control Creer(Type t, LayoutSeed.Ids ids)
@@ -85,25 +88,19 @@ public static class EcranHote
 
         if (ecran is not Form form)
         {
-            var fen = new Form { StartPosition = FormStartPosition.Manual, Location = Point.Empty, FormBorderStyle = FormBorderStyle.None, AutoScaleMode = AutoScaleMode.None };
-            var zone = new Panel { Dock = DockStyle.Fill, Name = "zoneContenu" };
-            fen.Controls.Add(zone);
-            Hebergement.Heberger(zone, ecran);
-            Zoomer(fen, cfg.Zoom);
-            fen.MaximumSize = Grand;   // sans cela Windows limite la fenêtre à la taille de l'écran du poste de CI
-            fen.ClientSize = new Size(cfg.Phys(cfg.W - LargeurMenu), cfg.Phys(cfg.H));
-            hote.Fenetre = fen;
-            fen.Show();
+            // Un UserControl s'ouvre comme dans l'application : dans la page d'accueil (menu, zone de contenu défilante, mode compact)
+            var page = (Pharmacie2.views.PageAccueil)Creer(typeof(Pharmacie2.views.PageAccueil), ids);
+            page.Afficher((UserControl)ecran);
+            hote.Page = page;
+            ConfigurerFenetre(page, cfg);
+            hote.Fenetre = page;
+            page.Show();
+            page.WindowState = FormWindowState.Normal;
+            page.ClientSize = new Size(cfg.Phys(cfg.W), cfg.Phys(cfg.H));
         }
         else if (EstPage(type) || EstRedimensionnable(form))
         {
-            form.WindowState = FormWindowState.Normal;
-            form.StartPosition = FormStartPosition.Manual;
-            form.Location = Point.Empty;
-            form.MinimumSize = Size.Empty;
-            Zoomer(form, cfg.Zoom);
-            form.MaximumSize = Grand;
-            form.ClientSize = new Size(cfg.Phys(cfg.W), cfg.Phys(cfg.H));
+            ConfigurerFenetre(form, cfg);
             hote.Fenetre = form;
             form.Show();
             form.WindowState = FormWindowState.Normal;
@@ -121,6 +118,28 @@ public static class EcranHote
         hote.Fenetre.PerformLayout();
         Application.DoEvents();
         return hote;
+    }
+
+    private static void ConfigurerFenetre(Form form, Config cfg)
+    {
+        form.WindowState = FormWindowState.Normal;
+        form.StartPosition = FormStartPosition.Manual;
+        form.Location = Point.Empty;
+        form.MinimumSize = Size.Empty;
+        Zoomer(form, cfg.Zoom);
+        form.MaximumSize = Grand;   // sans cela Windows limite la fenêtre à la taille de l'écran du poste de CI
+        form.ClientSize = new Size(cfg.Phys(cfg.W), cfg.Phys(cfg.H));
+    }
+
+    public static Control? Chercher(Control racine, string nom)
+    {
+        foreach (Control c in racine.Controls)
+        {
+            if (c.Name == nom) return c;
+            var r = Chercher(c, nom);
+            if (r != null) return r;
+        }
+        return null;
     }
 
     /// <summary>Simule un zoom : polices, tailles, minimums, hauteurs de grilles multipliés par le facteur.</summary>
