@@ -46,11 +46,18 @@
             this.lblDescCopier = new System.Windows.Forms.Label();
             this.btnRestaurer = new System.Windows.Forms.Button();
             this.lblDescRestaurer = new System.Windows.Forms.Label();
+            this.lblSectionSecurite = new System.Windows.Forms.Label();
+            this.lblDelai = new System.Windows.Forms.Label();
+            this.flpDelai = new System.Windows.Forms.FlowLayoutPanel();
+            this.numDelaiVerrouillage = new System.Windows.Forms.NumericUpDown();
+            this.lblDelaiUnite = new System.Windows.Forms.Label();
             this.lblSectionAssistance = new System.Windows.Forms.Label();
             this.btnRapport = new System.Windows.Forms.Button();
             this.lblDescRapport = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.numDelaiVerrouillage)).BeginInit();
             this.tlpRoot.SuspendLayout();
             this.tlpActions.SuspendLayout();
+            this.flpDelai.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpRoot
@@ -83,7 +90,9 @@
             this.tlpActions.ColumnCount = 2;
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpActions.RowCount = 11;
+            this.tlpActions.RowCount = 13;
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -128,13 +137,20 @@
             this.btnRestaurer.TabIndex = 13;
             this.tlpActions.Controls.Add(this.lblDescRestaurer, 1, 8);
             this.lblDescRestaurer.TabIndex = 14;
-            this.tlpActions.Controls.Add(this.lblSectionAssistance, 0, 9);
+            this.tlpActions.Controls.Add(this.lblSectionSecurite, 0, 9);
+            this.tlpActions.SetColumnSpan(this.lblSectionSecurite, 2);
+            this.lblSectionSecurite.TabIndex = 15;
+            this.tlpActions.Controls.Add(this.lblDelai, 0, 10);
+            this.lblDelai.TabIndex = 16;
+            this.tlpActions.Controls.Add(this.flpDelai, 1, 10);
+            this.flpDelai.TabIndex = 17;
+            this.tlpActions.Controls.Add(this.lblSectionAssistance, 0, 11);
             this.tlpActions.SetColumnSpan(this.lblSectionAssistance, 2);
-            this.lblSectionAssistance.TabIndex = 15;
-            this.tlpActions.Controls.Add(this.btnRapport, 0, 10);
-            this.btnRapport.TabIndex = 16;
-            this.tlpActions.Controls.Add(this.lblDescRapport, 1, 10);
-            this.lblDescRapport.TabIndex = 17;
+            this.lblSectionAssistance.TabIndex = 18;
+            this.tlpActions.Controls.Add(this.btnRapport, 0, 12);
+            this.btnRapport.TabIndex = 19;
+            this.tlpActions.Controls.Add(this.lblDescRapport, 1, 12);
+            this.lblDescRapport.TabIndex = 20;
             this.tlpActions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpActions.AutoSize = true;
             this.tlpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -275,6 +291,53 @@
             this.lblDescRestaurer.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
             this.lblDescRestaurer.Name = "lblDescRestaurer";
             // 
+            // lblSectionSecurite
+            // 
+            this.lblSectionSecurite.Text = "Sécurité";
+            this.lblSectionSecurite.AutoSize = true;
+            this.lblSectionSecurite.Tag = "section";
+            this.lblSectionSecurite.Margin = new System.Windows.Forms.Padding(0, 14, 0, 4);
+            this.lblSectionSecurite.Name = "lblSectionSecurite";
+            // 
+            // lblDelai
+            // 
+            this.lblDelai.Text = "Verrouillage automatique après";
+            this.lblDelai.AutoSize = true;
+            this.lblDelai.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDelai.Margin = new System.Windows.Forms.Padding(0, 6, 16, 6);
+            this.lblDelai.Name = "lblDelai";
+            // 
+            // flpDelai
+            // 
+            this.flpDelai.Controls.Add(this.numDelaiVerrouillage);
+            this.numDelaiVerrouillage.TabIndex = 0;
+            this.flpDelai.Controls.Add(this.lblDelaiUnite);
+            this.lblDelaiUnite.TabIndex = 1;
+            this.flpDelai.AutoSize = true;
+            this.flpDelai.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpDelai.WrapContents = false;
+            this.flpDelai.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpDelai.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.flpDelai.Name = "flpDelai";
+            // 
+            // numDelaiVerrouillage
+            // 
+            this.numDelaiVerrouillage.Width = 80;
+            this.numDelaiVerrouillage.Minimum = new decimal(new int[] { 0, 0, 0, 0});
+            this.numDelaiVerrouillage.Maximum = new decimal(new int[] { 60, 0, 0, 0});
+            this.numDelaiVerrouillage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numDelaiVerrouillage.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.numDelaiVerrouillage.Name = "numDelaiVerrouillage";
+            this.numDelaiVerrouillage.ValueChanged += new System.EventHandler(this.numDelaiVerrouillage_ValueChanged);
+            // 
+            // lblDelaiUnite
+            // 
+            this.lblDelaiUnite.Text = "minutes sans toucher au clavier ni à la souris (0 = jamais). Ctrl+L verrouille tout de suite.";
+            this.lblDelaiUnite.AutoSize = true;
+            this.lblDelaiUnite.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDelaiUnite.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.lblDelaiUnite.Name = "lblDelaiUnite";
+            // 
             // lblSectionAssistance
             // 
             this.lblSectionAssistance.Text = "Assistance";
@@ -313,10 +376,13 @@
             this.AutoScroll = true;
             this.Name = "Uc_Administration";
             this.ResumeLayout(false);
+            this.flpDelai.ResumeLayout(false);
+            this.flpDelai.PerformLayout();
             this.tlpActions.ResumeLayout(false);
             this.tlpActions.PerformLayout();
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numDelaiVerrouillage)).EndInit();
 
         }
 
@@ -340,6 +406,11 @@
         private System.Windows.Forms.Label lblDescCopier;
         private System.Windows.Forms.Button btnRestaurer;
         private System.Windows.Forms.Label lblDescRestaurer;
+        private System.Windows.Forms.Label lblSectionSecurite;
+        private System.Windows.Forms.Label lblDelai;
+        private System.Windows.Forms.FlowLayoutPanel flpDelai;
+        private System.Windows.Forms.NumericUpDown numDelaiVerrouillage;
+        private System.Windows.Forms.Label lblDelaiUnite;
         private System.Windows.Forms.Label lblSectionAssistance;
         private System.Windows.Forms.Button btnRapport;
         private System.Windows.Forms.Label lblDescRapport;

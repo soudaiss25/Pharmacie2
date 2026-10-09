@@ -1,4 +1,4 @@
-"""
+﻿"""
 Génère les icônes monochromes (blanc sur transparent, 48 x 48) du menu dans resources/icones.
 Usage : python tools/generer_icones.py   (nécessite Pillow). Hors application : les PNG générés sont inclus en ressources.
 """
@@ -147,6 +147,13 @@ ligne(d, 20, 6, 8, 6, 8, 42, 20, 42)
 ligne(d, 18, 24, 42, 24)
 ligne(d, 33, 15, 42, 24, 33, 33)
 enregistrer(im, 'deconnexion')
+
+# verrouiller : cadenas
+im, d = nouvelle()
+rect(d, 11, 21, 37, 42)
+ligne(d, 16, 21, 16, 14, 24, 6, 32, 14, 32, 21)
+cercle(d, 24, 31, 2.6, plein=True)
+enregistrer(im, 'verrouiller')
 
 # menu : trois barres
 im, d = nouvelle()

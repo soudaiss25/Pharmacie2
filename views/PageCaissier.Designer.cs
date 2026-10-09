@@ -34,6 +34,7 @@
             this.lblTitre = new System.Windows.Forms.Label();
             this.lblBienvenue = new System.Windows.Forms.Label();
             this.btnDeconnexion = new System.Windows.Forms.Button();
+            this.btnVerrouiller = new System.Windows.Forms.Button();
             this.bandeau = new Pharmacie2.views.Composants.BandeauNotification();
             this.tlpKpi = new System.Windows.Forms.TableLayoutPanel();
             this.carteEncaisse = new Pharmacie2.views.Composants.CarteKpi();
@@ -104,15 +105,18 @@
             // 
             // tlpEntete
             // 
-            this.tlpEntete.ColumnCount = 2;
+            this.tlpEntete.ColumnCount = 3;
             this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpEntete.RowCount = 1;
             this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpEntete.Controls.Add(this.tlpTitres, 0, 0);
             this.tlpTitres.TabIndex = 0;
-            this.tlpEntete.Controls.Add(this.btnDeconnexion, 1, 0);
-            this.btnDeconnexion.TabIndex = 1;
+            this.tlpEntete.Controls.Add(this.btnVerrouiller, 1, 0);
+            this.btnVerrouiller.TabIndex = 1;
+            this.tlpEntete.Controls.Add(this.btnDeconnexion, 2, 0);
+            this.btnDeconnexion.TabIndex = 2;
             this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.tlpEntete.AutoSize = true;
@@ -153,8 +157,15 @@
             // 
             // btnDeconnexion
             // 
-            this.btnDeconnexion.Text = "Déconnexion";
-            this.btnDeconnexion.Tag = "danger";
+            this.btnVerrouiller.Text = "Verrouiller (Ctrl+L)";
+            this.btnVerrouiller.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnVerrouiller.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnVerrouiller.Name = "btnVerrouiller";
+            this.btnVerrouiller.Click += new System.EventHandler(this.btnVerrouiller_Click);
+            //
+            // btnDeconnexion
+            //
+            this.btnDeconnexion.Text = "Se déconnecter";
             this.btnDeconnexion.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnDeconnexion.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.btnDeconnexion.Name = "btnDeconnexion";
@@ -472,6 +483,7 @@
         private System.Windows.Forms.Label lblTitre;
         private System.Windows.Forms.Label lblBienvenue;
         private System.Windows.Forms.Button btnDeconnexion;
+        private System.Windows.Forms.Button btnVerrouiller;
         private Pharmacie2.views.Composants.BandeauNotification bandeau;
         private System.Windows.Forms.TableLayoutPanel tlpKpi;
         private Pharmacie2.views.Composants.CarteKpi carteEncaisse;

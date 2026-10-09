@@ -161,9 +161,25 @@ namespace Pharmacie2.views
 
         // ── Raccourcis clavier ────────────────────────────────────────────
 
+        /// <summary>Vrai si des produits sont dans le panier sans que la vente soit validée.</summary>
+        public bool AVenteEnCours => _lignes.Count > 0 && _derniereVenteId < 0;
+
+        /// <summary>Abandonne la vente en cours (changement d'utilisateur après verrouillage) : le panier est vidé et la fenêtre se ferme.</summary>
+        public void AbandonnerEtFermer()
+        {
+            _lignes.Clear();
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
         private void FormVente_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F3)
+            if (e.Control && e.KeyCode == Keys.L)
+            {
+                e.Handled = true;
+                Pharmacie2.views.Composants.VerrouillageAuto.Courant?.VerrouillerMaintenant();
+            }
+            else if (e.KeyCode == Keys.F3)
             {
                 e.Handled = true;
                 AjouterProduit();

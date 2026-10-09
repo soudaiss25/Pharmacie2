@@ -5,5 +5,8 @@
     {
         /// <summary>true si la page a été fermée par « Déconnexion » (et non par la croix).</summary>
         bool DeconnexionDemandee { get; }
+
+        /// <summary>Déconnecte l'utilisateur (comme le bouton « Se déconnecter ») : la fenêtre de connexion se ré-affiche.</summary>
+        void Deconnecter();
     }
 }

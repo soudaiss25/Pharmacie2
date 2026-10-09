@@ -52,6 +52,7 @@
             this.tlpBas = new System.Windows.Forms.TableLayoutPanel();
             this.traitMenu = new System.Windows.Forms.Panel();
             this.lblUtilisateur = new System.Windows.Forms.Label();
+            this.btnVerrouiller = new Pharmacie2.views.Composants.BoutonMenu();
             this.btnDeconnexion = new Pharmacie2.views.Composants.BoutonMenu();
             this.tlpContenu = new System.Windows.Forms.TableLayoutPanel();
             this.bandeau = new Pharmacie2.views.Composants.BandeauNotification();
@@ -312,7 +313,8 @@
             // 
             this.tlpBas.ColumnCount = 1;
             this.tlpBas.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpBas.RowCount = 3;
+            this.tlpBas.RowCount = 4;
+            this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -320,8 +322,10 @@
             this.traitMenu.TabIndex = 0;
             this.tlpBas.Controls.Add(this.lblUtilisateur, 0, 1);
             this.lblUtilisateur.TabIndex = 1;
-            this.tlpBas.Controls.Add(this.btnDeconnexion, 0, 2);
-            this.btnDeconnexion.TabIndex = 2;
+            this.tlpBas.Controls.Add(this.btnVerrouiller, 0, 2);
+            this.btnVerrouiller.TabIndex = 2;
+            this.tlpBas.Controls.Add(this.btnDeconnexion, 0, 3);
+            this.btnDeconnexion.TabIndex = 3;
             this.tlpBas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBas.AutoSize = true;
             this.tlpBas.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -347,6 +351,15 @@
             this.lblUtilisateur.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblUtilisateur.Margin = new System.Windows.Forms.Padding(12, 0, 8, 4);
             this.lblUtilisateur.Name = "lblUtilisateur";
+            // 
+            // btnVerrouiller
+            // 
+            this.btnVerrouiller.Text = "Verrouiller (Ctrl+L)";
+            this.btnVerrouiller.Icone = "verrouiller";
+            this.btnVerrouiller.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnVerrouiller.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnVerrouiller.Name = "btnVerrouiller";
+            this.btnVerrouiller.Click += new System.EventHandler(this.btnVerrouiller_Click);
             // 
             // btnDeconnexion
             // 
@@ -446,6 +459,7 @@
         private System.Windows.Forms.TableLayoutPanel tlpBas;
         private System.Windows.Forms.Panel traitMenu;
         private System.Windows.Forms.Label lblUtilisateur;
+        private Pharmacie2.views.Composants.BoutonMenu btnVerrouiller;
         private Pharmacie2.views.Composants.BoutonMenu btnDeconnexion;
         private System.Windows.Forms.TableLayoutPanel tlpContenu;
         private Pharmacie2.views.Composants.BandeauNotification bandeau;

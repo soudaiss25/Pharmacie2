@@ -14,6 +14,7 @@ namespace Pharmacie2.views
         private bool _menuDeplie;
         private Panel? _reserveMenu;
         private VoileMenu? _voile;
+        private VerrouillageAuto? _verrou;
         private readonly ToolTip _infobulles = new ToolTip();
 
         public bool DeconnexionDemandee { get; private set; }
@@ -25,6 +26,7 @@ namespace Pharmacie2.views
             Theme.Appliquer(this);
 
             Text = AppInfo.NomLogiciel;
+            _verrou = new VerrouillageAuto(this, this);   // verrouillage après inactivité et Ctrl+L
             lblNomPharmacie.Text = AppInfo.NomPharmacie;
             lblUtilisateur.Text = $"{user.Prenom} {user.Nom} ({user.Role})";
             BandeauNotification.Courant = bandeau;
@@ -63,7 +65,7 @@ namespace Pharmacie2.views
         }
 
         private IEnumerable<BoutonMenu> BoutonsMenu
-            => flpMenu.Controls.OfType<BoutonMenu>().Concat(new[] { btnDeconnexion, btnMenu });
+            => flpMenu.Controls.OfType<BoutonMenu>().Concat(new[] { btnVerrouiller, btnDeconnexion, btnMenu });
 
         /// <summary>Menu large (icône + libellé) ou réduit à une colonne d'icônes ; déplié par-dessus le contenu au clic sur le bouton Menu.</summary>
         private void AppliquerPresentationMenu()
@@ -250,7 +252,12 @@ namespace Pharmacie2.views
 
         private void PageAccueil_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape && _menuDeplie)
+            if (e.Control && e.KeyCode == Keys.L)
+            {
+                e.Handled = true;
+                _verrou?.VerrouillerMaintenant();
+            }
+            else if (e.KeyCode == Keys.Escape && _menuDeplie)
             {
                 e.Handled = true;
                 BasculerMenu();
@@ -303,7 +310,11 @@ namespace Pharmacie2.views
             }
         }
 
-        private void btnDeconnexion_Click(object sender, EventArgs e)
+        private void btnDeconnexion_Click(object sender, EventArgs e) => Deconnecter();
+
+        private void btnVerrouiller_Click(object sender, EventArgs e) => _verrou?.VerrouillerMaintenant();
+
+        public void Deconnecter()
         {
             DeconnexionDemandee = true;
             Close();   // Form1 (la fenêtre de connexion, unique) se ré-affiche : pas de Application.Exit

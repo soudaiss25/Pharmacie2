@@ -14,6 +14,7 @@ namespace Pharmacie2.views.UserControls
         {
             InitializeComponent();
             Theme.Appliquer(this);
+            numDelaiVerrouillage.Value = Math.Min(60, Math.Max(0, ParametresApp.Actuels.DelaiVerrouillageMinutes));
             ActualiserEtatExterne();
         }
 
@@ -116,6 +117,11 @@ namespace Pharmacie2.views.UserControls
                                 "Rien n'est perdu : une nouvelle tentative aura lieu au prochain démarrage.",
                     "Sauvegarde hors du PC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
+
+        // ── Verrouillage automatique ──────────────────────────────────────
+
+        private void numDelaiVerrouillage_ValueChanged(object sender, EventArgs e)
+            => ParametresApp.Modifier(p => p.DelaiVerrouillageMinutes = (int)numDelaiVerrouillage.Value);
 
         // ── Rapport pour le développeur ───────────────────────────────────
 

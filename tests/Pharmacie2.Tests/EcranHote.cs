@@ -58,6 +58,7 @@ public static class EcranHote
             case "FormPaiements": return new Pharmacie2.views.FormPaiements(ids.Vente);
             case "FormPeriodeExportMutuelle": return new Pharmacie2.views.FormPeriodeExportMutuelle("Entreprise Moheli");
             case "FormReceptionPartielle": return new Pharmacie2.views.FormReceptionPartielle(ids.Commande);
+            case "FormVerrouillage": return new Pharmacie2.views.FormVerrouillage(SessionUtilisateur.Courant);
             case "FormPhraseSecrete": return new Pharmacie2.views.FormPhraseSecrete(true);
             case "FormReinitialisationMdp": return new Pharmacie2.views.FormReinitialisationMdp("admin");
             case "FormSessionCaisse": return new Pharmacie2.views.FormSessionCaisse(ids.Caissier);

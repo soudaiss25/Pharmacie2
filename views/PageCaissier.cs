@@ -12,6 +12,7 @@ namespace Pharmacie2.views
         private readonly User _user;
 
         public bool DeconnexionDemandee { get; private set; }
+        private Pharmacie2.views.Composants.VerrouillageAuto? _verrou;
 
         // ─── Constructeur ────────────────────────────────────────────────
         public PageCaissier(User user)
@@ -20,6 +21,7 @@ namespace Pharmacie2.views
             InitializeComponent();
             Pharmacie2.views.Composants.ModeCompact.CartesAdaptatives(tlpKpi);
             Theme.Appliquer(this);
+            _verrou = new Pharmacie2.views.Composants.VerrouillageAuto(this, this);
 
             Text = AppInfo.Titre("Caisse");
             BandeauNotification.Courant = bandeau;
@@ -244,7 +246,12 @@ namespace Pharmacie2.views
 
         private void PageCaissier_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F2)
+            if (e.Control && e.KeyCode == Keys.L)
+            {
+                e.Handled = true;
+                _verrou?.VerrouillerMaintenant();
+            }
+            else if (e.KeyCode == Keys.F2)
             {
                 e.Handled = true;
                 btnNouvelleVente_Click(sender, EventArgs.Empty);
@@ -307,7 +314,11 @@ namespace Pharmacie2.views
             ChargerVentesSession();
         }
 
-        private void btnDeconnexion_Click(object sender, EventArgs e)
+        private void btnDeconnexion_Click(object sender, EventArgs e) => Deconnecter();
+
+        private void btnVerrouiller_Click(object sender, EventArgs e) => _verrou?.VerrouillerMaintenant();
+
+        public void Deconnecter()
         {
             DeconnexionDemandee = true;
             Close();   // Form1 (la fenêtre de connexion, unique) se ré-affiche : pas de Application.Exit
