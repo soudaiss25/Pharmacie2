@@ -115,6 +115,8 @@
             this.btnDeconnexion.TabIndex = 1;
             this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpEntete.Name = "tlpEntete";
             // 
             // tlpTitres
@@ -130,6 +132,8 @@
             this.lblBienvenue.TabIndex = 1;
             this.tlpTitres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpTitres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpTitres.AutoSize = true;
+            this.tlpTitres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpTitres.Name = "tlpTitres";
             // 
             // lblTitre
@@ -178,6 +182,8 @@
             this.carteReste.TabIndex = 2;
             this.tlpKpi.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKpi.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpKpi.AutoSize = true;
+            this.tlpKpi.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpKpi.Name = "tlpKpi";
             // 
             // carteEncaisse

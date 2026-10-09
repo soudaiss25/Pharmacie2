@@ -300,6 +300,8 @@
             this.cardCheque.TabIndex = 5;
             this.pnlCartes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCartes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.pnlCartes.AutoSize = true;
+            this.pnlCartes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.pnlCartes.Name = "pnlCartes";
             // 
             // cardVentes

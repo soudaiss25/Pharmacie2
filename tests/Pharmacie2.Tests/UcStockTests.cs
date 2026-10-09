@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Pharmacie2.views.UserControls;
@@ -55,6 +55,27 @@ public class UcStockTests
             // état affiché
             uc.Filtrer("Tous");
             uc.Filtrer("Tous");
+        });
+    }
+
+    [Fact]
+    public void Taper_un_nom_dans_la_recherche_filtre_la_grille()
+    {
+        Preparer();
+        UiHelper.EnSta(() =>
+        {
+            using var uc = new Uc_Stock();
+            var champ = UiHelper.Champ<TextBox>(uc, "txtSearchProduit");
+            Assert.True(Noms(uc).Count > 3);
+
+            champ.Text = "bientôt";
+            Assert.Equal(new[] { "Zéro bientôt" }, Noms(uc));
+
+            champ.Text = "dolip";   // insensible à la casse
+            Assert.Equal(new[] { "Doliprane 500 mg" }, Noms(uc));
+
+            champ.Text = "";
+            Assert.True(Noms(uc).Count > 3);
         });
     }
 

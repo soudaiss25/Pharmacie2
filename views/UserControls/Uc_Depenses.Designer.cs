@@ -314,6 +314,8 @@
             this.pnlGauche.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.pnlGauche.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.pnlGauche.Tag = "carte";
+            this.pnlGauche.AutoSize = true;
+            this.pnlGauche.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.pnlGauche.Name = "pnlGauche";
             // 
             // lblRevTitre
@@ -471,6 +473,8 @@
             this.pnlDroite.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.pnlDroite.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.pnlDroite.Tag = "carte";
+            this.pnlDroite.AutoSize = true;
+            this.pnlDroite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.pnlDroite.Name = "pnlDroite";
             // 
             // lblChargeTitre
@@ -613,6 +617,8 @@
             this.pnlResultat.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.pnlResultat.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.pnlResultat.Tag = "carte";
+            this.pnlResultat.AutoSize = true;
+            this.pnlResultat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.pnlResultat.Name = "pnlResultat";
             // 
             // lblBeneficeLabel

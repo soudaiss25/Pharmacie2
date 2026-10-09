@@ -253,6 +253,8 @@
             this.carteARecuperer.TabIndex = 4;
             this.tlpKpi.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKpi.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpKpi.AutoSize = true;
+            this.tlpKpi.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpKpi.Name = "tlpKpi";
             // 
             // carteCA

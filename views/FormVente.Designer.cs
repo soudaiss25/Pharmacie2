@@ -131,6 +131,8 @@
             this.lblVendeur.TabIndex = 1;
             this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpEntete.Name = "tlpEntete";
             // 
             // lblTitre
