@@ -1,4 +1,4 @@
-# Check-list de tests manuels (phases 3 à 6)
+﻿# Check-list de tests manuels (phases 3 à 6)
 
 À faire dans Visual Studio (F5) **sur une copie de la base**, jamais sur la base de la pharmacie.
 Copie de travail : fermer l'application, copier `%LOCALAPPDATA%\Pharmacie2Data\PharmacieDB.sqlite` ailleurs,
@@ -234,3 +234,110 @@ Préparer : deux mutuelles (A « Aaa » 30 %, Z « Zzz » 50 %, A première dans
 
 ## 26. Comptes archivés
 - [ ] Un compte archivé qui saisit son bon mot de passe : « Ce compte a été archivé. Contactez un administrateur. »
+
+---
+
+# Phases 9 à 11 : annulations, libellé Mvola, erreurs, nettoyage
+
+## 27. Ventes annulées et ventes actives (phase 9)
+- [ ] Avant la mise à jour, noter dans une copie de la base : nombre de ventes, de lignes de vente, de paiements.
+- [ ] Lancer la nouvelle version : aucun message d'erreur, les mêmes nombres.
+- [ ] Une vente **active** (non annulée) ne montre ni date d'annulation ni motif dans **Détail de la vente**.
+- [ ] Une vente **annulée** garde sa date d'annulation et son motif.
+- [ ] Annuler une vente avec un motif : la date et le motif s'affichent ; le stock est remis.
+
+## 28. Libellé « Mvola » (phase 9)
+- [ ] Sur une base où d'anciennes ventes portaient « Mvolo » : après la mise à jour, **Statistiques → argent reçu par moyen de paiement** montre **une seule** ligne « Mvola ».
+- [ ] Le choix du moyen de paiement dans une nouvelle vente propose « Mvola » (et plus « Mvolo »).
+
+## 29. Messages d'erreur et journal (phase 10)
+- [ ] Provoquer une erreur (par exemple retirer le droit d'écriture sur le dossier de la base) : un message **simple en français** s'affiche, sans texte technique, et l'application ne se ferme pas brutalement.
+- [ ] Le dossier `Logs` contient le détail technique (jamais un mot de passe ni une clé de secours).
+
+---
+
+# Refonte de l'interface (partie B)
+
+Pour **chaque écran** listé en §30, faire les contrôles suivants :
+- **A.** Écran 1366 × 768 à 100 % : rien n'est coupé, aucun texte ne se chevauche, une barre de défilement verticale n'apparaît que si l'écran est vraiment trop petit.
+- **B.** Écran 1920 × 1080 à 100 % : les tableaux et graphiques occupent la place disponible, les champs de saisie ne s'étirent pas sur toute la largeur.
+- **C.** Mêmes contrôles à **125 %** d'échelle Windows (Paramètres → Affichage → Échelle), après avoir fermé puis rouvert le logiciel.
+- **D.** Redimensionner la fenêtre à la main (agrandir, réduire jusqu'au minimum) : tout suit ; revenir à « plein écran » : même rendu qu'au départ.
+- **E.** Touche **Tab** : le curseur passe de champ en champ dans l'ordre de lecture (haut vers bas, gauche vers droite). **Entrée** valide, **Échap** ferme les petites fenêtres.
+
+## 30. Liste des écrans à contrôler
+- [ ] Connexion (la fenêtre reste centrée, le logo manquant ne bloque pas l'ouverture : renommer `logo.png` pour le vérifier)
+- [ ] Création du premier administrateur (base neuve) / Clé de secours / Mot de passe oublié
+- [ ] Page d'accueil (menu à gauche, page active surlignée) et **Ma journée**
+- [ ] Ventes, Nouvelle vente, Choix d'un produit, Modification d'une vente, Détail d'une vente, Annulation, Paiements
+- [ ] Caisse (rapport + sessions), ouverture/clôture de session, page du Caissier
+- [ ] Stock, Produits, Fiche produit
+- [ ] Crédits, Mutuelles (+ fiche mutuelle, période d'export, référence de paiement)
+- [ ] Commandes, Commande d'un produit, Commandes d'un fournisseur, Réception de commande
+- [ ] Fournisseurs (+ fiche fournisseur)
+- [ ] Dépenses (+ nouvelle dépense)
+- [ ] Statistiques
+- [ ] Utilisateurs
+
+## 31. Fenêtres de dialogue
+- [ ] À 1366 × 768, aucune fenêtre de dialogue ne dépasse 90 % de la hauteur de l'écran : tous les boutons sont visibles sans défilement.
+- [ ] Chaque dialogue s'ouvre centré par rapport à la fenêtre principale (ou à l'écran).
+- [ ] Les montants s'affichent partout sous la forme « 12 500 KMF » (espace entre les milliers), alignés à droite dans les tableaux.
+
+## 32. Raccourcis clavier
+- [ ] **F2** (page d'accueil et page Caissier) ouvre une nouvelle vente.
+- [ ] Dans la vente : **F3** place le curseur dans la recherche de produit, **F9** valide la vente, **Suppr** retire la ligne sélectionnée du panier, **Échap** ferme (avec confirmation si le panier n'est pas vide).
+- [ ] **Entrée** dans un formulaire valide le bouton principal ; **Échap** annule.
+- [ ] Les raccourcis sont rappelés dans le texte des boutons ou dans une info-bulle.
+
+## 33. Navigation et bandeau de confirmation
+- [ ] Le bouton du menu de la page ouverte est surligné ; en changer déplace le surlignage.
+- [ ] Après une action réussie (enregistrer un produit, un fournisseur, une dépense, une réception…), un **bandeau vert** apparaît en haut du contenu pendant environ 4 secondes puis disparaît seul, sans fenêtre à fermer.
+- [ ] Les erreurs, elles, restent des fenêtres de message qu'il faut fermer.
+- [ ] Fermer la fenêtre principale par la croix quitte le logiciel ; « Déconnexion » ramène à la **même** fenêtre de connexion (pas de seconde fenêtre).
+
+## 34. Ma journée
+- [ ] Quatre cartes : Encaissé aujourd'hui, Ventes, Argent à récupérer, Bénéfice (avec flèche de tendance et comparaison à la veille).
+- [ ] Faire une vente : la carte « Encaissé » et le graphique des 7 derniers jours se mettent à jour **sans rouvrir** la page.
+- [ ] Liste « À faire maintenant », dans cet ordre : produits **périmés** (seulement s'il en reste en stock), **ruptures**, **péremption proche** (moins de 30 jours), **stocks à vérifier**, **mutuelles en retard** (plus de 30 jours).
+- [ ] Cliquer sur une ligne de la liste ouvre l'écran concerné **déjà filtré** (Stock filtré sur les périmés, sur les ruptures, etc. ; Mutuelles filtrées sur celles en retard).
+- [ ] Un produit **archivé** n'apparaît jamais dans cette liste.
+- [ ] Journée sans vente : les cartes affichent 0 KMF et « — » pour les comparaisons, sans erreur.
+
+## 35. Statistiques
+- [ ] Choisir une période : les cartes (CA, bénéfice, ventes, à solder, à récupérer) se mettent à jour et comparent à la période précédente.
+- [ ] Les produits **périmés** et **à surveiller** sont en tête de page.
+- [ ] Argent reçu par moyen de paiement : la somme des lignes correspond au chiffre encaissé.
+- [ ] Vendre un produit **à l'unité** (plaquette) : le chiffre d'affaires et le bénéfice utilisent le prix de la plaquette, pas celui de la boîte.
+- [ ] Export PDF : mise en page propre, montants au format « 12 500 KMF ».
+- [ ] Export Excel : le fichier s'ouvre dans Excel **sans message d'avertissement** (vrai fichier .xlsx).
+
+## 36. Caisse et page du Caissier
+- [ ] Page du Caissier : « Encaissé », « Ventes » et « Reste à encaisser » correspondent à ce qui a été fait depuis l'ouverture de **sa** session.
+- [ ] Caisse (Administrateur) : le bloc « Ce qui doit être dans le tiroir » est à gauche, les tableaux à droite ; à 1366 × 768 le rapport défile verticalement si nécessaire, à 1920 × 1080 tout est visible sans défilement.
+- [ ] Paiement par chèque, carte, Mvola ou Huri Money : le montant total est enregistré (jamais 0).
+- [ ] Paiement d'un crédit : impossible de saisir plus que le reste dû par le patient.
+- [ ] Vente « mutuelle » sans mutuelle choisie : refusée avec un message clair.
+
+## 37. Commandes fournisseurs et réception partielle
+- [ ] Commande « En attente » de 10 boîtes. **Réception partielle…** : la grille propose Produit / Commandé / Déjà reçu / Reste à recevoir / **Reçu maintenant** (préremplie avec le reste).
+- [ ] Saisir 4 et **Valider la réception** : bandeau vert, stock + 4 boîtes (converti en unités), statut « Reçu partiellement ».
+- [ ] Rouvrir : Déjà reçu = 4, Reste = 6. Saisir 7 : la cellule est refusée (« Il ne reste que 6 boîte(s)… »). Saisir lettres ou nombre négatif : refusé.
+- [ ] **Tout recevoir** (dans la grille) remplit toutes les cellules avec le reste ; valider termine la commande (statut « Reçu »), un deuxième essai est impossible.
+- [ ] Commande « Reçu partiellement » d'avant la mise à jour (aucune quantité reçue connue) : avertissement « Quantité déjà reçue inconnue, vérifiez avant de réceptionner. » ; le bouton « Tout recevoir » de l'écran est grisé ; dans la grille, tout est à 0 et « Tout recevoir » est grisé : il faut saisir ligne par ligne.
+- [ ] Mêmes contrôles depuis **Commandes** (menu) et depuis **Fournisseurs → Voir ses commandes**.
+- [ ] Annuler une commande demande confirmation ; une commande reçue ne peut plus être annulée.
+
+## 38. Mutuelles
+- [ ] Nouvelle mutuelle : le taux se règle avec un champ numérique 0 à 100 (impossible de saisir du texte).
+- [ ] Archiver une mutuelle : case « Voir les archivées » ; la mutuelle archivée apparaît en gris avec « (archivée) ».
+- [ ] Régler tout / Régler la sélection : une petite fenêtre demande la référence (facultative), puis bandeau vert avec le montant.
+- [ ] Export Excel d'une mutuelle : montants au format « 12 500 KMF », dates lisibles.
+
+## 39. Utilisateurs
+- [ ] La fiche est à droite de la liste ; le mot de passe n'est jamais affiché ; champ vide à la modification = mot de passe inchangé.
+- [ ] Identifiant déjà pris : « Cet identifiant est déjà utilisé. »
+- [ ] Les rôles sont colorés (administrateur vert, pharmacien gris-bleu, caissier orange).
+
+## 40. Rapport de fin à vérifier avec l'équipe
+- [ ] Parcourir une journée complète type (ouverture de caisse, 5 ventes dont 1 mutuelle et 1 crédit, une commande reçue partiellement, clôture) sur le PC de la pharmacie, en gardant la sauvegarde automatique de la veille.
