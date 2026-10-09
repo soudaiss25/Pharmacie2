@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 
@@ -147,7 +147,7 @@ namespace Pharmacie2.views.UserControls
                     lblMarge.ForeColor = margeNette >= 20 ? Theme.SuccesTexte : margeNette >= 0 ? Theme.AttentionTexte : Theme.UrgentTexte;
 
                     lblPeriodeMensuel.Text =
-                        $"{((MoisItem)cbMois.SelectedItem).Nom} {annee} — {ventes.Count} vente(s), {depenses.Count} dépense(s) saisie(s)";
+                        $"{((MoisItem)cbMois.SelectedItem).Nom} {annee} — {Format.Compte(ventes.Count, "vente")}, {Format.Compte(depenses.Count, "dépense")} saisie{(depenses.Count > 1 ? "s" : "")}";
                 }
             }
             catch (Exception ex)
@@ -283,7 +283,7 @@ namespace Pharmacie2.views.UserControls
                         Utilisateur = d.User != null ? $"{d.User.Prenom} {d.User.Nom}" : "—"
                     }).ToList();
 
-                    lblTotalHistorique.Text = $"Total affiché : {Format.Montant(depenses.Sum(d => d.Montant))} — {depenses.Count} dépense(s)";
+                    lblTotalHistorique.Text = $"Total affiché : {Format.Montant(depenses.Sum(d => d.Montant))} — {Format.Compte(depenses.Count, "dépense")}";
                 }
             }
             catch (Exception ex)

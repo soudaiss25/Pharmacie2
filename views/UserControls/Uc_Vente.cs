@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 
@@ -74,7 +74,7 @@ namespace Pharmacie2.views.UserControls
                     Numero = v.numeroVente,
                     Client = $"{v.PrenomClient} {v.NomClient}".Trim(),
                     Tel = string.IsNullOrWhiteSpace(v.TelephoneClient) ? "—" : v.TelephoneClient,
-                    Date = v.DateVente.ToString("dd/MM/yyyy HH:mm"),
+                    Date = v.DateVente,
                     Total = v.MontantTotal,
                     Verse = v.MontantVerse,
                     Restant = v.MontantRestant,
@@ -89,7 +89,7 @@ namespace Pharmacie2.views.UserControls
                 // Argent à récupérer : crédits clients + part de mutuelle non réglée
                 decimal aRecuperer = actives.Sum(v => v.MontantRestant);
 
-                lblNombreVentes.Text = $"{ventes.Count} vente(s)";
+                lblNombreVentes.Text = $"{Format.Compte(ventes.Count, "vente")}";
                 lblTotalVentes.Text = $"Ventes : {Format.Montant(totalCA)}";
                 lblVentesCredit.Text = $"Argent à récupérer : {Format.Montant(aRecuperer)}";
                 lblVentesCredit.ForeColor = aRecuperer > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
@@ -101,6 +101,12 @@ namespace Pharmacie2.views.UserControls
             if (e.RowIndex < 0 || e.RowIndex >= dgvVentes.Rows.Count) return;
             var ligne = dgvVentes.Rows[e.RowIndex];
             string statut = ligne.Cells["Statut"].Value?.ToString() ?? "";
+
+            if (dgvVentes.Columns[e.ColumnIndex].Name == "Date" && e.Value is DateTime date)
+            {
+                e.Value = Theme.DateAdaptee(date, dgvVentes.Columns[e.ColumnIndex], dgvVentes.DefaultCellStyle.Font ?? dgvVentes.Font);
+                e.FormattingApplied = true;
+            }
 
             if (statut == "Annulée")
             {

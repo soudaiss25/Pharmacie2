@@ -45,7 +45,7 @@
             this.lblMontantTotal = new System.Windows.Forms.Label();
             this.panelDroit = new System.Windows.Forms.Panel();
             this.tlpDroite = new System.Windows.Forms.TableLayoutPanel();
-            this.lblClient = new System.Windows.Forms.Label();
+            this.lblClient = new System.Windows.Forms.Button();
             this.tlpClient = new System.Windows.Forms.TableLayoutPanel();
             this.lblNom = new System.Windows.Forms.Label();
             this.txtNom = new System.Windows.Forms.TextBox();
@@ -327,9 +327,12 @@
             // 
             // lblClient
             // 
-            this.lblClient.Text = "Client";
+            this.lblClient.Text = "Client (facultatif)  +";
             this.lblClient.AutoSize = true;
-            this.lblClient.Tag = "section";
+            this.lblClient.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.lblClient.Tag = "entete";
+            this.lblClient.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblClient.Click += new System.EventHandler(this.lblClient_Click);
             this.lblClient.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lblClient.Name = "lblClient";
             // 
@@ -375,8 +378,7 @@
             // 
             // txtNom
             // 
-            this.txtNom.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtNom.Width = 400;
+            this.txtNom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtNom.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtNom.Name = "txtNom";
             // 
@@ -390,8 +392,7 @@
             // 
             // txtPrenom
             // 
-            this.txtPrenom.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtPrenom.Width = 400;
+            this.txtPrenom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtPrenom.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtPrenom.Name = "txtPrenom";
             // 
@@ -405,8 +406,7 @@
             // 
             // txtTelephone
             // 
-            this.txtTelephone.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtTelephone.Width = 400;
+            this.txtTelephone.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtTelephone.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtTelephone.Name = "txtTelephone";
             // 
@@ -420,8 +420,7 @@
             // 
             // txtMotif
             // 
-            this.txtMotif.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.txtMotif.Width = 400;
+            this.txtMotif.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtMotif.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.txtMotif.PlaceholderText = "Ex : hypertension, grippe, ordonnance du Dr Ahmed";
             this.txtMotif.Name = "txtMotif";
@@ -782,7 +781,7 @@
         private System.Windows.Forms.Label lblMontantTotal;
         private System.Windows.Forms.Panel panelDroit;
         private System.Windows.Forms.TableLayoutPanel tlpDroite;
-        private System.Windows.Forms.Label lblClient;
+        private System.Windows.Forms.Button lblClient;
         private System.Windows.Forms.TableLayoutPanel tlpClient;
         private System.Windows.Forms.Label lblNom;
         private System.Windows.Forms.TextBox txtNom;

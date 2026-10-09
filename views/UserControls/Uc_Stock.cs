@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Pharmacie2.views.Composants;
@@ -113,7 +113,7 @@ namespace Pharmacie2.views.UserControls
                     Fournisseur = p.Fournisseur != null ? p.Fournisseur.Nom : "—",
                     // Ex : 9 unités (5/boîte) → « 1 boîte(s) + 4 plaquette(s) »
                     Quantite = StockService.Formater(p),
-                    Seuil = $"{p.SeuilAlerte} boîte(s)",
+                    Seuil = $"{Format.Compte(p.SeuilAlerte, "boîte")}",
                     Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
                     Verification = !p.Actif ? "Archivé" : p.StockAVerifier ? "À vérifier" : "",
                     Etat = !p.Actif ? "Archivé"
@@ -135,21 +135,21 @@ namespace Pharmacie2.views.UserControls
             string etat = ligne.Cells["Etat"].Value?.ToString() ?? "";
             string verif = ligne.Cells["Verification"].Value?.ToString() ?? "";
 
-            // Rouge = urgent, orange = attention, gris = archivé
-            if (etat == "Archivé")
+            // Fond de ligne léger (rouge pâle = urgent, orange pâle = attention, gris = archivé) ; texte noir ;
+            // seule la cellule « État » porte la couleur forte, en gras (badge)
+            string niveau = etat == "Archivé" ? "info"
+                : etat == "Périmé" || etat == "Rupture" ? "urgent"
+                : etat == "Alerte" || verif == "À vérifier" ? "attention" : "";
+            if (niveau != "")
             {
-                e.CellStyle.BackColor = Theme.InfoFond;
-                e.CellStyle.ForeColor = Theme.Neutre;
-            }
-            else if (etat == "Périmé" || etat == "Rupture")
-            {
-                e.CellStyle.BackColor = Theme.UrgentFond;
-                e.CellStyle.ForeColor = Theme.UrgentTexte;
-            }
-            else if (etat == "Alerte" || verif == "À vérifier")
-            {
-                e.CellStyle.BackColor = Theme.AttentionFond;
-                e.CellStyle.ForeColor = Theme.AttentionTexte;
+                var (texte, fond) = Theme.Niveau(niveau);
+                e.CellStyle.BackColor = fond;
+                e.CellStyle.ForeColor = Theme.Texte;
+                if (dgvStock.Columns[e.ColumnIndex].Name == "Etat")
+                {
+                    e.CellStyle.ForeColor = niveau == "info" ? Theme.Neutre : texte;
+                    e.CellStyle.Font = Theme.Police(10, FontStyle.Bold);
+                }
             }
         }
 

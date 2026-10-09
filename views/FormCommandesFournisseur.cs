@@ -99,9 +99,9 @@ namespace Pharmacie2.views
                 decimal total = commandes.Sum(c => c.MontantTotal);
 
                 lblNbCommandes.Text =
-                    $"{nbTotal} commande(s)  |  " +
+                    $"{Format.Compte(nbTotal, "commande")}  |  " +
                     $"{nbAttente} en attente  |  " +
-                    $"{nbRecu} reçue(s)  |  " +
+                    $"{Format.Compte(nbRecu, "reçue")}  |  " +
                     $"Total : {Format.Montant(total)}";
 
                 MettreAJourBoutons();

@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
@@ -42,8 +42,41 @@ public class FormVenteTests
         UiHelper.Appeler(f, "RafraichirGrille");
         UiHelper.Appeler(f, "RecalculerTotal");
         UiHelper.Champ<ComboBox>(f, "cbPaiement").SelectedItem = mode;
+        if (mode is ModesPaiement.Credit or ModesPaiement.Mutuelle)
+            UiHelper.Champ<TextBox>(f, "txtNom").Text = "Client";   // obligatoire pour ces deux modes
         reglages?.Invoke(f);
         return f;
+    }
+
+    [Fact]
+    public void Section_client_repliee_pour_une_vente_rapide_et_ouverte_pour_un_credit()
+    {
+        TestDb.Reinitialiser();
+        TestDb.MigrerTout();
+        UiHelper.EnSta(() =>
+        {
+            using var f = new FormVente();
+            var tlp = UiHelper.Champ<TableLayoutPanel>(f, "tlpClient");
+            Assert.False(tlp.Visible);                                          // comptant : rien à saisir côté client
+            UiHelper.Champ<ComboBox>(f, "cbPaiement").SelectedItem = ModesPaiement.Credit;
+            Assert.True(tlp.Visible);                                           // crédit : le client est obligatoire
+            UiHelper.Appeler(f, "lblClient_Click", null, EventArgs.Empty);      // l'utilisateur peut aussi la replier
+            Assert.False(tlp.Visible);
+        });
+    }
+
+    [Fact]
+    public void Credit_sans_nom_de_client_est_refuse()
+    {
+        TestDb.Reinitialiser();
+        TestDb.MigrerTout();
+        int pid = TestDb.NouveauProduit("Doliprane", 50, 1, "Comprimé");
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 3, ModesPaiement.Credit, x => UiHelper.Champ<TextBox>(x, "txtNom").Text = "");
+            Valider(f);
+        });
+        Assert.Equal(0, TestDb.Scalaire("SELECT COUNT(*) FROM ventes"));
     }
 
     private static void Valider(FormVente f) => UiHelper.Appeler(f, "btnValider_Click", null, EventArgs.Empty);

@@ -46,7 +46,7 @@
             this.btnProduits = new Pharmacie2.views.Composants.BoutonMenu();
             this.btnDepenses = new Pharmacie2.views.Composants.BoutonMenu();
             this.btnStatistiques = new Pharmacie2.views.Composants.BoutonMenu();
-            this.lblSectionAdministration = new System.Windows.Forms.Label();
+            this.traitAdmin = new System.Windows.Forms.Panel();
             this.btnAdministration = new Pharmacie2.views.Composants.BoutonMenu();
             this.tlpBas = new System.Windows.Forms.TableLayoutPanel();
             this.traitMenu = new System.Windows.Forms.Panel();
@@ -59,6 +59,7 @@
             this.panelMenu.SuspendLayout();
             this.tlpMenu.SuspendLayout();
             this.flpMenu.SuspendLayout();
+            this.traitAdmin.SuspendLayout();
             this.tlpBas.SuspendLayout();
             this.traitMenu.SuspendLayout();
             this.tlpContenu.SuspendLayout();
@@ -146,8 +147,8 @@
             this.btnDepenses.TabIndex = 11;
             this.flpMenu.Controls.Add(this.btnStatistiques);
             this.btnStatistiques.TabIndex = 12;
-            this.flpMenu.Controls.Add(this.lblSectionAdministration);
-            this.lblSectionAdministration.TabIndex = 13;
+            this.flpMenu.Controls.Add(this.traitAdmin);
+            this.traitAdmin.TabIndex = 13;
             this.flpMenu.Controls.Add(this.btnAdministration);
             this.btnAdministration.TabIndex = 14;
             this.flpMenu.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -265,15 +266,13 @@
             this.btnStatistiques.Name = "btnStatistiques";
             this.btnStatistiques.Click += new System.EventHandler(this.btnStatistiques_Click);
             // 
-            // lblSectionAdministration
+            // traitAdmin
             // 
-            this.lblSectionAdministration.Text = "ADMINISTRATION";
-            this.lblSectionAdministration.AutoSize = true;
-            this.lblSectionAdministration.Tag = "menusection";
-            this.lblSectionAdministration.Margin = new System.Windows.Forms.Padding(12, 8, 0, 2);
-            this.lblSectionAdministration.ForeColor = System.Drawing.Color.FromArgb(165, 214, 167);
-            this.lblSectionAdministration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSectionAdministration.Name = "lblSectionAdministration";
+            this.traitAdmin.Width = 182;
+            this.traitAdmin.Height = 1;
+            this.traitAdmin.BackColor = System.Drawing.Color.FromArgb(76, 140, 80);
+            this.traitAdmin.Margin = new System.Windows.Forms.Padding(12, 8, 12, 8);
+            this.traitAdmin.Name = "traitAdmin";
             // 
             // btnAdministration
             // 
@@ -383,6 +382,7 @@
             this.traitMenu.ResumeLayout(false);
             this.tlpBas.ResumeLayout(false);
             this.tlpBas.PerformLayout();
+            this.traitAdmin.ResumeLayout(false);
             this.flpMenu.ResumeLayout(false);
             this.flpMenu.PerformLayout();
             this.tlpMenu.ResumeLayout(false);
@@ -413,7 +413,7 @@
         private Pharmacie2.views.Composants.BoutonMenu btnProduits;
         private Pharmacie2.views.Composants.BoutonMenu btnDepenses;
         private Pharmacie2.views.Composants.BoutonMenu btnStatistiques;
-        private System.Windows.Forms.Label lblSectionAdministration;
+        private System.Windows.Forms.Panel traitAdmin;
         private Pharmacie2.views.Composants.BoutonMenu btnAdministration;
         private System.Windows.Forms.TableLayoutPanel tlpBas;
         private System.Windows.Forms.Panel traitMenu;

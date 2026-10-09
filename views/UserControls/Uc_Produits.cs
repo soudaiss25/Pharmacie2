@@ -61,7 +61,7 @@ namespace Pharmacie2.views.UserControls
                         p.PrixVente,
                         Marge = p.MargeBeneficiaire.ToString("0.#") + " %",
                         Stock = StockService.Formater(p),
-                        Seuil = $"{p.SeuilAlerte} boîte(s)",
+                        Seuil = $"{Format.Compte(p.SeuilAlerte, "boîte")}",
                         UniteVente = p.UniteVente,
                         Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
                         Fournisseur = p.Fournisseur?.Nom ?? "—",
@@ -72,7 +72,7 @@ namespace Pharmacie2.views.UserControls
                     }).ToList();
 
                     dgvProduits.DataSource = data;
-                    lblCompteur.Text = $"{data.Count} produit(s)";
+                    lblCompteur.Text = $"{Format.Compte(data.Count, "produit")}";
                 }
             }
             catch (Exception ex)

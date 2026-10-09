@@ -127,9 +127,9 @@ namespace Pharmacie2.views.UserControls
                     decimal total = commandes.Sum(c => c.Lignes.Sum(l => l.TotalLigne));
 
                     lblRecap.Text =
-                        $"{nbTotal} commande(s)  |  " +
+                        $"{Format.Compte(nbTotal, "commande")}  |  " +
                         $"{nbAttente} en attente  |  " +
-                        $"{nbRecues} reçue(s)  |  " +
+                        $"{Format.Compte(nbRecues, "reçue")}  |  " +
                         $"Total : {Format.Montant(total)}";
 
                     MettreAJourBoutons();

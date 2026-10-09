@@ -24,6 +24,20 @@ namespace Pharmacie2.Services
         public static string Nombre(decimal valeur)
             => Math.Round(valeur, 0, MidpointRounding.AwayFromZero).ToString("N0", _nombre);
 
+        /// <summary>Vrai pluriel français : 0 et 1 au singulier, 2 et plus au pluriel (« 1 boîte », « 2 boîtes »).</summary>
+        public static string Pluriel(int n, string singulier, string? pluriel = null)
+            => n > 1 ? (pluriel ?? (singulier.EndsWith("s") || singulier.EndsWith("x") ? singulier : singulier + "s")) : singulier;
+
+        /// <summary>« 3 produits », « 1 produit », « 0 produit ».</summary>
+        public static string Compte(int n, string singulier, string? pluriel = null) => n + " " + Pluriel(n, singulier, pluriel);
+
+        /// <summary>
+        /// Évolution pour une carte : « +12 % », « -5 % », « = », ou le texte donné quand la base de comparaison est nulle
+        /// (par exemple « pas de vente hier à la même heure »).
+        /// </summary>
+        public static string EvolutionOuTexte(decimal actuel, decimal precedent, string sansBase)
+            => precedent == 0 ? (actuel == 0 ? "—" : sansBase) : Evolution(actuel, precedent);
+
         /// <summary>« +12 % » / « -5 % » / « 0 % » (arrondi à l'entier).</summary>
         public static string Pourcentage(decimal valeur)
         {

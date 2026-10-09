@@ -175,7 +175,7 @@ namespace Pharmacie2.views.UserControls
 
                     lblRecapImpaye.Text =
                         $"{nomMutuelle}  |  " +
-                        $"{nbVentes} vente(s) à régler  |  " +
+                        $"{Format.Compte(nbVentes, "vente")} à régler  |  " +
                         $"Total dû : {Format.Montant(totalDu)}";
 
                     lblRecapImpaye.ForeColor = totalDu > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
@@ -240,7 +240,7 @@ namespace Pharmacie2.views.UserControls
             }
 
             var confirm = MessageBox.Show(
-                $"Régler {ids.Count} vente(s) sélectionnée(s) ?\nMontant : {Format.Montant(total)}",
+                $"Régler {Format.Compte(ids.Count, "vente")} sélectionnée{(ids.Count > 1 ? "s" : "")} ?\nMontant : {Format.Montant(total)}",
                 "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (confirm != DialogResult.Yes) return;
@@ -288,7 +288,7 @@ namespace Pharmacie2.views.UserControls
                     ctx.SaveChanges();
 
                     BandeauNotification.Succes(
-                        $"Règlement enregistré : {ventes.Count} vente(s), {Format.Montant(totalRegle)} pour {_mutuelleSelectionneeNom}"
+                        $"Règlement enregistré : {Format.Compte(ventes.Count, "vente")}, {Format.Montant(totalRegle)} pour {_mutuelleSelectionneeNom}"
                         + (string.IsNullOrEmpty(reference) ? "." : $" (réf. {reference})."));
                 }
 
@@ -372,7 +372,7 @@ namespace Pharmacie2.views.UserControls
                     try
                     {
                         MutuelleExportService.Exporter(sfd.FileName, id, nom, frmP.DateDebut, frmP.DateFin);
-                        if (MessageBox.Show($"Export terminé : {donnees.Count} achat(s).\n\nOuvrir le fichier ?",
+                        if (MessageBox.Show($"Export terminé : {Format.Compte(donnees.Count, "achat")}.\n\nOuvrir le fichier ?",
                             "Export Excel", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                             System.Diagnostics.Process.Start(
                                 new System.Diagnostics.ProcessStartInfo

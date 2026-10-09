@@ -92,7 +92,7 @@ public class UcStockTests
             Assert.Equal("Périmé", Ligne("Zéro périmé").Cells["Etat"].Value);
             Assert.Equal("Rupture", Ligne("Sirop périmé").Cells["Etat"].Value);
             Assert.Equal("OK", Ligne("Zéro normal").Cells["Etat"].Value);
-            Assert.Equal("1 boîte(s) + 4 plaquette(s)", Ligne("Doliprane 500 mg").Cells["Quantite"].Value);
+            Assert.Equal("1 boîte + 4 plaquettes", Ligne("Doliprane 500 mg").Cells["Quantite"].Value);
             Assert.Equal("À vérifier", Ligne("Doliprane 500 mg").Cells["Verification"].Value);
         });
     }

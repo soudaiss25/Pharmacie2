@@ -117,14 +117,14 @@ namespace Pharmacie2.views.UserControls
                     cardVentes.Valeur = ventesActives.Count.ToString();
                     cardVentes.Detail = "pour " + Format.Montant(caTotal);
                     cardComptant.Valeur = Format.Montant(caEspeces);
-                    cardComptant.Detail = $"{ventesActives.Count(v => v.Type == ModesPaiement.Comptant)} vente(s)";
+                    cardComptant.Detail = $"{Format.Compte(ventesActives.Count(v => v.Type == ModesPaiement.Comptant), "vente")}";
                     cardCredit.Valeur = Format.Montant(caCredit);
                     cardCredit.Detail = $"versé : {Format.Montant(avancesCredit)}";
                     cardCredit.Niveau = resteCredit > 0 ? "attention" : "succes";
                     cardMutuelle.Valeur = Format.Montant(caMutuelle);
                     cardMutuelle.Detail = $"part des entreprises : {Format.Montant(caMutuelleEnt)}";
                     cardCB.Valeur = Format.Montant(caCB);
-                    cardCB.Detail = $"{ventesActives.Count(v => v.Type == ModesPaiement.CarteBancaire)} vente(s)";
+                    cardCB.Detail = $"{Format.Compte(ventesActives.Count(v => v.Type == ModesPaiement.CarteBancaire), "vente")}";
                     cardCheque.Valeur = Format.Montant(caCheque);
                     cardCheque.Detail = "à déposer en banque";
 
@@ -312,7 +312,7 @@ namespace Pharmacie2.views.UserControls
                     }
 
                     dgvSessions.DataSource = lignes;
-                    lblNbSessions.Text = $"{sessions.Count} session(s), dont {sessions.Count(s => s.Statut == "Ouverte")} en cours";
+                    lblNbSessions.Text = $"{Format.Compte(sessions.Count, "session")}, dont {sessions.Count(s => s.Statut == "Ouverte")} en cours";
                 }
             }
             catch (Exception ex)

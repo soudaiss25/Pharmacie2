@@ -57,21 +57,21 @@ namespace Pharmacie2.views.UserControls
                 var k = TableauDeBordService.Kpis(maintenant);
 
                 carteEncaisse.Valeur = Format.Montant(k.EncaisseAujourdhui);
-                carteEncaisse.Detail = Format.Evolution(k.EncaisseAujourdhui, k.EncaisseHier) + " vs hier";
-                carteEncaisse.Tendance = Format.Tendance(k.EncaisseAujourdhui, k.EncaisseHier);
+                carteEncaisse.Detail = Format.EvolutionOuTexte(k.EncaisseAujourdhui, k.EncaisseHier, "pas de vente hier à cette heure") + (k.EncaisseHier == 0 ? "" : " vs hier à la même heure");
+                carteEncaisse.Tendance = k.EncaisseHier == 0 ? 0 : Format.Tendance(k.EncaisseAujourdhui, k.EncaisseHier);
 
                 carteVentes.Valeur = k.VentesAujourdhui.ToString(Fr);
-                carteVentes.Detail = Format.Evolution(k.VentesAujourdhui, k.VentesHier) + " vs hier";
-                carteVentes.Tendance = Format.Tendance(k.VentesAujourdhui, k.VentesHier);
+                carteVentes.Detail = Format.EvolutionOuTexte(k.VentesAujourdhui, k.VentesHier, "pas de vente hier à cette heure") + (k.VentesHier == 0 ? "" : " vs hier à la même heure");
+                carteVentes.Tendance = k.VentesHier == 0 ? 0 : Format.Tendance(k.VentesAujourdhui, k.VentesHier);
 
                 carteARecuperer.Valeur = Format.Montant(k.ArgentARecuperer);
-                carteARecuperer.Detail = $"{k.ClientsDebiteurs} client(s) et {k.MutuellesDebitrices} mutuelle(s)";
+                carteARecuperer.Detail = $"{Format.Compte(k.ClientsDebiteurs, "client")} et {Format.Compte(k.MutuellesDebitrices, "mutuelle")}";
                 carteARecuperer.Niveau = k.ArgentARecuperer > 0 ? "attention" : "succes";
                 carteARecuperer.HausseEstBonne = false;
 
                 carteBenefice.Valeur = Format.Montant(k.BeneficeMois);
-                carteBenefice.Detail = Format.Evolution(k.BeneficeMois, k.BeneficeMoisPrecedent) + " vs mois dernier";
-                carteBenefice.Tendance = Format.Tendance(k.BeneficeMois, k.BeneficeMoisPrecedent);
+                carteBenefice.Detail = Format.EvolutionOuTexte(k.BeneficeMois, k.BeneficeMoisPrecedent, "pas de vente le mois dernier") + (k.BeneficeMoisPrecedent == 0 ? "" : " vs mois dernier");
+                carteBenefice.Tendance = k.BeneficeMoisPrecedent == 0 ? 0 : Format.Tendance(k.BeneficeMois, k.BeneficeMoisPrecedent);
 
                 var aFaire = TableauDeBordService.AFaireMaintenant(maintenant)
                     .Select(a => new ElementAction(a.Texte, a.Niveau, () => OuvrirDemande?.Invoke(a.Type)));

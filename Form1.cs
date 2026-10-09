@@ -116,7 +116,7 @@ namespace Pharmacie2
                     if (nbAVerifier > 0)
                     {
                         verifierStock = MessageBox.Show(
-                            $"{nbAVerifier} produit(s) ont peut-être un stock incorrect à cause d'une ancienne erreur du logiciel.\n\n" +
+                            $"{Format.Compte(nbAVerifier, "produit")} {(nbAVerifier > 1 ? "ont" : "a")} peut-être un stock incorrect à cause d'une ancienne erreur du logiciel.\n\n" +
                             "Voulez-vous les vérifier maintenant ?",
                             "Stock à vérifier", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
                     }

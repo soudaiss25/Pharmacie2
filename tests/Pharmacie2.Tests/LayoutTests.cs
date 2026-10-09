@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using Pharmacie2.Models;
 using Xunit;
@@ -152,6 +152,7 @@ public class LayoutTests
 
             Verifier(h.Fenetre, type.Name, locales);
             VerifierOnglets(h.Fenetre, type.Name, locales);
+            VerifierGrilles(h.Fenetre, type.Name, locales);
             erreurs.AddRange(locales.Select(e => $"[{cfg}] {e}"));
             etirables[cfg] = Etirables(h.Fenetre, cfg.Zoom);
         }
@@ -203,6 +204,37 @@ public class LayoutTests
             {
                 VerifierOnglets(c, chemin, erreurs);
             }
+        }
+    }
+
+    /// <summary>Aucun en-tête de colonne ni cellule de date tronqué : texte mesuré ≤ largeur de la colonne.</summary>
+    private static void VerifierGrilles(Control racine, string chemin, List<string> erreurs)
+    {
+        foreach (Control c in racine.Controls)
+        {
+            if (c is DataGridView g && g.Visible)
+            {
+                var policeEntete = g.ColumnHeadersDefaultCellStyle.Font ?? g.Font;
+                var policeCellule = g.DefaultCellStyle.Font ?? g.Font;
+                foreach (DataGridViewColumn col in g.Columns)
+                {
+                    if (!col.Visible || string.IsNullOrEmpty(col.HeaderText)) continue;
+                    int besoin = TextRenderer.MeasureText(col.HeaderText, policeEntete).Width + 8;
+                    if (besoin > col.Width)
+                        erreurs.Add($"{chemin}/{g.Name} : en-tête « {col.HeaderText} » tronqué ({besoin}px pour {col.Width}px)");
+                    if (col.HeaderText == "Date")
+                        foreach (DataGridViewRow r in g.Rows)
+                        {
+                            string texte = Convert.ToString(r.Cells[col.Index].FormattedValue) ?? "";
+                            if (TextRenderer.MeasureText(texte, policeCellule).Width + 8 > col.Width)
+                            {
+                                erreurs.Add($"{chemin}/{g.Name} : date « {texte} » tronquée dans {col.Width}px");
+                                break;
+                            }
+                        }
+                }
+            }
+            VerifierGrilles(c, chemin, erreurs);
         }
     }
 

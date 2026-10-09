@@ -36,16 +36,16 @@ namespace Pharmacie2.Services
         {
             int nb = NbParBoite(p);
             if (nb <= 1)
-                return $"{unites} boîte(s)";
+                return $"{Format.Compte(unites, "boîte")}";
 
             int boites = unites / nb;
             int reste = unites % nb;
             string unite = string.IsNullOrWhiteSpace(p.UniteVente) ? "unité" : p.UniteVente.Trim().ToLowerInvariant();
 
-            if (boites == 0 && reste == 0) return "0 boîte(s)";
-            if (reste == 0) return $"{boites} boîte(s)";
-            if (boites == 0) return $"{reste} {unite}(s)";
-            return $"{boites} boîte(s) + {reste} {unite}(s)";
+            if (boites == 0 && reste == 0) return "0 boîte";
+            if (reste == 0) return $"{Format.Compte(boites, "boîte")}";
+            if (boites == 0) return Format.Compte(reste, unite);
+            return $"{Format.Compte(boites, "boîte")} + {Format.Compte(reste, unite)}";
         }
 
         /// <summary>Seuil d'alerte (saisi en boîtes) converti en unités.</summary>

@@ -100,7 +100,7 @@ namespace Pharmacie2.Services
             switch (c)
             {
                 case Button b:
-                    if (tag != "menu")   // les boutons du menu (BoutonMenu) se dessinent eux-mêmes
+                    if (tag != "menu" && tag != "entete")   // les boutons du menu (BoutonMenu) se dessinent eux-mêmes
                         StyleBoutonDepuisTag(b, tag);
                     break;
 
@@ -185,10 +185,11 @@ namespace Pharmacie2.Services
                     b.FlatAppearance.BorderSize = 0;
                     b.FlatAppearance.MouseOverBackColor = Principal;
                     break;
-                case StyleBouton.Danger:
-                    b.BackColor = UrgentTexte; b.ForeColor = Blanc;
-                    b.FlatAppearance.BorderSize = 0;
-                    b.FlatAppearance.MouseOverBackColor = ColorTranslator.FromHtml("#B71C1C");
+                case StyleBouton.Danger:   // contour rouge : seule l'action principale d'un écran est en vert plein
+                    b.BackColor = Blanc; b.ForeColor = UrgentTexte;
+                    b.FlatAppearance.BorderSize = 1;
+                    b.FlatAppearance.BorderColor = UrgentTexte;
+                    b.FlatAppearance.MouseOverBackColor = UrgentFond;
                     break;
                 case StyleBouton.Neutre:
                     b.BackColor = Neutre; b.ForeColor = Blanc;
@@ -223,6 +224,32 @@ namespace Pharmacie2.Services
             if (l.BackColor == SystemColors.Control) l.BackColor = Color.Transparent;
         }
 
+        /// <summary>Largeur nécessaire pour afficher un texte dans une colonne (marges comprises).</summary>
+        public static int LargeurTexte(string texte, Font police) => TextRenderer.MeasureText(texte, police).Width + 22;
+
+        /// <summary>Format de date court, utilisé quand la colonne est trop étroite pour « 09/10/2026 10:00 ».</summary>
+        public const string DateHeureCourte = "dd/MM HH:mm";
+        public const string DateHeureLongue = "dd/MM/yyyy HH:mm";
+
+        /// <summary>Affiche une date/heure dans le format le plus long qui tient dans la colonne.</summary>
+        public static string DateAdaptee(DateTime d, DataGridViewColumn col, Font police)
+            => col.Width >= LargeurTexte("00/00/0000 00:00", police) ? d.ToString(DateHeureLongue) : d.ToString(DateHeureCourte);
+
+        private static void AjusterMinimums(object? sender, EventArgs e)
+        {
+            if (sender is not DataGridView g) return;
+            var police = g.ColumnHeadersDefaultCellStyle.Font ?? g.Font;
+            var policeCellule = g.DefaultCellStyle.Font ?? g.Font;
+            foreach (DataGridViewColumn col in g.Columns)
+            {
+                if (!col.Visible) continue;
+                int voulu = Math.Max(60, LargeurTexte(col.HeaderText, police));
+                if (col.HeaderText == "Date")
+                    voulu = Math.Max(voulu, LargeurTexte("00/00 00:00", policeCellule));
+                if (col.MinimumWidth != voulu) col.MinimumWidth = voulu;
+            }
+        }
+
         /// <summary>Style commun des tableaux (règle B0.8). À compléter par colonne : montants avec MarquerMontant.</summary>
         public static void StyliserGrille(DataGridView g)
         {
@@ -241,6 +268,7 @@ namespace Pharmacie2.Services
             g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             g.ColumnHeadersHeight = 36;
             g.RowTemplate.Height = 30;
+            g.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
             g.ColumnHeadersDefaultCellStyle.BackColor = Principal;
             g.ColumnHeadersDefaultCellStyle.ForeColor = Blanc;
             g.ColumnHeadersDefaultCellStyle.Font = Police(10, FontStyle.Bold);
@@ -257,6 +285,11 @@ namespace Pharmacie2.Services
                 if (col.MinimumWidth < 60) col.MinimumWidth = 60;
                 if (col.Tag as string == "montant") MarquerMontant(col);
             }
+
+            // Largeurs minimales : un en-tête (ou une date) n'est jamais tronqué
+            g.Resize -= AjusterMinimums;
+            g.Resize += AjusterMinimums;
+            AjusterMinimums(g, EventArgs.Empty);
 
             // Une seule inscription de l'événement par grille
             g.CellFormatting -= FormaterMontants;

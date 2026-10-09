@@ -61,7 +61,7 @@ namespace Pharmacie2.views.UserControls
                     dgvUtilisateurs.DataSource = data;
 
                     ColorerColonneRole();
-                    lblCompteur.Text = $"{data.Count} utilisateur(s)";
+                    lblCompteur.Text = $"{Format.Compte(data.Count, "utilisateur")}";
                 }
             }
             catch (Exception ex)

@@ -157,7 +157,7 @@ namespace Pharmacie2.Services
         private static CleSecoursBloqueeException Bloquee(DateTime jusqua, DateTime maintenant)
         {
             int minutes = Math.Max(1, (int)Math.Ceiling((jusqua - maintenant).TotalMinutes));
-            return new CleSecoursBloqueeException($"Trop d'essais. Cette fonction est bloquée, réessayez dans {minutes} minute(s).");
+            return new CleSecoursBloqueeException($"Trop d'essais. Cette fonction est bloquée, réessayez dans {Format.Compte(minutes, "minute")}.");
         }
     }
 }

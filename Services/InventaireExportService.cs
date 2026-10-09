@@ -43,7 +43,7 @@ namespace Pharmacie2.Services
             {
                 int nb = Math.Max(1, p.NbUniteParBoite);
                 ws.Cell(ligne, 1).Value = p.Nom;
-                ws.Cell(ligne, 2).Value = nb > 1 ? $"Boîte de {nb} {p.UniteVente?.ToLowerInvariant()}(s)" : "Boîte";
+                ws.Cell(ligne, 2).Value = nb > 1 ? $"Boîte de {nb} {Format.Pluriel(nb, p.UniteVente?.ToLowerInvariant() ?? "unité")}" : "Boîte";
                 ws.Cell(ligne, 3).Value = StockService.Formater(p);
                 ws.Cell(ligne, 6).Value = p.StockAVerifier ? "À vérifier" : "";
 

@@ -28,7 +28,7 @@ public static class LayoutSeed
 
         var p1 = new Produit
         {
-            Nom = "Doliprane 500 mg", Type = "Médicament", PrixAchat = 800, PrixVente = 1500, MargeBeneficiaire = 87.5m,
+            Nom = "Doliprane 500 mg", Type = "Comprimé", PrixAchat = 800, PrixVente = 1500, MargeBeneficiaire = 87.5m,
             QuantiteEnStock = 9, NbUniteParBoite = 5, UniteVente = "Plaquette", SeuilAlerte = 2,
             DateExpiration = DateTime.Today.AddMonths(8), FournisseurId = four.Id, StockAVerifier = true, UnitesManquantesEstimees = 40,
             MotifVerification = "10 boîte(s) reçue(s) avant la correction : seulement 10 unité(s) ajoutée(s) au lieu de 50."
@@ -77,21 +77,24 @@ public static class LayoutSeed
         var caissier = ctx.Users.First(u => u.Login == "caisse");
         var rng = new Random(42);
 
-        string[] noms =
+        (string nom, string type)[] catalogue =
         {
-            "Paracétamol 1 g", "Amoxicilline 500 mg", "Ibuprofène 400 mg", "Aspirine 500 mg", "Oméprazole 20 mg", "Métronidazole 250 mg",
-            "Ciprofloxacine 500 mg", "Artéméther-luméfantrine", "Sérum physiologique", "Vitamine C 500 mg", "Sirop antitussif", "Amlodipine 5 mg",
-            "Metformine 850 mg", "Salbutamol spray", "Loratadine 10 mg", "Diclofénac gel", "Cotrimoxazole 480 mg", "Zinc 20 mg",
-            "Sels de réhydratation", "Povidone iodée", "Compresses stériles", "Bandes de gaze", "Gants d'examen", "Thermomètre digital",
-            "Fer + acide folique", "Albendazole 400 mg", "Hydrocortisone crème", "Collyre antibiotique", "Gouttes nasales", "Pansements assortis"
+            ("Paracétamol 1 g", "Comprimé"), ("Amoxicilline 500 mg", "Gélule"), ("Ibuprofène 400 mg", "Comprimé"), ("Aspirine 500 mg", "Comprimé"),
+            ("Oméprazole 20 mg", "Gélule"), ("Métronidazole 250 mg", "Comprimé"), ("Ciprofloxacine 500 mg", "Comprimé"), ("Artéméther-luméfantrine", "Comprimé"),
+            ("Sérum physiologique", "Soluté"), ("Vitamine C 500 mg", "Comprimé"), ("Sirop antitussif", "Sirop"), ("Amlodipine 5 mg", "Comprimé"),
+            ("Metformine 850 mg", "Comprimé"), ("Salbutamol spray", "Spray"), ("Loratadine 10 mg", "Comprimé"), ("Diclofénac gel", "Pommade"),
+            ("Cotrimoxazole 480 mg", "Comprimé"), ("Zinc 20 mg", "Comprimé"), ("Sels de réhydratation", "Sachet"), ("Povidone iodée", "Solution"),
+            ("Compresses stériles", "Matériel"), ("Bandes de gaze", "Matériel"), ("Gants d'examen", "Matériel"), ("Thermomètre digital", "Matériel"),
+            ("Fer + acide folique", "Comprimé"), ("Albendazole 400 mg", "Comprimé"), ("Hydrocortisone crème", "Pommade"), ("Collyre antibiotique", "Collyre"),
+            ("Gouttes nasales", "Solution"), ("Pansements assortis", "Matériel")
         };
         var produits = new List<Produit>();
-        for (int i = 0; i < noms.Length; i++)
+        for (int i = 0; i < catalogue.Length; i++)
         {
-            int parBoite = i % 3 == 0 ? 10 : (i % 3 == 1 ? 1 : 20);
+            int parBoite = catalogue[i].type is "Comprimé" or "Gélule" ? (i % 2 == 0 ? 10 : 20) : 1;
             var p = new Produit
             {
-                Nom = noms[i], Type = i % 4 == 0 ? "Sirop" : (i % 4 == 1 ? "Comprimé" : "Autre"),
+                Nom = catalogue[i].nom, Type = catalogue[i].type,
                 PrixAchat = 300 + i * 40, PrixVente = 500 + i * 70, MargeBeneficiaire = 40 + i % 30,
                 QuantiteEnStock = i % 9 == 0 ? 0 : (5 + i * 7) % 90, NbUniteParBoite = parBoite, UniteVente = parBoite > 1 ? "Plaquette" : "Boîte",
                 SeuilAlerte = 3, DateExpiration = i == 5 ? DateTime.Today.AddDays(-12) : (i == 8 ? DateTime.Today.AddDays(15) : DateTime.Today.AddMonths(6 + i % 14)),

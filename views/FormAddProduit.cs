@@ -187,7 +187,7 @@ namespace Pharmacie2.views
         private void AppliquerCorrection(int nouveauStock)
         {
             var conf = MessageBox.Show(
-                $"Ajouter {_unitesManquantes} unité(s) au stock ?\n\n" +
+                $"Ajouter {Format.Compte(_unitesManquantes, "unité")} au stock ?\n\n" +
                 $"Stock actuel : {StockService.Formater(_produitOrigine)}\n" +
                 $"Nouveau stock : {StockService.Formater(_produitOrigine, nouveauStock)}\n\n" +
                 "Ce chiffre est une estimation. Si des ventes ont eu lieu depuis, comptez plutôt le stock en rayon.",
@@ -300,10 +300,10 @@ namespace Pharmacie2.views
             decimal prixParUnite = Math.Round(pv / nbParB, 2);
 
             lblApercu.Text =
-                $"1 boîte = {nbParB} {unite}(s)\n" +
+                $"1 boîte = {nbParB} {Format.Pluriel(nbParB, unite)}\n" +
                 $"Prix par {unite} : {Format.Montant(prixParUnite)}\n" +
-                $"Exemple : vendre 4 {unite}(s) consomme " +
-                $"{(int)Math.Ceiling(4.0 / nbParB)} boîte(s) du stock";
+                $"Exemple : vendre 4 {Format.Pluriel(4, unite)} consomme " +
+                $"{Format.Compte((int)Math.Ceiling(4.0 / nbParB), "boîte")} du stock";
 
             lblApercu.ForeColor = Theme.SuccesTexte;
         }
@@ -388,8 +388,8 @@ namespace Pharmacie2.views
                 }
 
                 var conf = MessageBox.Show(
-                    $"Stock réel saisi : {numQuantite.Value} boîte(s) + {numUnitesVrac.Value} unité(s) " +
-                    $"= {stockEnUnites} unité(s) de base.\n\nConfirmer que c'est bien le stock réel ?",
+                    $"Stock réel saisi : {Format.Compte((int)numQuantite.Value, "boîte")} + {Format.Compte((int)numUnitesVrac.Value, "unité")} " +
+                    $"= {Format.Compte(stockEnUnites, "unité")} de base.\n\nConfirmer que c'est bien le stock réel ?",
                     "Confirmer le stock", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (conf != DialogResult.Yes) return;
             }

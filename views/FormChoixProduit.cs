@@ -106,7 +106,7 @@ namespace Pharmacie2.views
                     : "";
 
                 lblNbFoisVal.Text = p.NbFoisParJour > 0
-                    ? $"{p.NbFoisParJour} prise(s) par jour"
+                    ? $"{Format.Compte(p.NbFoisParJour, "prise")} par jour"
                     : "";
             }
         }

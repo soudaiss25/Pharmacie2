@@ -142,6 +142,12 @@ public static class EcranHote
             var o = fonts[c];
             c.Font = new Font(o.FontFamily, o.Size * f, o.Style, GraphicsUnit.Point);
         }
+        var stylesGrilles = tous.OfType<DataGridView>().ToDictionary(g => g, g => (g.ColumnHeadersDefaultCellStyle.Font, g.DefaultCellStyle.Font));
+        foreach (var kv in stylesGrilles)
+        {
+            if (kv.Value.Item1 is Font fe) kv.Key.ColumnHeadersDefaultCellStyle.Font = new Font(fe.FontFamily, fe.Size * f, fe.Style, GraphicsUnit.Point);
+            if (kv.Value.Item2 is Font fc) kv.Key.DefaultCellStyle.Font = new Font(fc.FontFamily, fc.Size * f, fc.Style, GraphicsUnit.Point);
+        }
         racine.Scale(new SizeF(f, f));
 
         foreach (var c in tous)

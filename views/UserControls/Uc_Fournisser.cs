@@ -104,7 +104,7 @@ namespace Pharmacie2.views.UserControls
                     p.Nom,
                     p.Type,
                     Stock = StockService.Formater(p),
-                    Seuil = $"{p.SeuilAlerte} boîte(s)",
+                    Seuil = $"{Format.Compte(p.SeuilAlerte, "boîte")}",
                     p.PrixAchat,
                     p.PrixVente,
                     Etat = p.QuantiteEnStock <= 0 ? "Rupture"
@@ -116,7 +116,7 @@ namespace Pharmacie2.views.UserControls
                 int nbRupture = produits.Count(p => p.QuantiteEnStock <= 0);
 
                 lblProduitsTitre.Text =
-                    $"Produits de « {nomFournisseur} » — {produits.Count} produit(s), {nbAlerte} en alerte, {nbRupture} en rupture";
+                    $"Produits de « {nomFournisseur} » — {Format.Compte(produits.Count, "produit")}, {nbAlerte} en alerte, {nbRupture} en rupture";
 
                 btnCommanderProduit.Enabled = produits.Count > 0;
             }

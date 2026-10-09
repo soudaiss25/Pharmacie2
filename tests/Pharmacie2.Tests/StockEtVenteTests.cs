@@ -11,7 +11,7 @@ public class StockServiceTests
     [Fact] public void Une_boite_acceptee_avec_7_unites() => Assert.True(StockService.EstDisponible(P(7), StockService.EnUnites(P(7), 1, "Boîte")));
     [Fact] public void Double_ajout_refuse() => Assert.False(StockService.EstDisponible(P(7), 5 + 5));
     [Fact] public void Boite_plus_deux_plaquettes_acceptes() => Assert.True(StockService.EstDisponible(P(7), 5 + 2));
-    [Fact] public void Formater_9_unites() => Assert.Equal("1 boîte(s) + 4 plaquette(s)", StockService.Formater(P(9)));
+    [Fact] public void Formater_9_unites() => Assert.Equal("1 boîte + 4 plaquettes", StockService.Formater(P(9)));
     [Fact] public void Seuil_en_unites() => Assert.Equal(10, StockService.SeuilEnUnites(P(7)));
 
     [Fact]

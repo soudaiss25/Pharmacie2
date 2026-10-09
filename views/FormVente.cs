@@ -37,6 +37,16 @@ namespace Pharmacie2.views
             InitializeComponent();
             Theme.Appliquer(this);
 
+            // En-tête repliable « Client (facultatif) » : style discret de titre de section
+            lblClient.FlatStyle = FlatStyle.Flat;
+            lblClient.FlatAppearance.BorderSize = 0;
+            lblClient.BackColor = Color.Transparent;
+            lblClient.ForeColor = Theme.Principal;
+            lblClient.Font = Theme.TitreSection;
+            lblClient.Cursor = Cursors.Hand;
+            lblClient.Padding = new Padding(0);
+            DefinirSectionClient(false);
+
             lblVendeur.Text = "Vendeur : " + SessionUtilisateur.NomComplet;
             ActiveControl = txtRecherche;   // focus sur la recherche produit dès l'ouverture
 
@@ -44,6 +54,18 @@ namespace Pharmacie2.views
             InitComboMoyenPaiement();
             RecalculerTotal();
         }
+
+        // ── Section client repliable ──────────────────────────────────────
+
+        private bool _clientObligatoire;
+
+        private void DefinirSectionClient(bool ouverte)
+        {
+            tlpClient.Visible = ouverte;
+            lblClient.Text = (_clientObligatoire ? "Client (obligatoire)" : "Client (facultatif)") + (ouverte ? "  \u2212" : "  +");
+        }
+
+        private void lblClient_Click(object sender, EventArgs e) => DefinirSectionClient(!tlpClient.Visible);
 
         private void FormVente_Shown(object sender, EventArgs e) => txtRecherche.Focus();
 
@@ -206,6 +228,10 @@ namespace Pharmacie2.views
             pnlEspeces.Visible = false;
             pnlMatricule.Visible = false;
 
+            // Crédit et Mutuelle : le client est obligatoire, la section s'ouvre toute seule
+            _clientObligatoire = ModeChoisi == ModesPaiement.Credit || ModeChoisi == ModesPaiement.Mutuelle;
+            DefinirSectionClient(_clientObligatoire || tlpClient.Visible);
+
             switch (ModeChoisi)
             {
                 case ModesPaiement.Comptant:
@@ -317,6 +343,18 @@ namespace Pharmacie2.views
             }
 
             string mode = ModeChoisi;
+
+            // Crédit ou mutuelle : on doit savoir qui doit l'argent
+            if ((mode == ModesPaiement.Credit || mode == ModesPaiement.Mutuelle)
+                && string.IsNullOrWhiteSpace(txtNom.Text) && string.IsNullOrWhiteSpace(txtPrenom.Text))
+            {
+                DefinirSectionClient(true);
+                MessageBox.Show("Indiquez le nom du client : il est obligatoire pour une vente à crédit ou avec mutuelle.", "Validation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNom.Focus();
+                return;
+            }
+
             decimal total = _total;
             decimal especes = 0, rendu = 0, verse = 0, partMutuelle = 0;
             Mutuel? mutuelleChoisie = null;

@@ -207,7 +207,7 @@ namespace Pharmacie2.views
                     ctx.SaveChanges();
                 }
 
-                BandeauNotification.Succes($"Commande enregistrée : {qte} boîte(s) de {_nomProduit} chez {fournisseurNom}.");
+                BandeauNotification.Succes($"Commande enregistrée : {Format.Compte(qte, "boîte")} de {_nomProduit} chez {fournisseurNom}.");
 
                 DialogResult = DialogResult.OK;
                 Close();

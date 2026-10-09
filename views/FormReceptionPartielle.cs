@@ -75,7 +75,7 @@ namespace Pharmacie2.views
             int reste = Convert.ToInt32(ligne.Cells["colReste"].Value);
             if (qte > reste)
             {
-                ligne.ErrorText = $"Il ne reste que {reste} boîte(s) à recevoir pour ce produit.";
+                ligne.ErrorText = $"Il ne reste que {Format.Compte(reste, "boîte")} à recevoir pour ce produit.";
                 e.Cancel = true;
                 return;
             }
@@ -116,7 +116,7 @@ namespace Pharmacie2.views
                     MessageBox.Show("Aucune boîte à enregistrer.", "Réception", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                BandeauNotification.Succes($"Réception enregistrée : {boites} boîte(s). Le stock est à jour.");
+                BandeauNotification.Succes($"Réception enregistrée : {Format.Compte(boites, "boîte")}. Le stock est à jour.");
                 DialogResult = DialogResult.OK;
                 Close();
             }
