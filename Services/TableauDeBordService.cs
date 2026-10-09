@@ -15,7 +15,8 @@ namespace Pharmacie2.Services
         Ruptures,
         PeremptionProche,
         StocksAVerifier,
-        MutuellesEnRetard
+        MutuellesEnRetard,
+        SauvegardeExterne
     }
 
     public record AFaire(TypeAFaire Type, string Niveau, string Texte, int Nombre);
@@ -156,6 +157,24 @@ namespace Pharmacie2.Services
         }
 
         // ───────────────────────── À faire maintenant ─────────────────────────
+
+        /// <summary>
+        /// Alerte orange si aucune copie hors du PC n'est configurée, ou si la dernière copie externe réussie date de plus de 7 jours.
+        /// Renvoyée à part (et ajoutée en fin de liste par les écrans) : elle ne dépend pas de la base.
+        /// </summary>
+        public static AFaire? AlerteSauvegardeExterne(DateTime maintenant)
+        {
+            if (!SauvegardeExterneService.EstConfiguree)
+                return new AFaire(TypeAFaire.SauvegardeExterne, "attention",
+                    "Aucune sauvegarde hors du PC n'est configurée : une panne, un vol ou un virus ferait tout perdre.", 0);
+
+            int? jours = SauvegardeExterneService.JoursDepuisDerniereCopie(maintenant);
+            if (jours == null)
+                return new AFaire(TypeAFaire.SauvegardeExterne, "attention", "Aucune sauvegarde externe n'a encore réussi : vérifiez le dossier choisi.", 0);
+            if (jours > SauvegardeExterneService.JoursAvantAlerte)
+                return new AFaire(TypeAFaire.SauvegardeExterne, "attention", $"Aucune sauvegarde externe depuis {Format.Compte(jours.Value, "jour")}.", jours.Value);
+            return null;
+        }
 
         public static List<AFaire> AFaireMaintenant(DateTime maintenant)
         {

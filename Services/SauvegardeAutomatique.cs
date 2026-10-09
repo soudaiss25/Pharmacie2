@@ -29,6 +29,9 @@ namespace Pharmacie2.Services
                     Sauvegarder(jour);
 
                 Purger();
+
+                // Copie chiffrée hors du PC (dossier synchronisé ou clé USB) : sans blocage si le dossier est absent
+                SauvegardeExterneService.CopierDuJour();
             }
             catch (Exception ex)
             {
@@ -50,7 +53,7 @@ namespace Pharmacie2.Services
             }
         }
 
-        private static void Sauvegarder(string destination)
+        public static void Sauvegarder(string destination)
         {
             string temporaire = destination + ".tmp";
             try
@@ -65,7 +68,7 @@ namespace Pharmacie2.Services
                     source.BackupDatabase(cible);
                 }
 
-                File.Move(temporaire, destination);
+                File.Move(temporaire, destination, overwrite: true);
                 Journal.Info("Sauvegarde créée : " + destination);
             }
             catch

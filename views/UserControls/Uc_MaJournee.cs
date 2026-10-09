@@ -74,8 +74,9 @@ namespace Pharmacie2.views.UserControls
                 carteBenefice.Detail = Format.EvolutionOuTexte(k.BeneficeMois, k.BeneficeMoisPrecedent, "pas de vente le mois dernier") + (k.BeneficeMoisPrecedent == 0 ? "" : " vs mois dernier");
                 carteBenefice.Tendance = k.BeneficeMoisPrecedent == 0 ? 0 : Format.Tendance(k.BeneficeMois, k.BeneficeMoisPrecedent);
 
-                var aFaire = TableauDeBordService.AFaireMaintenant(maintenant)
-                    .Select(a => new ElementAction(a.Texte, a.Niveau, () => OuvrirDemande?.Invoke(a.Type)));
+                var liste = TableauDeBordService.AFaireMaintenant(maintenant);
+                if (TableauDeBordService.AlerteSauvegardeExterne(maintenant) is AFaire sauvegarde) liste.Add(sauvegarde);
+                var aFaire = liste.Select(a => new ElementAction(a.Texte, a.Niveau, () => OuvrirDemande?.Invoke(a.Type)));
                 listeActions.Definir(aFaire);
 
                 graphique.Definir(TableauDeBordService.Encaissements7Jours(maintenant));

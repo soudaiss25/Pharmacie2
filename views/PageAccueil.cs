@@ -183,6 +183,9 @@ namespace Pharmacie2.views
                 case TypeAFaire.Ruptures: OuvrirStock("En rupture"); break;
                 case TypeAFaire.PeremptionProche: OuvrirStock("Péremption proche"); break;
                 case TypeAFaire.StocksAVerifier: OuvrirStock("À vérifier"); break;
+                case TypeAFaire.SauvegardeExterne:
+                    btnAdministration_Click(this, EventArgs.Empty);
+                    break;
                 case TypeAFaire.MutuellesEnRetard:
                     var m = new Uc_Mutuelle();
                     Ouvrir(m, btnMutuelles);

@@ -154,7 +154,9 @@ namespace Pharmacie2.views.UserControls
         /// <summary>Alertes (périmés, ruptures, péremptions, stocks à vérifier, mutuelles en retard) puis plus gros débiteurs.</summary>
         private void ChargerAlertes(StatsPeriode s)
         {
-            var elements = TableauDeBordService.AFaireMaintenant(DateTime.Now)
+            var alertes = TableauDeBordService.AFaireMaintenant(DateTime.Now);
+            if (TableauDeBordService.AlerteSauvegardeExterne(DateTime.Now) is AFaire sauvegarde) alertes.Add(sauvegarde);
+            var elements = alertes
                 .Select(a => new ElementAction(a.Texte, a.Niveau, () => OuvrirDemande?.Invoke(a.Type)))
                 .ToList();
 
