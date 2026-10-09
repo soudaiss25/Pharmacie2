@@ -1,4 +1,4 @@
-using Pharmacie2.Services;
+﻿using Pharmacie2.Services;
 using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views.UserControls
@@ -115,6 +115,22 @@ namespace Pharmacie2.views.UserControls
                 MessageBox.Show("La copie n'a pas pu être faite : le dossier est introuvable (clé débranchée ?) ou protégé.\n" +
                                 "Rien n'est perdu : une nouvelle tentative aura lieu au prochain démarrage.",
                     "Sauvegarde hors du PC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        // ── Rapport pour le développeur ───────────────────────────────────
+
+        private void btnRapport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RapportDeveloppeurService.PreparerSurLeBureauEtMontrer(this);
+                MessageBox.Show(RapportDeveloppeurService.MessageApresRapport, "Rapport pour le développeur", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Préparation du rapport pour le développeur", ex);
+                MessageBox.Show("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // ── Restauration ──────────────────────────────────────────────────

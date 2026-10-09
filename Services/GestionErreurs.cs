@@ -1,4 +1,4 @@
-namespace Pharmacie2.Services
+﻿namespace Pharmacie2.Services
 {
     /// <summary>
     /// Gestion globale des erreurs imprévues : journal détaillé, message simple en français (sans pile d'appels).
@@ -17,7 +17,13 @@ namespace Pharmacie2.Services
             Journal.Erreur(fatale ? "Erreur fatale non gérée" : "Erreur non gérée", ex);
             try
             {
-                MessageBox.Show(MessageUtilisateur(fatale), "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var reponse = MessageBox.Show(MessageUtilisateur(fatale) + "\n\nVoulez-vous préparer un rapport à envoyer au développeur ? (aucune donnée de la pharmacie n'y figure)",
+                    "Erreur", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (reponse == DialogResult.Yes)
+                {
+                    RapportDeveloppeurService.PreparerSurLeBureauEtMontrer();
+                    MessageBox.Show(RapportDeveloppeurService.MessageApresRapport, "Rapport pour le développeur", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex2)
             {

@@ -46,6 +46,9 @@
             this.lblDescCopier = new System.Windows.Forms.Label();
             this.btnRestaurer = new System.Windows.Forms.Button();
             this.lblDescRestaurer = new System.Windows.Forms.Label();
+            this.lblSectionAssistance = new System.Windows.Forms.Label();
+            this.btnRapport = new System.Windows.Forms.Button();
+            this.lblDescRapport = new System.Windows.Forms.Label();
             this.tlpRoot.SuspendLayout();
             this.tlpActions.SuspendLayout();
             this.SuspendLayout();
@@ -80,7 +83,9 @@
             this.tlpActions.ColumnCount = 2;
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpActions.RowCount = 9;
+            this.tlpActions.RowCount = 11;
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -123,6 +128,13 @@
             this.btnRestaurer.TabIndex = 13;
             this.tlpActions.Controls.Add(this.lblDescRestaurer, 1, 8);
             this.lblDescRestaurer.TabIndex = 14;
+            this.tlpActions.Controls.Add(this.lblSectionAssistance, 0, 9);
+            this.tlpActions.SetColumnSpan(this.lblSectionAssistance, 2);
+            this.lblSectionAssistance.TabIndex = 15;
+            this.tlpActions.Controls.Add(this.btnRapport, 0, 10);
+            this.btnRapport.TabIndex = 16;
+            this.tlpActions.Controls.Add(this.lblDescRapport, 1, 10);
+            this.lblDescRapport.TabIndex = 17;
             this.tlpActions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpActions.AutoSize = true;
             this.tlpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -263,6 +275,32 @@
             this.lblDescRestaurer.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
             this.lblDescRestaurer.Name = "lblDescRestaurer";
             // 
+            // lblSectionAssistance
+            // 
+            this.lblSectionAssistance.Text = "Assistance";
+            this.lblSectionAssistance.AutoSize = true;
+            this.lblSectionAssistance.Tag = "section";
+            this.lblSectionAssistance.Margin = new System.Windows.Forms.Padding(0, 14, 0, 4);
+            this.lblSectionAssistance.Name = "lblSectionAssistance";
+            // 
+            // btnRapport
+            // 
+            this.btnRapport.Text = "Préparer un rapport pour le développeur";
+            this.btnRapport.Width = 290;
+            this.btnRapport.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnRapport.Margin = new System.Windows.Forms.Padding(0, 6, 16, 6);
+            this.btnRapport.Name = "btnRapport";
+            this.btnRapport.Click += new System.EventHandler(this.btnRapport_Click);
+            // 
+            // lblDescRapport
+            // 
+            this.lblDescRapport.Text = "Crée un fichier ZIP sur le Bureau (journaux filtrés et informations techniques, sans aucune donnée de la pharmacie) à envoyer par WhatsApp ou e-mail.";
+            this.lblDescRapport.AutoSize = true;
+            this.lblDescRapport.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDescRapport.MaximumSize = new System.Drawing.Size(520, 0);
+            this.lblDescRapport.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.lblDescRapport.Name = "lblDescRapport";
+            // 
             // Uc_Administration
             // 
             this.Controls.Add(this.tlpRoot);
@@ -302,5 +340,8 @@
         private System.Windows.Forms.Label lblDescCopier;
         private System.Windows.Forms.Button btnRestaurer;
         private System.Windows.Forms.Label lblDescRestaurer;
+        private System.Windows.Forms.Label lblSectionAssistance;
+        private System.Windows.Forms.Button btnRapport;
+        private System.Windows.Forms.Label lblDescRapport;
     }
 }
