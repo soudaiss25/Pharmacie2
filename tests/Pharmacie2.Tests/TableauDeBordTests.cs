@@ -154,7 +154,7 @@ public class TableauDeBordTests
         Assert.Equal(1, a[0].Nombre);     // seulement « Périmé en stock »
         Assert.Contains("Périmé en stock", a[0].Texte);
         Assert.DoesNotContain("archivé", a[0].Texte);
-        Assert.Equal(1, a[1].Nombre);
+        Assert.Equal(2, a[1].Nombre);   // « Rupture » + « Périmé mais plus de stock » (archivés exclus)
         Assert.Equal(1, a[3].Nombre);
         Assert.Equal(1, a[4].Nombre);     // la vente de 45 jours compte, pas celle de 5 jours
         Assert.Contains("800 KMF", a[4].Texte);
