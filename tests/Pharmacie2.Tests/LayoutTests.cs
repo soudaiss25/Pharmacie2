@@ -13,7 +13,7 @@ public class LayoutTests
     // Écrans déjà convertis aux règles B0 (la liste grandit au fil de la refonte ; voir TousLesEcransSontCouverts)
     private static readonly HashSet<string> Convertis = new()
     {
-        "PageAccueil", "Uc_MaJournee", "Uc_Stock", "Uc_Statistique", "PageCaissier", "FormVente", "Uc_Vente", "FormModificationVente", "FormPaiements", "FormDetailVente", "FormAnnulationVente", "FormSessionCaisse", "Uc_Caisse", "Uc_Depenses", "FormAddDepense", "Uc_Produits", "FormAddProduit", "FormChoixProduit", "Uc_Fournisser", "FormaddFournisseur", "Uc_Commande", "FormCommandeProduit", "FormCommandesFournisseur", "FormReceptionPartielle", "Uc_Mutuelle", "FormAddMutuelle", "FormPeriodeExportMutuelle", "FormReferencePaiement", "Uc_Utilisateurs"
+        "PageAccueil", "Uc_MaJournee", "Uc_Stock", "Uc_Statistique", "PageCaissier", "FormVente", "Uc_Vente", "FormModificationVente", "FormPaiements", "FormDetailVente", "FormAnnulationVente", "FormSessionCaisse", "Uc_Caisse", "Uc_Depenses", "FormAddDepense", "Uc_Produits", "FormAddProduit", "FormChoixProduit", "Uc_Fournisser", "FormaddFournisseur", "Uc_Commande", "FormCommandeProduit", "FormCommandesFournisseur", "FormReceptionPartielle", "Uc_Mutuelle", "FormAddMutuelle", "FormPeriodeExportMutuelle", "FormReferencePaiement", "Uc_Utilisateurs", "Form1", "FormInitialize", "FormCleSecours", "FormReinitialisationMdp"
     };
 
     // Passe à true quand tous les écrans sont convertis : le test de couverture devient bloquant
@@ -48,6 +48,7 @@ public class LayoutTests
             case "FormPaiements": return new Pharmacie2.views.FormPaiements(ids.Vente);
             case "FormPeriodeExportMutuelle": return new Pharmacie2.views.FormPeriodeExportMutuelle("Entreprise Moheli");
             case "FormReceptionPartielle": return new Pharmacie2.views.FormReceptionPartielle(ids.Commande);
+            case "FormReinitialisationMdp": return new Pharmacie2.views.FormReinitialisationMdp("admin");
             case "FormSessionCaisse": return new Pharmacie2.views.FormSessionCaisse(ids.Caissier);
             case "PageAccueil": return new Pharmacie2.views.PageAccueil(SessionUtilisateur.Courant);
             case "PageCaissier":

@@ -12,6 +12,7 @@ namespace Pharmacie2
         public FormInitialize()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
         }
 
         private void btnCreate_Click(object sender, EventArgs e)
@@ -38,7 +39,7 @@ namespace Pharmacie2
 
                 if (loginExists)
                 {
-                    MessageBox.Show("Ce login existe déjà.",
+                    MessageBox.Show("Cet identifiant existe déjà.",
                                     "Erreur",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Warning);
@@ -58,11 +59,6 @@ namespace Pharmacie2
                 context.SaveChanges();
                 nouvelAdminId = admin.Id;
             }
-
-            MessageBox.Show("Administrateur créé avec succès.",
-                            "Succès",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
 
             // Clé de secours du premier administrateur (affichée une seule fois)
             FormCleSecours.GenererAfficherEtEnregistrer(this, nouvelAdminId);

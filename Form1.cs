@@ -12,25 +12,34 @@ namespace Pharmacie2
         public Form1()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
+            Text = AppInfo.Titre("Connexion");
+            lblWelcome.Text = AppInfo.NomPharmacie;
 
-            var lienOubli = new LinkLabel
+            // Logo facultatif : s'il manque, la fenêtre s'ouvre quand même
+            try
             {
-                Text = "Mot de passe oublié ?",
-                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                Location = new System.Drawing.Point(40, 368),
-                Size = new System.Drawing.Size(320, 24),
-                Font = new System.Drawing.Font("Segoe UI", 9.5F)
-            };
-            lienOubli.LinkClicked += (s, e) =>
+                string logo = System.IO.Path.Combine(Application.StartupPath, "logo.png");
+                if (System.IO.File.Exists(logo))
+                    pictureBoxLogo.Image = System.Drawing.Image.FromFile(logo);
+                else
+                    pictureBoxLogo.Visible = false;
+            }
+            catch (Exception ex)
             {
-                using var f = new FormReinitialisationMdp(txtUsername.Text.Trim());
-                if (f.ShowDialog(this) == DialogResult.OK)
-                {
-                    txtPassword.Clear();
-                    txtPassword.Focus();
-                }
-            };
-            panelLogin.Controls.Add(lienOubli);
+                Journal.Erreur("Chargement du logo", ex);
+                pictureBoxLogo.Visible = false;
+            }
+        }
+
+        private void lnkOubli_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using var f = new FormReinitialisationMdp(txtUsername.Text.Trim());
+            if (f.ShowDialog(this) == DialogResult.OK)
+            {
+                txtPassword.Clear();
+                txtPassword.Focus();
+            }
         }
 
         /// <summary>
@@ -77,7 +86,7 @@ namespace Pharmacie2
 
                 if (resultat != ResultatConnexion.Succes || user == null)
                 {
-                    MessageBox.Show("Login ou mot de passe incorrect.", "Connexion",
+                    MessageBox.Show("Identifiant ou mot de passe incorrect.", "Connexion",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtPassword.Clear();
                     txtPassword.Focus();
@@ -88,7 +97,7 @@ namespace Pharmacie2
                 if (user.Role == Roles.Administrateur && !CleSecoursService.AUneCle(user.Id))
                     FormCleSecours.GenererAfficherEtEnregistrer(this, user.Id);
 
-                // ? Stocker l'utilisateur connecté en session
+                // Stocker l'utilisateur connecté en session
                 SessionUtilisateur.Courant = user;
 
                 this.Hide();

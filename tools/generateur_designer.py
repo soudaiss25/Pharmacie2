@@ -262,7 +262,7 @@ class Ecran:
         # enfants
         if c.typ == 'TableLayoutPanel' or (root and c.rows):
             self._emit_table(L, c, ref)
-        for k in c.kids:
+        for ordre, k in enumerate(c.kids):
             child, cell = (k if isinstance(k, tuple) else (k, None))
             if c.typ == 'TableLayoutPanel' or (root and c.rows):
                 if cell is None:
@@ -276,6 +276,8 @@ class Ecran:
                         w(f'            {ref}.SetRowSpan(this.{child.name}, {cell[3]});')
             else:
                 w(f'            {ref}.Controls.Add(this.{child.name});')
+            if 'TabIndex' not in child.props:
+                w(f'            this.{child.name}.TabIndex = {ordre};')   # ordre de tabulation = ordre de déclaration
         if c.columns:
             w(f'            {ref}.Columns.AddRange(new {WF}DataGridViewColumn[] {{')
             for i, col in enumerate(c.columns):
