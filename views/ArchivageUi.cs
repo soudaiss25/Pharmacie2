@@ -32,7 +32,8 @@ namespace Pharmacie2.views
                 AutoSize = true,
                 Margin = new Padding(12, 8, 0, 0)
             };
-            chk.CheckedChanged += (s, e) => recharger();
+            btnReactiver.Visible = false;   // propose seulement quand les archives sont affichees
+            chk.CheckedChanged += (s, e) => { btnReactiver.Visible = chk.Checked; recharger(); };
 
             if (!enFlux)
             {

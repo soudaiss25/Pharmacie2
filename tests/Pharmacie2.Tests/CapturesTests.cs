@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using Xunit;
@@ -70,5 +70,15 @@ public class CapturesTests
         using var bmp = new Bitmap(Math.Max(1, f.Width), Math.Max(1, f.Height));
         f.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
         bmp.Save(chemin, ImageFormat.Png);
+
+        // arbre des contrôles (nom, type, position, taille) pour comprendre une mise en page sans la voir
+        var sb = new System.Text.StringBuilder();
+        void Vider(Control c, int niveau)
+        {
+            sb.AppendLine($"{new string(' ', niveau * 2)}{(string.IsNullOrEmpty(c.Name) ? "-" : c.Name)} [{c.GetType().Name}] {c.Bounds}{(c.Visible ? "" : " (caché)")}");
+            foreach (Control k in c.Controls) Vider(k, niveau + 1);
+        }
+        Vider(f, 0);
+        File.WriteAllText(Path.ChangeExtension(chemin, ".txt"), sb.ToString());
     }
 }
