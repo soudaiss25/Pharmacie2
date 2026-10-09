@@ -57,6 +57,19 @@ namespace Pharmacie2.Services
         public static Font Texte10 => Police(10);
         public static Font Note => Police(9);
 
+        // ── Échelle (zoom Windows) pour les composants qui se dessinent eux-mêmes ──
+        /// <summary>Uniquement pour les tests : simule un zoom Windows (1,25 ; 1,5) sans changer le DPI réel.</summary>
+        public static float? EchelleTest { get; set; }
+
+        /// <summary>Facteur d'échelle d'un contrôle : zoom Windows réel (DPI / 96), ou zoom simulé par les tests.</summary>
+        public static float Echelle(Control c) => EchelleTest ?? Math.Max(1f, c.DeviceDpi / 96f);
+
+        /// <summary>Entier mis à l'échelle (pixels de dessin).</summary>
+        public static int Px(Control c, float valeur) => (int)Math.Round(valeur * Echelle(c));
+
+        /// <summary>Police agrandie quand un zoom est simulé par les tests (en vrai, GDI+ applique déjà le DPI aux points).</summary>
+        public static Font Adapter(Font f) => EchelleTest is float k && k != 1f ? new Font(f.FontFamily, f.Size * k, f.Style, GraphicsUnit.Point) : new Font(f, f.Style);
+
         // ── Niveaux d'alerte ──────────────────────────────────────────────
         public static (Color texte, Color fond) Niveau(string? niveau) => niveau switch
         {
