@@ -12,14 +12,8 @@ using Xunit;
 /// </summary>
 public class LayoutTests
 {
-    // Écrans déjà conformes à la nouvelle cible. Les autres sont photographiés (CapturesTests) mais pas encore bloquants.
-    private static readonly HashSet<string> Conformes = new()
-    {
-        "PageAccueil", "Uc_MaJournee", "Uc_Stock", "Uc_Vente", "FormVente", "Uc_Administration"
-    };
-
-    // Passe à true quand tous les écrans sont conformes : le test de couverture devient bloquant
-    private const bool VerifierCouvertureComplete = false;
+    // Tous les écrans sont conformes à la nouvelle cible : le test est bloquant pour chacun d'eux.
+    private static bool EstConforme(string nom) => true;
 
     private static readonly Size EcranMiniLogique = new(1280, 720);   // plus petit écran visé, en pixels logiques
 
@@ -38,7 +32,7 @@ public class LayoutTests
     [MemberData(nameof(Ecrans))]
     public void Mise_en_page_conforme(string nomEcran)
     {
-        bool bloquant = Conformes.Contains(nomEcran);
+        bool bloquant = EstConforme(nomEcran);
         string? rapport = Environment.GetEnvironmentVariable("CAPTURES_DIR");
         if (!bloquant && string.IsNullOrWhiteSpace(rapport))
             return;
@@ -67,8 +61,8 @@ public class LayoutTests
     [Fact]
     public void Tous_les_ecrans_sont_couverts_par_le_test()
     {
-        if (!VerifierCouvertureComplete) return;
-        var manquants = Decouvrir().Select(t => t.Name).Where(n => !Conformes.Contains(n)).ToList();
+        // couverture : tous les écrans sont vérifiés (EstConforme renvoie toujours vrai)
+        var manquants = Decouvrir().Select(t => t.Name).Where(n => !EstConforme(n)).ToList();
         Assert.True(manquants.Count == 0, "Écrans non conformes : " + string.Join(", ", manquants));
     }
 
