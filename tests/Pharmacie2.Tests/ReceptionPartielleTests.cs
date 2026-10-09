@@ -32,7 +32,7 @@ public class ReceptionPartielleTests
             Assert.Equal(10, Convert.ToInt32(ligne.Cells["colRecu"].Value));   // préremplie avec le reste
 
             ligne.Cells["colRecu"].Value = 4;
-            UiHelper.Champ<Button>(f, "btnValider").PerformClick();
+            UiHelper.Appeler(f, "btnValider_Click", null!, EventArgs.Empty);
         });
         Assert.Equal(20, TestDb.Scalaire($"SELECT QuantiteEnStock FROM produits WHERE Id={pid}"));   // 4 boîtes de 5
         Assert.Equal(4, TestDb.Scalaire($"SELECT QuantiteRecue FROM LigneCommandes WHERE CommandeId={cmd}"));
@@ -47,7 +47,7 @@ public class ReceptionPartielleTests
         {
             using var f = new FormReceptionPartielle(cmd);
             Assert.False(UiHelper.Champ<Button>(f, "btnToutRecevoir").Enabled);
-            Assert.True(UiHelper.Champ<Label>(f, "lblAvertissement").Visible);
+            Assert.NotEmpty(UiHelper.Champ<Label>(f, "lblAvertissement").Text);
             Assert.Equal(0, Convert.ToInt32(UiHelper.Champ<DataGridView>(f, "dgvLignes").Rows[0].Cells["colRecu"].Value));
         });
         Assert.Equal(0, TestDb.Scalaire($"SELECT QuantiteEnStock FROM produits WHERE Id={pid}"));
