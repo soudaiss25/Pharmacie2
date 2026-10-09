@@ -266,7 +266,9 @@
             this.pnlDroite.TabIndex = 1;
             this.tlpCorps.Controls.Add(this.pnlResultat, 2, 0);
             this.pnlResultat.TabIndex = 2;
-            this.tlpCorps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCorps.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpCorps.AutoSize = true;
+            this.tlpCorps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCorps.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpCorps.Name = "tlpCorps";
             // 

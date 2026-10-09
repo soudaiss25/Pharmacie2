@@ -29,15 +29,17 @@
         private void InitializeComponent()
         {
             this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpEntete = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitre = new System.Windows.Forms.Label();
-            this.flpPeriode = new System.Windows.Forms.FlowLayoutPanel();
+            this.tlpEnteteActions = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnExportExcel = new System.Windows.Forms.Button();
+            this.btnExportPDF = new System.Windows.Forms.Button();
+            this.tlpPeriode = new System.Windows.Forms.TableLayoutPanel();
             this.lblPeriode = new System.Windows.Forms.Label();
             this.cbPeriode = new System.Windows.Forms.ComboBox();
             this.dtpDebut = new System.Windows.Forms.DateTimePicker();
             this.dtpFin = new System.Windows.Forms.DateTimePicker();
             this.btnActualiser = new System.Windows.Forms.Button();
-            this.btnExportExcel = new System.Windows.Forms.Button();
-            this.btnExportPDF = new System.Windows.Forms.Button();
             this.lblPeriodeAffichee = new System.Windows.Forms.Label();
             this.lblAlertes = new System.Windows.Forms.Label();
             this.listeAlertes = new Pharmacie2.views.Composants.ListeActions();
@@ -80,7 +82,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvCreditsClients)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMutuelleImpayes)).BeginInit();
             this.tlpRoot.SuspendLayout();
-            this.flpPeriode.SuspendLayout();
+            this.tlpEntete.SuspendLayout();
+            this.tlpEnteteActions.SuspendLayout();
+            this.tlpPeriode.SuspendLayout();
             this.tlpKpi.SuspendLayout();
             this.tlpTables.SuspendLayout();
             this.tlpModes.SuspendLayout();
@@ -97,14 +101,14 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
-            this.lblTitre.TabIndex = 0;
-            this.tlpRoot.Controls.Add(this.flpPeriode, 0, 1);
-            this.flpPeriode.TabIndex = 1;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.Controls.Add(this.tlpEntete, 0, 0);
+            this.tlpEntete.TabIndex = 0;
+            this.tlpRoot.Controls.Add(this.tlpPeriode, 0, 1);
+            this.tlpPeriode.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.lblAlertes, 0, 2);
             this.lblAlertes.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.listeAlertes, 0, 3);
@@ -115,85 +119,51 @@
             this.tlpTables.TabIndex = 5;
             this.tlpRoot.Controls.Add(this.lblLastUpdate, 0, 6);
             this.lblLastUpdate.TabIndex = 6;
-            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpRoot.AutoSize = true;
+            this.tlpRoot.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
+            // 
+            // tlpEntete
+            // 
+            this.tlpEntete.ColumnCount = 3;
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpEntete.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.RowCount = 1;
+            this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpEntete.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
+            this.tlpEntete.Controls.Add(this.tlpEnteteActions, 2, 0);
+            this.tlpEnteteActions.TabIndex = 1;
+            this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEntete.AutoSize = true;
+            this.tlpEntete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpEntete.Name = "tlpEntete";
             // 
             // lblTitre
             // 
             this.lblTitre.Text = "Statistiques";
             this.lblTitre.AutoSize = true;
             this.lblTitre.Tag = "titre";
-            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.lblTitre.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblTitre.Name = "lblTitre";
             // 
-            // flpPeriode
+            // tlpEnteteActions
             // 
-            this.flpPeriode.Controls.Add(this.lblPeriode);
-            this.lblPeriode.TabIndex = 0;
-            this.flpPeriode.Controls.Add(this.cbPeriode);
-            this.cbPeriode.TabIndex = 1;
-            this.flpPeriode.Controls.Add(this.dtpDebut);
-            this.dtpDebut.TabIndex = 2;
-            this.flpPeriode.Controls.Add(this.dtpFin);
-            this.dtpFin.TabIndex = 3;
-            this.flpPeriode.Controls.Add(this.btnActualiser);
-            this.btnActualiser.TabIndex = 4;
-            this.flpPeriode.Controls.Add(this.btnExportExcel);
-            this.btnExportExcel.TabIndex = 5;
-            this.flpPeriode.Controls.Add(this.btnExportPDF);
-            this.btnExportPDF.TabIndex = 6;
-            this.flpPeriode.Controls.Add(this.lblPeriodeAffichee);
-            this.lblPeriodeAffichee.TabIndex = 7;
-            this.flpPeriode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpPeriode.AutoSize = true;
-            this.flpPeriode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpPeriode.WrapContents = true;
-            this.flpPeriode.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
-            this.flpPeriode.Name = "flpPeriode";
-            // 
-            // lblPeriode
-            // 
-            this.lblPeriode.Text = "Période";
-            this.lblPeriode.AutoSize = true;
-            this.lblPeriode.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
-            this.lblPeriode.Name = "lblPeriode";
-            // 
-            // cbPeriode
-            // 
-            this.cbPeriode.Width = 170;
-            this.cbPeriode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbPeriode.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
-            this.cbPeriode.Items.AddRange(new object[] {
-            "Aujourd'hui",
-            "Cette semaine",
-            "Ce mois",
-            "Cette année",
-            "Personnalisé"});
-            this.cbPeriode.Name = "cbPeriode";
-            this.cbPeriode.SelectedIndexChanged += new System.EventHandler(this.cbPeriode_SelectedIndexChanged);
-            // 
-            // dtpDebut
-            // 
-            this.dtpDebut.Width = 130;
-            this.dtpDebut.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDebut.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
-            this.dtpDebut.Name = "dtpDebut";
-            // 
-            // dtpFin
-            // 
-            this.dtpFin.Width = 130;
-            this.dtpFin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpFin.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
-            this.dtpFin.Name = "dtpFin";
-            // 
-            // btnActualiser
-            // 
-            this.btnActualiser.Text = "Actualiser";
-            this.btnActualiser.Tag = "primaire";
-            this.btnActualiser.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
-            this.btnActualiser.Name = "btnActualiser";
-            this.btnActualiser.Click += new System.EventHandler(this.btnActualiser_Click);
+            this.tlpEnteteActions.Controls.Add(this.btnExportExcel);
+            this.btnExportExcel.TabIndex = 0;
+            this.tlpEnteteActions.Controls.Add(this.btnExportPDF);
+            this.btnExportPDF.TabIndex = 1;
+            this.tlpEnteteActions.AutoSize = true;
+            this.tlpEnteteActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEnteteActions.WrapContents = false;
+            this.tlpEnteteActions.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.tlpEnteteActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpEnteteActions.Name = "tlpEnteteActions";
             // 
             // btnExportExcel
             // 
@@ -209,12 +179,91 @@
             this.btnExportPDF.Name = "btnExportPDF";
             this.btnExportPDF.Click += new System.EventHandler(this.btnExportPDF_Click);
             // 
+            // tlpPeriode
+            // 
+            this.tlpPeriode.ColumnCount = 7;
+            this.tlpPeriode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpPeriode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpPeriode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpPeriode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpPeriode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpPeriode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpPeriode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpPeriode.RowCount = 1;
+            this.tlpPeriode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpPeriode.Controls.Add(this.lblPeriode, 0, 0);
+            this.lblPeriode.TabIndex = 0;
+            this.tlpPeriode.Controls.Add(this.cbPeriode, 1, 0);
+            this.cbPeriode.TabIndex = 1;
+            this.tlpPeriode.Controls.Add(this.dtpDebut, 2, 0);
+            this.dtpDebut.TabIndex = 2;
+            this.tlpPeriode.Controls.Add(this.dtpFin, 3, 0);
+            this.dtpFin.TabIndex = 3;
+            this.tlpPeriode.Controls.Add(this.btnActualiser, 4, 0);
+            this.btnActualiser.TabIndex = 4;
+            this.tlpPeriode.Controls.Add(this.lblPeriodeAffichee, 5, 0);
+            this.lblPeriodeAffichee.TabIndex = 5;
+            this.tlpPeriode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpPeriode.AutoSize = true;
+            this.tlpPeriode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpPeriode.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.tlpPeriode.Name = "tlpPeriode";
+            // 
+            // lblPeriode
+            // 
+            this.lblPeriode.Text = "Période";
+            this.lblPeriode.AutoSize = true;
+            this.lblPeriode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPeriode.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.lblPeriode.Name = "lblPeriode";
+            // 
+            // cbPeriode
+            // 
+            this.cbPeriode.Width = 170;
+            this.cbPeriode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbPeriode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbPeriode.Margin = new System.Windows.Forms.Padding(0, 0, 16, 0);
+            this.cbPeriode.Items.AddRange(new object[] {
+            "Aujourd'hui",
+            "Cette semaine",
+            "Ce mois",
+            "Cette année",
+            "Personnalisé"});
+            this.cbPeriode.Name = "cbPeriode";
+            this.cbPeriode.SelectedIndexChanged += new System.EventHandler(this.cbPeriode_SelectedIndexChanged);
+            // 
+            // dtpDebut
+            // 
+            this.dtpDebut.Width = 130;
+            this.dtpDebut.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDebut.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtpDebut.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.dtpDebut.Name = "dtpDebut";
+            // 
+            // dtpFin
+            // 
+            this.dtpFin.Width = 130;
+            this.dtpFin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFin.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtpFin.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.dtpFin.Name = "dtpFin";
+            // 
+            // btnActualiser
+            // 
+            this.btnActualiser.Text = "Actualiser";
+            this.btnActualiser.Tag = "primaire";
+            this.btnActualiser.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnActualiser.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
+            this.btnActualiser.Name = "btnActualiser";
+            this.btnActualiser.Click += new System.EventHandler(this.btnActualiser_Click);
+            // 
             // lblPeriodeAffichee
             // 
             this.lblPeriodeAffichee.Text = "";
             this.lblPeriodeAffichee.AutoSize = true;
             this.lblPeriodeAffichee.Tag = "note";
-            this.lblPeriodeAffichee.Margin = new System.Windows.Forms.Padding(8, 8, 0, 0);
+            this.lblPeriodeAffichee.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPeriodeAffichee.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.lblPeriodeAffichee.Name = "lblPeriodeAffichee";
             // 
             // lblAlertes
@@ -222,13 +271,15 @@
             this.lblAlertes.Text = "À surveiller";
             this.lblAlertes.AutoSize = true;
             this.lblAlertes.Tag = "section";
-            this.lblAlertes.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.lblAlertes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lblAlertes.Name = "lblAlertes";
             // 
             // listeAlertes
             // 
-            this.listeAlertes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listeAlertes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.listeAlertes.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.listeAlertes.AutoSize = true;
+            this.listeAlertes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.listeAlertes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.listeAlertes.Name = "listeAlertes";
             // 
             // tlpKpi
@@ -252,44 +303,44 @@
             this.tlpKpi.Controls.Add(this.carteARecuperer, 4, 0);
             this.carteARecuperer.TabIndex = 4;
             this.tlpKpi.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpKpi.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpKpi.AutoSize = true;
             this.tlpKpi.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpKpi.Margin = new System.Windows.Forms.Padding(0, 0, 0, 12);
             this.tlpKpi.Name = "tlpKpi";
             // 
             // carteCA
             // 
             this.carteCA.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteCA.Titre = "Chiffre d'affaires";
-            this.carteCA.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.carteCA.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteCA.Name = "carteCA";
             // 
             // carteBenefice
             // 
             this.carteBenefice.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteBenefice.Titre = "Bénéfice (après dépenses)";
-            this.carteBenefice.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.carteBenefice.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteBenefice.Name = "carteBenefice";
             // 
             // carteVentes
             // 
             this.carteVentes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteVentes.Titre = "Ventes";
-            this.carteVentes.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.carteVentes.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteVentes.Name = "carteVentes";
             // 
             // carteASolder
             // 
             this.carteASolder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteASolder.Titre = "Ventes à solder";
-            this.carteASolder.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
+            this.carteASolder.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteASolder.Name = "carteASolder";
             // 
             // carteARecuperer
             // 
             this.carteARecuperer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.carteARecuperer.Titre = "Argent à récupérer";
-            this.carteARecuperer.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.carteARecuperer.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.carteARecuperer.Name = "carteARecuperer";
             // 
             // tlpTables
@@ -298,8 +349,8 @@
             this.tlpTables.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
             this.tlpTables.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
             this.tlpTables.RowCount = 2;
-            this.tlpTables.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
-            this.tlpTables.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
+            this.tlpTables.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 220F));
+            this.tlpTables.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 220F));
             this.tlpTables.Controls.Add(this.tlpModes, 0, 0);
             this.tlpModes.TabIndex = 0;
             this.tlpTables.Controls.Add(this.tlpTop, 1, 0);
@@ -324,7 +375,7 @@
             this.tlpModes.Controls.Add(this.dgvVentilation, 0, 1);
             this.dgvVentilation.TabIndex = 1;
             this.tlpModes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpModes.Margin = new System.Windows.Forms.Padding(0, 0, 8, 4);
+            this.tlpModes.Margin = new System.Windows.Forms.Padding(0, 0, 8, 8);
             this.tlpModes.Name = "tlpModes";
             // 
             // lblModes
@@ -332,7 +383,7 @@
             this.lblModes.Text = "Argent reçu par moyen de paiement";
             this.lblModes.AutoSize = true;
             this.lblModes.Tag = "section";
-            this.lblModes.Margin = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblModes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
             this.lblModes.Name = "lblModes";
             // 
             // dgvVentilation
@@ -359,7 +410,7 @@
             this.tlpTop.Controls.Add(this.dgvTopProduits, 0, 1);
             this.dgvTopProduits.TabIndex = 1;
             this.tlpTop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTop.Margin = new System.Windows.Forms.Padding(8, 0, 0, 4);
+            this.tlpTop.Margin = new System.Windows.Forms.Padding(8, 0, 0, 8);
             this.tlpTop.Name = "tlpTop";
             // 
             // lblTop
@@ -367,7 +418,7 @@
             this.lblTop.Text = "Produits les plus vendus";
             this.lblTop.AutoSize = true;
             this.lblTop.Tag = "section";
-            this.lblTop.Margin = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblTop.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
             this.lblTop.Name = "lblTop";
             // 
             // dgvTopProduits
@@ -393,7 +444,7 @@
             this.tlpCredits.Controls.Add(this.dgvCreditsClients, 0, 1);
             this.dgvCreditsClients.TabIndex = 1;
             this.tlpCredits.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpCredits.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.tlpCredits.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.tlpCredits.Name = "tlpCredits";
             // 
             // lblCredits
@@ -401,7 +452,7 @@
             this.lblCredits.Text = "Crédits clients";
             this.lblCredits.AutoSize = true;
             this.lblCredits.Tag = "section";
-            this.lblCredits.Margin = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblCredits.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
             this.lblCredits.Name = "lblCredits";
             // 
             // dgvCreditsClients
@@ -428,7 +479,7 @@
             this.tlpMutuelles.Controls.Add(this.dgvMutuelleImpayes, 0, 1);
             this.dgvMutuelleImpayes.TabIndex = 1;
             this.tlpMutuelles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMutuelles.Margin = new System.Windows.Forms.Padding(8, 4, 0, 0);
+            this.tlpMutuelles.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
             this.tlpMutuelles.Name = "tlpMutuelles";
             // 
             // lblMutuelles
@@ -436,7 +487,7 @@
             this.lblMutuelles.Text = "Mutuelles qui doivent de l'argent";
             this.lblMutuelles.AutoSize = true;
             this.lblMutuelles.Tag = "section";
-            this.lblMutuelles.Margin = new System.Windows.Forms.Padding(0, 4, 0, 6);
+            this.lblMutuelles.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
             this.lblMutuelles.Name = "lblMutuelles";
             // 
             // dgvMutuelleImpayes
@@ -455,7 +506,7 @@
             this.lblLastUpdate.Text = "";
             this.lblLastUpdate.AutoSize = true;
             this.lblLastUpdate.Tag = "note";
-            this.lblLastUpdate.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.lblLastUpdate.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
             this.lblLastUpdate.Name = "lblLastUpdate";
             // 
             // colMode
@@ -591,11 +642,13 @@
             // Uc_Statistique
             // 
             this.Controls.Add(this.tlpRoot);
+            this.tlpRoot.TabIndex = 0;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.MinimumSize = new System.Drawing.Size(960, 560);
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Size = new System.Drawing.Size(1146, 700);
+            this.Size = new System.Drawing.Size(1000, 700);
+            this.MinimumSize = new System.Drawing.Size(840, 560);
+            this.AutoScroll = true;
             this.Name = "Uc_Statistique";
             this.ResumeLayout(false);
             this.tlpMutuelles.ResumeLayout(false);
@@ -610,8 +663,12 @@
             this.tlpTables.PerformLayout();
             this.tlpKpi.ResumeLayout(false);
             this.tlpKpi.PerformLayout();
-            this.flpPeriode.ResumeLayout(false);
-            this.flpPeriode.PerformLayout();
+            this.tlpPeriode.ResumeLayout(false);
+            this.tlpPeriode.PerformLayout();
+            this.tlpEnteteActions.ResumeLayout(false);
+            this.tlpEnteteActions.PerformLayout();
+            this.tlpEntete.ResumeLayout(false);
+            this.tlpEntete.PerformLayout();
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMutuelleImpayes)).EndInit();
@@ -624,15 +681,17 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.TableLayoutPanel tlpEntete;
         private System.Windows.Forms.Label lblTitre;
-        private System.Windows.Forms.FlowLayoutPanel flpPeriode;
+        private System.Windows.Forms.FlowLayoutPanel tlpEnteteActions;
+        private System.Windows.Forms.Button btnExportExcel;
+        private System.Windows.Forms.Button btnExportPDF;
+        private System.Windows.Forms.TableLayoutPanel tlpPeriode;
         private System.Windows.Forms.Label lblPeriode;
         private System.Windows.Forms.ComboBox cbPeriode;
         private System.Windows.Forms.DateTimePicker dtpDebut;
         private System.Windows.Forms.DateTimePicker dtpFin;
         private System.Windows.Forms.Button btnActualiser;
-        private System.Windows.Forms.Button btnExportExcel;
-        private System.Windows.Forms.Button btnExportPDF;
         private System.Windows.Forms.Label lblPeriodeAffichee;
         private System.Windows.Forms.Label lblAlertes;
         private Pharmacie2.views.Composants.ListeActions listeAlertes;

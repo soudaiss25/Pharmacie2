@@ -1,16 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Pharmacie2.views.Composants;
+using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 
 namespace Pharmacie2.views.UserControls
 {
-    public partial class Uc_Caisse : UserControl
+    public partial class Uc_Caisse : UserControl, IModeCompact
     {
         private int _sessionSelectionneeId = -1;
 
         public Uc_Caisse()
         {
             InitializeComponent();
+            ModeCompact.CartesAdaptatives(pnlCartes);
             Theme.Appliquer(this);
 
             InitFiltresCombos();
@@ -448,6 +450,16 @@ namespace Pharmacie2.views.UserControls
         private void dgvDetail_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) => ColorerLigneVente(dgvDetail, e);
 
         private void dgvDetailSession_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e) => ColorerLigneVente(dgvDetailSession, e);
+    
+        /// <summary>Mode compact : colonnes secondaires masquées dans les deux tableaux détaillés.</summary>
+        public void DefinirCompact(bool compact)
+        {
+            ModeCompact.MasquerColonnes(dgvDetail, compact, "Motif", "Especes", "Rendu", "Vendeur");
+            ModeCompact.MasquerColonnes(dgvSessions, compact, "Fond", "Theorique", "Compte", "NbVentes");
+            ModeCompact.MasquerColonnes(dgvDetailSession, compact, "Verse");
+            Theme.AjusterColonnes(dgvDetail);
+            Theme.AjusterColonnes(dgvSessions);
+        }
     }
 
     internal class UserItem

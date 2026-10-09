@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
@@ -18,6 +18,7 @@ namespace Pharmacie2.views
         {
             _user = user;
             InitializeComponent();
+            Pharmacie2.views.Composants.ModeCompact.CartesAdaptatives(tlpKpi);
             Theme.Appliquer(this);
 
             Text = AppInfo.Titre("Caisse");

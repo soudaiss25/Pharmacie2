@@ -273,16 +273,19 @@ public class LayoutTests
                     int besoin = TextRenderer.MeasureText(col.HeaderText, policeEntete).Width + 8;
                     if (besoin > col.Width)
                         erreurs.Add($"{chemin}/{g.Name} : en-tête « {col.HeaderText} » tronqué ({besoin}px pour {col.Width}px)");
-                    if (col.HeaderText == "Date")
+                    // toute cellule qui ressemble à une date (jj/mm…) doit tenir dans sa colonne
+                    {
                         foreach (DataGridViewRow r in g.Rows)
                         {
                             string texte = Convert.ToString(r.Cells[col.Index].FormattedValue) ?? "";
+                            if (!System.Text.RegularExpressions.Regex.IsMatch(texte, @"^\d{2}/\d{2}")) continue;
                             if (TextRenderer.MeasureText(texte, policeCellule).Width + 8 > col.Width)
                             {
                                 erreurs.Add($"{chemin}/{g.Name} : date « {texte} » tronquée dans {col.Width}px");
                                 break;
                             }
                         }
+                    }
                 }
             }
             VerifierGrilles(c, chemin, erreurs, cfg);

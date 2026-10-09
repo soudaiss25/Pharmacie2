@@ -286,7 +286,7 @@ namespace Pharmacie2.Services
             {
                 if (!col.Visible) continue;
                 int voulu = Math.Max(60, LargeurTexte(col.HeaderText, police));
-                if (col.HeaderText == "Date")
+                if (col.HeaderText.StartsWith("Date") || col.HeaderText is "Ouverture" or "Clôture" or "Reçue le")
                     voulu = Math.Max(voulu, LargeurTexte("00/00 00:00", policeCellule));
                 if (col.MinimumWidth != voulu) col.MinimumWidth = voulu;
             }
@@ -356,6 +356,26 @@ namespace Pharmacie2.Services
         private static void FormaterMontants(object? sender, DataGridViewCellFormattingEventArgs e)
         {
             if (sender is not DataGridView g || e.RowIndex < 0 || e.ColumnIndex < 0) return;
+
+            // Date + heure : « 09/10/2026 10:00 » si la colonne est assez large, sinon « 09/10 10:00 » (jamais d'ellipse)
+            if (e.Value is string texte && texte.Length == 16 && texte[2] == '/' && texte[5] == '/' && texte[10] == ' ' && texte[13] == ':')
+            {
+                var col = g.Columns[e.ColumnIndex];
+                if (col.Width < LargeurTexte("00/00/0000 00:00", g.DefaultCellStyle.Font ?? g.Font))
+                {
+                    e.Value = texte.Substring(0, 5) + " " + texte.Substring(11);
+                    e.FormattingApplied = true;
+                }
+                return;
+            }
+
+            if (g.Columns[e.ColumnIndex].HeaderText == "Part (%)" && (e.Value is decimal || e.Value is double))
+            {
+                e.Value = Math.Round(Convert.ToDecimal(e.Value), 1).ToString("0.#", new System.Globalization.CultureInfo("fr-FR")) + " %";
+                e.FormattingApplied = true;
+                return;
+            }
+
             if (g.Columns[e.ColumnIndex].Tag as string != "montant") return;
 
             switch (e.Value)
@@ -379,6 +399,7 @@ namespace Pharmacie2.Services
                 if (col.MinimumWidth < 60) col.MinimumWidth = 60;
                 if (col.Tag as string == "montant") MarquerMontant(col);
             }
+            AjusterColonnes(g);
         }
     }
 }

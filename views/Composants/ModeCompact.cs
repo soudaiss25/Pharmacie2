@@ -46,6 +46,38 @@ namespace Pharmacie2.views.Composants
         private static ColumnStyle Colonne(string s, Control c) { var (t, v) = Lire(s, c); return new ColumnStyle(t, v); }
         private static RowStyle Ligne(string s, Control c) { var (t, v) = Lire(s, c); return new RowStyle(t, v); }
 
+        /// <summary>
+        /// Cartes de chiffres clés : autant de colonnes que la largeur le permet (au moins <paramref name="largeurMini"/> unités logiques
+        /// par carte), sur une ou plusieurs lignes. Se recalcule à chaque changement de largeur, sans créer ni perdre de carte.
+        /// </summary>
+        public static void CartesAdaptatives(TableLayoutPanel tlp, int largeurMini = 210, int marge = 12)
+        {
+            var cartes = tlp.Controls.Cast<Control>().OrderBy(c => tlp.GetRow(c) * 100 + tlp.GetColumn(c)).ToList();
+            int derniere = -1;
+            void Appliquer()
+            {
+                if (tlp.Width <= 0) return;
+                int n = cartes.Count;
+                double largeur = tlp.Width / Theme.Echelle(tlp);
+                var candidats = new[] { n, (int)Math.Ceiling(n / 2.0), 2, 1 }.Where(c => c >= 1 && c <= n).Distinct().OrderByDescending(c => c);
+                int cols = candidats.FirstOrDefault(c => largeur / c >= largeurMini);
+                if (cols == 0) cols = 1;
+                if (cols == derniere) return;
+                derniere = cols;
+                int lignes = (int)Math.Ceiling(n / (double)cols);
+                var colonnes = Enumerable.Repeat("P" + (100f / cols).ToString(System.Globalization.CultureInfo.InvariantCulture), cols).ToArray();
+                var rangees = Enumerable.Repeat("A", lignes).ToArray();
+                var cellules = cartes.Select((c, i) =>
+                {
+                    int col = i % cols, lig = i / cols;
+                    return (c, col, lig, new Padding(0, 0, col < cols - 1 ? Theme.Px(tlp, marge) : 0, lig < lignes - 1 ? Theme.Px(tlp, marge) : 0));
+                }).ToArray();
+                Recomposer(tlp, colonnes, rangees, cellules);
+            }
+            tlp.Resize += (s, e) => Appliquer();
+            Appliquer();
+        }
+
         /// <summary>Masque ou montre des colonnes de tableau par leur nom.</summary>
         public static void MasquerColonnes(DataGridView g, bool masquer, params string[] noms)
         {

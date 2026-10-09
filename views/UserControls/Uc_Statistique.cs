@@ -7,7 +7,7 @@ namespace Pharmacie2.views.UserControls
     /// <summary>
     /// Statistiques : alertes d'abord, puis chiffres clés comparés à la période précédente, puis tableaux.
     /// </summary>
-    public partial class Uc_Statistique : UserControl
+    public partial class Uc_Statistique : UserControl, IModeCompact
     {
         private StatsPeriode? _stats;
         private string _alertesTexte = "";
@@ -20,8 +20,23 @@ namespace Pharmacie2.views.UserControls
             InitializeComponent();
             Theme.Appliquer(this);
 
+            listeAlertes.AutoScroll = false;   // les alertes s'affichent toutes ; c'est l'écran entier qui défile
+            ModeCompact.CartesAdaptatives(tlpKpi);
+
             cbPeriode.SelectedIndex = 2;   // « Ce mois » par défaut (déclenche le premier calcul)
             ToggleCustomDates();
+        }
+
+        /// <summary>Compact : les quatre tableaux passent l'un sous l'autre (de hauteur fixe) ; l'écran défile verticalement.</summary>
+        public void DefinirCompact(bool compact)
+        {
+            var m = (int a, int b, int c, int d) => new Padding(a, b, c, d);
+            if (compact)
+                ModeCompact.Recomposer(tlpTables, new[] { "P100" }, new[] { "F220", "F220", "F220", "F220" },
+                    (tlpModes, 0, 0, m(0, 0, 0, 8)), (tlpTop, 0, 1, m(0, 0, 0, 8)), (tlpCredits, 0, 2, m(0, 0, 0, 8)), (tlpMutuelles, 0, 3, m(0, 0, 0, 0)));
+            else
+                ModeCompact.Recomposer(tlpTables, new[] { "P50", "P50" }, new[] { "F220", "F220" },
+                    (tlpModes, 0, 0, m(0, 0, 8, 8)), (tlpTop, 1, 0, m(8, 0, 0, 8)), (tlpCredits, 0, 1, m(0, 0, 8, 0)), (tlpMutuelles, 1, 1, m(8, 0, 0, 0)));
         }
 
         private void cbPeriode_SelectedIndexChanged(object sender, EventArgs e)
