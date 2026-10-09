@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -19,6 +20,7 @@ namespace Pharmacie2.views.UserControls
         public Uc_Commande()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             this.Load += (s, e) =>
             {
                 ChargerFournisseursFiltres();
@@ -29,11 +31,6 @@ namespace Pharmacie2.views.UserControls
             cbFiltreFournisseur.SelectedIndexChanged += (s, e) => ChargerCommandes();
             dtpDebut.ValueChanged += (s, e) => ChargerCommandes();
             dtpFin.ValueChanged += (s, e) => ChargerCommandes();
-            btnActualiser.Click += (s, e) => ChargerCommandes();
-            dgvCommandes.SelectionChanged += DgvCommandes_SelectionChanged;
-            btnMarquerRecu.Click += btnMarquerRecu_Click;
-            btnAnnuler.Click += btnAnnuler_Click;
-            btnNouvelleCommande.Click += btnNouvelleCommande_Click;
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -96,7 +93,7 @@ namespace Pharmacie2.views.UserControls
                             nomFourn,
                             cmd.Statut,
                             nbProduits,
-                            $"{montant:N0} KMF",
+                            montant,
                             cmd.DateReception.HasValue
                                 ? cmd.DateReception.Value.ToString("dd/MM/yyyy") : "—",
                             string.IsNullOrWhiteSpace(cmd.NoteCommande) ? "—" : cmd.NoteCommande
@@ -107,17 +104,18 @@ namespace Pharmacie2.views.UserControls
                         switch (cmd.Statut)
                         {
                             case "Reçu":
-                                row.DefaultCellStyle.BackColor = Color.FromArgb(220, 245, 220);
-                                row.DefaultCellStyle.ForeColor = Color.FromArgb(27, 94, 32);
+                                row.DefaultCellStyle.BackColor = Theme.SuccesFond;
+                                row.DefaultCellStyle.ForeColor = Theme.SuccesTexte;
                                 break;
                             case "Reçu partiellement":
-                                row.DefaultCellStyle.BackColor = Color.FromArgb(255, 243, 205);
+                                row.DefaultCellStyle.BackColor = Theme.AttentionFond;
+                                row.DefaultCellStyle.ForeColor = Theme.AttentionTexte;
                                 break;
                             case "Annulée":
-                                row.DefaultCellStyle.ForeColor = Color.Gray;
+                                row.DefaultCellStyle.ForeColor = Theme.Neutre;
                                 break;
                             case "En attente":
-                                row.DefaultCellStyle.BackColor = Color.FromArgb(227, 242, 253);
+                                row.DefaultCellStyle.BackColor = Theme.InfoFond;
                                 break;
                         }
                     }
@@ -130,16 +128,17 @@ namespace Pharmacie2.views.UserControls
 
                     lblRecap.Text =
                         $"{nbTotal} commande(s)  |  " +
-                        $"⏳ {nbAttente} en attente  |  " +
-                        $"✅ {nbRecues} reçue(s)  |  " +
-                        $"Total : {total:N0} KMF";
+                        $"{nbAttente} en attente  |  " +
+                        $"{nbRecues} reçue(s)  |  " +
+                        $"Total : {Format.Montant(total)}";
 
                     MettreAJourBoutons();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message,
+                Journal.Erreur("Chargement des commandes", ex);
+                MessageBox.Show("Les commandes n'ont pas pu être affichées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -174,8 +173,8 @@ namespace Pharmacie2.views.UserControls
                         dgvLignes.Rows.Add(
                             l.Produit?.Nom ?? "—",
                             l.Quantite,
-                            $"{l.PrixAchatUnitaire:N0} KMF",
-                            $"{l.TotalLigne:N0} KMF",
+                            l.PrixAchatUnitaire,
+                            l.TotalLigne,
                             l.Produit != null ? StockService.Formater(l.Produit) : "—"
                         );
                     }
@@ -194,6 +193,7 @@ namespace Pharmacie2.views.UserControls
             if (dgvCommandes.SelectedRows.Count == 0)
             {
                 btnMarquerRecu.Enabled = false;
+                btnMarquerPartiel.Enabled = false;
                 btnAnnuler.Enabled = false;
                 return;
             }
@@ -201,8 +201,12 @@ namespace Pharmacie2.views.UserControls
             string statut = dgvCommandes.SelectedRows[0]
                 .Cells["colStatut"].Value?.ToString() ?? "";
 
-            btnMarquerRecu.Enabled = statut == "En attente" || statut == "Reçu partiellement";
-            btnAnnuler.Enabled = statut == "En attente" || statut == "Reçu partiellement";
+            bool ouverte = statut == "En attente" || statut == "Reçu partiellement";
+            bool heritee = statut == "Reçu partiellement"
+                && CommandeService.EstPartielleHeritee(Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value));
+            btnMarquerRecu.Enabled = ouverte && !heritee;   // une partielle ancienne se reçoit ligne par ligne
+            btnMarquerPartiel.Enabled = ouverte;
+            btnAnnuler.Enabled = ouverte;
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -216,8 +220,8 @@ namespace Pharmacie2.views.UserControls
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
             var confirm = MessageBox.Show(
-                "Marquer cette commande comme REÇUE ?\n\n" +
-                "⚠️ Le stock de chaque produit sera mis à jour automatiquement.",
+                "Tout le reste de cette commande est-il arrivé ?\n\n" +
+                "Le stock de chaque produit sera mis à jour.",
                 "Confirmation réception",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -227,8 +231,7 @@ namespace Pharmacie2.views.UserControls
             {
                 CommandeService.Receptionner(cmdId);
 
-                MessageBox.Show("✅ Commande reçue. Stock mis à jour.",
-                    "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes("Commande reçue. Le stock est à jour.");
 
                 ChargerCommandes();
             }
@@ -240,13 +243,26 @@ namespace Pharmacie2.views.UserControls
             }
         }
 
+        private void btnActualiser_Click(object sender, EventArgs e) => ChargerCommandes();
+
+        private void btnMarquerPartiel_Click(object sender, EventArgs e)
+        {
+            if (dgvCommandes.SelectedRows.Count == 0) return;
+            int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
+            using (var form = new FormReceptionPartielle(cmdId))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK)
+                    ChargerCommandes();
+            }
+        }
+
         private void btnAnnuler_Click(object sender, EventArgs e)
         {
             if (dgvCommandes.SelectedRows.Count == 0) return;
 
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
-            if (MessageBox.Show("Annuler cette commande ?", "Confirmation",
+            if (MessageBox.Show("Annuler cette commande ? Cette action ne peut pas être défaite.", "Confirmation",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 

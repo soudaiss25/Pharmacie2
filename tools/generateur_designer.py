@@ -57,6 +57,7 @@ HANDLERS = {
     'CellDoubleClick': 'DataGridViewCellEventHandler', 'CellValueChanged': 'DataGridViewCellEventHandler',
     'CellFormatting': 'DataGridViewCellFormattingEventHandler',
     'CellEndEdit': 'DataGridViewCellEventHandler',
+    'CellValidating': 'DataGridViewCellValidatingEventHandler', 'DataError': 'DataGridViewDataErrorEventHandler',
     'FormClosing': 'FormClosingEventHandler', 'FormClosed': 'FormClosedEventHandler',
     'LinkClicked': 'LinkLabelLinkClickedEventHandler', 'Paint': 'PaintEventHandler',
 }

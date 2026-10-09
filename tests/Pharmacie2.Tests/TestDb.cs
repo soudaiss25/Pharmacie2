@@ -80,6 +80,14 @@ public static class TestDb
         return Scalaire(c, sql);
     }
 
+    public static string Texte(string sql)
+    {
+        using var c = Ouvrir();
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = sql;
+        return Convert.ToString(cmd.ExecuteScalar()) ?? "";
+    }
+
     public static Dictionary<string, long> Comptes(SqliteConnection c, params string[] tables)
         => tables.ToDictionary(t => t, t => Scalaire(c, $"SELECT COUNT(*) FROM \"{t}\""));
 

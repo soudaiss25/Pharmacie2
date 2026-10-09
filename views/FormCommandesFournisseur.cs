@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -24,11 +25,11 @@ namespace Pharmacie2.views
         public FormCommandesFournisseur(int fournisseurId, string fournisseurNom)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _fournisseurId = fournisseurId;
             _fournisseurNom = fournisseurNom;
-            lblTitre.Text = $"📋  Commandes — {fournisseurNom}";
+            lblTitre.Text = $"Commandes — {fournisseurNom}";
 
-            cbFiltreStatut.SelectedIndex = 0;
             cbFiltreStatut.SelectedIndexChanged += (s, e) => ChargerCommandes();
 
             ChargerCommandes();
@@ -68,7 +69,7 @@ namespace Pharmacie2.views
                         cmd.DateCommande.ToString("dd/MM/yyyy HH:mm"),
                         cmd.Statut,
                         cmd.Lignes.Count,
-                        cmd.MontantTotal.ToString("N0") + " KMF",
+                        cmd.MontantTotal,
                         livraison,
                         reception,
                         string.IsNullOrWhiteSpace(cmd.NoteCommande) ? "—" : cmd.NoteCommande
@@ -79,18 +80,15 @@ namespace Pharmacie2.views
                     switch (cmd.Statut)
                     {
                         case "Reçu":
-                            row.DefaultCellStyle.BackColor =
-                                System.Drawing.Color.FromArgb(220, 245, 220);
-                            row.DefaultCellStyle.ForeColor =
-                                System.Drawing.Color.FromArgb(27, 94, 32);
+                            row.DefaultCellStyle.BackColor = Theme.SuccesFond;
+                            row.DefaultCellStyle.ForeColor = Theme.SuccesTexte;
                             break;
                         case "Reçu partiellement":
-                            row.DefaultCellStyle.BackColor =
-                                System.Drawing.Color.FromArgb(255, 243, 205);
+                            row.DefaultCellStyle.BackColor = Theme.AttentionFond;
+                            row.DefaultCellStyle.ForeColor = Theme.AttentionTexte;
                             break;
                         case "Annulée":
-                            row.DefaultCellStyle.ForeColor =
-                                System.Drawing.Color.FromArgb(160, 160, 160);
+                            row.DefaultCellStyle.ForeColor = Theme.Neutre;
                             break;
                     }
                 }
@@ -102,9 +100,9 @@ namespace Pharmacie2.views
 
                 lblNbCommandes.Text =
                     $"{nbTotal} commande(s)  |  " +
-                    $"⏳ {nbAttente} en attente  |  " +
-                    $"✅ {nbRecu} reçue(s)  |  " +
-                    $"Total : {total:N0} KMF";
+                    $"{nbAttente} en attente  |  " +
+                    $"{nbRecu} reçue(s)  |  " +
+                    $"Total : {Format.Montant(total)}";
 
                 MettreAJourBoutons();
             }
@@ -139,8 +137,8 @@ namespace Pharmacie2.views
                         l.Id,
                         l.Produit?.Nom ?? "—",
                         l.Quantite,
-                        l.PrixAchatUnitaire.ToString("N0") + " KMF",
-                        l.TotalLigne.ToString("N0") + " KMF",
+                        l.PrixAchatUnitaire,
+                        l.TotalLigne,
                         l.Produit != null ? StockService.Formater(l.Produit) : "—"
                     );
                 }
@@ -161,9 +159,12 @@ namespace Pharmacie2.views
 
             string statut = dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() ?? "";
 
-            btnMarquerRecu.Enabled = statut == "En attente" || statut == "Reçu partiellement";
-            btnMarquerPartiel.Enabled = statut == "En attente" || statut == "Reçu partiellement";
-            btnAnnuler.Enabled = statut == "En attente" || statut == "Reçu partiellement";
+            bool ouverte = statut == "En attente" || statut == "Reçu partiellement";
+            bool heritee = statut == "Reçu partiellement"
+                && CommandeService.EstPartielleHeritee(Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value));
+            btnMarquerRecu.Enabled = ouverte && !heritee;   // une partielle ancienne se reçoit ligne par ligne
+            btnMarquerPartiel.Enabled = ouverte;
+            btnAnnuler.Enabled = ouverte;
         }
 
         // ── Marquer comme REÇUE → met à jour le stock ────────────────────
@@ -176,8 +177,8 @@ namespace Pharmacie2.views
             string statut = dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() ?? "";
 
             var confirm = MessageBox.Show(
-                "Marquer cette commande comme REÇUE ?\n\n" +
-                "⚠️ Le stock de chaque produit sera automatiquement mis à jour.",
+                "Tout le reste de cette commande est-il arrivé ?\n\n" +
+                "Le stock de chaque produit sera mis à jour.",
                 "Confirmation réception",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -188,11 +189,7 @@ namespace Pharmacie2.views
             {
                 CommandeService.Receptionner(cmdId);
 
-                MessageBox.Show(
-                    "✅ Commande marquée comme reçue.\nLe stock a été mis à jour.",
-                    "Réception enregistrée",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                BandeauNotification.Succes("Commande reçue. Le stock est à jour.");
 
                 ChargerCommandes();
             }
@@ -203,63 +200,17 @@ namespace Pharmacie2.views
             }
         }
 
-        // ── Marquer comme REÇUE PARTIELLEMENT ────────────────────────────
+        // ── Réception partielle : grille ligne par ligne ──────────────────
 
         private void btnMarquerPartiel_Click(object sender, EventArgs e)
         {
             if (dgvCommandes.SelectedRows.Count == 0) return;
-
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
-
-            // Demander la quantité réellement reçue (en boîtes) pour chaque ligne
-            try
+            using (var form = new FormReceptionPartielle(cmdId))
             {
-                List<LigneCommande> lignes;
-                using (var ctx = new AppDbContext())
-                {
-                    lignes = ctx.LigneCommandes
-                        .Include(l => l.Produit)
-                        .Where(l => l.CommandeId == cmdId)
-                        .ToList();
-                }
-
-                bool legacy = CommandeService.EstPartielleHeritee(cmdId);
-                var quantites = new Dictionary<int, int>();
-                foreach (var ligne in lignes)
-                {
-                    int reste = ligne.Quantite - ligne.QuantiteRecue;
-                    if (reste <= 0) continue;
-
-                    string nomProduit = ligne.Produit?.Nom ?? $"Produit #{ligne.ProduitId}";
-
-                    string input = Microsoft.VisualBasic.Interaction.InputBox(
-                        $"Quantité reçue (en boîtes) pour « {nomProduit} » :\n(commandée : {ligne.Quantite}, déjà reçue : {ligne.QuantiteRecue})",
-                        "Réception partielle",
-                        legacy ? "" : reste.ToString());
-
-                    if (!int.TryParse(input, out int qteRecue) || qteRecue <= 0)
-                        continue;
-
-                    quantites[ligne.Id] = qteRecue;
-                }
-
-                if (quantites.Count > 0 && CommandeService.Receptionner(cmdId, quantites) > 0)
-                {
-                    MessageBox.Show(
-                        "✅ Réception enregistrée.\nLe stock a été mis à jour.",
-                        "Réception partielle",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                }
+                if (form.ShowDialog(this) == DialogResult.OK)
+                    ChargerCommandes();
             }
-            catch (Exception ex)
-            {
-                Journal.Erreur("Réception partielle de la commande " + cmdId, ex);
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            ChargerCommandes();
         }
 
         // ── Annuler une commande ──────────────────────────────────────────
@@ -271,7 +222,7 @@ namespace Pharmacie2.views
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
             var confirm = MessageBox.Show(
-                "Annuler cette commande ?\nCette action ne peut pas être annulée.",
+                "Annuler cette commande ?\nCette action ne peut pas être défaite.",
                 "Confirmation annulation",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);

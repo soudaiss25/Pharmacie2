@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -19,6 +21,7 @@ namespace Pharmacie2.views
         public FormCommandeProduit(int produitId, string nomProduit)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _produitId = produitId;
             _nomProduit = nomProduit;
 
@@ -47,8 +50,8 @@ namespace Pharmacie2.views
                         txtFournisseur.Text = produit.Fournisseur.Nom;
                         lblFournisseurInfo.Text =
                             string.IsNullOrWhiteSpace(produit.Fournisseur.Contact)
-                                ? "📞 —"
-                                : $"📞 {produit.Fournisseur.Contact}";
+                                ? "Contact : —"
+                                : $"Contact : {produit.Fournisseur.Contact}";
                         lblFournisseurInfo.Visible = true;
                     }
                     else
@@ -96,19 +99,19 @@ namespace Pharmacie2.views
 
                 if (f != null && !f.Actif)
                 {
-                    lblFournisseurInfo.Text = "⚠️ Fournisseur archivé — réactivez-le avant de commander";
-                    lblFournisseurInfo.ForeColor = System.Drawing.Color.OrangeRed;
+                    lblFournisseurInfo.Text = "Fournisseur archivé : réactivez-le avant de commander";
+                    lblFournisseurInfo.ForeColor = Theme.UrgentTexte;
                 }
                 else if (f != null)
                 {
                     lblFournisseurInfo.Text =
-                        string.IsNullOrWhiteSpace(f.Contact) ? "📞 —" : $"📞 {f.Contact}";
-                    lblFournisseurInfo.ForeColor = System.Drawing.Color.DimGray;
+                        string.IsNullOrWhiteSpace(f.Contact) ? "Contact : —" : $"Contact : {f.Contact}";
+                    lblFournisseurInfo.ForeColor = Theme.Neutre;
                 }
                 else
                 {
-                    lblFournisseurInfo.Text = "⚠️ Nouveau fournisseur — sera créé automatiquement";
-                    lblFournisseurInfo.ForeColor = System.Drawing.Color.OrangeRed;
+                    lblFournisseurInfo.Text = "Nouveau fournisseur : il sera créé automatiquement";
+                    lblFournisseurInfo.ForeColor = Theme.AttentionTexte;
                 }
                 lblFournisseurInfo.Visible = true;
             }
@@ -204,22 +207,15 @@ namespace Pharmacie2.views
                     ctx.SaveChanges();
                 }
 
-                MessageBox.Show(
-                    $"✅ Commande enregistrée !\n\n" +
-                    $"Produit     : {_nomProduit}\n" +
-                    $"Fournisseur : {fournisseurNom}\n" +
-                    $"Quantité    : {qte} boîte(s)\n" +
-                    $"Statut      : En attente",
-                    "Commande créée",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                BandeauNotification.Succes($"Commande enregistrée : {qte} boîte(s) de {_nomProduit} chez {fournisseurNom}.");
 
                 DialogResult = DialogResult.OK;
                 Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Journal.Erreur("Création de commande", ex);
+                MessageBox.Show("La commande n'a pas pu être enregistrée : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
