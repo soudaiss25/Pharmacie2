@@ -102,14 +102,16 @@ namespace Pharmacie2.views
         // ── Section client repliable ──────────────────────────────────────
 
         private bool _clientObligatoire;
+        private bool _clientOuvert;
 
         private void DefinirSectionClient(bool ouverte)
         {
+            _clientOuvert = ouverte;
             tlpClient.Visible = ouverte;
             lblClient.Text = (_clientObligatoire ? "Client (obligatoire)" : "Client (facultatif)") + (ouverte ? "  \u2212" : "  +");
         }
 
-        private void lblClient_Click(object sender, EventArgs e) => DefinirSectionClient(!tlpClient.Visible);
+        private void lblClient_Click(object sender, EventArgs e) => DefinirSectionClient(!_clientOuvert);
 
         private void FormVente_Shown(object sender, EventArgs e) => txtRecherche.Focus();
 
@@ -274,7 +276,7 @@ namespace Pharmacie2.views
 
             // Crédit et Mutuelle : le client est obligatoire, la section s'ouvre toute seule
             _clientObligatoire = ModeChoisi == ModesPaiement.Credit || ModeChoisi == ModesPaiement.Mutuelle;
-            DefinirSectionClient(_clientObligatoire || tlpClient.Visible);
+            DefinirSectionClient(_clientObligatoire || _clientOuvert);
 
             switch (ModeChoisi)
             {

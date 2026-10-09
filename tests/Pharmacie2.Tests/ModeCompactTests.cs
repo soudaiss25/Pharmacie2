@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Pharmacie2.views;
@@ -12,7 +12,7 @@ public class ModeCompactTests
         var sb = new StringBuilder();
         void Vider(Control c, int niveau)
         {
-            if (!string.IsNullOrEmpty(c.Name))
+            if (!string.IsNullOrEmpty(c.Name) && niveau > 0)   // la fenêtre elle-même est exclue (sa taille dépend du poste)
                 sb.AppendLine($"{new string(' ', niveau)}{c.Name} [{c.GetType().Name}] {c.Bounds} {(c.Visible ? "visible" : "caché")}");
             foreach (Control k in c.Controls) Vider(k, niveau + 1);
         }
@@ -70,12 +70,12 @@ public class ModeCompactTests
                 if (recherche != null) Assert.Equal("a", recherche.Text);
 
                 Redimensionner(h, grand);
-                if (page != null) Assert.False(page.EstCompact, "mode normal attendu à 1920 px");
+                if (page != null) Assert.False(page.EstCompact, $"mode normal attendu à 1920 px (client {h.Fenetre.ClientSize}, fenêtre {h.Fenetre.Size}, max {h.Fenetre.MaximumSize})");
                 if (recherche != null) Assert.Equal("a", recherche.Text);
 
                 string apres = Arbre(h.Fenetre);
                 Assert.Equal(nbAvant, Compter(h.Fenetre));   // aucun contrôle perdu ni en double
-                Assert.Equal(avant, apres);                   // disposition identique
+                Assert.True(avant == apres, "disposition différente (client " + h.Fenetre.ClientSize + ", fenêtre " + h.Fenetre.Size + ")" + Environment.NewLine + "--- avant ---" + Environment.NewLine + avant + "--- après ---" + Environment.NewLine + apres);
             });
         }
         finally { cts.Cancel(); Pharmacie2.Services.Theme.EchelleTest = null; }
