@@ -88,7 +88,7 @@ namespace Pharmacie2.views
         private void AfficherVoile()
         {
             FermerVoile();
-            int gauche = Theme.Px(this, 56);
+            int gauche = Theme.Px(this, 230);   // le voile commence où finit le menu déplié : le menu reste cliquable
             var origine = PointToScreen(new Point(gauche, 0));
             _voile = new VoileMenu { Bounds = new Rectangle(origine, new Size(Math.Max(1, ClientSize.Width - gauche), ClientSize.Height)) };
             _voile.Clique += () => { if (_menuDeplie) BasculerMenu(); };
