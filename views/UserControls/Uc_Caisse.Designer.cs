@@ -47,7 +47,6 @@
             this.cardMutuelle = new Pharmacie2.views.Composants.CarteKpi();
             this.cardCB = new Pharmacie2.views.Composants.CarteKpi();
             this.cardCheque = new Pharmacie2.views.Composants.CarteKpi();
-            this.tlpMilieu = new System.Windows.Forms.TableLayoutPanel();
             this.pnlCaisse = new System.Windows.Forms.TableLayoutPanel();
             this.lblTitreCaisse = new System.Windows.Forms.Label();
             this.lblEspecesTitle = new System.Windows.Forms.Label();
@@ -127,7 +126,6 @@
             this.tlpRapport.SuspendLayout();
             this.pnlFiltres.SuspendLayout();
             this.pnlCartes.SuspendLayout();
-            this.tlpMilieu.SuspendLayout();
             this.pnlCaisse.SuspendLayout();
             this.tlpVentilation.SuspendLayout();
             this.tabSessions.SuspendLayout();
@@ -170,25 +168,28 @@
             this.tabRapport.Text = "Rapport de caisse";
             this.tabRapport.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.tabRapport.UseVisualStyleBackColor = true;
-            this.tabRapport.AutoScroll = true;
-            this.tabRapport.AutoScrollMinSize = new System.Drawing.Size(0, 720);
             this.tabRapport.Name = "tabRapport";
             // 
             // tlpRapport
             // 
-            this.tlpRapport.ColumnCount = 1;
-            this.tlpRapport.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRapport.ColumnCount = 2;
+            this.tlpRapport.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 36F));
+            this.tlpRapport.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64F));
             this.tlpRapport.RowCount = 5;
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52F));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45F));
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.0F));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tlpRapport.Controls.Add(this.pnlFiltres, 0, 0);
+            this.tlpRapport.SetColumnSpan(this.pnlFiltres, 2);
             this.tlpRapport.Controls.Add(this.pnlCartes, 0, 1);
-            this.tlpRapport.Controls.Add(this.tlpMilieu, 0, 2);
-            this.tlpRapport.Controls.Add(this.lblDetailVentes, 0, 3);
-            this.tlpRapport.Controls.Add(this.dgvDetail, 0, 4);
+            this.tlpRapport.SetColumnSpan(this.pnlCartes, 2);
+            this.tlpRapport.Controls.Add(this.pnlCaisse, 0, 2);
+            this.tlpRapport.SetRowSpan(this.pnlCaisse, 3);
+            this.tlpRapport.Controls.Add(this.tlpVentilation, 1, 2);
+            this.tlpRapport.Controls.Add(this.lblDetailVentes, 1, 3);
+            this.tlpRapport.Controls.Add(this.dgvDetail, 1, 4);
             this.tlpRapport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRapport.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRapport.Name = "tlpRapport";
@@ -319,19 +320,6 @@
             this.cardCheque.Titre = "Chèques";
             this.cardCheque.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.cardCheque.Name = "cardCheque";
-            // 
-            // tlpMilieu
-            // 
-            this.tlpMilieu.ColumnCount = 2;
-            this.tlpMilieu.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.0F));
-            this.tlpMilieu.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.0F));
-            this.tlpMilieu.RowCount = 1;
-            this.tlpMilieu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpMilieu.Controls.Add(this.pnlCaisse, 0, 0);
-            this.tlpMilieu.Controls.Add(this.tlpVentilation, 1, 0);
-            this.tlpMilieu.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMilieu.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
-            this.tlpMilieu.Name = "tlpMilieu";
             // 
             // pnlCaisse
             // 
@@ -1038,8 +1026,6 @@
             this.tlpVentilation.PerformLayout();
             this.pnlCaisse.ResumeLayout(false);
             this.pnlCaisse.PerformLayout();
-            this.tlpMilieu.ResumeLayout(false);
-            this.tlpMilieu.PerformLayout();
             this.pnlCartes.ResumeLayout(false);
             this.pnlCartes.PerformLayout();
             this.pnlFiltres.ResumeLayout(false);
@@ -1078,7 +1064,6 @@
         private Pharmacie2.views.Composants.CarteKpi cardMutuelle;
         private Pharmacie2.views.Composants.CarteKpi cardCB;
         private Pharmacie2.views.Composants.CarteKpi cardCheque;
-        private System.Windows.Forms.TableLayoutPanel tlpMilieu;
         private System.Windows.Forms.TableLayoutPanel pnlCaisse;
         private System.Windows.Forms.Label lblTitreCaisse;
         private System.Windows.Forms.Label lblEspecesTitle;
