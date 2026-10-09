@@ -179,9 +179,9 @@
             this.tlpRapport.RowCount = 5;
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 44.0F));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize, 0F));
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 56.0F));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRapport.Controls.Add(this.pnlFiltres, 0, 0);
             this.tlpRapport.Controls.Add(this.pnlCartes, 0, 1);
             this.tlpRapport.Controls.Add(this.tlpMilieu, 0, 2);
@@ -324,7 +324,7 @@
             this.tlpMilieu.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.0F));
             this.tlpMilieu.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.0F));
             this.tlpMilieu.RowCount = 1;
-            this.tlpMilieu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpMilieu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpMilieu.Controls.Add(this.pnlCaisse, 0, 0);
             this.tlpMilieu.Controls.Add(this.tlpVentilation, 1, 0);
             this.tlpMilieu.Dock = System.Windows.Forms.DockStyle.Fill;

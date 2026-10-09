@@ -162,6 +162,7 @@ public class LayoutTests
                 try
                 {
                     hote.Show();
+                    if (ctrl is Form) { hote.WindowState = FormWindowState.Normal; hote.ClientSize = taille; }   // une page « maximisée » reprend la taille demandée
                     Application.DoEvents();
                     hote.PerformLayout();
                     Application.DoEvents();

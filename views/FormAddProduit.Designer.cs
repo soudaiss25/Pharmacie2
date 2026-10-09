@@ -527,7 +527,7 @@
             this.flpQuantite.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpQuantite.AutoSize = true;
             this.flpQuantite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpQuantite.WrapContents = false;
+            this.flpQuantite.WrapContents = true;
             this.flpQuantite.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.flpQuantite.Name = "flpQuantite";
             // 

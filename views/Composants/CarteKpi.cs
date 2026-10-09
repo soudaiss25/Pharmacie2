@@ -1,4 +1,4 @@
-using System.Drawing.Drawing2D;
+﻿using System.Drawing.Drawing2D;
 using Pharmacie2.Services;
 
 namespace Pharmacie2.views.Composants
@@ -20,10 +20,12 @@ namespace Pharmacie2.views.Composants
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer
                      | ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
-            MinimumSize = new Size(170, 96);
             Size = new Size(220, 104);
             Cursor = Cursors.Default;
         }
+
+        /// <summary>Hauteur et largeur utiles fixes en pixels : le dessin est en pixels, pas en échelle de police.</summary>
+        public override Size GetPreferredSize(Size proposedSize) => new Size(170, 104);
 
         public string Titre { get => _titre; set { _titre = value; Invalidate(); } }
         public string Valeur { get => _valeur; set { _valeur = value; Invalidate(); } }
