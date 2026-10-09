@@ -1,3 +1,5 @@
+﻿using Pharmacie2.Services;
+
 namespace Pharmacie2.views.Composants
 {
     /// <summary>
@@ -21,6 +23,8 @@ namespace Pharmacie2.views.Composants
             ecran.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             ecran.Location = Point.Empty;
 
+            // Taille minimale en pixels de conception (96 DPI) : lue avant toute mise à l'échelle automatique, puis multipliée par le zoom
+            var minimumLogique = ecran.MinimumSize;
             bool enCours = false;
             void Ajuster()
             {
@@ -29,7 +33,8 @@ namespace Pharmacie2.views.Composants
                 try
                 {
                     var visible = zone.ClientSize;
-                    var minimum = ecran.MinimumSize;
+                    float k = Theme.Echelle(zone);
+                    var minimum = new Size((int)Math.Round(minimumLogique.Width * k), (int)Math.Round(minimumLogique.Height * k));
                     ecran.Size = new Size(Math.Max(visible.Width, minimum.Width), Math.Max(visible.Height, minimum.Height));
                 }
                 finally { enCours = false; }
