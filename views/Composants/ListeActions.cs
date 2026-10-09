@@ -1,4 +1,4 @@
-using Pharmacie2.Services;
+﻿using Pharmacie2.Services;
 
 namespace Pharmacie2.views.Composants
 {
@@ -75,7 +75,8 @@ namespace Pharmacie2.views.Composants
 
         private void AjusterLargeurs()
         {
-            int largeur = Math.Max(120, ClientSize.Width - Padding.Horizontal - SystemInformation.VerticalScrollBarWidth);
+            int barre = AutoScroll ? SystemInformation.VerticalScrollBarWidth : 0;
+            int largeur = Math.Max(120, ClientSize.Width - Padding.Horizontal - barre);
             foreach (Control c in Controls)
                 c.Width = largeur;
         }

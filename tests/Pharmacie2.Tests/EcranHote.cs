@@ -102,6 +102,7 @@ public static class EcranHote
         {
             ConfigurerFenetre(form, cfg);
             hote.Fenetre = form;
+            if (form is Pharmacie2.views.PageAccueil pageAccueil) hote.Page = pageAccueil;
             form.Show();
             form.WindowState = FormWindowState.Normal;
             form.ClientSize = new Size(cfg.Phys(cfg.W), cfg.Phys(cfg.H));

@@ -333,7 +333,7 @@
             this.lblClient.Tag = "entete";
             this.lblClient.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblClient.Click += new System.EventHandler(this.lblClient_Click);
-            this.lblClient.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.lblClient.Margin = new System.Windows.Forms.Padding(-4, 0, 0, 4);
             this.lblClient.Name = "lblClient";
             // 
             // tlpClient

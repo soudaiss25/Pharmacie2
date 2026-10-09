@@ -32,6 +32,15 @@ public class CapturesTests
                         using var h = EcranHote.Ouvrir(type, ids, cfg);
                         Enregistrer(h.Fenetre, Path.Combine(dossier, $"{nomEcran}_{cfg}.png"));
 
+                        // menu déplié par-dessus le contenu (modes compacts)
+                        if (h.Page != null && h.Page.EstCompact)
+                        {
+                            UiHelper.Appeler(h.Page, "btnMenu_Click", null!, EventArgs.Empty);
+                            Application.DoEvents();
+                            Enregistrer(h.Fenetre, Path.Combine(dossier, $"{nomEcran}_{cfg}_menu.png"));
+                            UiHelper.Appeler(h.Page, "btnMenu_Click", null!, EventArgs.Empty);
+                        }
+
                         // chaque onglet du premier TabControl rencontré
                         var tc = Trouver<TabControl>(h.Fenetre);
                         if (tc != null)
