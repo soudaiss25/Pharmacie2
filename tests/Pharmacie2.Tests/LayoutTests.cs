@@ -38,7 +38,9 @@ public class LayoutTests
     [MemberData(nameof(Ecrans))]
     public void Mise_en_page_conforme(string nomEcran)
     {
-        if (!Conformes.Contains(nomEcran))
+        bool bloquant = Conformes.Contains(nomEcran);
+        string? rapport = Environment.GetEnvironmentVariable("CAPTURES_DIR");
+        if (!bloquant && string.IsNullOrWhiteSpace(rapport))
             return;
 
         var type = Decouvrir().Single(t => t.Name == nomEcran);
@@ -50,6 +52,14 @@ public class LayoutTests
             UiHelper.EnSta(() => ExecuterVerifications(type, ids, erreurs));
         }
         finally { cts.Cancel(); Pharmacie2.Services.Theme.EchelleTest = null; }
+
+        if (!bloquant)
+        {
+            // écran pas encore repris : simple rapport (publié avec les captures), non bloquant
+            Directory.CreateDirectory(rapport!);
+            File.WriteAllText(Path.Combine(rapport!, $"rapport-mise-en-page_{nomEcran}.txt"), erreurs.Count == 0 ? "OK" : string.Join(Environment.NewLine, erreurs));
+            return;
+        }
 
         Assert.True(erreurs.Count == 0, nomEcran + " :\n  " + string.Join("\n  ", erreurs));
     }
