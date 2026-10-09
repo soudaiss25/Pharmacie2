@@ -170,6 +170,8 @@
             this.tabRapport.Text = "Rapport de caisse";
             this.tabRapport.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.tabRapport.UseVisualStyleBackColor = true;
+            this.tabRapport.AutoScroll = true;
+            this.tabRapport.AutoScrollMinSize = new System.Drawing.Size(0, 800);
             this.tabRapport.Name = "tabRapport";
             // 
             // tlpRapport
@@ -179,9 +181,9 @@
             this.tlpRapport.RowCount = 5;
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52F));
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.0F));
             this.tlpRapport.Controls.Add(this.pnlFiltres, 0, 0);
             this.tlpRapport.Controls.Add(this.pnlCartes, 0, 1);
             this.tlpRapport.Controls.Add(this.tlpMilieu, 0, 2);
