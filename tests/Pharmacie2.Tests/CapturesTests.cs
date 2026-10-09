@@ -37,7 +37,7 @@ public class CapturesTests
                         {
                             UiHelper.Appeler(h.Page, "btnMenu_Click", null!, EventArgs.Empty);
                             Application.DoEvents();
-                            Enregistrer(h.Fenetre, Path.Combine(dossier, $"{nomEcran}_{cfg}_menu.png"));
+                            Enregistrer(h.Fenetre, Path.Combine(dossier, $"{nomEcran}_{cfg}_menu.png"), EcranHote.Chercher(h.Fenetre, "panelMenu"));
                             UiHelper.Appeler(h.Page, "btnMenu_Click", null!, EventArgs.Empty);
                         }
 
@@ -73,11 +73,20 @@ public class CapturesTests
         return null;
     }
 
-    private static void Enregistrer(Form f, string chemin)
+    /// <param name="surcouche">Contrôle superposé au contenu : DrawToBitmap l'oublie, il est donc dessiné à part puis collé.</param>
+    private static void Enregistrer(Form f, string chemin, Control? surcouche = null)
     {
         Application.DoEvents();
         using var bmp = new Bitmap(Math.Max(1, f.Width), Math.Max(1, f.Height));
         f.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
+        if (surcouche != null)
+        {
+            using var haut = new Bitmap(Math.Max(1, surcouche.Width), Math.Max(1, surcouche.Height));
+            surcouche.DrawToBitmap(haut, new Rectangle(0, 0, haut.Width, haut.Height));
+            var origine = f.PointToScreen(Point.Empty);
+            using var g = Graphics.FromImage(bmp);
+            g.DrawImage(haut, origine.X - f.Location.X + surcouche.Left, origine.Y - f.Location.Y + surcouche.Top);
+        }
         bmp.Save(chemin, ImageFormat.Png);
 
         // arbre des contrôles (nom, type, position, taille) pour comprendre une mise en page sans la voir
