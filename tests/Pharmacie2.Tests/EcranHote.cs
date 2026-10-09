@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
@@ -32,6 +32,7 @@ public sealed class Hote : IDisposable
 public static class EcranHote
 {
     public const int LargeurMenu = 230;
+    private static readonly Size Grand = new(6000, 4000);
 
     /// <summary>1280 × 640 logiques à 150 % (écran 1920 × 1080 avec barre des tâches), 1366 × 700 à 100 %, 1920 × 1040 à 100 %.</summary>
     public static readonly Config[] Matrice =
@@ -89,6 +90,7 @@ public static class EcranHote
             fen.Controls.Add(zone);
             Hebergement.Heberger(zone, ecran);
             Zoomer(fen, cfg.Zoom);
+            fen.MaximumSize = Grand;   // sans cela Windows limite la fenêtre à la taille de l'écran du poste de CI
             fen.ClientSize = new Size(cfg.Phys(cfg.W - LargeurMenu), cfg.Phys(cfg.H));
             hote.Fenetre = fen;
             fen.Show();
@@ -100,6 +102,7 @@ public static class EcranHote
             form.Location = Point.Empty;
             form.MinimumSize = Size.Empty;
             Zoomer(form, cfg.Zoom);
+            form.MaximumSize = Grand;
             form.ClientSize = new Size(cfg.Phys(cfg.W), cfg.Phys(cfg.H));
             hote.Fenetre = form;
             form.Show();
