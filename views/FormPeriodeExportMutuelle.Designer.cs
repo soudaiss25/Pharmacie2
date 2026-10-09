@@ -1,128 +1,240 @@
-﻿
-namespace Pharmacie2.views
+﻿namespace Pharmacie2.views
 {
     partial class FormPeriodeExportMutuelle
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Code généré par le Concepteur Windows Form
+
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTitre = new System.Windows.Forms.Label();
+            this.lblNomMutuelle = new System.Windows.Forms.Label();
+            this.tlpChamps = new System.Windows.Forms.TableLayoutPanel();
+            this.lblChoixPeriode = new System.Windows.Forms.Label();
+            this.cbPeriode = new System.Windows.Forms.ComboBox();
+            this.lblDebut = new System.Windows.Forms.Label();
+            this.dtpDebut = new System.Windows.Forms.DateTimePicker();
+            this.lblFin = new System.Windows.Forms.Label();
+            this.dtpFin = new System.Windows.Forms.DateTimePicker();
+            this.panelEspace = new System.Windows.Forms.Panel();
+            this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnExporter = new System.Windows.Forms.Button();
+            this.btnAnnuler = new System.Windows.Forms.Button();
+            this.tlpRoot.SuspendLayout();
+            this.tlpChamps.SuspendLayout();
+            this.panelEspace.SuspendLayout();
+            this.flpBoutons.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // tlpRoot
+            // 
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 5;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.tlpRoot.Controls.Add(this.lblNomMutuelle, 0, 1);
+            this.tlpRoot.Controls.Add(this.tlpChamps, 0, 2);
+            this.tlpRoot.Controls.Add(this.panelEspace, 0, 3);
+            this.tlpRoot.Controls.Add(this.flpBoutons, 0, 4);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
+            // 
+            // lblTitre
+            // 
+            this.lblTitre.Text = "Export Excel : choix de la période";
+            this.lblTitre.AutoSize = true;
+            this.lblTitre.Tag = "titre";
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.lblTitre.Name = "lblTitre";
+            // 
+            // lblNomMutuelle
+            // 
+            this.lblNomMutuelle.Text = "";
+            this.lblNomMutuelle.AutoSize = true;
+            this.lblNomMutuelle.Tag = "section";
+            this.lblNomMutuelle.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.lblNomMutuelle.Name = "lblNomMutuelle";
+            // 
+            // tlpChamps
+            // 
+            this.tlpChamps.ColumnCount = 2;
+            this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpChamps.RowCount = 3;
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.Controls.Add(this.lblChoixPeriode, 0, 0);
+            this.tlpChamps.Controls.Add(this.cbPeriode, 1, 0);
+            this.tlpChamps.Controls.Add(this.lblDebut, 0, 1);
+            this.tlpChamps.Controls.Add(this.dtpDebut, 1, 1);
+            this.tlpChamps.Controls.Add(this.lblFin, 0, 2);
+            this.tlpChamps.Controls.Add(this.dtpFin, 1, 2);
+            this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpChamps.AutoSize = true;
+            this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpChamps.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
+            this.tlpChamps.Name = "tlpChamps";
+            // 
+            // lblChoixPeriode
+            // 
+            this.lblChoixPeriode.Text = "Raccourci";
+            this.lblChoixPeriode.AutoSize = true;
+            this.lblChoixPeriode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblChoixPeriode.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblChoixPeriode.Name = "lblChoixPeriode";
+            // 
+            // cbPeriode
+            // 
+            this.cbPeriode.Width = 220;
+            this.cbPeriode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbPeriode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbPeriode.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cbPeriode.Items.AddRange(new object[] {
+            "Mois en cours",
+            "Mois précédent",
+            "Trimestre en cours",
+            "Année en cours",
+            "Personnalisé"});
+            this.cbPeriode.Name = "cbPeriode";
+            this.cbPeriode.SelectedIndexChanged += new System.EventHandler(this.CbPeriode_SelectedIndexChanged);
+            // 
+            // lblDebut
+            // 
+            this.lblDebut.Text = "Du";
+            this.lblDebut.AutoSize = true;
+            this.lblDebut.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDebut.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblDebut.Name = "lblDebut";
+            // 
+            // dtpDebut
+            // 
+            this.dtpDebut.Width = 140;
+            this.dtpDebut.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDebut.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtpDebut.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.dtpDebut.Name = "dtpDebut";
+            // 
+            // lblFin
+            // 
+            this.lblFin.Text = "Au";
+            this.lblFin.AutoSize = true;
+            this.lblFin.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFin.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblFin.Name = "lblFin";
+            // 
+            // dtpFin
+            // 
+            this.dtpFin.Width = 140;
+            this.dtpFin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpFin.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.dtpFin.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.dtpFin.Name = "dtpFin";
+            // 
+            // panelEspace
+            // 
+            this.panelEspace.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelEspace.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.panelEspace.Name = "panelEspace";
+            // 
+            // flpBoutons
+            // 
+            this.flpBoutons.Controls.Add(this.btnExporter);
+            this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpBoutons.AutoSize = true;
+            this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpBoutons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flpBoutons.WrapContents = false;
+            this.flpBoutons.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.flpBoutons.Name = "flpBoutons";
+            // 
+            // btnExporter
+            // 
+            this.btnExporter.Text = "Exporter";
+            this.btnExporter.Tag = "primaire";
+            this.btnExporter.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnExporter.Name = "btnExporter";
+            this.btnExporter.Click += new System.EventHandler(this.btnExporter_Click);
+            // 
+            // btnAnnuler
+            // 
+            this.btnAnnuler.Text = "Annuler";
+            this.btnAnnuler.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnAnnuler.Name = "btnAnnuler";
+            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
+            // 
+            // FormPeriodeExportMutuelle
+            // 
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClientSize = new System.Drawing.Size(520, 330);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Période d'export";
+            this.AcceptButton = this.btnExporter;
+            this.CancelButton = this.btnAnnuler;
+            this.Name = "FormPeriodeExportMutuelle";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+            this.flpBoutons.ResumeLayout(false);
+            this.flpBoutons.PerformLayout();
+            this.panelEspace.ResumeLayout(false);
+            this.tlpChamps.ResumeLayout(false);
+            this.tlpChamps.PerformLayout();
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
         private System.Windows.Forms.Label lblTitre;
         private System.Windows.Forms.Label lblNomMutuelle;
+        private System.Windows.Forms.TableLayoutPanel tlpChamps;
         private System.Windows.Forms.Label lblChoixPeriode;
         private System.Windows.Forms.ComboBox cbPeriode;
         private System.Windows.Forms.Label lblDebut;
         private System.Windows.Forms.DateTimePicker dtpDebut;
         private System.Windows.Forms.Label lblFin;
         private System.Windows.Forms.DateTimePicker dtpFin;
+        private System.Windows.Forms.Panel panelEspace;
+        private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnExporter;
         private System.Windows.Forms.Button btnAnnuler;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null)) components.Dispose();
-            base.Dispose(disposing);
-        }
-
-        private void InitializeComponent()
-        {
-            lblTitre = new System.Windows.Forms.Label();
-            lblNomMutuelle = new System.Windows.Forms.Label();
-            lblChoixPeriode = new System.Windows.Forms.Label();
-            cbPeriode = new System.Windows.Forms.ComboBox();
-            lblDebut = new System.Windows.Forms.Label();
-            dtpDebut = new System.Windows.Forms.DateTimePicker();
-            lblFin = new System.Windows.Forms.Label();
-            dtpFin = new System.Windows.Forms.DateTimePicker();
-            btnExporter = new System.Windows.Forms.Button();
-            btnAnnuler = new System.Windows.Forms.Button();
-
-            this.SuspendLayout();
-
-            // Titre
-            lblTitre.Dock = System.Windows.Forms.DockStyle.Top;
-            lblTitre.Height = 50;
-            lblTitre.Text = "📊  Export Excel — Période";
-            lblTitre.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            lblTitre.Font = new System.Drawing.Font(
-                "Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            lblTitre.BackColor = System.Drawing.Color.FromArgb(30, 120, 50);
-            lblTitre.ForeColor = System.Drawing.Color.White;
-
-            // Mutuelle
-            lblNomMutuelle.Location = new System.Drawing.Point(18, 62);
-            lblNomMutuelle.Size = new System.Drawing.Size(424, 22);
-            lblNomMutuelle.Font = new System.Drawing.Font(
-                "Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            lblNomMutuelle.ForeColor = System.Drawing.Color.FromArgb(27, 94, 32);
-
-            // Raccourci période
-            lblChoixPeriode.Text = "Raccourci :";
-            lblChoixPeriode.Location = new System.Drawing.Point(18, 100);
-            lblChoixPeriode.Size = new System.Drawing.Size(80, 22);
-            lblChoixPeriode.Font = new System.Drawing.Font("Segoe UI", 9F);
-
-            cbPeriode.Location = new System.Drawing.Point(100, 97);
-            cbPeriode.Size = new System.Drawing.Size(200, 28);
-            cbPeriode.DropDownStyle =
-                System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cbPeriode.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            cbPeriode.Items.AddRange(new object[] {
-                "Mois en cours", "Mois précédent",
-                "Trimestre en cours", "Année en cours", "Personnalisé" });
-
-            // Date début
-            lblDebut.Text = "Du :";
-            lblDebut.Location = new System.Drawing.Point(18, 144);
-            lblDebut.Size = new System.Drawing.Size(50, 22);
-            lblDebut.Font = new System.Drawing.Font("Segoe UI", 9F);
-
-            dtpDebut.Location = new System.Drawing.Point(72, 141);
-            dtpDebut.Size = new System.Drawing.Size(160, 28);
-            dtpDebut.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-
-            // Date fin
-            lblFin.Text = "Au :";
-            lblFin.Location = new System.Drawing.Point(248, 144);
-            lblFin.Size = new System.Drawing.Size(40, 22);
-            lblFin.Font = new System.Drawing.Font("Segoe UI", 9F);
-
-            dtpFin.Location = new System.Drawing.Point(292, 141);
-            dtpFin.Size = new System.Drawing.Size(160, 28);
-            dtpFin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-
-            // Boutons
-            btnExporter.Text = "📊 Exporter";
-            btnExporter.Location = new System.Drawing.Point(200, 188);
-            btnExporter.Size = new System.Drawing.Size(130, 36);
-            btnExporter.BackColor = System.Drawing.Color.FromArgb(30, 120, 50);
-            btnExporter.ForeColor = System.Drawing.Color.White;
-            btnExporter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnExporter.FlatAppearance.BorderSize = 0;
-            btnExporter.Font = new System.Drawing.Font(
-                "Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            btnExporter.Click += new System.EventHandler(this.btnExporter_Click);
-
-            btnAnnuler.Text = "Annuler";
-            btnAnnuler.Location = new System.Drawing.Point(340, 188);
-            btnAnnuler.Size = new System.Drawing.Size(100, 36);
-            btnAnnuler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
-
-            this.ClientSize = new System.Drawing.Size(460, 242);
-            this.Text = "Période d'export";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.FormBorderStyle =
-                System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.BackColor = System.Drawing.Color.White;
-
-            this.Controls.AddRange(new System.Windows.Forms.Control[] {
-                lblTitre, lblNomMutuelle,
-                lblChoixPeriode, cbPeriode,
-                lblDebut, dtpDebut, lblFin, dtpFin,
-                btnExporter, btnAnnuler
-            });
-
-            this.ResumeLayout(false);
-        }
     }
 }

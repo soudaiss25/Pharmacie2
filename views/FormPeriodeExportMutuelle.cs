@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Pharmacie2.Services;
 
 namespace Pharmacie2.views
 {
@@ -15,6 +16,7 @@ namespace Pharmacie2.views
         public FormPeriodeExportMutuelle(string nomMutuelle)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             lblNomMutuelle.Text = $"Mutuelle : {nomMutuelle}";
 
             // Par défaut : mois en cours
@@ -25,7 +27,6 @@ namespace Pharmacie2.views
 
             // Raccourcis période
             cbPeriode.SelectedIndex = 0;
-            cbPeriode.SelectedIndexChanged += CbPeriode_SelectedIndexChanged;
         }
 
         private void CbPeriode_SelectedIndexChanged(object sender, EventArgs e)
@@ -83,5 +84,3 @@ namespace Pharmacie2.views
         }
     }
 }
-
-// ── Designer inline (fichier unique pour simplifier l'intégration) ────────────

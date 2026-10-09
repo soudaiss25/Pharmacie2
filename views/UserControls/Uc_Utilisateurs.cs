@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -16,6 +17,7 @@ namespace Pharmacie2.views.UserControls
         public Uc_Utilisateurs()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Utilisateur, SelectionUtilisateur, () => ChargerUtilisateurs(txtRecherche.Text));
             this.Load += (s, e) => ChargerUtilisateurs();
         }
@@ -41,7 +43,7 @@ namespace Pharmacie2.views.UserControls
                             u.Role.ToLower().Contains(recherche));
                     }
 
-                    // Mot de passe affiché - système local, admin gère tout
+                    // Le mot de passe n'est jamais affiché : l'administrateur peut seulement en définir un nouveau
                     var data = query
                         .OrderBy(u => u.Nom)
                         .Select(u => new
@@ -51,20 +53,12 @@ namespace Pharmacie2.views.UserControls
                             u.Prenom,
                             u.Login,
                             u.Role,
-                            Statut = u.Actif ? "" : "📦 Archivé"
+                            Statut = u.Actif ? "" : "Archivé"
                         })
                         .ToList();
 
                     dgvUtilisateurs.DataSource = null;
                     dgvUtilisateurs.DataSource = data;
-
-                    if (dgvUtilisateurs.Columns["Id"] != null)
-                        dgvUtilisateurs.Columns["Id"].Visible = false;
-
-                    SetHeader("Nom", "Nom");
-                    SetHeader("Prenom", "Prénom");
-                    SetHeader("Login", "Login");
-                    SetHeader("Role", "Rôle");
 
                     ColorerColonneRole();
                     lblCompteur.Text = $"{data.Count} utilisateur(s)";
@@ -72,15 +66,10 @@ namespace Pharmacie2.views.UserControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur chargement : " + ex.Message,
+                Journal.Erreur("Chargement des utilisateurs", ex);
+                MessageBox.Show("Les utilisateurs n'ont pas pu être affichés : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void SetHeader(string col, string header)
-        {
-            if (dgvUtilisateurs.Columns[col] != null)
-                dgvUtilisateurs.Columns[col].HeaderText = header;
         }
 
         private void ColorerColonneRole()
@@ -89,17 +78,15 @@ namespace Pharmacie2.views.UserControls
             {
                 if (row.Cells["Role"].Value == null) continue;
                 string role = row.Cells["Role"].Value.ToString();
-                row.Cells["Role"].Style.ForeColor = System.Drawing.Color.White;
-                row.Cells["Role"].Style.Font = new System.Drawing.Font(
-                    "Segoe UI", 8.5f, System.Drawing.FontStyle.Bold);
-
-                row.Cells["Role"].Style.BackColor = role switch
+                var (texte, fond) = role switch
                 {
-                    Roles.Administrateur => System.Drawing.Color.FromArgb(46, 125, 50),
-                    Roles.Pharmacien => System.Drawing.Color.FromArgb(25, 118, 210),
-                    Roles.Caissier => System.Drawing.Color.FromArgb(230, 120, 0),
-                    _ => System.Drawing.Color.Gray
+                    Roles.Administrateur => (Theme.SuccesTexte, Theme.SuccesFond),
+                    Roles.Pharmacien => (Theme.InfoTexte, Theme.InfoFond),
+                    Roles.Caissier => (Theme.AttentionTexte, Theme.AttentionFond),
+                    _ => (Theme.Neutre, Theme.InfoFond)
                 };
+                row.Cells["Role"].Style.ForeColor = texte;
+                row.Cells["Role"].Style.BackColor = fond;
             }
         }
 
@@ -181,7 +168,7 @@ namespace Pharmacie2.views.UserControls
                     {
                         if (ctx.Users.Any(u => u.Login == txtLogin.Text.Trim()))
                         {
-                            MessageBox.Show("Ce login est déjà utilisé.", "Doublon",
+                            MessageBox.Show("Cet identifiant est déjà utilisé.", "Doublon",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             txtLogin.Focus();
                             return;
@@ -197,8 +184,7 @@ namespace Pharmacie2.views.UserControls
                         });
 
                         ctx.SaveChanges();
-                        MessageBox.Show("Utilisateur créé avec succès.", "Succès",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        BandeauNotification.Succes("Utilisateur créé : " + txtLogin.Text.Trim());
                     }
                     else if (_mode == Mode.Modification)
                     {
@@ -212,7 +198,7 @@ namespace Pharmacie2.views.UserControls
 
                         if (ctx.Users.Any(x => x.Login == txtLogin.Text.Trim() && x.Id != _idEnCours))
                         {
-                            MessageBox.Show("Ce login est déjà utilisé.", "Doublon",
+                            MessageBox.Show("Cet identifiant est déjà utilisé.", "Doublon",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             txtLogin.Focus();
                             return;
@@ -227,8 +213,7 @@ namespace Pharmacie2.views.UserControls
                         u.Role = cbRole.SelectedItem.ToString();
 
                         ctx.SaveChanges();
-                        MessageBox.Show("Utilisateur modifié avec succès.", "Succès",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        BandeauNotification.Succes("Utilisateur modifié : " + txtLogin.Text.Trim());
                     }
                 }
 
@@ -237,7 +222,8 @@ namespace Pharmacie2.views.UserControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Journal.Erreur("Enregistrement d'un utilisateur", ex);
+                MessageBox.Show("L'utilisateur n'a pas pu être enregistré : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -274,7 +260,7 @@ namespace Pharmacie2.views.UserControls
             { MessageBox.Show("Prénom obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtPrenom.Focus(); return false; }
 
             if (string.IsNullOrWhiteSpace(txtLogin.Text))
-            { MessageBox.Show("Login obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtLogin.Focus(); return false; }
+            { MessageBox.Show("L'identifiant de connexion est obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtLogin.Focus(); return false; }
 
             if (_mode == Mode.Ajout && string.IsNullOrWhiteSpace(txtMotDePasse.Text))
             { MessageBox.Show("Mot de passe obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtMotDePasse.Focus(); return false; }

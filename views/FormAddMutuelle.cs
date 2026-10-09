@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using Pharmacie2.Models;
+using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views
 {
@@ -13,21 +15,25 @@ namespace Pharmacie2.views
         public FormAddMutuelle()
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _mutuel = new Mutuel();
             _isEdit = false;
-            this.Text = "Nouvelle Mutuelle";
+            this.Text = "Nouvelle mutuelle";
+            lblTitre.Text = "Nouvelle mutuelle";
         }
 
         // Modification
         public FormAddMutuelle(Mutuel mutuel)
         {
             InitializeComponent();
+            Theme.Appliquer(this);
             _mutuel = mutuel;
             _isEdit = true;
-            this.Text = "Modifier Mutuelle";
+            this.Text = "Modifier la mutuelle";
+            lblTitre.Text = "Modifier la mutuelle";
 
             txtNomEmployeur.Text = mutuel.NomEmployeur;
-            txtTaux.Text = mutuel.TauxPriseEnCharge.ToString("0.00");
+            numTaux.Value = Math.Min(100, Math.Max(0, mutuel.TauxPriseEnCharge));
             txtEmail.Text = mutuel.EmailContact;
             txtTelephone.Text = mutuel.telephoneEmployeur;
         }
@@ -42,13 +48,7 @@ namespace Pharmacie2.views
                 return;
             }
 
-            if (!decimal.TryParse(txtTaux.Text, out decimal taux) || taux < 0 || taux > 100)
-            {
-                MessageBox.Show("Le taux doit être entre 0 et 100.", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtTaux.Focus();
-                return;
-            }
+            decimal taux = numTaux.Value;   // 0 à 100, garanti par le contrôle
 
             try
             {
@@ -81,14 +81,14 @@ namespace Pharmacie2.views
                     ctx.SaveChanges();
                 }
 
-                MessageBox.Show("Enregistrement réussi !", "Succès",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                BandeauNotification.Succes("Mutuelle enregistrée : " + txtNomEmployeur.Text.Trim());
                 DialogResult = DialogResult.OK;
                 this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Journal.Erreur("Enregistrement d'une mutuelle", ex);
+                MessageBox.Show("La mutuelle n'a pas pu être enregistrée : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

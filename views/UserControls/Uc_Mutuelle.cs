@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
+using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views.UserControls
 {
@@ -16,17 +17,19 @@ namespace Pharmacie2.views.UserControls
         public Uc_Mutuelle()
         {
             InitializeComponent();
-            this.Load += (s, e) => ChargerMutuelles();
+            Theme.Appliquer(this);
 
-            dgvMutuelles.SelectionChanged += DgvMutuelles_SelectionChanged;
-            btnReglertout.Click += btnReglerTout_Click;
-            btnReglerSelection.Click += btnReglerSelection_Click;
-            btnActualiser.Click += (s, e) =>
-            {
-                ChargerMutuelles();
-                if (_mutuelleSelectionneeId > 0)
-                    ChargerVentesImpayees(_mutuelleSelectionneeId, _mutuelleSelectionneeNom);
-            };
+            // Archivage (remplace la suppression)
+            _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Mutuelle, SelectionMutuelle, ChargerMutuelles);
+
+            this.Load += (s, e) => ChargerMutuelles();
+        }
+
+        private void btnActualiser_Click(object sender, EventArgs e)
+        {
+            ChargerMutuelles();
+            if (_mutuelleSelectionneeId > 0)
+                ChargerVentesImpayees(_mutuelleSelectionneeId, _mutuelleSelectionneeNom);
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -84,7 +87,7 @@ namespace Pharmacie2.views.UserControls
                         return new
                         {
                             m.IdMutuel,
-                            Mutuelle = m.Actif ? m.NomEmployeur : m.NomEmployeur + " (📦 archivée)",
+                            Mutuelle = m.Actif ? m.NomEmployeur : m.NomEmployeur + " (archivée)",
                             Taux = m.TauxPriseEnCharge,
                             Telephone = m.telephoneEmployeur ?? "—",
                             Email = m.EmailContact ?? "—",
@@ -96,34 +99,21 @@ namespace Pharmacie2.views.UserControls
                     dgvMutuelles.DataSource = null;
                     dgvMutuelles.DataSource = data;
 
-                    if (dgvMutuelles.Columns["IdMutuel"] != null)
-                        dgvMutuelles.Columns["IdMutuel"].Visible = false;
-                    if (dgvMutuelles.Columns["Mutuelle"] != null)
-                        dgvMutuelles.Columns["Mutuelle"].HeaderText = "Mutuelle / Employeur";
-                    if (dgvMutuelles.Columns["Taux"] != null)
-                        dgvMutuelles.Columns["Taux"].HeaderText = "Taux (%)";
-                    if (dgvMutuelles.Columns["NbImpayees"] != null)
-                        dgvMutuelles.Columns["NbImpayees"].HeaderText = "Ventes impayées";
-                    if (dgvMutuelles.Columns["TotalImpaye"] != null)
-                        dgvMutuelles.Columns["TotalImpaye"].HeaderText = "Total dû (KMF)";
-
                     foreach (DataGridViewRow row in dgvMutuelles.Rows)
                     {
                         var impaye = row.Cells["TotalImpaye"].Value;
                         if (impaye != null && Convert.ToDecimal(impaye) > 0)
                         {
-                            row.Cells["TotalImpaye"].Style.ForeColor =
-                                System.Drawing.Color.OrangeRed;
-                            row.Cells["TotalImpaye"].Style.Font =
-                                new System.Drawing.Font("Segoe UI", 9F,
-                                    System.Drawing.FontStyle.Bold);
+                            row.Cells["TotalImpaye"].Style.ForeColor = Theme.AttentionTexte;
+                            row.Cells["TotalImpaye"].Style.Font = Theme.Police(10, System.Drawing.FontStyle.Bold);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur chargement mutuelles : " + ex.Message,
+                Journal.Erreur("Chargement des mutuelles", ex);
+                MessageBox.Show("Les mutuelles n'ont pas pu être affichées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -175,8 +165,8 @@ namespace Pharmacie2.views.UserControls
                             v.DateVente.ToString("dd/MM/yyyy HH:mm"),
                             client,
                             v.MatriculeEmploye ?? "—",
-                            $"{v.MontantTotal:N0} KMF",
-                            $"{v.MontantMutuelle:N0} KMF",
+                            v.MontantTotal,
+                            v.MontantMutuelle,
                             vendeur);
                     }
 
@@ -184,13 +174,11 @@ namespace Pharmacie2.views.UserControls
                     int nbVentes = ventes.Count;
 
                     lblRecapImpaye.Text =
-                        $"🏢 {nomMutuelle}  |  " +
-                        $"{nbVentes} vente(s) impayée(s)  |  " +
-                        $"Total dû : {totalDu:N0} KMF";
+                        $"{nomMutuelle}  |  " +
+                        $"{nbVentes} vente(s) à régler  |  " +
+                        $"Total dû : {Format.Montant(totalDu)}";
 
-                    lblRecapImpaye.ForeColor = totalDu > 0
-                        ? System.Drawing.Color.OrangeRed
-                        : System.Drawing.Color.FromArgb(27, 94, 32);
+                    lblRecapImpaye.ForeColor = totalDu > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
 
                     btnReglertout.Enabled = nbVentes > 0;
                     btnReglerSelection.Enabled = nbVentes > 0;
@@ -198,7 +186,8 @@ namespace Pharmacie2.views.UserControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur chargement ventes : " + ex.Message,
+                Journal.Erreur("Chargement des ventes à régler", ex);
+                MessageBox.Show("Les ventes à régler n'ont pas pu être affichées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -214,18 +203,12 @@ namespace Pharmacie2.views.UserControls
 
             decimal totalDu = 0;
             foreach (DataGridViewRow row in dgvVentesImpayees.Rows)
-            {
-                string s = row.Cells["colMontantMutuelle"].Value?.ToString()
-                    ?.Replace(" KMF", "").Replace("\u202f", "").Replace(" ", "") ?? "0";
-                if (decimal.TryParse(s, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out decimal m))
-                    totalDu += m;
-            }
+                totalDu += Convert.ToDecimal(row.Cells["colMontantMutuelle"].Value);
 
             var confirm = MessageBox.Show(
                 $"Régler TOUTES les ventes impayées de « {_mutuelleSelectionneeNom} » ?\n\n" +
                 $"Nombre de ventes : {dgvVentesImpayees.Rows.Count}\n" +
-                $"Montant total    : {totalDu:N0} KMF",
+                $"Montant total    : {Format.Montant(totalDu)}",
                 "Confirmation règlement total",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -246,11 +229,7 @@ namespace Pharmacie2.views.UserControls
             {
                 if (!Convert.ToBoolean(row.Cells["colCoche"].Value)) continue;
                 ids.Add(Convert.ToInt32(row.Cells["colVenteId"].Value));
-                string s = row.Cells["colMontantMutuelle"].Value?.ToString()
-                    ?.Replace(" KMF", "").Replace("\u202f", "").Replace(" ", "") ?? "0";
-                if (decimal.TryParse(s, System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture, out decimal m))
-                    total += m;
+                total += Convert.ToDecimal(row.Cells["colMontantMutuelle"].Value);
             }
 
             if (ids.Count == 0)
@@ -261,7 +240,7 @@ namespace Pharmacie2.views.UserControls
             }
 
             var confirm = MessageBox.Show(
-                $"Régler {ids.Count} vente(s) sélectionnée(s) ?\nMontant : {total:N0} KMF",
+                $"Régler {ids.Count} vente(s) sélectionnée(s) ?\nMontant : {Format.Montant(total)}",
                 "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (confirm != DialogResult.Yes) return;
@@ -308,14 +287,9 @@ namespace Pharmacie2.views.UserControls
 
                     ctx.SaveChanges();
 
-                    MessageBox.Show(
-                        $"✅ Règlement enregistré !\n\n" +
-                        $"Mutuelle       : {_mutuelleSelectionneeNom}\n" +
-                        $"Ventes réglées : {ventes.Count}\n" +
-                        $"Montant total  : {totalRegle:N0} KMF" +
-                        (string.IsNullOrEmpty(reference) ? "" : $"\nRéférence      : {reference}"),
-                        "Règlement effectué",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    BandeauNotification.Succes(
+                        $"Règlement enregistré : {ventes.Count} vente(s), {Format.Montant(totalRegle)} pour {_mutuelleSelectionneeNom}"
+                        + (string.IsNullOrEmpty(reference) ? "." : $" (réf. {reference})."));
                 }
 
                 ChargerMutuelles();
@@ -323,53 +297,18 @@ namespace Pharmacie2.views.UserControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message,
+                Journal.Erreur("Règlement de mutuelle", ex);
+                MessageBox.Show("Le règlement n'a pas pu être enregistré : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private string AskReference()
         {
-            using (var frm = new Form())
+            using (var frm = new FormReferencePaiement())
             {
-                frm.Text = "Référence du paiement";
-                frm.ClientSize = new System.Drawing.Size(400, 130);
-                frm.FormBorderStyle = FormBorderStyle.FixedDialog;
-                frm.StartPosition = FormStartPosition.CenterParent;
-                frm.MaximizeBox = false;
-                frm.BackColor = System.Drawing.Color.White;
-
-                var lbl = new Label
-                {
-                    Text = "Référence (virement, chèque…) — optionnel :",
-                    Location = new System.Drawing.Point(12, 14),
-                    Size = new System.Drawing.Size(376, 20),
-                    Font = new System.Drawing.Font("Segoe UI", 9F)
-                };
-                var txt = new TextBox
-                {
-                    Location = new System.Drawing.Point(12, 38),
-                    Size = new System.Drawing.Size(376, 28),
-                    PlaceholderText = "Ex : VIR-2026-001, CHQ-123456…",
-                    Font = new System.Drawing.Font("Segoe UI", 9.5F)
-                };
-                var btnOk = new Button
-                {
-                    Text = "Confirmer",
-                    Location = new System.Drawing.Point(272, 80),
-                    Size = new System.Drawing.Size(116, 32),
-                    BackColor = System.Drawing.Color.FromArgb(46, 125, 50),
-                    ForeColor = System.Drawing.Color.White,
-                    FlatStyle = FlatStyle.Flat,
-                    Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold),
-                    DialogResult = DialogResult.OK
-                };
-                btnOk.FlatAppearance.BorderSize = 0;
-
-                frm.Controls.AddRange(new Control[] { lbl, txt, btnOk });
-                frm.AcceptButton = btnOk;
-                frm.ShowDialog();
-                return txt.Text.Trim();
+                frm.ShowDialog(this);
+                return frm.DialogResult == DialogResult.OK ? frm.Reference : "";
             }
         }
 
@@ -380,7 +319,7 @@ namespace Pharmacie2.views.UserControls
         private void btnNouvelleMutuelle_Click(object sender, EventArgs e)
         {
             using (var form = new FormAddMutuelle())
-                if (form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog(this) == DialogResult.OK)
                     ChargerMutuelles();
         }
 
@@ -393,7 +332,7 @@ namespace Pharmacie2.views.UserControls
                 var m = ctx.mutuels.Find(id);
                 if (m == null) return;
                 using (var form = new FormAddMutuelle(m))
-                    if (form.ShowDialog() == DialogResult.OK)
+                    if (form.ShowDialog(this) == DialogResult.OK)
                         ChargerMutuelles();
             }
         }
@@ -433,7 +372,7 @@ namespace Pharmacie2.views.UserControls
                     try
                     {
                         MutuelleExportService.Exporter(sfd.FileName, id, nom, frmP.DateDebut, frmP.DateFin);
-                        if (MessageBox.Show($"Export réussi : {donnees.Count} achat(s).\n\nOuvrir ?",
+                        if (MessageBox.Show($"Export terminé : {donnees.Count} achat(s).\n\nOuvrir le fichier ?",
                             "Export Excel", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                             System.Diagnostics.Process.Start(
                                 new System.Diagnostics.ProcessStartInfo
@@ -441,7 +380,8 @@ namespace Pharmacie2.views.UserControls
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Erreur : " + ex.Message,
+                        Journal.Erreur("Export des achats de la mutuelle", ex);
+                        MessageBox.Show("L'export n'a pas pu être créé : " + ex.Message,
                             "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }

@@ -1,304 +1,418 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace Pharmacie2.views.UserControls
+﻿namespace Pharmacie2.views.UserControls
 {
     partial class Uc_Mutuelle
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && components != null) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
+        #region Code généré par le Concepteur Windows Form
+
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
         private void InitializeComponent()
         {
-            // ── Déclarations ──────────────────────────────────────────────
-            pnlHeader = new Panel();
-            lblTitre = new Label();
-            pnlToolbar = new Panel();
-            btnNouvelleMutuelle = new Button();
-            btnModifier = new Button();
-            btnSupprimer = new Button();
-            btnExportExcel = new Button();
-            btnActualiser = new Button();
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTitre = new System.Windows.Forms.Label();
+            this.flpActions = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnNouvelleMutuelle = new System.Windows.Forms.Button();
+            this.btnModifier = new System.Windows.Forms.Button();
+            this.btnSupprimer = new System.Windows.Forms.Button();
+            this.btnExportExcel = new System.Windows.Forms.Button();
+            this.btnActualiser = new System.Windows.Forms.Button();
+            this.dgvMutuelles = new System.Windows.Forms.DataGridView();
+            this.lblRecapImpaye = new System.Windows.Forms.Label();
+            this.flpReglement = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnReglertout = new System.Windows.Forms.Button();
+            this.btnReglerSelection = new System.Windows.Forms.Button();
+            this.dgvVentesImpayees = new System.Windows.Forms.DataGridView();
+            this.colIdMutuel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMutuelle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTaux = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTelephone = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEmail = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNbImpayees = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTotalImpaye = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCoche = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.colVenteId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNumeroVente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDateVente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colClient = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMatricule = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMontantTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMontantMutuelle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colVendeur = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMutuelles)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVentesImpayees)).BeginInit();
+            this.tlpRoot.SuspendLayout();
+            this.flpActions.SuspendLayout();
+            this.flpReglement.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // tlpRoot
+            // 
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 6;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
+            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.tlpRoot.Controls.Add(this.flpActions, 0, 1);
+            this.tlpRoot.Controls.Add(this.dgvMutuelles, 0, 2);
+            this.tlpRoot.Controls.Add(this.lblRecapImpaye, 0, 3);
+            this.tlpRoot.Controls.Add(this.flpReglement, 0, 4);
+            this.tlpRoot.Controls.Add(this.dgvVentesImpayees, 0, 5);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
+            // 
+            // lblTitre
+            // 
+            this.lblTitre.Text = "Mutuelles";
+            this.lblTitre.AutoSize = true;
+            this.lblTitre.Tag = "titre";
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Name = "lblTitre";
+            // 
+            // flpActions
+            // 
+            this.flpActions.Controls.Add(this.btnNouvelleMutuelle);
+            this.flpActions.Controls.Add(this.btnModifier);
+            this.flpActions.Controls.Add(this.btnSupprimer);
+            this.flpActions.Controls.Add(this.btnExportExcel);
+            this.flpActions.Controls.Add(this.btnActualiser);
+            this.flpActions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpActions.AutoSize = true;
+            this.flpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpActions.WrapContents = true;
+            this.flpActions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.flpActions.Name = "flpActions";
+            // 
+            // btnNouvelleMutuelle
+            // 
+            this.btnNouvelleMutuelle.Text = "Nouvelle mutuelle";
+            this.btnNouvelleMutuelle.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnNouvelleMutuelle.Tag = "primaire";
+            this.btnNouvelleMutuelle.Name = "btnNouvelleMutuelle";
+            this.btnNouvelleMutuelle.Click += new System.EventHandler(this.btnNouvelleMutuelle_Click);
+            // 
+            // btnModifier
+            // 
+            this.btnModifier.Text = "Modifier";
+            this.btnModifier.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnModifier.Name = "btnModifier";
+            this.btnModifier.Click += new System.EventHandler(this.btnModifier_Click);
+            // 
+            // btnSupprimer
+            // 
+            this.btnSupprimer.Text = "Archiver";
+            this.btnSupprimer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnSupprimer.Name = "btnSupprimer";
+            this.btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click);
+            // 
+            // btnExportExcel
+            // 
+            this.btnExportExcel.Text = "Exporter en Excel";
+            this.btnExportExcel.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnExportExcel.Name = "btnExportExcel";
+            this.btnExportExcel.Click += new System.EventHandler(this.btnExportExcel_Click);
+            // 
+            // btnActualiser
+            // 
+            this.btnActualiser.Text = "Actualiser";
+            this.btnActualiser.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnActualiser.Name = "btnActualiser";
+            this.btnActualiser.Click += new System.EventHandler(this.btnActualiser_Click);
+            // 
+            // dgvMutuelles
+            // 
+            this.dgvMutuelles.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colIdMutuel,
+            this.colMutuelle,
+            this.colTaux,
+            this.colTelephone,
+            this.colEmail,
+            this.colNbImpayees,
+            this.colTotalImpaye});
+            this.dgvMutuelles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvMutuelles.AutoGenerateColumns = false;
+            this.dgvMutuelles.ReadOnly = true;
+            this.dgvMutuelles.Name = "dgvMutuelles";
+            this.dgvMutuelles.SelectionChanged += new System.EventHandler(this.DgvMutuelles_SelectionChanged);
+            // 
+            // lblRecapImpaye
+            // 
+            this.lblRecapImpaye.Text = "Sélectionnez une mutuelle pour voir ses ventes à régler.";
+            this.lblRecapImpaye.AutoSize = true;
+            this.lblRecapImpaye.Tag = "section";
+            this.lblRecapImpaye.Margin = new System.Windows.Forms.Padding(0, 8, 0, 4);
+            this.lblRecapImpaye.Name = "lblRecapImpaye";
+            // 
+            // flpReglement
+            // 
+            this.flpReglement.Controls.Add(this.btnReglertout);
+            this.flpReglement.Controls.Add(this.btnReglerSelection);
+            this.flpReglement.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpReglement.AutoSize = true;
+            this.flpReglement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpReglement.WrapContents = true;
+            this.flpReglement.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.flpReglement.Name = "flpReglement";
+            // 
+            // btnReglertout
+            // 
+            this.btnReglertout.Text = "Régler tout";
+            this.btnReglertout.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnReglertout.Tag = "primaire";
+            this.btnReglertout.Enabled = false;
+            this.btnReglertout.Name = "btnReglertout";
+            this.btnReglertout.Click += new System.EventHandler(this.btnReglerTout_Click);
+            // 
+            // btnReglerSelection
+            // 
+            this.btnReglerSelection.Text = "Régler la sélection";
+            this.btnReglerSelection.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnReglerSelection.Enabled = false;
+            this.btnReglerSelection.Name = "btnReglerSelection";
+            this.btnReglerSelection.Click += new System.EventHandler(this.btnReglerSelection_Click);
+            // 
+            // dgvVentesImpayees
+            // 
+            this.dgvVentesImpayees.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCoche,
+            this.colVenteId,
+            this.colNumeroVente,
+            this.colDateVente,
+            this.colClient,
+            this.colMatricule,
+            this.colMontantTotal,
+            this.colMontantMutuelle,
+            this.colVendeur});
+            this.dgvVentesImpayees.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvVentesImpayees.AutoGenerateColumns = false;
+            this.dgvVentesImpayees.AllowUserToAddRows = false;
+            this.dgvVentesImpayees.Name = "dgvVentesImpayees";
+            // 
+            // colIdMutuel
+            // 
+            this.colIdMutuel.HeaderText = "Id";
+            this.colIdMutuel.Name = "IdMutuel";
+            this.colIdMutuel.DataPropertyName = "IdMutuel";
+            this.colIdMutuel.FillWeight = 100F;
+            this.colIdMutuel.MinimumWidth = 60;
+            this.colIdMutuel.ReadOnly = true;
+            this.colIdMutuel.Visible = false;
+            // 
+            // colMutuelle
+            // 
+            this.colMutuelle.HeaderText = "Mutuelle / Employeur";
+            this.colMutuelle.Name = "Mutuelle";
+            this.colMutuelle.DataPropertyName = "Mutuelle";
+            this.colMutuelle.FillWeight = 30F;
+            this.colMutuelle.MinimumWidth = 160;
+            this.colMutuelle.ReadOnly = true;
+            // 
+            // colTaux
+            // 
+            this.colTaux.HeaderText = "Taux (%)";
+            this.colTaux.Name = "Taux";
+            this.colTaux.DataPropertyName = "Taux";
+            this.colTaux.FillWeight = 9F;
+            this.colTaux.MinimumWidth = 70;
+            this.colTaux.ReadOnly = true;
+            // 
+            // colTelephone
+            // 
+            this.colTelephone.HeaderText = "Téléphone";
+            this.colTelephone.Name = "Telephone";
+            this.colTelephone.DataPropertyName = "Telephone";
+            this.colTelephone.FillWeight = 16F;
+            this.colTelephone.MinimumWidth = 110;
+            this.colTelephone.ReadOnly = true;
+            // 
+            // colEmail
+            // 
+            this.colEmail.HeaderText = "E-mail";
+            this.colEmail.Name = "Email";
+            this.colEmail.DataPropertyName = "Email";
+            this.colEmail.FillWeight = 19F;
+            this.colEmail.MinimumWidth = 130;
+            this.colEmail.ReadOnly = true;
+            // 
+            // colNbImpayees
+            // 
+            this.colNbImpayees.HeaderText = "Ventes impayées";
+            this.colNbImpayees.Name = "NbImpayees";
+            this.colNbImpayees.DataPropertyName = "NbImpayees";
+            this.colNbImpayees.FillWeight = 12F;
+            this.colNbImpayees.MinimumWidth = 100;
+            this.colNbImpayees.ReadOnly = true;
+            // 
+            // colTotalImpaye
+            // 
+            this.colTotalImpaye.HeaderText = "Total dû";
+            this.colTotalImpaye.Name = "TotalImpaye";
+            this.colTotalImpaye.DataPropertyName = "TotalImpaye";
+            this.colTotalImpaye.FillWeight = 14F;
+            this.colTotalImpaye.MinimumWidth = 100;
+            this.colTotalImpaye.ReadOnly = true;
+            this.colTotalImpaye.Tag = "montant";
+            // 
+            // colCoche
+            // 
+            this.colCoche.HeaderText = "Régler";
+            this.colCoche.Name = "colCoche";
+            this.colCoche.DataPropertyName = "colCoche";
+            this.colCoche.FillWeight = 7F;
+            this.colCoche.MinimumWidth = 60;
+            this.colCoche.ReadOnly = false;
+            // 
+            // colVenteId
+            // 
+            this.colVenteId.HeaderText = "Id";
+            this.colVenteId.Name = "colVenteId";
+            this.colVenteId.DataPropertyName = "colVenteId";
+            this.colVenteId.FillWeight = 100F;
+            this.colVenteId.MinimumWidth = 60;
+            this.colVenteId.ReadOnly = true;
+            this.colVenteId.Visible = false;
+            // 
+            // colNumeroVente
+            // 
+            this.colNumeroVente.HeaderText = "N° de vente";
+            this.colNumeroVente.Name = "colNumeroVente";
+            this.colNumeroVente.DataPropertyName = "colNumeroVente";
+            this.colNumeroVente.FillWeight = 13F;
+            this.colNumeroVente.MinimumWidth = 100;
+            this.colNumeroVente.ReadOnly = true;
+            // 
+            // colDateVente
+            // 
+            this.colDateVente.HeaderText = "Date";
+            this.colDateVente.Name = "colDateVente";
+            this.colDateVente.DataPropertyName = "colDateVente";
+            this.colDateVente.FillWeight = 14F;
+            this.colDateVente.MinimumWidth = 110;
+            this.colDateVente.ReadOnly = true;
+            // 
+            // colClient
+            // 
+            this.colClient.HeaderText = "Client";
+            this.colClient.Name = "colClient";
+            this.colClient.DataPropertyName = "colClient";
+            this.colClient.FillWeight = 20F;
+            this.colClient.MinimumWidth = 120;
+            this.colClient.ReadOnly = true;
+            // 
+            // colMatricule
+            // 
+            this.colMatricule.HeaderText = "Matricule";
+            this.colMatricule.Name = "colMatricule";
+            this.colMatricule.DataPropertyName = "colMatricule";
+            this.colMatricule.FillWeight = 11F;
+            this.colMatricule.MinimumWidth = 90;
+            this.colMatricule.ReadOnly = true;
+            // 
+            // colMontantTotal
+            // 
+            this.colMontantTotal.HeaderText = "Total de la vente";
+            this.colMontantTotal.Name = "colMontantTotal";
+            this.colMontantTotal.DataPropertyName = "colMontantTotal";
+            this.colMontantTotal.FillWeight = 12F;
+            this.colMontantTotal.MinimumWidth = 100;
+            this.colMontantTotal.ReadOnly = true;
+            this.colMontantTotal.Tag = "montant";
+            // 
+            // colMontantMutuelle
+            // 
+            this.colMontantMutuelle.HeaderText = "Part de la mutuelle (due)";
+            this.colMontantMutuelle.Name = "colMontantMutuelle";
+            this.colMontantMutuelle.DataPropertyName = "colMontantMutuelle";
+            this.colMontantMutuelle.FillWeight = 14F;
+            this.colMontantMutuelle.MinimumWidth = 110;
+            this.colMontantMutuelle.ReadOnly = true;
+            this.colMontantMutuelle.Tag = "montant";
+            // 
+            // colVendeur
+            // 
+            this.colVendeur.HeaderText = "Vendeur";
+            this.colVendeur.Name = "colVendeur";
+            this.colVendeur.DataPropertyName = "colVendeur";
+            this.colVendeur.FillWeight = 13F;
+            this.colVendeur.MinimumWidth = 100;
+            this.colVendeur.ReadOnly = true;
+            // 
+            // Uc_Mutuelle
+            // 
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Size = new System.Drawing.Size(1146, 700);
+            this.Name = "Uc_Mutuelle";
+            this.ResumeLayout(false);
+            this.flpReglement.ResumeLayout(false);
+            this.flpReglement.PerformLayout();
+            this.flpActions.ResumeLayout(false);
+            this.flpActions.PerformLayout();
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVentesImpayees)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvMutuelles)).EndInit();
 
-            // Panel haut (liste mutuelles)
-            pnlHaut = new Panel();
-            dgvMutuelles = new DataGridView();
-
-            // Splitter entre haut et bas
-            splitter = new Splitter();
-
-            // Panel bas (ventes impayées)
-            pnlBas = new Panel();
-            pnlImpayesHeader = new Panel();
-            lblRecapImpaye = new Label();
-            btnReglertout = new Button();
-            btnReglerSelection = new Button();
-            dgvVentesImpayees = new DataGridView();
-
-            // Colonnes grille ventes impayées
-            colCoche = new DataGridViewCheckBoxColumn();
-            colVenteId = new DataGridViewTextBoxColumn();
-            colNumeroVente = new DataGridViewTextBoxColumn();
-            colDateVente = new DataGridViewTextBoxColumn();
-            colClient = new DataGridViewTextBoxColumn();
-            colMatricule = new DataGridViewTextBoxColumn();
-            colMontantTotal = new DataGridViewTextBoxColumn();
-            colMontantMutuelle = new DataGridViewTextBoxColumn();
-            colVendeur = new DataGridViewTextBoxColumn();
-
-            ((System.ComponentModel.ISupportInitialize)dgvMutuelles).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dgvVentesImpayees).BeginInit();
-            pnlHeader.SuspendLayout();
-            pnlToolbar.SuspendLayout();
-            pnlHaut.SuspendLayout();
-            pnlBas.SuspendLayout();
-            pnlImpayesHeader.SuspendLayout();
-            SuspendLayout();
-
-            // ══════════════════════════════════════════════════════════════
-            // EN-TÊTE
-            // ══════════════════════════════════════════════════════════════
-            lblTitre.AutoSize = false;
-            lblTitre.Dock = DockStyle.Fill;
-            lblTitre.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            lblTitre.ForeColor = Color.White;
-            lblTitre.Text = "🏢  Gestion des Mutuelles";
-            lblTitre.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblTitre.Padding = new Padding(14, 0, 0, 0);
-
-            pnlHeader.BackColor = Color.FromArgb(46, 100, 46);
-            pnlHeader.Controls.Add(lblTitre);
-            pnlHeader.Dock = DockStyle.Top;
-            pnlHeader.Height = 55;
-            pnlHeader.Name = "pnlHeader";
-
-            // ══════════════════════════════════════════════════════════════
-            // BARRE OUTILS
-            // ══════════════════════════════════════════════════════════════
-            void StyleBtn(Button b, string txt, Color bg, int x, int w = 130)
-            {
-                b.Text = txt;
-                b.Location = new Point(x, 9);
-                b.Size = new Size(w, 32);
-                b.BackColor = bg;
-                b.ForeColor = Color.White;
-                b.FlatStyle = FlatStyle.Flat;
-                b.FlatAppearance.BorderSize = 0;
-                b.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-                b.UseVisualStyleBackColor = false;
-            }
-
-            StyleBtn(btnNouvelleMutuelle, "➕ Ajouter", Color.FromArgb(0, 150, 136), 10, 120);
-            StyleBtn(btnModifier, "✏️ Modifier", Color.FromArgb(33, 150, 243), 140, 110);
-            StyleBtn(btnSupprimer, "🗑️ Supprimer", Color.FromArgb(211, 47, 47), 260, 110);
-            StyleBtn(btnExportExcel, "📊 Export Excel", Color.FromArgb(56, 142, 60), 380, 140);
-            StyleBtn(btnActualiser, "🔄 Actualiser", Color.FromArgb(69, 90, 100), 530, 120);
-
-            btnNouvelleMutuelle.Click += btnNouvelleMutuelle_Click;
-            btnModifier.Click += btnModifier_Click;
-            btnSupprimer.Click += btnSupprimer_Click;
-            btnExportExcel.Click += btnExportExcel_Click;
-
-            pnlToolbar.BackColor = Color.FromArgb(245, 250, 245);
-            pnlToolbar.Controls.AddRange(new Control[] {
-                btnNouvelleMutuelle, btnModifier, btnSupprimer,
-                btnExportExcel, btnActualiser });
-            pnlToolbar.Dock = DockStyle.Top;
-            pnlToolbar.Height = 50;
-            pnlToolbar.Name = "pnlToolbar";
-
-            // ══════════════════════════════════════════════════════════════
-            // PANEL HAUT — Liste des mutuelles
-            // ══════════════════════════════════════════════════════════════
-            dgvMutuelles.AllowUserToAddRows = false;
-            dgvMutuelles.AllowUserToDeleteRows = false;
-            dgvMutuelles.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvMutuelles.BackgroundColor = Color.White;
-            dgvMutuelles.BorderStyle = BorderStyle.None;
-            dgvMutuelles.ColumnHeadersHeight = 38;
-            dgvMutuelles.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(46, 100, 46);
-            dgvMutuelles.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvMutuelles.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dgvMutuelles.Dock = DockStyle.Fill;
-            dgvMutuelles.EnableHeadersVisualStyles = false;
-            dgvMutuelles.Font = new Font("Segoe UI", 9.5F);
-            dgvMutuelles.MultiSelect = false;
-            dgvMutuelles.Name = "dgvMutuelles";
-            dgvMutuelles.ReadOnly = true;
-            dgvMutuelles.RowHeadersVisible = false;
-            dgvMutuelles.RowTemplate.Height = 34;
-            dgvMutuelles.ScrollBars = ScrollBars.Both;
-            dgvMutuelles.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMutuelles.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 248, 240);
-
-            pnlHaut.Controls.Add(dgvMutuelles);
-            pnlHaut.Dock = DockStyle.Top;
-            pnlHaut.Height = 250;          // hauteur fixe — pas de SplitterDistance
-            pnlHaut.MinimumSize = new Size(0, 120);
-            pnlHaut.Name = "pnlHaut";
-
-            // ── Splitter entre haut et bas ────────────────────────────────
-            splitter.Dock = DockStyle.Top;
-            splitter.Height = 5;
-            splitter.BackColor = Color.FromArgb(200, 200, 200);
-            splitter.Name = "splitter";
-
-            // ══════════════════════════════════════════════════════════════
-            // PANEL BAS — Ventes impayées
-            // ══════════════════════════════════════════════════════════════
-
-            // En-tête impayés
-            lblRecapImpaye.AutoSize = false;
-            lblRecapImpaye.Location = new Point(8, 8);
-            lblRecapImpaye.Size = new Size(560, 34);
-            lblRecapImpaye.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblRecapImpaye.ForeColor = Color.FromArgb(27, 94, 32);
-            lblRecapImpaye.Text = "← Sélectionnez une mutuelle pour voir ses ventes impayées";
-            lblRecapImpaye.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblRecapImpaye.Name = "lblRecapImpaye";
-
-            btnReglertout.Text = "✅ Régler tout";
-            btnReglertout.Location = new Point(580, 8);
-            btnReglertout.Size = new Size(150, 34);
-            btnReglertout.BackColor = Color.FromArgb(46, 125, 50);
-            btnReglertout.ForeColor = Color.White;
-            btnReglertout.FlatStyle = FlatStyle.Flat;
-            btnReglertout.FlatAppearance.BorderSize = 0;
-            btnReglertout.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnReglertout.Enabled = false;
-            btnReglertout.Name = "btnReglertout";
-            btnReglertout.UseVisualStyleBackColor = false;
-
-            btnReglerSelection.Text = "☑️ Régler sélection";
-            btnReglerSelection.Location = new Point(740, 8);
-            btnReglerSelection.Size = new Size(160, 34);
-            btnReglerSelection.BackColor = Color.FromArgb(25, 118, 210);
-            btnReglerSelection.ForeColor = Color.White;
-            btnReglerSelection.FlatStyle = FlatStyle.Flat;
-            btnReglerSelection.FlatAppearance.BorderSize = 0;
-            btnReglerSelection.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnReglerSelection.Enabled = false;
-            btnReglerSelection.Name = "btnReglerSelection";
-            btnReglerSelection.UseVisualStyleBackColor = false;
-
-            pnlImpayesHeader.BackColor = Color.FromArgb(255, 243, 205);
-            pnlImpayesHeader.Controls.Add(lblRecapImpaye);
-            pnlImpayesHeader.Controls.Add(btnReglertout);
-            pnlImpayesHeader.Controls.Add(btnReglerSelection);
-            pnlImpayesHeader.Dock = DockStyle.Top;
-            pnlImpayesHeader.Height = 50;
-            pnlImpayesHeader.Name = "pnlImpayesHeader";
-
-            // Colonnes grille ventes impayées
-            colCoche.Name = "colCoche"; colCoche.HeaderText = "✔"; colCoche.Width = 40; colCoche.ReadOnly = false; colCoche.FillWeight = 20F;
-            colVenteId.Name = "colVenteId"; colVenteId.HeaderText = "ID"; colVenteId.Visible = false;
-            colNumeroVente.Name = "colNumeroVente"; colNumeroVente.HeaderText = "N° Vente"; colNumeroVente.ReadOnly = true; colNumeroVente.FillWeight = 60F;
-            colDateVente.Name = "colDateVente"; colDateVente.HeaderText = "Date"; colDateVente.ReadOnly = true; colDateVente.FillWeight = 80F;
-            colClient.Name = "colClient"; colClient.HeaderText = "Client"; colClient.ReadOnly = true; colClient.FillWeight = 100F;
-            colMatricule.Name = "colMatricule"; colMatricule.HeaderText = "Matricule"; colMatricule.ReadOnly = true; colMatricule.FillWeight = 60F;
-            colMontantTotal.Name = "colMontantTotal"; colMontantTotal.HeaderText = "Total vente"; colMontantTotal.ReadOnly = true; colMontantTotal.FillWeight = 70F;
-            colMontantMutuelle.Name = "colMontantMutuelle"; colMontantMutuelle.HeaderText = "Part entreprise (dû)"; colMontantMutuelle.ReadOnly = true; colMontantMutuelle.FillWeight = 80F;
-            colMontantMutuelle.DefaultCellStyle.ForeColor = Color.OrangeRed;
-            colMontantMutuelle.DefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            colVendeur.Name = "colVendeur"; colVendeur.HeaderText = "Vendeur"; colVendeur.ReadOnly = true; colVendeur.FillWeight = 70F;
-
-            dgvVentesImpayees.AllowUserToAddRows = false;
-            dgvVentesImpayees.AllowUserToDeleteRows = false;
-            dgvVentesImpayees.AutoGenerateColumns = false;
-            dgvVentesImpayees.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvVentesImpayees.BackgroundColor = Color.White;
-            dgvVentesImpayees.BorderStyle = BorderStyle.None;
-            dgvVentesImpayees.ColumnHeadersHeight = 36;
-            dgvVentesImpayees.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(211, 84, 0);
-            dgvVentesImpayees.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvVentesImpayees.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dgvVentesImpayees.Columns.AddRange(new DataGridViewColumn[] {
-                colCoche, colVenteId, colNumeroVente, colDateVente,
-                colClient, colMatricule, colMontantTotal, colMontantMutuelle, colVendeur });
-            dgvVentesImpayees.Dock = DockStyle.Fill;
-            dgvVentesImpayees.EnableHeadersVisualStyles = false;
-            dgvVentesImpayees.Font = new Font("Segoe UI", 9F);
-            dgvVentesImpayees.MultiSelect = true;
-            dgvVentesImpayees.Name = "dgvVentesImpayees";
-            dgvVentesImpayees.ReadOnly = false;
-            dgvVentesImpayees.RowHeadersVisible = false;
-            dgvVentesImpayees.RowTemplate.Height = 32;
-            dgvVentesImpayees.ScrollBars = ScrollBars.Both;
-            dgvVentesImpayees.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvVentesImpayees.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(255, 250, 240);
-
-            // Ordre critique : Fill doit être ajouté en dernier dans pnlBas
-            pnlBas.Controls.Add(dgvVentesImpayees);
-            pnlBas.Controls.Add(pnlImpayesHeader);
-            pnlBas.Dock = DockStyle.Fill;
-            pnlBas.Name = "pnlBas";
-
-            // ══════════════════════════════════════════════════════════════
-            // ASSEMBLAGE FINAL
-            // Ordre : Fill en dernier, Top avant, Bottom avant Fill
-            // ══════════════════════════════════════════════════════════════
-            BackColor = Color.White;
-            Size = new Size(1100, 700);
-            Name = "Uc_Mutuelle";
-
-            // Ordre d'ajout des contrôles Docked :
-            // Top s'empile dans l'ordre d'ajout
-            // Fill prend tout l'espace restant → doit être ajouté EN DERNIER
-            Controls.Add(pnlBas);        // Fill  → ajouté en premier pour être "réservé" en dernier
-            Controls.Add(splitter);      // Top
-            Controls.Add(pnlHaut);       // Top
-            Controls.Add(pnlToolbar);    // Top
-            Controls.Add(pnlHeader);     // Top
-
-            pnlHeader.ResumeLayout(false);
-            pnlToolbar.ResumeLayout(false);
-            pnlImpayesHeader.ResumeLayout(false);
-            pnlHaut.ResumeLayout(false);
-            pnlBas.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvMutuelles).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dgvVentesImpayees).EndInit();
-            ResumeLayout(false);
         }
 
-        // ── Champs ────────────────────────────────────────────────────────
-        private Panel pnlHeader;
-        private Label lblTitre;
-        private Panel pnlToolbar;
-        private Button btnNouvelleMutuelle;
-        private Button btnModifier;
-        private Button btnSupprimer;
-        private Button btnExportExcel;
-        private Button btnActualiser;
+        #endregion
 
-        // Partie haute
-        private Panel pnlHaut;
-        private DataGridView dgvMutuelles;
-
-        // Splitter
-        private Splitter splitter;
-
-        // Partie basse
-        private Panel pnlBas;
-        private Panel pnlImpayesHeader;
-        private Label lblRecapImpaye;
-        private Button btnReglertout;
-        private Button btnReglerSelection;
-        private DataGridView dgvVentesImpayees;
-
-        // Colonnes grille impayées
-        private DataGridViewCheckBoxColumn colCoche;
-        private DataGridViewTextBoxColumn colVenteId;
-        private DataGridViewTextBoxColumn colNumeroVente;
-        private DataGridViewTextBoxColumn colDateVente;
-        private DataGridViewTextBoxColumn colClient;
-        private DataGridViewTextBoxColumn colMatricule;
-        private DataGridViewTextBoxColumn colMontantTotal;
-        private DataGridViewTextBoxColumn colMontantMutuelle;
-        private DataGridViewTextBoxColumn colVendeur;
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.Label lblTitre;
+        private System.Windows.Forms.FlowLayoutPanel flpActions;
+        private System.Windows.Forms.Button btnNouvelleMutuelle;
+        private System.Windows.Forms.Button btnModifier;
+        private System.Windows.Forms.Button btnSupprimer;
+        private System.Windows.Forms.Button btnExportExcel;
+        private System.Windows.Forms.Button btnActualiser;
+        private System.Windows.Forms.DataGridView dgvMutuelles;
+        private System.Windows.Forms.Label lblRecapImpaye;
+        private System.Windows.Forms.FlowLayoutPanel flpReglement;
+        private System.Windows.Forms.Button btnReglertout;
+        private System.Windows.Forms.Button btnReglerSelection;
+        private System.Windows.Forms.DataGridView dgvVentesImpayees;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colIdMutuel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMutuelle;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTaux;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTelephone;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEmail;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNbImpayees;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTotalImpaye;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colCoche;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colVenteId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNumeroVente;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDateVente;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colClient;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMatricule;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMontantTotal;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMontantMutuelle;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colVendeur;
     }
 }

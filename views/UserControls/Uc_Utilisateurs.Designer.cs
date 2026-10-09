@@ -1,310 +1,454 @@
-﻿using System.Windows.Forms;
-using System.Drawing;
-using Pharmacie2.Models;
-
-namespace Pharmacie2.views.UserControls
+﻿namespace Pharmacie2.views.UserControls
 {
     partial class Uc_Utilisateurs
     {
+        /// <summary>
+        /// Variable nécessaire au concepteur.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        private Panel pnlTop;
-        private Label lblTitre, lblCompteur;
-
-        private Panel pnlRecherche;
-        private Label lblRecherche;
-        private TextBox txtRecherche;
-        private Button btnEffacerRecherche;
-
-        private Panel pnlActions;
-        private Button btnNouvel, btnModifier, btnSupprimer;
-
-        private DataGridView dgvUtilisateurs;
-
-        private Panel pnlFormulaire;
-        private Label lblTitreForm;
-        private Label lblNom, lblPrenom, lblLogin, lblMdp, lblRole;
-        private TextBox txtNom, txtPrenom, txtLogin, txtMotDePasse;
-        private ComboBox cbRole;
-        private Button btnEnregistrer, btnAnnuler;
-
-        private Panel pnlLegende;
-
+        /// <summary>
+        /// Nettoyage des ressources utilisées.
+        /// </summary>
+        /// <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null)) components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
+        #region Code généré par le Concepteur Windows Form
+
+        /// <summary>
+        /// Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+        /// le contenu de cette méthode avec l'éditeur de code.
+        /// </summary>
         private void InitializeComponent()
         {
-            pnlTop = new Panel();
-            lblTitre = new Label();
-            lblCompteur = new Label();
-            pnlRecherche = new Panel();
-            lblRecherche = new Label();
-            txtRecherche = new TextBox();
-            btnEffacerRecherche = new Button();
-            pnlActions = new Panel();
-            btnNouvel = new Button();
-            btnModifier = new Button();
-            btnSupprimer = new Button();
-            dgvUtilisateurs = new DataGridView();
-            pnlFormulaire = new Panel();
-            lblTitreForm = new Label();
-            lblNom = new Label(); txtNom = new TextBox();
-            lblPrenom = new Label(); txtPrenom = new TextBox();
-            lblLogin = new Label(); txtLogin = new TextBox();
-            lblMdp = new Label(); txtMotDePasse = new TextBox();
-            lblRole = new Label(); cbRole = new ComboBox();
-            btnEnregistrer = new Button();
-            btnAnnuler = new Button();
-            pnlLegende = new Panel();
-
-            ((System.ComponentModel.ISupportInitialize)dgvUtilisateurs).BeginInit();
+            this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTitre = new System.Windows.Forms.Label();
+            this.flpBarre = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblRecherche = new System.Windows.Forms.Label();
+            this.txtRecherche = new System.Windows.Forms.TextBox();
+            this.btnEffacerRecherche = new System.Windows.Forms.Button();
+            this.btnNouvel = new System.Windows.Forms.Button();
+            this.btnModifier = new System.Windows.Forms.Button();
+            this.btnSupprimer = new System.Windows.Forms.Button();
+            this.tlpCorps = new System.Windows.Forms.TableLayoutPanel();
+            this.dgvUtilisateurs = new System.Windows.Forms.DataGridView();
+            this.pnlFormulaire = new System.Windows.Forms.TableLayoutPanel();
+            this.lblFormTitre = new System.Windows.Forms.Label();
+            this.lblNom = new System.Windows.Forms.Label();
+            this.txtNom = new System.Windows.Forms.TextBox();
+            this.lblPrenom = new System.Windows.Forms.Label();
+            this.txtPrenom = new System.Windows.Forms.TextBox();
+            this.lblLogin = new System.Windows.Forms.Label();
+            this.txtLogin = new System.Windows.Forms.TextBox();
+            this.lblMdp = new System.Windows.Forms.Label();
+            this.txtMotDePasse = new System.Windows.Forms.TextBox();
+            this.lblRole = new System.Windows.Forms.Label();
+            this.cbRole = new System.Windows.Forms.ComboBox();
+            this.flpBoutonsFormulaire = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnEnregistrer = new System.Windows.Forms.Button();
+            this.btnAnnuler = new System.Windows.Forms.Button();
+            this.lblCompteur = new System.Windows.Forms.Label();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPrenom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLogin = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRole = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUtilisateurs)).BeginInit();
+            this.tlpRoot.SuspendLayout();
+            this.flpBarre.SuspendLayout();
+            this.tlpCorps.SuspendLayout();
+            this.pnlFormulaire.SuspendLayout();
+            this.flpBoutonsFormulaire.SuspendLayout();
             this.SuspendLayout();
-
-            // ══════════════════════════════════════════════════════
-            // PANEL TOP
-            // ══════════════════════════════════════════════════════
-            pnlTop.Dock = DockStyle.Top;
-            pnlTop.Height = 55;
-            pnlTop.BackColor = Color.FromArgb(34, 85, 34);
-
-            lblTitre.Text = "👥  Gestion des Utilisateurs & Rôles";
-            lblTitre.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            lblTitre.ForeColor = Color.White;
-            lblTitre.Location = new Point(14, 12);
-            lblTitre.Size = new Size(500, 32);
-
-            lblCompteur.Text = "0 utilisateur(s)";
-            lblCompteur.Font = new Font("Segoe UI", 9F);
-            lblCompteur.ForeColor = Color.FromArgb(180, 230, 180);
-            lblCompteur.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblCompteur.Location = new Point(820, 18);
-            lblCompteur.Size = new Size(160, 22);
-            lblCompteur.TextAlign = ContentAlignment.MiddleRight;
-
-            pnlTop.Controls.Add(lblTitre);
-            pnlTop.Controls.Add(lblCompteur);
-
-            // ══════════════════════════════════════════════════════
-            // PANEL RECHERCHE
-            // ══════════════════════════════════════════════════════
-            pnlRecherche.Dock = DockStyle.Top;
-            pnlRecherche.Height = 46;
-            pnlRecherche.BackColor = Color.FromArgb(245, 250, 245);
-
-            lblRecherche.Text = "🔍  Rechercher :";
-            lblRecherche.Font = new Font("Segoe UI", 9F);
-            lblRecherche.Location = new Point(14, 13);
-            lblRecherche.Size = new Size(110, 22);
-            lblRecherche.ForeColor = Color.FromArgb(60, 60, 60);
-
-            txtRecherche.Location = new Point(128, 10);
-            txtRecherche.Size = new Size(280, 26);
-            txtRecherche.Font = new Font("Segoe UI", 9.5F);
-            txtRecherche.BorderStyle = BorderStyle.FixedSingle;
-            txtRecherche.PlaceholderText = "Nom, prénom, login ou rôle…";
-            txtRecherche.TextChanged += new System.EventHandler(this.txtRecherche_TextChanged);
-
-            btnEffacerRecherche.Text = "✕";
-            btnEffacerRecherche.Location = new Point(416, 9);
-            btnEffacerRecherche.Size = new Size(30, 28);
-            btnEffacerRecherche.FlatStyle = FlatStyle.Flat;
-            btnEffacerRecherche.FlatAppearance.BorderColor = Color.Silver;
-            btnEffacerRecherche.Font = new Font("Segoe UI", 9F);
-            btnEffacerRecherche.BackColor = Color.White;
-            btnEffacerRecherche.Click += new System.EventHandler(this.btnEffacerRecherche_Click);
-
-            pnlRecherche.Controls.Add(lblRecherche);
-            pnlRecherche.Controls.Add(txtRecherche);
-            pnlRecherche.Controls.Add(btnEffacerRecherche);
-
-            // ══════════════════════════════════════════════════════
-            // PANEL ACTIONS — 3 boutons (pas de ResetMdp)
-            // ══════════════════════════════════════════════════════
-            pnlActions.Dock = DockStyle.Top;
-            pnlActions.Height = 50;
-            pnlActions.BackColor = Color.White;
-
-            void StyleBtn(Button b, string text, Color bg, int x)
-            {
-                b.Text = text;
-                b.Location = new Point(x, 8);
-                b.Size = new Size(155, 34);
-                b.BackColor = bg;
-                b.ForeColor = Color.White;
-                b.FlatStyle = FlatStyle.Flat;
-                b.FlatAppearance.BorderSize = 0;
-                b.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-                b.Cursor = Cursors.Hand;
-            }
-
-            StyleBtn(btnNouvel, "➕  Nouvel utilisateur", Color.FromArgb(46, 125, 50), 14);
-            btnNouvel.Click += new System.EventHandler(this.btnNouvel_Click);
-
-            StyleBtn(btnModifier, "✎  Modifier", Color.FromArgb(25, 118, 210), 178);
-            btnModifier.Click += new System.EventHandler(this.btnModifier_Click);
-
-            StyleBtn(btnSupprimer, "✖  Supprimer", Color.FromArgb(198, 40, 40), 342);
-            btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click);
-
-            pnlActions.Controls.AddRange(new Control[] { btnNouvel, btnModifier, btnSupprimer });
-
-            // ══════════════════════════════════════════════════════
-            // DATAGRIDVIEW
-            // ══════════════════════════════════════════════════════
-            dgvUtilisateurs.Dock = DockStyle.Fill;
-            dgvUtilisateurs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvUtilisateurs.ReadOnly = true;
-            dgvUtilisateurs.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUtilisateurs.MultiSelect = false;
-            dgvUtilisateurs.AllowUserToAddRows = false;
-            dgvUtilisateurs.AllowUserToDeleteRows = false;
-            dgvUtilisateurs.RowHeadersVisible = false;
-            dgvUtilisateurs.BackgroundColor = Color.White;
-            dgvUtilisateurs.GridColor = Color.FromArgb(220, 230, 220);
-            dgvUtilisateurs.BorderStyle = BorderStyle.None;
-            dgvUtilisateurs.Font = new Font("Segoe UI", 9.5F);
-            dgvUtilisateurs.RowTemplate.Height = 36;
-            dgvUtilisateurs.ColumnHeadersHeight = 38;
-            dgvUtilisateurs.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(46, 100, 46);
-            dgvUtilisateurs.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgvUtilisateurs.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            dgvUtilisateurs.EnableHeadersVisualStyles = false;
-            dgvUtilisateurs.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 248, 240);
-            dgvUtilisateurs.DefaultCellStyle.SelectionBackColor = Color.FromArgb(165, 214, 167);
-            dgvUtilisateurs.DefaultCellStyle.SelectionForeColor = Color.Black;
-            dgvUtilisateurs.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvUtilisateurs.SelectionChanged += new System.EventHandler(this.dgvUtilisateurs_SelectionChanged);
-
-            // ══════════════════════════════════════════════════════
-            // PANEL FORMULAIRE LATÉRAL
-            // ══════════════════════════════════════════════════════
-            pnlFormulaire.Dock = DockStyle.Right;
-            pnlFormulaire.Width = 300;
-            pnlFormulaire.BackColor = Color.FromArgb(250, 253, 250);
-
-            // Bordure gauche verte
-            pnlFormulaire.Paint += (s, e) =>
-            {
-                e.Graphics.FillRectangle(
-                    new SolidBrush(Color.FromArgb(46, 125, 50)),
-                    0, 0, 4, pnlFormulaire.Height);
-            };
-
-            lblTitreForm.Text = "Détail utilisateur";
-            lblTitreForm.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblTitreForm.ForeColor = Color.FromArgb(34, 85, 34);
-            lblTitreForm.Location = new Point(16, 14);
-            lblTitreForm.Size = new Size(268, 26);
-
-            int lx = 16, fw = 268, rh = 52;
-
-            void AddChamp(Label lbl, string text, TextBox tb, int row)
-            {
-                lbl.Text = text;
-                lbl.Location = new Point(lx, 48 + row * rh);
-                lbl.Size = new Size(fw, 18);
-                lbl.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-                lbl.ForeColor = Color.FromArgb(80, 80, 80);
-
-                tb.Location = new Point(lx, 48 + row * rh + 20);
-                tb.Size = new Size(fw, 28);
-                tb.Font = new Font("Segoe UI", 9.5F);
-                tb.BorderStyle = BorderStyle.FixedSingle;
-                tb.BackColor = Color.FromArgb(245, 250, 245);
-                tb.Enabled = false;
-                // Pas de PasswordChar — mot de passe affiché en clair
-
-                pnlFormulaire.Controls.Add(lbl);
-                pnlFormulaire.Controls.Add(tb);
-            }
-
-            AddChamp(lblNom, "Nom *", txtNom, 0);
-            AddChamp(lblPrenom, "Prénom *", txtPrenom, 1);
-            AddChamp(lblLogin, "Login *", txtLogin, 2);
-            AddChamp(lblMdp, "Mot de passe *", txtMotDePasse, 3);
-
-            // Rôle
-            lblRole.Text = "Rôle *";
-            lblRole.Location = new Point(lx, 48 + 4 * rh);
-            lblRole.Size = new Size(fw, 18);
-            lblRole.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            lblRole.ForeColor = Color.FromArgb(80, 80, 80);
-
-            cbRole.Location = new Point(lx, 48 + 4 * rh + 20);
-            cbRole.Size = new Size(fw, 28);
-            cbRole.Font = new Font("Segoe UI", 9.5F);
-            cbRole.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbRole.FlatStyle = FlatStyle.Flat;
-            cbRole.BackColor = Color.FromArgb(245, 250, 245);
-            cbRole.Enabled = false;
-            cbRole.Items.AddRange(new object[] { Roles.Administrateur, Roles.Pharmacien, Roles.Caissier });
-
-            pnlFormulaire.Controls.Add(lblRole);
-            pnlFormulaire.Controls.Add(cbRole);
-
-            // Bouton Enregistrer
-            btnEnregistrer.Text = "✔  Enregistrer";
-            btnEnregistrer.Location = new Point(lx, 48 + 5 * rh + 12);
-            btnEnregistrer.Size = new Size(fw, 36);
-            btnEnregistrer.BackColor = Color.FromArgb(46, 125, 50);
-            btnEnregistrer.ForeColor = Color.White;
-            btnEnregistrer.FlatStyle = FlatStyle.Flat;
-            btnEnregistrer.FlatAppearance.BorderSize = 0;
-            btnEnregistrer.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnEnregistrer.Visible = false;
-            btnEnregistrer.Click += new System.EventHandler(this.btnEnregistrer_Click);
-
-            // Bouton Annuler
-            btnAnnuler.Text = "Annuler";
-            btnAnnuler.Location = new Point(lx, 48 + 5 * rh + 56);
-            btnAnnuler.Size = new Size(fw, 30);
-            btnAnnuler.FlatStyle = FlatStyle.Flat;
-            btnAnnuler.FlatAppearance.BorderColor = Color.Silver;
-            btnAnnuler.Font = new Font("Segoe UI", 9F);
-            btnAnnuler.BackColor = Color.White;
-            btnAnnuler.Visible = false;
-            btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
-
-            pnlFormulaire.Controls.Add(lblTitreForm);
-            pnlFormulaire.Controls.Add(btnEnregistrer);
-            pnlFormulaire.Controls.Add(btnAnnuler);
-
-            // ══════════════════════════════════════════════════════
-            // PANEL LÉGENDE (bas)
-            // ══════════════════════════════════════════════════════
-            pnlLegende.Dock = DockStyle.Bottom;
-            pnlLegende.Height = 36;
-            pnlLegende.BackColor = Color.FromArgb(245, 250, 245);
-
-            var lblLeg = new Label
-            {
-                Text = "Rôles :   🟢 Administrateur = accès complet   |   🔵 Pharmacien = accès complet   |   🟠 Caissier = ventes uniquement",
-                Font = new Font("Segoe UI", 8F),
-                ForeColor = Color.FromArgb(90, 90, 90),
-                Location = new Point(14, 10),
-                Size = new Size(850, 18)
-            };
-            pnlLegende.Controls.Add(lblLeg);
-
-            // ══════════════════════════════════════════════════════
-            // ASSEMBLAGE (ordre important pour Dock)
-            // ══════════════════════════════════════════════════════
-            ((System.ComponentModel.ISupportInitialize)dgvUtilisateurs).EndInit();
-
-            this.Controls.Add(dgvUtilisateurs);   // Fill  (doit être avant les Dock:Right)
-            this.Controls.Add(pnlFormulaire);      // Right
-            this.Controls.Add(pnlLegende);         // Bottom
-            this.Controls.Add(pnlActions);         // Top (3e)
-            this.Controls.Add(pnlRecherche);       // Top (2e)
-            this.Controls.Add(pnlTop);             // Top (1er)
-
-            this.Size = new Size(1050, 640);
-            this.BackColor = Color.White;
+            // 
+            // tlpRoot
+            // 
+            this.tlpRoot.ColumnCount = 1;
+            this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowCount = 4;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.tlpRoot.Controls.Add(this.flpBarre, 0, 1);
+            this.tlpRoot.Controls.Add(this.tlpCorps, 0, 2);
+            this.tlpRoot.Controls.Add(this.lblCompteur, 0, 3);
+            this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpRoot.Name = "tlpRoot";
+            // 
+            // lblTitre
+            // 
+            this.lblTitre.Text = "Utilisateurs";
+            this.lblTitre.AutoSize = true;
+            this.lblTitre.Tag = "titre";
+            this.lblTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblTitre.Name = "lblTitre";
+            // 
+            // flpBarre
+            // 
+            this.flpBarre.Controls.Add(this.lblRecherche);
+            this.flpBarre.Controls.Add(this.txtRecherche);
+            this.flpBarre.Controls.Add(this.btnEffacerRecherche);
+            this.flpBarre.Controls.Add(this.btnNouvel);
+            this.flpBarre.Controls.Add(this.btnModifier);
+            this.flpBarre.Controls.Add(this.btnSupprimer);
+            this.flpBarre.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpBarre.AutoSize = true;
+            this.flpBarre.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpBarre.WrapContents = true;
+            this.flpBarre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.flpBarre.Name = "flpBarre";
+            // 
+            // lblRecherche
+            // 
+            this.lblRecherche.Text = "Rechercher";
+            this.lblRecherche.AutoSize = true;
+            this.lblRecherche.Margin = new System.Windows.Forms.Padding(0, 8, 4, 0);
+            this.lblRecherche.Name = "lblRecherche";
+            // 
+            // txtRecherche
+            // 
+            this.txtRecherche.Width = 260;
+            this.txtRecherche.MaximumSize = new System.Drawing.Size(400, 0);
+            this.txtRecherche.PlaceholderText = "Nom, prénom, identifiant ou rôle";
+            this.txtRecherche.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.txtRecherche.Name = "txtRecherche";
+            this.txtRecherche.TextChanged += new System.EventHandler(this.txtRecherche_TextChanged);
+            // 
+            // btnEffacerRecherche
+            // 
+            this.btnEffacerRecherche.Text = "Effacer";
+            this.btnEffacerRecherche.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnEffacerRecherche.Name = "btnEffacerRecherche";
+            this.btnEffacerRecherche.Click += new System.EventHandler(this.btnEffacerRecherche_Click);
+            // 
+            // btnNouvel
+            // 
+            this.btnNouvel.Text = "Nouvel utilisateur";
+            this.btnNouvel.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnNouvel.Tag = "primaire";
+            this.btnNouvel.Name = "btnNouvel";
+            this.btnNouvel.Click += new System.EventHandler(this.btnNouvel_Click);
+            // 
+            // btnModifier
+            // 
+            this.btnModifier.Text = "Modifier";
+            this.btnModifier.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnModifier.Name = "btnModifier";
+            this.btnModifier.Click += new System.EventHandler(this.btnModifier_Click);
+            // 
+            // btnSupprimer
+            // 
+            this.btnSupprimer.Text = "Archiver";
+            this.btnSupprimer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnSupprimer.Name = "btnSupprimer";
+            this.btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click);
+            // 
+            // tlpCorps
+            // 
+            this.tlpCorps.ColumnCount = 2;
+            this.tlpCorps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62.0F));
+            this.tlpCorps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.0F));
+            this.tlpCorps.RowCount = 1;
+            this.tlpCorps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpCorps.Controls.Add(this.dgvUtilisateurs, 0, 0);
+            this.tlpCorps.Controls.Add(this.pnlFormulaire, 1, 0);
+            this.tlpCorps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpCorps.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpCorps.Name = "tlpCorps";
+            // 
+            // dgvUtilisateurs
+            // 
+            this.dgvUtilisateurs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colId,
+            this.colNom,
+            this.colPrenom,
+            this.colLogin,
+            this.colRole,
+            this.colStatut});
+            this.dgvUtilisateurs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvUtilisateurs.AutoGenerateColumns = false;
+            this.dgvUtilisateurs.ReadOnly = true;
+            this.dgvUtilisateurs.Name = "dgvUtilisateurs";
+            this.dgvUtilisateurs.SelectionChanged += new System.EventHandler(this.dgvUtilisateurs_SelectionChanged);
+            // 
+            // pnlFormulaire
+            // 
+            this.pnlFormulaire.ColumnCount = 1;
+            this.pnlFormulaire.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlFormulaire.RowCount = 12;
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlFormulaire.Controls.Add(this.lblFormTitre, 0, 0);
+            this.pnlFormulaire.Controls.Add(this.lblNom, 0, 1);
+            this.pnlFormulaire.Controls.Add(this.txtNom, 0, 2);
+            this.pnlFormulaire.Controls.Add(this.lblPrenom, 0, 3);
+            this.pnlFormulaire.Controls.Add(this.txtPrenom, 0, 4);
+            this.pnlFormulaire.Controls.Add(this.lblLogin, 0, 5);
+            this.pnlFormulaire.Controls.Add(this.txtLogin, 0, 6);
+            this.pnlFormulaire.Controls.Add(this.lblMdp, 0, 7);
+            this.pnlFormulaire.Controls.Add(this.txtMotDePasse, 0, 8);
+            this.pnlFormulaire.Controls.Add(this.lblRole, 0, 9);
+            this.pnlFormulaire.Controls.Add(this.cbRole, 0, 10);
+            this.pnlFormulaire.Controls.Add(this.flpBoutonsFormulaire, 0, 11);
+            this.pnlFormulaire.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFormulaire.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
+            this.pnlFormulaire.Margin = new System.Windows.Forms.Padding(12, 0, 0, 0);
+            this.pnlFormulaire.Tag = "carte";
+            this.pnlFormulaire.Name = "pnlFormulaire";
+            // 
+            // lblFormTitre
+            // 
+            this.lblFormTitre.Text = "Fiche utilisateur";
+            this.lblFormTitre.AutoSize = true;
+            this.lblFormTitre.Tag = "section";
+            this.lblFormTitre.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.lblFormTitre.Name = "lblFormTitre";
+            // 
+            // lblNom
+            // 
+            this.lblNom.Text = "Nom";
+            this.lblNom.AutoSize = true;
+            this.lblNom.Margin = new System.Windows.Forms.Padding(0, 6, 0, 2);
+            this.lblNom.Name = "lblNom";
+            // 
+            // txtNom
+            // 
+            this.txtNom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNom.Enabled = false;
+            this.txtNom.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.txtNom.Name = "txtNom";
+            // 
+            // lblPrenom
+            // 
+            this.lblPrenom.Text = "Prénom";
+            this.lblPrenom.AutoSize = true;
+            this.lblPrenom.Margin = new System.Windows.Forms.Padding(0, 6, 0, 2);
+            this.lblPrenom.Name = "lblPrenom";
+            // 
+            // txtPrenom
+            // 
+            this.txtPrenom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtPrenom.Enabled = false;
+            this.txtPrenom.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.txtPrenom.Name = "txtPrenom";
+            // 
+            // lblLogin
+            // 
+            this.lblLogin.Text = "Identifiant de connexion";
+            this.lblLogin.AutoSize = true;
+            this.lblLogin.Margin = new System.Windows.Forms.Padding(0, 6, 0, 2);
+            this.lblLogin.Name = "lblLogin";
+            // 
+            // txtLogin
+            // 
+            this.txtLogin.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLogin.Enabled = false;
+            this.txtLogin.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.txtLogin.Name = "txtLogin";
+            // 
+            // lblMdp
+            // 
+            this.lblMdp.Text = "Mot de passe";
+            this.lblMdp.AutoSize = true;
+            this.lblMdp.Margin = new System.Windows.Forms.Padding(0, 6, 0, 2);
+            this.lblMdp.Name = "lblMdp";
+            // 
+            // txtMotDePasse
+            // 
+            this.txtMotDePasse.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtMotDePasse.Enabled = false;
+            this.txtMotDePasse.UseSystemPasswordChar = true;
+            this.txtMotDePasse.Margin = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.txtMotDePasse.Name = "txtMotDePasse";
+            // 
+            // lblRole
+            // 
+            this.lblRole.Text = "Rôle";
+            this.lblRole.AutoSize = true;
+            this.lblRole.Margin = new System.Windows.Forms.Padding(0, 6, 0, 2);
+            this.lblRole.Name = "lblRole";
+            // 
+            // cbRole
+            // 
+            this.cbRole.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cbRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbRole.Enabled = false;
+            this.cbRole.Items.AddRange(new object[] {
+            "Administrateur",
+            "Pharmacien",
+            "Caissier"});
+            this.cbRole.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.cbRole.Name = "cbRole";
+            // 
+            // flpBoutonsFormulaire
+            // 
+            this.flpBoutonsFormulaire.Controls.Add(this.btnEnregistrer);
+            this.flpBoutonsFormulaire.Controls.Add(this.btnAnnuler);
+            this.flpBoutonsFormulaire.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpBoutonsFormulaire.AutoSize = true;
+            this.flpBoutonsFormulaire.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpBoutonsFormulaire.WrapContents = true;
+            this.flpBoutonsFormulaire.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.flpBoutonsFormulaire.Name = "flpBoutonsFormulaire";
+            // 
+            // btnEnregistrer
+            // 
+            this.btnEnregistrer.Text = "Enregistrer";
+            this.btnEnregistrer.Tag = "primaire";
+            this.btnEnregistrer.Visible = false;
+            this.btnEnregistrer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnEnregistrer.Name = "btnEnregistrer";
+            this.btnEnregistrer.Click += new System.EventHandler(this.btnEnregistrer_Click);
+            // 
+            // btnAnnuler
+            // 
+            this.btnAnnuler.Text = "Annuler";
+            this.btnAnnuler.Visible = false;
+            this.btnAnnuler.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnAnnuler.Name = "btnAnnuler";
+            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click);
+            // 
+            // lblCompteur
+            // 
+            this.lblCompteur.Text = "";
+            this.lblCompteur.AutoSize = true;
+            this.lblCompteur.Tag = "note";
+            this.lblCompteur.Margin = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.lblCompteur.Name = "lblCompteur";
+            // 
+            // colId
+            // 
+            this.colId.HeaderText = "Id";
+            this.colId.Name = "Id";
+            this.colId.DataPropertyName = "Id";
+            this.colId.FillWeight = 100F;
+            this.colId.MinimumWidth = 60;
+            this.colId.ReadOnly = true;
+            this.colId.Visible = false;
+            // 
+            // colNom
+            // 
+            this.colNom.HeaderText = "Nom";
+            this.colNom.Name = "Nom";
+            this.colNom.DataPropertyName = "Nom";
+            this.colNom.FillWeight = 25F;
+            this.colNom.MinimumWidth = 100;
+            this.colNom.ReadOnly = true;
+            // 
+            // colPrenom
+            // 
+            this.colPrenom.HeaderText = "Prénom";
+            this.colPrenom.Name = "Prenom";
+            this.colPrenom.DataPropertyName = "Prenom";
+            this.colPrenom.FillWeight = 25F;
+            this.colPrenom.MinimumWidth = 100;
+            this.colPrenom.ReadOnly = true;
+            // 
+            // colLogin
+            // 
+            this.colLogin.HeaderText = "Identifiant";
+            this.colLogin.Name = "Login";
+            this.colLogin.DataPropertyName = "Login";
+            this.colLogin.FillWeight = 22F;
+            this.colLogin.MinimumWidth = 100;
+            this.colLogin.ReadOnly = true;
+            // 
+            // colRole
+            // 
+            this.colRole.HeaderText = "Rôle";
+            this.colRole.Name = "Role";
+            this.colRole.DataPropertyName = "Role";
+            this.colRole.FillWeight = 18F;
+            this.colRole.MinimumWidth = 110;
+            this.colRole.ReadOnly = true;
+            // 
+            // colStatut
+            // 
+            this.colStatut.HeaderText = "Statut";
+            this.colStatut.Name = "Statut";
+            this.colStatut.DataPropertyName = "Statut";
+            this.colStatut.FillWeight = 10F;
+            this.colStatut.MinimumWidth = 80;
+            this.colStatut.ReadOnly = true;
+            // 
+            // Uc_Utilisateurs
+            // 
+            this.Controls.Add(this.tlpRoot);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Size = new System.Drawing.Size(1146, 700);
+            this.Name = "Uc_Utilisateurs";
             this.ResumeLayout(false);
+            this.flpBoutonsFormulaire.ResumeLayout(false);
+            this.flpBoutonsFormulaire.PerformLayout();
+            this.pnlFormulaire.ResumeLayout(false);
+            this.pnlFormulaire.PerformLayout();
+            this.tlpCorps.ResumeLayout(false);
+            this.tlpCorps.PerformLayout();
+            this.flpBarre.ResumeLayout(false);
+            this.flpBarre.PerformLayout();
+            this.tlpRoot.ResumeLayout(false);
+            this.tlpRoot.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUtilisateurs)).EndInit();
+
         }
+
+        #endregion
+
+        private System.Windows.Forms.TableLayoutPanel tlpRoot;
+        private System.Windows.Forms.Label lblTitre;
+        private System.Windows.Forms.FlowLayoutPanel flpBarre;
+        private System.Windows.Forms.Label lblRecherche;
+        private System.Windows.Forms.TextBox txtRecherche;
+        private System.Windows.Forms.Button btnEffacerRecherche;
+        private System.Windows.Forms.Button btnNouvel;
+        private System.Windows.Forms.Button btnModifier;
+        private System.Windows.Forms.Button btnSupprimer;
+        private System.Windows.Forms.TableLayoutPanel tlpCorps;
+        private System.Windows.Forms.DataGridView dgvUtilisateurs;
+        private System.Windows.Forms.TableLayoutPanel pnlFormulaire;
+        private System.Windows.Forms.Label lblFormTitre;
+        private System.Windows.Forms.Label lblNom;
+        private System.Windows.Forms.TextBox txtNom;
+        private System.Windows.Forms.Label lblPrenom;
+        private System.Windows.Forms.TextBox txtPrenom;
+        private System.Windows.Forms.Label lblLogin;
+        private System.Windows.Forms.TextBox txtLogin;
+        private System.Windows.Forms.Label lblMdp;
+        private System.Windows.Forms.TextBox txtMotDePasse;
+        private System.Windows.Forms.Label lblRole;
+        private System.Windows.Forms.ComboBox cbRole;
+        private System.Windows.Forms.FlowLayoutPanel flpBoutonsFormulaire;
+        private System.Windows.Forms.Button btnEnregistrer;
+        private System.Windows.Forms.Button btnAnnuler;
+        private System.Windows.Forms.Label lblCompteur;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNom;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPrenom;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLogin;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRole;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStatut;
     }
 }
