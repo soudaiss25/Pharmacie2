@@ -38,13 +38,11 @@ namespace Pharmacie2.views
             Theme.Appliquer(this);
 
             // En-tête repliable « Client (facultatif) » : style discret de titre de section
-            lblClient.FlatStyle = FlatStyle.Flat;
-            lblClient.FlatAppearance.BorderSize = 0;
-            lblClient.BackColor = Color.Transparent;
-            lblClient.ForeColor = Theme.Principal;
+            lblClient.LinkColor = Theme.Principal;
+            lblClient.ActiveLinkColor = Theme.Accent;
+            lblClient.VisitedLinkColor = Theme.Principal;
+            lblClient.LinkBehavior = LinkBehavior.NeverUnderline;
             lblClient.Font = Theme.TitreSection;
-            lblClient.Cursor = Cursors.Hand;
-            lblClient.Padding = new Padding(0);
             DefinirSectionClient(false);
 
             ClientSizeChanged += (s, e) => AppliquerMode(false);
@@ -110,6 +108,8 @@ namespace Pharmacie2.views
             tlpClient.Visible = ouverte;
             lblClient.Text = (_clientObligatoire ? "Client (obligatoire)" : "Client (facultatif)") + (ouverte ? "  \u2212" : "  +");
         }
+
+        private void lblClient_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => lblClient_Click(sender, EventArgs.Empty);
 
         private void lblClient_Click(object sender, EventArgs e) => DefinirSectionClient(!_clientOuvert);
 

@@ -56,7 +56,7 @@ public class FormVenteTests
         UiHelper.EnSta(() =>
         {
             using var f = new FormVente();
-            var entete = UiHelper.Champ<Button>(f, "lblClient");
+            var entete = UiHelper.Champ<LinkLabel>(f, "lblClient");
             Assert.EndsWith("+", entete.Text);                                  // comptant : section repliée, rien à saisir côté client
             Assert.Contains("facultatif", entete.Text);
             UiHelper.Champ<ComboBox>(f, "cbPaiement").SelectedItem = ModesPaiement.Credit;

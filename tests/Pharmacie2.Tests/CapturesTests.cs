@@ -94,6 +94,8 @@ public class CapturesTests
         void Vider(Control c, int niveau)
         {
             sb.AppendLine($"{new string(' ', niveau * 2)}{(string.IsNullOrEmpty(c.Name) ? "-" : c.Name)} [{c.GetType().Name}] {c.Bounds}{(c.Visible ? "" : " (caché)")}");
+            if (c is DataGridView g)
+                sb.AppendLine(new string(' ', niveau * 2 + 2) + "colonnes : " + string.Join(", ", g.Columns.Cast<DataGridViewColumn>().Where(x => x.Visible).Select(x => $"{x.Name}={x.Width}/min{x.MinimumWidth}")));
             foreach (Control k in c.Controls) Vider(k, niveau + 1);
         }
         Vider(f, 0);

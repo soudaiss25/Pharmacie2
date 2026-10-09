@@ -45,7 +45,7 @@
             this.lblMontantTotal = new System.Windows.Forms.Label();
             this.panelDroit = new System.Windows.Forms.Panel();
             this.tlpDroite = new System.Windows.Forms.TableLayoutPanel();
-            this.lblClient = new System.Windows.Forms.Button();
+            this.lblClient = new System.Windows.Forms.LinkLabel();
             this.tlpClient = new System.Windows.Forms.TableLayoutPanel();
             this.lblNom = new System.Windows.Forms.Label();
             this.txtNom = new System.Windows.Forms.TextBox();
@@ -329,11 +329,10 @@
             // 
             this.lblClient.Text = "Client (facultatif)  +";
             this.lblClient.AutoSize = true;
-            this.lblClient.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.lblClient.Tag = "entete";
             this.lblClient.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblClient.Click += new System.EventHandler(this.lblClient_Click);
-            this.lblClient.Margin = new System.Windows.Forms.Padding(-4, 0, 0, 4);
+            this.lblClient.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblClient_LinkClicked);
+            this.lblClient.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lblClient.Name = "lblClient";
             // 
             // tlpClient
@@ -781,7 +780,7 @@
         private System.Windows.Forms.Label lblMontantTotal;
         private System.Windows.Forms.Panel panelDroit;
         private System.Windows.Forms.TableLayoutPanel tlpDroite;
-        private System.Windows.Forms.Button lblClient;
+        private System.Windows.Forms.LinkLabel lblClient;
         private System.Windows.Forms.TableLayoutPanel tlpClient;
         private System.Windows.Forms.Label lblNom;
         private System.Windows.Forms.TextBox txtNom;
