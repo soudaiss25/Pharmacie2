@@ -683,7 +683,7 @@ namespace Pharmacie2.views
                     if (l.Produit.NbFoisParJour > 0)
                         parts.Add($"{l.Produit.NbFoisParJour}x/jour");
 
-                    string poso = "   → " + string.Join("  |  ", parts);
+                    string poso = "   " + string.Join("  |  ", parts);
                     using var fontPoso = new Font("Segoe UI", 7.5F, FontStyle.Italic);
                     using var brushPoso = new SolidBrush(Color.FromArgb(60, 100, 60));
                     g.DrawString(poso, fontPoso, brushPoso, cx[0], y + rh - 2);

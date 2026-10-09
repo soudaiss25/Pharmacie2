@@ -79,9 +79,13 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.flpBarre, 0, 1);
+            this.flpBarre.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.tlpCorps, 0, 2);
+            this.tlpCorps.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.lblCompteur, 0, 3);
+            this.lblCompteur.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
@@ -97,11 +101,17 @@
             // flpBarre
             // 
             this.flpBarre.Controls.Add(this.lblRecherche);
+            this.lblRecherche.TabIndex = 0;
             this.flpBarre.Controls.Add(this.txtRecherche);
+            this.txtRecherche.TabIndex = 1;
             this.flpBarre.Controls.Add(this.btnEffacerRecherche);
+            this.btnEffacerRecherche.TabIndex = 2;
             this.flpBarre.Controls.Add(this.btnNouvel);
+            this.btnNouvel.TabIndex = 3;
             this.flpBarre.Controls.Add(this.btnModifier);
+            this.btnModifier.TabIndex = 4;
             this.flpBarre.Controls.Add(this.btnSupprimer);
+            this.btnSupprimer.TabIndex = 5;
             this.flpBarre.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBarre.AutoSize = true;
             this.flpBarre.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -162,7 +172,9 @@
             this.tlpCorps.RowCount = 1;
             this.tlpCorps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpCorps.Controls.Add(this.dgvUtilisateurs, 0, 0);
+            this.dgvUtilisateurs.TabIndex = 0;
             this.tlpCorps.Controls.Add(this.pnlFormulaire, 1, 0);
+            this.pnlFormulaire.TabIndex = 1;
             this.tlpCorps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCorps.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpCorps.Name = "tlpCorps";
@@ -200,17 +212,29 @@
             this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlFormulaire.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.pnlFormulaire.Controls.Add(this.lblFormTitre, 0, 0);
+            this.lblFormTitre.TabIndex = 0;
             this.pnlFormulaire.Controls.Add(this.lblNom, 0, 1);
+            this.lblNom.TabIndex = 1;
             this.pnlFormulaire.Controls.Add(this.txtNom, 0, 2);
+            this.txtNom.TabIndex = 2;
             this.pnlFormulaire.Controls.Add(this.lblPrenom, 0, 3);
+            this.lblPrenom.TabIndex = 3;
             this.pnlFormulaire.Controls.Add(this.txtPrenom, 0, 4);
+            this.txtPrenom.TabIndex = 4;
             this.pnlFormulaire.Controls.Add(this.lblLogin, 0, 5);
+            this.lblLogin.TabIndex = 5;
             this.pnlFormulaire.Controls.Add(this.txtLogin, 0, 6);
+            this.txtLogin.TabIndex = 6;
             this.pnlFormulaire.Controls.Add(this.lblMdp, 0, 7);
+            this.lblMdp.TabIndex = 7;
             this.pnlFormulaire.Controls.Add(this.txtMotDePasse, 0, 8);
+            this.txtMotDePasse.TabIndex = 8;
             this.pnlFormulaire.Controls.Add(this.lblRole, 0, 9);
+            this.lblRole.TabIndex = 9;
             this.pnlFormulaire.Controls.Add(this.cbRole, 0, 10);
+            this.cbRole.TabIndex = 10;
             this.pnlFormulaire.Controls.Add(this.flpBoutonsFormulaire, 0, 11);
+            this.flpBoutonsFormulaire.TabIndex = 11;
             this.pnlFormulaire.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFormulaire.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.pnlFormulaire.Margin = new System.Windows.Forms.Padding(12, 0, 0, 0);
@@ -304,7 +328,9 @@
             // flpBoutonsFormulaire
             // 
             this.flpBoutonsFormulaire.Controls.Add(this.btnEnregistrer);
+            this.btnEnregistrer.TabIndex = 0;
             this.flpBoutonsFormulaire.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 1;
             this.flpBoutonsFormulaire.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutonsFormulaire.AutoSize = true;
             this.flpBoutonsFormulaire.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

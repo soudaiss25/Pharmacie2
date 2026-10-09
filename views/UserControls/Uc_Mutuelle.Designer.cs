@@ -77,11 +77,17 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.flpActions, 0, 1);
+            this.flpActions.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.dgvMutuelles, 0, 2);
+            this.dgvMutuelles.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.lblRecapImpaye, 0, 3);
+            this.lblRecapImpaye.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.flpReglement, 0, 4);
+            this.flpReglement.TabIndex = 4;
             this.tlpRoot.Controls.Add(this.dgvVentesImpayees, 0, 5);
+            this.dgvVentesImpayees.TabIndex = 5;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
@@ -97,10 +103,15 @@
             // flpActions
             // 
             this.flpActions.Controls.Add(this.btnNouvelleMutuelle);
+            this.btnNouvelleMutuelle.TabIndex = 0;
             this.flpActions.Controls.Add(this.btnModifier);
+            this.btnModifier.TabIndex = 1;
             this.flpActions.Controls.Add(this.btnSupprimer);
+            this.btnSupprimer.TabIndex = 2;
             this.flpActions.Controls.Add(this.btnExportExcel);
+            this.btnExportExcel.TabIndex = 3;
             this.flpActions.Controls.Add(this.btnActualiser);
+            this.btnActualiser.TabIndex = 4;
             this.flpActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpActions.AutoSize = true;
             this.flpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -171,7 +182,9 @@
             // flpReglement
             // 
             this.flpReglement.Controls.Add(this.btnReglertout);
+            this.btnReglertout.TabIndex = 0;
             this.flpReglement.Controls.Add(this.btnReglerSelection);
+            this.btnReglerSelection.TabIndex = 1;
             this.flpReglement.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpReglement.AutoSize = true;
             this.flpReglement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

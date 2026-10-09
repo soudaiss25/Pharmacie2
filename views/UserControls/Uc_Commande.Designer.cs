@@ -82,12 +82,19 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.0F));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.flpFiltres, 0, 1);
+            this.flpFiltres.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.lblRecap, 0, 2);
+            this.lblRecap.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.dgvCommandes, 0, 3);
+            this.dgvCommandes.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.flpActions, 0, 4);
+            this.flpActions.TabIndex = 4;
             this.tlpRoot.Controls.Add(this.lblLignesTitre, 0, 5);
+            this.lblLignesTitre.TabIndex = 5;
             this.tlpRoot.Controls.Add(this.dgvLignes, 0, 6);
+            this.dgvLignes.TabIndex = 6;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
@@ -103,14 +110,23 @@
             // flpFiltres
             // 
             this.flpFiltres.Controls.Add(this.lblStatut);
+            this.lblStatut.TabIndex = 0;
             this.flpFiltres.Controls.Add(this.cbFiltreStatut);
+            this.cbFiltreStatut.TabIndex = 1;
             this.flpFiltres.Controls.Add(this.lblFournisseur);
+            this.lblFournisseur.TabIndex = 2;
             this.flpFiltres.Controls.Add(this.cbFiltreFournisseur);
+            this.cbFiltreFournisseur.TabIndex = 3;
             this.flpFiltres.Controls.Add(this.chkPeriode);
+            this.chkPeriode.TabIndex = 4;
             this.flpFiltres.Controls.Add(this.dtpDebut);
+            this.dtpDebut.TabIndex = 5;
             this.flpFiltres.Controls.Add(this.lblAu);
+            this.lblAu.TabIndex = 6;
             this.flpFiltres.Controls.Add(this.dtpFin);
+            this.dtpFin.TabIndex = 7;
             this.flpFiltres.Controls.Add(this.btnActualiser);
+            this.btnActualiser.TabIndex = 8;
             this.flpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpFiltres.AutoSize = true;
             this.flpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -218,9 +234,13 @@
             // flpActions
             // 
             this.flpActions.Controls.Add(this.btnNouvelleCommande);
+            this.btnNouvelleCommande.TabIndex = 0;
             this.flpActions.Controls.Add(this.btnMarquerRecu);
+            this.btnMarquerRecu.TabIndex = 1;
             this.flpActions.Controls.Add(this.btnMarquerPartiel);
+            this.btnMarquerPartiel.TabIndex = 2;
             this.flpActions.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 3;
             this.flpActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpActions.AutoSize = true;
             this.flpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

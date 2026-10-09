@@ -141,7 +141,9 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.tabMain, 0, 1);
+            this.tabMain.TabIndex = 1;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
@@ -157,7 +159,9 @@
             // tabMain
             // 
             this.tabMain.Controls.Add(this.tabRapport);
+            this.tabRapport.TabIndex = 0;
             this.tabMain.Controls.Add(this.tabSessions);
+            this.tabSessions.TabIndex = 1;
             this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabMain.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tabMain.Name = "tabMain";
@@ -165,6 +169,7 @@
             // tabRapport
             // 
             this.tabRapport.Controls.Add(this.tlpRapport);
+            this.tlpRapport.TabIndex = 0;
             this.tabRapport.Text = "Rapport de caisse";
             this.tabRapport.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.tabRapport.UseVisualStyleBackColor = true;
@@ -182,14 +187,20 @@
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRapport.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tlpRapport.Controls.Add(this.pnlFiltres, 0, 0);
+            this.pnlFiltres.TabIndex = 0;
             this.tlpRapport.SetColumnSpan(this.pnlFiltres, 2);
             this.tlpRapport.Controls.Add(this.pnlCartes, 0, 1);
+            this.pnlCartes.TabIndex = 1;
             this.tlpRapport.SetColumnSpan(this.pnlCartes, 2);
             this.tlpRapport.Controls.Add(this.pnlCaisse, 0, 2);
+            this.pnlCaisse.TabIndex = 2;
             this.tlpRapport.SetRowSpan(this.pnlCaisse, 3);
             this.tlpRapport.Controls.Add(this.tlpVentilation, 1, 2);
+            this.tlpVentilation.TabIndex = 3;
             this.tlpRapport.Controls.Add(this.lblDetailVentes, 1, 3);
+            this.lblDetailVentes.TabIndex = 4;
             this.tlpRapport.Controls.Add(this.dgvDetail, 1, 4);
+            this.dgvDetail.TabIndex = 5;
             this.tlpRapport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRapport.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRapport.Name = "tlpRapport";
@@ -197,11 +208,17 @@
             // pnlFiltres
             // 
             this.pnlFiltres.Controls.Add(this.lblPeriodeLabel);
+            this.lblPeriodeLabel.TabIndex = 0;
             this.pnlFiltres.Controls.Add(this.cbPeriode);
+            this.cbPeriode.TabIndex = 1;
             this.pnlFiltres.Controls.Add(this.dtpDebut);
+            this.dtpDebut.TabIndex = 2;
             this.pnlFiltres.Controls.Add(this.dtpFin);
+            this.dtpFin.TabIndex = 3;
             this.pnlFiltres.Controls.Add(this.btnActualiser);
+            this.btnActualiser.TabIndex = 4;
             this.pnlFiltres.Controls.Add(this.lblPeriodeAffichee);
+            this.lblPeriodeAffichee.TabIndex = 5;
             this.pnlFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFiltres.AutoSize = true;
             this.pnlFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -270,11 +287,17 @@
             this.pnlCartes.RowCount = 1;
             this.pnlCartes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlCartes.Controls.Add(this.cardVentes, 0, 0);
+            this.cardVentes.TabIndex = 0;
             this.pnlCartes.Controls.Add(this.cardComptant, 1, 0);
+            this.cardComptant.TabIndex = 1;
             this.pnlCartes.Controls.Add(this.cardCredit, 2, 0);
+            this.cardCredit.TabIndex = 2;
             this.pnlCartes.Controls.Add(this.cardMutuelle, 3, 0);
+            this.cardMutuelle.TabIndex = 3;
             this.pnlCartes.Controls.Add(this.cardCB, 4, 0);
+            this.cardCB.TabIndex = 4;
             this.pnlCartes.Controls.Add(this.cardCheque, 5, 0);
+            this.cardCheque.TabIndex = 5;
             this.pnlCartes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCartes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.pnlCartes.Name = "pnlCartes";
@@ -335,18 +358,30 @@
             this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlCaisse.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlCaisse.Controls.Add(this.lblTitreCaisse, 0, 0);
+            this.lblTitreCaisse.TabIndex = 0;
             this.pnlCaisse.SetColumnSpan(this.lblTitreCaisse, 2);
             this.pnlCaisse.Controls.Add(this.lblEspecesTitle, 0, 1);
+            this.lblEspecesTitle.TabIndex = 1;
             this.pnlCaisse.Controls.Add(this.lblEspecesRecues, 1, 1);
+            this.lblEspecesRecues.TabIndex = 2;
             this.pnlCaisse.Controls.Add(this.lblRenduTitle, 0, 2);
+            this.lblRenduTitle.TabIndex = 3;
             this.pnlCaisse.Controls.Add(this.lblRendu, 1, 2);
+            this.lblRendu.TabIndex = 4;
             this.pnlCaisse.Controls.Add(this.lblCreditRecuTitle, 0, 3);
+            this.lblCreditRecuTitle.TabIndex = 5;
             this.pnlCaisse.Controls.Add(this.lblCreditRecu, 1, 3);
+            this.lblCreditRecu.TabIndex = 6;
             this.pnlCaisse.Controls.Add(this.lblMutuellePatientTitle, 0, 4);
+            this.lblMutuellePatientTitle.TabIndex = 7;
             this.pnlCaisse.Controls.Add(this.lblMutuellePatient, 1, 4);
+            this.lblMutuellePatient.TabIndex = 8;
             this.pnlCaisse.Controls.Add(this.lblTotalTitle, 0, 5);
+            this.lblTotalTitle.TabIndex = 9;
             this.pnlCaisse.Controls.Add(this.lblTotalCaisse, 1, 5);
+            this.lblTotalCaisse.TabIndex = 10;
             this.pnlCaisse.Controls.Add(this.lblElectronique, 0, 6);
+            this.lblElectronique.TabIndex = 11;
             this.pnlCaisse.SetColumnSpan(this.lblElectronique, 2);
             this.pnlCaisse.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCaisse.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
@@ -464,7 +499,9 @@
             this.tlpVentilation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpVentilation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpVentilation.Controls.Add(this.lblVentilation, 0, 0);
+            this.lblVentilation.TabIndex = 0;
             this.tlpVentilation.Controls.Add(this.dgvVentilation, 0, 1);
+            this.dgvVentilation.TabIndex = 1;
             this.tlpVentilation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVentilation.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpVentilation.Name = "tlpVentilation";
@@ -520,6 +557,7 @@
             // tabSessions
             // 
             this.tabSessions.Controls.Add(this.tlpSessions);
+            this.tlpSessions.TabIndex = 0;
             this.tabSessions.Text = "Sessions de caisse";
             this.tabSessions.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.tabSessions.UseVisualStyleBackColor = true;
@@ -536,10 +574,15 @@
             this.tlpSessions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpSessions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0F));
             this.tlpSessions.Controls.Add(this.pnlFiltresSessions, 0, 0);
+            this.pnlFiltresSessions.TabIndex = 0;
             this.tlpSessions.Controls.Add(this.dgvSessions, 0, 1);
+            this.dgvSessions.TabIndex = 1;
             this.tlpSessions.Controls.Add(this.lblDetailSession, 0, 2);
+            this.lblDetailSession.TabIndex = 2;
             this.tlpSessions.Controls.Add(this.lblVentilationSession, 0, 3);
+            this.lblVentilationSession.TabIndex = 3;
             this.tlpSessions.Controls.Add(this.dgvDetailSession, 0, 4);
+            this.dgvDetailSession.TabIndex = 4;
             this.tlpSessions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpSessions.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpSessions.Name = "tlpSessions";
@@ -547,15 +590,25 @@
             // pnlFiltresSessions
             // 
             this.pnlFiltresSessions.Controls.Add(this.lblFiltreAnnee);
+            this.lblFiltreAnnee.TabIndex = 0;
             this.pnlFiltresSessions.Controls.Add(this.cbFiltreAnnee);
+            this.cbFiltreAnnee.TabIndex = 1;
             this.pnlFiltresSessions.Controls.Add(this.lblFiltreMois);
+            this.lblFiltreMois.TabIndex = 2;
             this.pnlFiltresSessions.Controls.Add(this.cbFiltreMois);
+            this.cbFiltreMois.TabIndex = 3;
             this.pnlFiltresSessions.Controls.Add(this.lblFiltreJour);
+            this.lblFiltreJour.TabIndex = 4;
             this.pnlFiltresSessions.Controls.Add(this.cbFiltreJour);
+            this.cbFiltreJour.TabIndex = 5;
             this.pnlFiltresSessions.Controls.Add(this.lblFiltreUser);
+            this.lblFiltreUser.TabIndex = 6;
             this.pnlFiltresSessions.Controls.Add(this.cbFiltreUser);
+            this.cbFiltreUser.TabIndex = 7;
             this.pnlFiltresSessions.Controls.Add(this.btnActualiserSessions);
+            this.btnActualiserSessions.TabIndex = 8;
             this.pnlFiltresSessions.Controls.Add(this.lblNbSessions);
+            this.lblNbSessions.TabIndex = 9;
             this.pnlFiltresSessions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFiltresSessions.AutoSize = true;
             this.pnlFiltresSessions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

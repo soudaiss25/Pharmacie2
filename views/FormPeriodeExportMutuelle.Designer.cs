@@ -59,10 +59,15 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.lblNomMutuelle, 0, 1);
+            this.lblNomMutuelle.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.tlpChamps, 0, 2);
+            this.tlpChamps.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.panelEspace, 0, 3);
+            this.panelEspace.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.flpBoutons, 0, 4);
+            this.flpBoutons.TabIndex = 4;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -94,11 +99,17 @@
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.Controls.Add(this.lblChoixPeriode, 0, 0);
+            this.lblChoixPeriode.TabIndex = 0;
             this.tlpChamps.Controls.Add(this.cbPeriode, 1, 0);
+            this.cbPeriode.TabIndex = 1;
             this.tlpChamps.Controls.Add(this.lblDebut, 0, 1);
+            this.lblDebut.TabIndex = 2;
             this.tlpChamps.Controls.Add(this.dtpDebut, 1, 1);
+            this.dtpDebut.TabIndex = 3;
             this.tlpChamps.Controls.Add(this.lblFin, 0, 2);
+            this.lblFin.TabIndex = 4;
             this.tlpChamps.Controls.Add(this.dtpFin, 1, 2);
+            this.dtpFin.TabIndex = 5;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -169,7 +180,9 @@
             // flpBoutons
             // 
             this.flpBoutons.Controls.Add(this.btnExporter);
+            this.btnExporter.TabIndex = 0;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 1;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

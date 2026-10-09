@@ -70,9 +70,13 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.flpFiltres, 0, 1);
+            this.flpFiltres.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.dgvProduits, 0, 2);
+            this.dgvProduits.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.pnlActions, 0, 3);
+            this.pnlActions.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
@@ -88,10 +92,15 @@
             // flpFiltres
             // 
             this.flpFiltres.Controls.Add(this.lblRecherche);
+            this.lblRecherche.TabIndex = 0;
             this.flpFiltres.Controls.Add(this.txtRecherche);
+            this.txtRecherche.TabIndex = 1;
             this.flpFiltres.Controls.Add(this.lblTypeFiltre);
+            this.lblTypeFiltre.TabIndex = 2;
             this.flpFiltres.Controls.Add(this.cmbTypeFiltre);
+            this.cmbTypeFiltre.TabIndex = 3;
             this.flpFiltres.Controls.Add(this.btnEffacer);
+            this.btnEffacer.TabIndex = 4;
             this.flpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpFiltres.AutoSize = true;
             this.flpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -165,9 +174,13 @@
             // pnlActions
             // 
             this.pnlActions.Controls.Add(this.btnNouveauProduit);
+            this.btnNouveauProduit.TabIndex = 0;
             this.pnlActions.Controls.Add(this.btnModifier);
+            this.btnModifier.TabIndex = 1;
             this.pnlActions.Controls.Add(this.btnSupprimer);
+            this.btnSupprimer.TabIndex = 2;
             this.pnlActions.Controls.Add(this.lblCompteur);
+            this.lblCompteur.TabIndex = 3;
             this.pnlActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlActions.AutoSize = true;
             this.pnlActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

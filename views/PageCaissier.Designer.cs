@@ -84,12 +84,19 @@
             this.tlpContenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpContenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpContenu.Controls.Add(this.tlpEntete, 0, 0);
+            this.tlpEntete.TabIndex = 0;
             this.tlpContenu.Controls.Add(this.bandeau, 0, 1);
+            this.bandeau.TabIndex = 1;
             this.tlpContenu.Controls.Add(this.tlpKpi, 0, 2);
+            this.tlpKpi.TabIndex = 2;
             this.tlpContenu.Controls.Add(this.flpVentilation, 0, 3);
+            this.flpVentilation.TabIndex = 3;
             this.tlpContenu.Controls.Add(this.dgvVentes, 0, 4);
+            this.dgvVentes.TabIndex = 4;
             this.tlpContenu.Controls.Add(this.flpActions, 0, 5);
+            this.flpActions.TabIndex = 5;
             this.tlpContenu.Controls.Add(this.lblSessionInfo, 0, 6);
+            this.lblSessionInfo.TabIndex = 6;
             this.tlpContenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpContenu.Padding = new System.Windows.Forms.Padding(16, 12, 16, 12);
             this.tlpContenu.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -103,7 +110,9 @@
             this.tlpEntete.RowCount = 1;
             this.tlpEntete.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpEntete.Controls.Add(this.tlpTitres, 0, 0);
+            this.tlpTitres.TabIndex = 0;
             this.tlpEntete.Controls.Add(this.btnDeconnexion, 1, 0);
+            this.btnDeconnexion.TabIndex = 1;
             this.tlpEntete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpEntete.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.tlpEntete.Name = "tlpEntete";
@@ -116,7 +125,9 @@
             this.tlpTitres.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpTitres.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpTitres.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpTitres.Controls.Add(this.lblBienvenue, 0, 1);
+            this.lblBienvenue.TabIndex = 1;
             this.tlpTitres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpTitres.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpTitres.Name = "tlpTitres";
@@ -160,8 +171,11 @@
             this.tlpKpi.RowCount = 1;
             this.tlpKpi.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpKpi.Controls.Add(this.carteEncaisse, 0, 0);
+            this.carteEncaisse.TabIndex = 0;
             this.tlpKpi.Controls.Add(this.carteVentes, 1, 0);
+            this.carteVentes.TabIndex = 1;
             this.tlpKpi.Controls.Add(this.carteReste, 2, 0);
+            this.carteReste.TabIndex = 2;
             this.tlpKpi.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKpi.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpKpi.Name = "tlpKpi";
@@ -190,10 +204,15 @@
             // flpVentilation
             // 
             this.flpVentilation.Controls.Add(this.lblEspeces);
+            this.lblEspeces.TabIndex = 0;
             this.flpVentilation.Controls.Add(this.lblCheque);
+            this.lblCheque.TabIndex = 1;
             this.flpVentilation.Controls.Add(this.lblDigital);
+            this.lblDigital.TabIndex = 2;
             this.flpVentilation.Controls.Add(this.lblMutuelle);
+            this.lblMutuelle.TabIndex = 3;
             this.flpVentilation.Controls.Add(this.lblCredit);
+            this.lblCredit.TabIndex = 4;
             this.flpVentilation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpVentilation.AutoSize = true;
             this.flpVentilation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -262,10 +281,15 @@
             // flpActions
             // 
             this.flpActions.Controls.Add(this.btnNouvelleVente);
+            this.btnNouvelleVente.TabIndex = 0;
             this.flpActions.Controls.Add(this.btnDetail);
+            this.btnDetail.TabIndex = 1;
             this.flpActions.Controls.Add(this.btnPaiement);
+            this.btnPaiement.TabIndex = 2;
             this.flpActions.Controls.Add(this.btnActualiser);
+            this.btnActualiser.TabIndex = 3;
             this.flpActions.Controls.Add(this.btnCloturerSession);
+            this.btnCloturerSession.TabIndex = 4;
             this.flpActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpActions.AutoSize = true;
             this.flpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

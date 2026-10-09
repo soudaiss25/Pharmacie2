@@ -92,8 +92,11 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.tlpPrincipal, 0, 1);
+            this.tlpPrincipal.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.flpBoutons, 0, 2);
+            this.flpBoutons.TabIndex = 2;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -115,7 +118,9 @@
             this.tlpPrincipal.RowCount = 1;
             this.tlpPrincipal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpPrincipal.Controls.Add(this.tlpPanier, 0, 0);
+            this.tlpPanier.TabIndex = 0;
             this.tlpPrincipal.Controls.Add(this.panelDroit, 1, 0);
+            this.panelDroit.TabIndex = 1;
             this.tlpPrincipal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpPrincipal.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpPrincipal.Name = "tlpPrincipal";
@@ -128,7 +133,9 @@
             this.tlpPanier.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpPanier.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpPanier.Controls.Add(this.dgvProduits, 0, 0);
+            this.dgvProduits.TabIndex = 0;
             this.tlpPanier.Controls.Add(this.tlpTotal, 0, 1);
+            this.tlpTotal.TabIndex = 1;
             this.tlpPanier.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpPanier.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
             this.tlpPanier.Name = "tlpPanier";
@@ -157,9 +164,13 @@
             this.tlpTotal.RowCount = 1;
             this.tlpTotal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpTotal.Controls.Add(this.btnAjouter, 0, 0);
+            this.btnAjouter.TabIndex = 0;
             this.tlpTotal.Controls.Add(this.btnSupprimer, 1, 0);
+            this.btnSupprimer.TabIndex = 1;
             this.tlpTotal.Controls.Add(this.lblTotal, 3, 0);
+            this.lblTotal.TabIndex = 2;
             this.tlpTotal.Controls.Add(this.lblMontantTotal, 4, 0);
+            this.lblMontantTotal.TabIndex = 3;
             this.tlpTotal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpTotal.AutoSize = true;
             this.tlpTotal.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -202,6 +213,7 @@
             // panelDroit
             // 
             this.panelDroit.Controls.Add(this.tlpDroite);
+            this.tlpDroite.TabIndex = 0;
             this.panelDroit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDroit.AutoScroll = true;
             this.panelDroit.Margin = new System.Windows.Forms.Padding(12, 0, 0, 0);
@@ -220,12 +232,19 @@
             this.tlpDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpDroite.Controls.Add(this.lblClient, 0, 0);
+            this.lblClient.TabIndex = 0;
             this.tlpDroite.Controls.Add(this.tlpClient, 0, 1);
+            this.tlpClient.TabIndex = 1;
             this.tlpDroite.Controls.Add(this.lblSectionPaiement, 0, 2);
+            this.lblSectionPaiement.TabIndex = 2;
             this.tlpDroite.Controls.Add(this.tlpMode, 0, 3);
+            this.tlpMode.TabIndex = 3;
             this.tlpDroite.Controls.Add(this.pnlMatricule, 0, 4);
+            this.pnlMatricule.TabIndex = 4;
             this.tlpDroite.Controls.Add(this.pnlMutuelle, 0, 5);
+            this.pnlMutuelle.TabIndex = 5;
             this.tlpDroite.Controls.Add(this.lblNotePaiement, 0, 6);
+            this.lblNotePaiement.TabIndex = 6;
             this.tlpDroite.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpDroite.AutoSize = true;
             this.tlpDroite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -252,13 +271,21 @@
             this.tlpClient.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpClient.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpClient.Controls.Add(this.lblNom, 0, 0);
+            this.lblNom.TabIndex = 0;
             this.tlpClient.Controls.Add(this.txtNom, 1, 0);
+            this.txtNom.TabIndex = 1;
             this.tlpClient.Controls.Add(this.lblPrenom, 0, 1);
+            this.lblPrenom.TabIndex = 2;
             this.tlpClient.Controls.Add(this.txtPrenom, 1, 1);
+            this.txtPrenom.TabIndex = 3;
             this.tlpClient.Controls.Add(this.lblTelephone, 0, 2);
+            this.lblTelephone.TabIndex = 4;
             this.tlpClient.Controls.Add(this.txtTelephone, 1, 2);
+            this.txtTelephone.TabIndex = 5;
             this.tlpClient.Controls.Add(this.lblMotif, 0, 3);
+            this.lblMotif.TabIndex = 6;
             this.tlpClient.Controls.Add(this.txtMotif, 1, 3);
+            this.txtMotif.TabIndex = 7;
             this.tlpClient.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpClient.AutoSize = true;
             this.tlpClient.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -341,7 +368,9 @@
             this.tlpMode.RowCount = 1;
             this.tlpMode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpMode.Controls.Add(this.lblPaiement, 0, 0);
+            this.lblPaiement.TabIndex = 0;
             this.tlpMode.Controls.Add(this.cbPaiement, 1, 0);
+            this.cbPaiement.TabIndex = 1;
             this.tlpMode.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpMode.AutoSize = true;
             this.tlpMode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -373,7 +402,9 @@
             this.pnlMatricule.RowCount = 1;
             this.pnlMatricule.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlMatricule.Controls.Add(this.lblMatriculeLabel, 0, 0);
+            this.lblMatriculeLabel.TabIndex = 0;
             this.pnlMatricule.Controls.Add(this.txtMatricule, 1, 0);
+            this.txtMatricule.TabIndex = 1;
             this.pnlMatricule.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlMatricule.AutoSize = true;
             this.pnlMatricule.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -404,7 +435,9 @@
             this.pnlMutuelle.RowCount = 1;
             this.pnlMutuelle.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlMutuelle.Controls.Add(this.lblMutuelle, 0, 0);
+            this.lblMutuelle.TabIndex = 0;
             this.pnlMutuelle.Controls.Add(this.cbMutuelle, 1, 0);
+            this.cbMutuelle.TabIndex = 1;
             this.pnlMutuelle.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlMutuelle.AutoSize = true;
             this.pnlMutuelle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -441,7 +474,9 @@
             // flpBoutons
             // 
             this.flpBoutons.Controls.Add(this.btnEnregistrer);
+            this.btnEnregistrer.TabIndex = 0;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 1;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

@@ -66,10 +66,15 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.lblProduit, 0, 1);
+            this.lblProduit.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.tlpChamps, 0, 2);
+            this.tlpChamps.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.panelEspace, 0, 3);
+            this.panelEspace.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.flpBoutons, 0, 4);
+            this.flpBoutons.TabIndex = 4;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -104,16 +109,27 @@
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.Controls.Add(this.lblFournisseurLabel, 0, 0);
+            this.lblFournisseurLabel.TabIndex = 0;
             this.tlpChamps.Controls.Add(this.txtFournisseur, 1, 0);
+            this.txtFournisseur.TabIndex = 1;
             this.tlpChamps.Controls.Add(this.lblFournisseurInfo, 1, 1);
+            this.lblFournisseurInfo.TabIndex = 2;
             this.tlpChamps.Controls.Add(this.lblQuantiteLabel, 0, 2);
+            this.lblQuantiteLabel.TabIndex = 3;
             this.tlpChamps.Controls.Add(this.numQuantite, 1, 2);
+            this.numQuantite.TabIndex = 4;
             this.tlpChamps.Controls.Add(this.lblPrixUnitaireLabel, 0, 3);
+            this.lblPrixUnitaireLabel.TabIndex = 5;
             this.tlpChamps.Controls.Add(this.numPrixUnitaire, 1, 3);
+            this.numPrixUnitaire.TabIndex = 6;
             this.tlpChamps.Controls.Add(this.chkDateLivraison, 0, 4);
+            this.chkDateLivraison.TabIndex = 7;
             this.tlpChamps.Controls.Add(this.dtpLivraisonPrevue, 1, 4);
+            this.dtpLivraisonPrevue.TabIndex = 8;
             this.tlpChamps.Controls.Add(this.lblNoteLabel, 0, 5);
+            this.lblNoteLabel.TabIndex = 9;
             this.tlpChamps.Controls.Add(this.txtNote, 1, 5);
+            this.txtNote.TabIndex = 10;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -227,7 +243,9 @@
             // flpBoutons
             // 
             this.flpBoutons.Controls.Add(this.btnValider);
+            this.btnValider.TabIndex = 0;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 1;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

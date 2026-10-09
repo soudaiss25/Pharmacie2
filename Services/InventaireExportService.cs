@@ -45,7 +45,7 @@ namespace Pharmacie2.Services
                 ws.Cell(ligne, 1).Value = p.Nom;
                 ws.Cell(ligne, 2).Value = nb > 1 ? $"Boîte de {nb} {p.UniteVente?.ToLowerInvariant()}(s)" : "Boîte";
                 ws.Cell(ligne, 3).Value = StockService.Formater(p);
-                ws.Cell(ligne, 6).Value = p.StockAVerifier ? "⚠ À vérifier" : "";
+                ws.Cell(ligne, 6).Value = p.StockAVerifier ? "À vérifier" : "";
 
                 if (p.StockAVerifier)
                     ws.Range(ligne, 1, ligne, 6).Style.Fill.BackgroundColor = XLColor.FromArgb(255, 224, 178);

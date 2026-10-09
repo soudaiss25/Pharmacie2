@@ -73,10 +73,15 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.flpRecherche, 0, 0);
+            this.flpRecherche.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.dgvProduits, 0, 1);
+            this.dgvProduits.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.flpChoix, 0, 2);
+            this.flpChoix.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.pnlPosologie, 0, 3);
+            this.pnlPosologie.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.flpBoutons, 0, 4);
+            this.flpBoutons.TabIndex = 4;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -85,7 +90,9 @@
             // flpRecherche
             // 
             this.flpRecherche.Controls.Add(this.lblRecherche);
+            this.lblRecherche.TabIndex = 0;
             this.flpRecherche.Controls.Add(this.txtRecherche);
+            this.txtRecherche.TabIndex = 1;
             this.flpRecherche.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpRecherche.AutoSize = true;
             this.flpRecherche.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -128,10 +135,15 @@
             // flpChoix
             // 
             this.flpChoix.Controls.Add(this.lblUnite);
+            this.lblUnite.TabIndex = 0;
             this.flpChoix.Controls.Add(this.cbUnite);
+            this.cbUnite.TabIndex = 1;
             this.flpChoix.Controls.Add(this.lblQuantite);
+            this.lblQuantite.TabIndex = 2;
             this.flpChoix.Controls.Add(this.numQuantite);
+            this.numQuantite.TabIndex = 3;
             this.flpChoix.Controls.Add(this.lblPrixUnit);
+            this.lblPrixUnit.TabIndex = 4;
             this.flpChoix.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpChoix.AutoSize = true;
             this.flpChoix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -190,8 +202,11 @@
             this.pnlPosologie.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlPosologie.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlPosologie.Controls.Add(this.lblIndicationVal, 0, 0);
+            this.lblIndicationVal.TabIndex = 0;
             this.pnlPosologie.Controls.Add(this.lblPosologieVal, 0, 1);
+            this.lblPosologieVal.TabIndex = 1;
             this.pnlPosologie.Controls.Add(this.lblNbFoisVal, 0, 2);
+            this.lblNbFoisVal.TabIndex = 2;
             this.pnlPosologie.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlPosologie.AutoSize = true;
             this.pnlPosologie.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -225,7 +240,9 @@
             // flpBoutons
             // 
             this.flpBoutons.Controls.Add(this.btnValider);
+            this.btnValider.TabIndex = 0;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 1;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

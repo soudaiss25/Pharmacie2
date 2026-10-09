@@ -129,7 +129,9 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.tabMain, 0, 1);
+            this.tabMain.TabIndex = 1;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
@@ -145,8 +147,11 @@
             // tabMain
             // 
             this.tabMain.Controls.Add(this.tabMensuel);
+            this.tabMensuel.TabIndex = 0;
             this.tabMain.Controls.Add(this.tabAnnuel);
+            this.tabAnnuel.TabIndex = 1;
             this.tabMain.Controls.Add(this.tabHistorique);
+            this.tabHistorique.TabIndex = 2;
             this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabMain.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tabMain.Name = "tabMain";
@@ -154,6 +159,7 @@
             // tabMensuel
             // 
             this.tabMensuel.Controls.Add(this.tlpMensuel);
+            this.tlpMensuel.TabIndex = 0;
             this.tabMensuel.Text = "Résultat du mois";
             this.tabMensuel.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.tabMensuel.UseVisualStyleBackColor = true;
@@ -167,7 +173,9 @@
             this.tlpMensuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpMensuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpMensuel.Controls.Add(this.pnlFiltreMensuel, 0, 0);
+            this.pnlFiltreMensuel.TabIndex = 0;
             this.tlpMensuel.Controls.Add(this.tlpCorps, 0, 1);
+            this.tlpCorps.TabIndex = 1;
             this.tlpMensuel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMensuel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpMensuel.Name = "tlpMensuel";
@@ -175,12 +183,19 @@
             // pnlFiltreMensuel
             // 
             this.pnlFiltreMensuel.Controls.Add(this.lblMoisLabel);
+            this.lblMoisLabel.TabIndex = 0;
             this.pnlFiltreMensuel.Controls.Add(this.cbMois);
+            this.cbMois.TabIndex = 1;
             this.pnlFiltreMensuel.Controls.Add(this.lblAnneeLabel);
+            this.lblAnneeLabel.TabIndex = 2;
             this.pnlFiltreMensuel.Controls.Add(this.cbAnnee);
+            this.cbAnnee.TabIndex = 3;
             this.pnlFiltreMensuel.Controls.Add(this.btnActualiser);
+            this.btnActualiser.TabIndex = 4;
             this.pnlFiltreMensuel.Controls.Add(this.btnNouvelleDepense);
+            this.btnNouvelleDepense.TabIndex = 5;
             this.pnlFiltreMensuel.Controls.Add(this.lblPeriodeMensuel);
+            this.lblPeriodeMensuel.TabIndex = 6;
             this.pnlFiltreMensuel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFiltreMensuel.AutoSize = true;
             this.pnlFiltreMensuel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -246,8 +261,11 @@
             this.tlpCorps.RowCount = 1;
             this.tlpCorps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpCorps.Controls.Add(this.pnlGauche, 0, 0);
+            this.pnlGauche.TabIndex = 0;
             this.tlpCorps.Controls.Add(this.pnlDroite, 1, 0);
+            this.pnlDroite.TabIndex = 1;
             this.tlpCorps.Controls.Add(this.pnlResultat, 2, 0);
+            this.pnlResultat.TabIndex = 2;
             this.tlpCorps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCorps.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpCorps.Name = "tlpCorps";
@@ -266,19 +284,32 @@
             this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlGauche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlGauche.Controls.Add(this.lblRevTitre, 0, 0);
+            this.lblRevTitre.TabIndex = 0;
             this.pnlGauche.SetColumnSpan(this.lblRevTitre, 2);
             this.pnlGauche.Controls.Add(this.lblEspecesT, 0, 1);
+            this.lblEspecesT.TabIndex = 1;
             this.pnlGauche.Controls.Add(this.lblEspeces, 1, 1);
+            this.lblEspeces.TabIndex = 2;
             this.pnlGauche.Controls.Add(this.lblCBT, 0, 2);
+            this.lblCBT.TabIndex = 3;
             this.pnlGauche.Controls.Add(this.lblCB, 1, 2);
+            this.lblCB.TabIndex = 4;
             this.pnlGauche.Controls.Add(this.lblAvancesT, 0, 3);
+            this.lblAvancesT.TabIndex = 5;
             this.pnlGauche.Controls.Add(this.lblAvancesCredit, 1, 3);
+            this.lblAvancesCredit.TabIndex = 6;
             this.pnlGauche.Controls.Add(this.lblMutuellePT, 0, 4);
+            this.lblMutuellePT.TabIndex = 7;
             this.pnlGauche.Controls.Add(this.lblMutuelleP, 1, 4);
+            this.lblMutuelleP.TabIndex = 8;
             this.pnlGauche.Controls.Add(this.lblMutuelleET, 0, 5);
+            this.lblMutuelleET.TabIndex = 9;
             this.pnlGauche.Controls.Add(this.lblMutuelleE, 1, 5);
+            this.lblMutuelleE.TabIndex = 10;
             this.pnlGauche.Controls.Add(this.lblTotalRevenusT, 0, 6);
+            this.lblTotalRevenusT.TabIndex = 11;
             this.pnlGauche.Controls.Add(this.lblTotalRevenus, 1, 6);
+            this.lblTotalRevenus.TabIndex = 12;
             this.pnlGauche.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlGauche.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.pnlGauche.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
@@ -406,21 +437,36 @@
             this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlDroite.Controls.Add(this.lblChargeTitre, 0, 0);
+            this.lblChargeTitre.TabIndex = 0;
             this.pnlDroite.SetColumnSpan(this.lblChargeTitre, 2);
             this.pnlDroite.Controls.Add(this.lblCOGST, 0, 1);
+            this.lblCOGST.TabIndex = 1;
             this.pnlDroite.Controls.Add(this.lblCOGS, 1, 1);
+            this.lblCOGS.TabIndex = 2;
             this.pnlDroite.Controls.Add(this.lblSalairesT, 0, 2);
+            this.lblSalairesT.TabIndex = 3;
             this.pnlDroite.Controls.Add(this.lblSalaires, 1, 2);
+            this.lblSalaires.TabIndex = 4;
             this.pnlDroite.Controls.Add(this.lblLoyerT, 0, 3);
+            this.lblLoyerT.TabIndex = 5;
             this.pnlDroite.Controls.Add(this.lblLoyer, 1, 3);
+            this.lblLoyer.TabIndex = 6;
             this.pnlDroite.Controls.Add(this.lblFacturesT, 0, 4);
+            this.lblFacturesT.TabIndex = 7;
             this.pnlDroite.Controls.Add(this.lblFactures, 1, 4);
+            this.lblFactures.TabIndex = 8;
             this.pnlDroite.Controls.Add(this.lblFournituresT, 0, 5);
+            this.lblFournituresT.TabIndex = 9;
             this.pnlDroite.Controls.Add(this.lblFournitures, 1, 5);
+            this.lblFournitures.TabIndex = 10;
             this.pnlDroite.Controls.Add(this.lblAutresT, 0, 6);
+            this.lblAutresT.TabIndex = 11;
             this.pnlDroite.Controls.Add(this.lblAutres, 1, 6);
+            this.lblAutres.TabIndex = 12;
             this.pnlDroite.Controls.Add(this.lblTotalChargesT, 0, 7);
+            this.lblTotalChargesT.TabIndex = 13;
             this.pnlDroite.Controls.Add(this.lblTotalCharges, 1, 7);
+            this.lblTotalCharges.TabIndex = 14;
             this.pnlDroite.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDroite.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.pnlDroite.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
@@ -558,8 +604,11 @@
             this.pnlResultat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlResultat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlResultat.Controls.Add(this.lblBeneficeLabel, 0, 0);
+            this.lblBeneficeLabel.TabIndex = 0;
             this.pnlResultat.Controls.Add(this.lblBeneficeNet, 0, 1);
+            this.lblBeneficeNet.TabIndex = 1;
             this.pnlResultat.Controls.Add(this.lblMarge, 0, 2);
+            this.lblMarge.TabIndex = 2;
             this.pnlResultat.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlResultat.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.pnlResultat.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -592,6 +641,7 @@
             // tabAnnuel
             // 
             this.tabAnnuel.Controls.Add(this.tlpAnnuel);
+            this.tlpAnnuel.TabIndex = 0;
             this.tabAnnuel.Text = "Résultat de l'année";
             this.tabAnnuel.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.tabAnnuel.UseVisualStyleBackColor = true;
@@ -605,7 +655,9 @@
             this.tlpAnnuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpAnnuel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpAnnuel.Controls.Add(this.pnlFiltreAnnuel, 0, 0);
+            this.pnlFiltreAnnuel.TabIndex = 0;
             this.tlpAnnuel.Controls.Add(this.dgvAnnuel, 0, 1);
+            this.dgvAnnuel.TabIndex = 1;
             this.tlpAnnuel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpAnnuel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpAnnuel.Name = "tlpAnnuel";
@@ -613,7 +665,9 @@
             // pnlFiltreAnnuel
             // 
             this.pnlFiltreAnnuel.Controls.Add(this.lblAnneeAnnuelLabel);
+            this.lblAnneeAnnuelLabel.TabIndex = 0;
             this.pnlFiltreAnnuel.Controls.Add(this.cbAnneeAnnuel);
+            this.cbAnneeAnnuel.TabIndex = 1;
             this.pnlFiltreAnnuel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFiltreAnnuel.AutoSize = true;
             this.pnlFiltreAnnuel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -653,6 +707,7 @@
             // tabHistorique
             // 
             this.tabHistorique.Controls.Add(this.tlpHisto);
+            this.tlpHisto.TabIndex = 0;
             this.tabHistorique.Text = "Dépenses saisies";
             this.tabHistorique.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.tabHistorique.UseVisualStyleBackColor = true;
@@ -667,8 +722,11 @@
             this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpHisto.Controls.Add(this.pnlFiltreHisto, 0, 0);
+            this.pnlFiltreHisto.TabIndex = 0;
             this.tlpHisto.Controls.Add(this.dgvHistorique, 0, 1);
+            this.dgvHistorique.TabIndex = 1;
             this.tlpHisto.Controls.Add(this.lblTotalHistorique, 0, 2);
+            this.lblTotalHistorique.TabIndex = 2;
             this.tlpHisto.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHisto.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpHisto.Name = "tlpHisto";
@@ -676,8 +734,11 @@
             // pnlFiltreHisto
             // 
             this.pnlFiltreHisto.Controls.Add(this.lblFiltreHistoLabel);
+            this.lblFiltreHistoLabel.TabIndex = 0;
             this.pnlFiltreHisto.Controls.Add(this.cbFiltreHistoCat);
+            this.cbFiltreHistoCat.TabIndex = 1;
             this.pnlFiltreHisto.Controls.Add(this.btnSupprimerDep);
+            this.btnSupprimerDep.TabIndex = 2;
             this.pnlFiltreHisto.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFiltreHisto.AutoSize = true;
             this.pnlFiltreHisto.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

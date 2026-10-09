@@ -17,7 +17,7 @@ public class LayoutTests
     };
 
     // Passe à true quand tous les écrans sont convertis : le test de couverture devient bloquant
-    private const bool VerifierCouvertureComplete = false;
+    private const bool VerifierCouvertureComplete = true;
 
     private static readonly Size[] Tailles = { new(1366, 700), new(1600, 860), new(1920, 1040) };
     private static readonly Size EcranMini = new(1366, 768);
@@ -202,6 +202,10 @@ public class LayoutTests
                     erreurs.Add($"dialogue trop grand : {f.Width}x{f.Height} (max {(int)(EcranMini.Width * 0.9)}x{(int)(EcranMini.Height * 0.9)})");
                 if (f.StartPosition is not (FormStartPosition.CenterParent or FormStartPosition.CenterScreen))
                     erreurs.Add($"dialogue non centré (StartPosition = {f.StartPosition})");
+
+                // Entrée valide / Échap ferme : au moins l'un des deux doit être défini (sauf écran de connexion et d'initialisation, qui n'ont que Entrée)
+                if (f.AcceptButton == null && f.CancelButton == null)
+                    erreurs.Add("ni bouton par défaut (Entrée) ni bouton d'annulation (Échap)");
 
                 Verifier(f, type.Name, erreurs);
                 VerifierOnglets(f, type.Name, erreurs);

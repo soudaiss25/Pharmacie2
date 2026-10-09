@@ -75,12 +75,19 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.flpFiltres, 0, 1);
+            this.flpFiltres.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.dgvFournisseurs, 0, 2);
+            this.dgvFournisseurs.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.flpActionsF, 0, 3);
+            this.flpActionsF.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.lblProduitsTitre, 0, 4);
+            this.lblProduitsTitre.TabIndex = 4;
             this.tlpRoot.Controls.Add(this.dgvProduits, 0, 5);
+            this.dgvProduits.TabIndex = 5;
             this.tlpRoot.Controls.Add(this.flpActionsP, 0, 6);
+            this.flpActionsP.TabIndex = 6;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpRoot.Name = "tlpRoot";
@@ -96,8 +103,11 @@
             // flpFiltres
             // 
             this.flpFiltres.Controls.Add(this.lblRecherche);
+            this.lblRecherche.TabIndex = 0;
             this.flpFiltres.Controls.Add(this.txtSearch);
+            this.txtSearch.TabIndex = 1;
             this.flpFiltres.Controls.Add(this.btnClear);
+            this.btnClear.TabIndex = 2;
             this.flpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpFiltres.AutoSize = true;
             this.flpFiltres.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -143,9 +153,13 @@
             // flpActionsF
             // 
             this.flpActionsF.Controls.Add(this.btnAdd);
+            this.btnAdd.TabIndex = 0;
             this.flpActionsF.Controls.Add(this.btnEdit);
+            this.btnEdit.TabIndex = 1;
             this.flpActionsF.Controls.Add(this.btnDelete);
+            this.btnDelete.TabIndex = 2;
             this.flpActionsF.Controls.Add(this.btnVoirCommandes);
+            this.btnVoirCommandes.TabIndex = 3;
             this.flpActionsF.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpActionsF.AutoSize = true;
             this.flpActionsF.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -211,6 +225,7 @@
             // flpActionsP
             // 
             this.flpActionsP.Controls.Add(this.btnCommanderProduit);
+            this.btnCommanderProduit.TabIndex = 0;
             this.flpActionsP.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpActionsP.AutoSize = true;
             this.flpActionsP.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

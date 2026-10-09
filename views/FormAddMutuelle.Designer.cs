@@ -61,9 +61,13 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.tlpChamps, 0, 1);
+            this.tlpChamps.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.panelEspace, 0, 2);
+            this.panelEspace.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.flpBoutons, 0, 3);
+            this.flpBoutons.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -89,14 +93,23 @@
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.Controls.Add(this.lblNom, 0, 0);
+            this.lblNom.TabIndex = 0;
             this.tlpChamps.Controls.Add(this.txtNomEmployeur, 1, 0);
+            this.txtNomEmployeur.TabIndex = 1;
             this.tlpChamps.Controls.Add(this.lblTaux, 0, 1);
+            this.lblTaux.TabIndex = 2;
             this.tlpChamps.Controls.Add(this.numTaux, 1, 1);
+            this.numTaux.TabIndex = 3;
             this.tlpChamps.Controls.Add(this.lblExplTaux, 1, 2);
+            this.lblExplTaux.TabIndex = 4;
             this.tlpChamps.Controls.Add(this.lblEmail, 0, 3);
+            this.lblEmail.TabIndex = 5;
             this.tlpChamps.Controls.Add(this.txtEmail, 1, 3);
+            this.txtEmail.TabIndex = 6;
             this.tlpChamps.Controls.Add(this.lblTelephone, 0, 4);
+            this.lblTelephone.TabIndex = 7;
             this.tlpChamps.Controls.Add(this.txtTelephone, 1, 4);
+            this.txtTelephone.TabIndex = 8;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -184,7 +197,9 @@
             // flpBoutons
             // 
             this.flpBoutons.Controls.Add(this.btnEnregistrer);
+            this.btnEnregistrer.TabIndex = 0;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 1;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

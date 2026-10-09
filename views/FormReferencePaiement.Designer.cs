@@ -50,9 +50,13 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblInfo, 0, 0);
+            this.lblInfo.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.txtReference, 0, 1);
+            this.txtReference.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.panelEspace, 0, 2);
+            this.panelEspace.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.flpBoutons, 0, 3);
+            this.flpBoutons.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -81,7 +85,9 @@
             // flpBoutons
             // 
             this.flpBoutons.Controls.Add(this.btnOk);
+            this.btnOk.TabIndex = 0;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 1;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

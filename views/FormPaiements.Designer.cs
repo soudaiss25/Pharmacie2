@@ -66,11 +66,17 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblNumero, 0, 0);
+            this.lblNumero.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.flpInfos, 0, 1);
+            this.flpInfos.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.flpSaisie, 0, 2);
+            this.flpSaisie.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.lblRetour, 0, 3);
+            this.lblRetour.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.dgvPaiements, 0, 4);
+            this.dgvPaiements.TabIndex = 4;
             this.tlpRoot.Controls.Add(this.btnFermer, 0, 5);
+            this.btnFermer.TabIndex = 5;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -87,10 +93,15 @@
             // flpInfos
             // 
             this.flpInfos.Controls.Add(this.lblTotal);
+            this.lblTotal.TabIndex = 0;
             this.flpInfos.Controls.Add(this.lblVerse);
+            this.lblVerse.TabIndex = 1;
             this.flpInfos.Controls.Add(this.lblRestant);
+            this.lblRestant.TabIndex = 2;
             this.flpInfos.Controls.Add(this.lblVendeurVente);
+            this.lblVendeurVente.TabIndex = 3;
             this.flpInfos.Controls.Add(this.lblMotif);
+            this.lblMotif.TabIndex = 4;
             this.flpInfos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpInfos.AutoSize = true;
             this.flpInfos.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -139,8 +150,11 @@
             // flpSaisie
             // 
             this.flpSaisie.Controls.Add(this.lblSaisie);
+            this.lblSaisie.TabIndex = 0;
             this.flpSaisie.Controls.Add(this.numMontant);
+            this.numMontant.TabIndex = 1;
             this.flpSaisie.Controls.Add(this.btnAjouterPaiement);
+            this.btnAjouterPaiement.TabIndex = 2;
             this.flpSaisie.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpSaisie.AutoSize = true;
             this.flpSaisie.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

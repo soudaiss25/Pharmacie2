@@ -49,7 +49,7 @@ namespace Pharmacie2.Services
                 && commande.Lignes.Sum(l => l.QuantiteRecue) == 0)
                 throw new InvalidOperationException(
                     MessageQuantiteInconnue + "\n\nCette commande doit être réceptionnée manuellement, ligne par ligne " +
-                    "(écran Commandes du fournisseur → « Réception partielle »).");
+                    "(écran Commandes, bouton « Réception partielle »).");
 
             int totalBoites = 0;
             foreach (var ligne in commande.Lignes)

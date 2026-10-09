@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 
@@ -441,7 +441,7 @@ namespace Pharmacie2.views.UserControls
             else if (grille.Columns[e.ColumnIndex].Name == "Type" && ligne.Cells["Type"].Value is string type)
             {
                 e.CellStyle.BackColor = CouleurType(type);
-                e.CellStyle.ForeColor = Color.White;
+                e.CellStyle.ForeColor = Theme.Blanc;
             }
         }
 

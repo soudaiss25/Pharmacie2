@@ -105,7 +105,7 @@ namespace Pharmacie2.Services
             ws.Range("A1:N1").Merge();
 
             ws.Cell("A2").Value =
-                $"Période : {debut:dd/MM/yyyy}  →  {fin:dd/MM/yyyy}" +
+                $"Période : du {debut:dd/MM/yyyy} au {fin:dd/MM/yyyy}" +
                 $"     Généré le : {DateTime.Now:dd/MM/yyyy HH:mm}";
             ws.Cell("A2").Style.Font.Italic = true;
             ws.Cell("A2").Style.Font.FontColor = XLColor.Gray;

@@ -161,7 +161,7 @@ namespace Pharmacie2.views
             if (_unitesManquantes > 0)
             {
                 int nouveau = _produitOrigine.QuantiteEnStock + _unitesManquantes;
-                btnCorrection.Text = $"Appliquer la correction (+ {_unitesManquantes} unités → nouveau stock : {StockService.Formater(_produitOrigine, nouveau)})";
+                btnCorrection.Text = $"Appliquer la correction (+ {_unitesManquantes} unités, nouveau stock : {StockService.Formater(_produitOrigine, nouveau)})";
                 btnCorrection.Click += (s, e) => AppliquerCorrection(nouveau);
                 btnCorrection.Visible = true;
             }
@@ -379,7 +379,7 @@ namespace Pharmacie2.views
                 {
                     _nbAverti = true;
                     MessageBox.Show(
-                        $"Vous modifiez le nombre d'unités par boîte ({_nbParBoiteOrigine} → {nbUniteParBoite}).\n\n" +
+                        $"Vous modifiez le nombre d'unités par boîte (de {_nbParBoiteOrigine} à {nbUniteParBoite}).\n\n" +
                         "Le stock actuel ne peut plus être converti automatiquement.\n" +
                         "Comptez le stock réel en rayon et saisissez-le (boîtes pleines + unités en vrac), puis enregistrez à nouveau.",
                         "Stock à ressaisir", MessageBoxButtons.OK, MessageBoxIcon.Warning);

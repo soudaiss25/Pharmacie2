@@ -75,11 +75,17 @@
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.lblTitre, 0, 0);
+            this.lblTitre.TabIndex = 0;
             this.tlpRoot.Controls.Add(this.flpFiltre, 0, 1);
+            this.flpFiltre.TabIndex = 1;
             this.tlpRoot.Controls.Add(this.dgvCommandes, 0, 2);
+            this.dgvCommandes.TabIndex = 2;
             this.tlpRoot.Controls.Add(this.lblDetailTitre, 0, 3);
+            this.lblDetailTitre.TabIndex = 3;
             this.tlpRoot.Controls.Add(this.dgvLignes, 0, 4);
+            this.dgvLignes.TabIndex = 4;
             this.tlpRoot.Controls.Add(this.flpBoutons, 0, 5);
+            this.flpBoutons.TabIndex = 5;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -96,8 +102,11 @@
             // flpFiltre
             // 
             this.flpFiltre.Controls.Add(this.lblFiltreStatut);
+            this.lblFiltreStatut.TabIndex = 0;
             this.flpFiltre.Controls.Add(this.cbFiltreStatut);
+            this.cbFiltreStatut.TabIndex = 1;
             this.flpFiltre.Controls.Add(this.lblNbCommandes);
+            this.lblNbCommandes.TabIndex = 2;
             this.flpFiltre.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpFiltre.AutoSize = true;
             this.flpFiltre.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -175,9 +184,13 @@
             // flpBoutons
             // 
             this.flpBoutons.Controls.Add(this.btnMarquerRecu);
+            this.btnMarquerRecu.TabIndex = 0;
             this.flpBoutons.Controls.Add(this.btnMarquerPartiel);
+            this.btnMarquerPartiel.TabIndex = 1;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
+            this.btnAnnuler.TabIndex = 2;
             this.flpBoutons.Controls.Add(this.btnFermer);
+            this.btnFermer.TabIndex = 3;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;

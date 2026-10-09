@@ -73,7 +73,9 @@
             this.tlpPrincipal.RowCount = 1;
             this.tlpPrincipal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpPrincipal.Controls.Add(this.panelMenu, 0, 0);
+            this.panelMenu.TabIndex = 0;
             this.tlpPrincipal.Controls.Add(this.tlpContenu, 1, 0);
+            this.tlpContenu.TabIndex = 1;
             this.tlpPrincipal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpPrincipal.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpPrincipal.Name = "tlpPrincipal";
@@ -81,6 +83,7 @@
             // panelMenu
             // 
             this.panelMenu.Controls.Add(this.tlpMenu);
+            this.tlpMenu.TabIndex = 0;
             this.panelMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(27, 94, 32);
             this.panelMenu.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -95,8 +98,11 @@
             this.tlpMenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpMenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpMenu.Controls.Add(this.lblNomPharmacie, 0, 0);
+            this.lblNomPharmacie.TabIndex = 0;
             this.tlpMenu.Controls.Add(this.flpMenu, 0, 1);
+            this.flpMenu.TabIndex = 1;
             this.tlpMenu.Controls.Add(this.tlpBas, 0, 2);
+            this.tlpBas.TabIndex = 2;
             this.tlpMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMenu.Name = "tlpMenu";
             // 
@@ -114,22 +120,39 @@
             // flpMenu
             // 
             this.flpMenu.Controls.Add(this.lblSectionQuotidien);
+            this.lblSectionQuotidien.TabIndex = 0;
             this.flpMenu.Controls.Add(this.btnMaJournee);
+            this.btnMaJournee.TabIndex = 1;
             this.flpMenu.Controls.Add(this.btnVentes);
+            this.btnVentes.TabIndex = 2;
             this.flpMenu.Controls.Add(this.BtnCaisse);
+            this.BtnCaisse.TabIndex = 3;
             this.flpMenu.Controls.Add(this.btn_stock);
+            this.btn_stock.TabIndex = 4;
             this.flpMenu.Controls.Add(this.btnCredits);
+            this.btnCredits.TabIndex = 5;
             this.flpMenu.Controls.Add(this.btnMutuelles);
+            this.btnMutuelles.TabIndex = 6;
             this.flpMenu.Controls.Add(this.lblSectionGestion);
+            this.lblSectionGestion.TabIndex = 7;
             this.flpMenu.Controls.Add(this.btnCommandes);
+            this.btnCommandes.TabIndex = 8;
             this.flpMenu.Controls.Add(this.btnFournisseurs);
+            this.btnFournisseurs.TabIndex = 9;
             this.flpMenu.Controls.Add(this.btnProduits);
+            this.btnProduits.TabIndex = 10;
             this.flpMenu.Controls.Add(this.btnDepenses);
+            this.btnDepenses.TabIndex = 11;
             this.flpMenu.Controls.Add(this.btnStatistiques);
+            this.btnStatistiques.TabIndex = 12;
             this.flpMenu.Controls.Add(this.lblSectionAdministration);
+            this.lblSectionAdministration.TabIndex = 13;
             this.flpMenu.Controls.Add(this.BtnGestionUtilisateur);
+            this.BtnGestionUtilisateur.TabIndex = 14;
             this.flpMenu.Controls.Add(this.btnSauvegarde);
+            this.btnSauvegarde.TabIndex = 15;
             this.flpMenu.Controls.Add(this.btnDossierSauvegardes);
+            this.btnDossierSauvegardes.TabIndex = 16;
             this.flpMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMenu.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpMenu.WrapContents = false;
@@ -287,7 +310,9 @@
             this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpBas.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpBas.Controls.Add(this.lblUtilisateur, 0, 0);
+            this.lblUtilisateur.TabIndex = 0;
             this.tlpBas.Controls.Add(this.btnDeconnexion, 0, 1);
+            this.btnDeconnexion.TabIndex = 1;
             this.tlpBas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBas.Padding = new System.Windows.Forms.Padding(12, 8, 12, 12);
             this.tlpBas.Name = "tlpBas";
@@ -320,7 +345,9 @@
             this.tlpContenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpContenu.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpContenu.Controls.Add(this.bandeau, 0, 0);
+            this.bandeau.TabIndex = 0;
             this.tlpContenu.Controls.Add(this.panelContent, 0, 1);
+            this.panelContent.TabIndex = 1;
             this.tlpContenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpContenu.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpContenu.Name = "tlpContenu";
