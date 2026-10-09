@@ -21,6 +21,7 @@ namespace Pharmacie2.views.Composants
             SetStyle(ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer
                      | ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
             Size = new Size(220, 104);
+            AutoSize = true;   // les rangées automatiques mesurent GetPreferredSize, pas la taille mise à l'échelle
             Cursor = Cursors.Default;
         }
 
