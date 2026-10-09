@@ -35,6 +35,23 @@ namespace Pharmacie2.Services
         public static string Nombre(decimal valeur)
             => Math.Round(valeur, 0, MidpointRounding.AwayFromZero).ToString("N0", _nombre);
 
+        private static readonly System.Text.RegularExpressions.Regex _accord = new(@"(\d+)|(\p{L}+)\(s\)", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+        /// <summary>
+        /// Texte déjà enregistré avec des « (s) » : accorde les mots avec le dernier nombre rencontré
+        /// (« 10 boîte(s) reçue(s) » devient « 10 boîtes reçues », « 1 boîte(s) » devient « 1 boîte »).
+        /// </summary>
+        public static string Accorder(string texte)
+        {
+            if (string.IsNullOrEmpty(texte) || !texte.Contains("(s)")) return texte ?? "";
+            bool pluriel = false;
+            return _accord.Replace(texte, m =>
+            {
+                if (m.Groups[1].Success) { pluriel = int.Parse(m.Groups[1].Value) > 1; return m.Value; }
+                return m.Groups[2].Value + (pluriel ? "s" : "");
+            });
+        }
+
         /// <summary>Vrai pluriel français : 0 et 1 au singulier, 2 et plus au pluriel (« 1 boîte », « 2 boîtes »).</summary>
         public static string Pluriel(int n, string singulier, string? pluriel = null)
             => n > 1 ? (pluriel ?? (singulier.EndsWith("s") || singulier.EndsWith("x") ? singulier : singulier + "s")) : singulier;

@@ -118,7 +118,7 @@
             // 
             // lblTitre
             // 
-            this.lblTitre.Text = "Commandes aux fournisseurs";
+            this.lblTitre.Text = "Commandes";
             this.lblTitre.AutoSize = true;
             this.lblTitre.Tag = "titre";
             this.lblTitre.Anchor = System.Windows.Forms.AnchorStyles.Left;

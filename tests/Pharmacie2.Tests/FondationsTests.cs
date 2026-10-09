@@ -22,6 +22,14 @@ public class FormatTests
     }
 
     [Fact]
+    public void Anciens_textes_avec_s_entre_parentheses_sont_accordes()
+    {
+        Assert.Equal("10 boîtes reçues avant la correction : seulement 10 unités ajoutées au lieu de 50.",
+                     Format.Accorder("10 boîte(s) reçue(s) avant la correction : seulement 10 unité(s) ajoutée(s) au lieu de 50."));
+        Assert.Equal("1 boîte reçue", Format.Accorder("1 boîte(s) reçue(s)"));
+    }
+
+    [Fact]
     public void Espace_insecable_entre_un_nombre_et_son_unite()
     {
         Assert.Equal("Paracétamol 1 g", Format.Insecable("Paracétamol 1 g"));

@@ -283,7 +283,7 @@
             // 
             // colTaux
             // 
-            this.colTaux.HeaderText = "Taux (%)";
+            this.colTaux.HeaderText = "Taux";
             this.colTaux.Name = "Taux";
             this.colTaux.DataPropertyName = "Taux";
             this.colTaux.FillWeight = 9F;

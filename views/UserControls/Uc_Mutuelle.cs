@@ -96,7 +96,7 @@ namespace Pharmacie2.views.UserControls
                         {
                             m.IdMutuel,
                             Mutuelle = m.Actif ? m.NomEmployeur : m.NomEmployeur + " (archivée)",
-                            Taux = m.TauxPriseEnCharge,
+                            Taux = m.TauxPriseEnCharge.ToString("0.##", new System.Globalization.CultureInfo("fr-FR")) + " %",
                             Telephone = m.telephoneEmployeur ?? "—",
                             Email = m.EmailContact ?? "—",
                             NbImpayees = nbImpayees,

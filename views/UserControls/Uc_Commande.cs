@@ -292,12 +292,25 @@ namespace Pharmacie2.views.UserControls
         {
             dtpDebut.Enabled = chkPeriode.Checked;
             dtpFin.Enabled = chkPeriode.Checked;
+            MettreAJourPeriode();
             ChargerCommandes();
         }
 
         /// <summary>Mode compact : les colonnes secondaires sont masquées, l'essentiel reste visible.</summary>
+        private bool _compact;
+
+        /// <summary>En mode compact, les dates de la période n'apparaissent que si la case « Période » est cochée.</summary>
+        private void MettreAJourPeriode()
+        {
+            bool afficher = !_compact || chkPeriode.Checked;
+            lblAu.Visible = dtpDebut.Visible = dtpFin.Visible = afficher;
+        }
+
         public void DefinirCompact(bool compact)
         {
+            _compact = compact;
+            cbFiltreFournisseur.Width = Theme.Px(this, compact ? 160 : 220);
+            MettreAJourPeriode();
             ModeCompact.MasquerColonnes(dgvCommandes, compact, "colNbProd", "colReception", "colNote");
             Theme.AjusterColonnes(dgvCommandes);
         }

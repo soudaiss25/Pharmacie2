@@ -114,7 +114,7 @@ namespace Pharmacie2.views
                 _stockOrigineUnites = p.QuantiteEnStock;
                 _verifier = p.StockAVerifier;
                 _unitesManquantes = p.UnitesManquantesEstimees;
-                _motifVerification = p.MotifVerification ?? "";
+                _motifVerification = Format.Accorder(p.MotifVerification ?? "");   // anciens textes en base : « 10 boîte(s) reçue(s) » devient « 10 boîtes reçues »
                 _produitOrigine = new Produit
                 {
                     Id = p.Id, Nom = p.Nom, NbUniteParBoite = p.NbUniteParBoite,
