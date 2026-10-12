@@ -39,3 +39,34 @@ public class ReglesClientTests
     public void Regle13_le_verrouillage_automatique_est_de_5_minutes_par_defaut()
         => Assert.Equal(5, new ParametresApp().DelaiVerrouillageMinutes);
 }
+
+public class Regle01SansFondDeCaisseTests
+{
+    [Fact]
+    public void Regle01_l_ouverture_de_caisse_n_a_aucun_fond_de_depart()
+    {
+        var ids = LayoutSeed.Preparer();      // l'administrateur n'a pas de session ouverte
+        var cts = UiHelper.FermerLesMessages(true);
+        try
+        {
+            UiHelper.EnSta(() =>
+            {
+                using var f = new Pharmacie2.views.FormSessionCaisse(ids.Admin);
+                static IEnumerable<System.Windows.Forms.Control> Tous(System.Windows.Forms.Control c)
+                    => new[] { c }.Concat(c.Controls.Cast<System.Windows.Forms.Control>().SelectMany(Tous));
+                var textes = Tous(f).Select(c => c.Text.ToLowerInvariant()).ToList();
+                Assert.DoesNotContain(textes, t => t.Contains("fond"));
+                Assert.DoesNotContain(textes, t => t.Contains("tiroir"));
+                Assert.Null(f.GetType().GetField("numFond", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance));
+
+                UiHelper.Appeler(f, "btnOuvrir_Click", null, EventArgs.Empty);
+            });
+        }
+        finally { cts.Cancel(); }
+
+        using var ctx = new AppDbContext();
+        var s = ctx.SessionsCaisse.Single(x => x.UserId == ids.Admin);
+        Assert.Equal(0m, s.FondOuverture);
+        Assert.Equal("Ouverte", s.Statut);
+    }
+}

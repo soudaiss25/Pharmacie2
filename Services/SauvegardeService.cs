@@ -165,12 +165,12 @@ namespace Pharmacie2.Services
         private static void ExporterSessions(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;UserId;DateOuverture;DateCloture;FondOuverture;MontantCompteCloture;Statut");
+            sb.AppendLine("Id;UserId;DateOuverture;DateCloture;MontantCompteCloture;Statut");
 
             foreach (var s in ctx.SessionsCaisse.AsNoTracking().ToList())
                 sb.AppendLine($"{s.Id};{s.UserId};{s.DateOuverture:yyyy-MM-dd HH:mm:ss};" +
                     $"{(s.DateCloture.HasValue ? s.DateCloture.Value.ToString("yyyy-MM-dd HH:mm:ss") : "")};" +
-                    $"{s.FondOuverture};{s.MontantCompteCloture};{s.Statut}");
+                    $"{s.MontantCompteCloture};{s.Statut}");
 
             Ecrire(Path.Combine(dossier, "sessions.csv"), sb.ToString());
         }

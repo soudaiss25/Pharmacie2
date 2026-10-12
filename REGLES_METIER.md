@@ -7,7 +7,7 @@ existant cité ici) vérifie chaque règle quand c'est automatisable ; sinon la 
 
 | # | Règle | Vérification |
 |---|-------|--------------|
-| 1 | Ouverture de caisse SANS fond de caisse (aucun montant de départ). | Test `Regle01_*` (livré avec R1) · manuel : §50 |
+| 1 | Ouverture de caisse SANS fond de caisse (aucun montant de départ). | Test `Regle01_*` · manuel : §50 |
 | 2 | Un caissier ne voit que les ventes de SA session. | Manuel : §36 (page du Caissier) |
 | 3 | Facture complète : produits, total, vendeur, client, date, posologie. | Manuel : §1 (facture) |
 | 4 | Posologie affichée dès qu'on choisit le médicament. | Manuel : §1 (choix du produit) |

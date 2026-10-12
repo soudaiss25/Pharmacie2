@@ -102,7 +102,6 @@
             this.colOuverture = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCloture = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSessionStatut = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colFond = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEncaisse = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTheorique = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCompte = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -698,7 +697,6 @@
             this.colOuverture,
             this.colCloture,
             this.colSessionStatut,
-            this.colFond,
             this.colEncaisse,
             this.colTheorique,
             this.colCompte,
@@ -928,16 +926,6 @@
             this.colSessionStatut.FillWeight = 8F;
             this.colSessionStatut.MinimumWidth = 70;
             this.colSessionStatut.ReadOnly = true;
-            // 
-            // colFond
-            // 
-            this.colFond.HeaderText = "Fond de caisse";
-            this.colFond.Name = "Fond";
-            this.colFond.DataPropertyName = "Fond";
-            this.colFond.FillWeight = 9F;
-            this.colFond.MinimumWidth = 90;
-            this.colFond.ReadOnly = true;
-            this.colFond.Tag = "montant";
             // 
             // colEncaisse
             // 
@@ -1175,7 +1163,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colOuverture;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCloture;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSessionStatut;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colFond;
         private System.Windows.Forms.DataGridViewTextBoxColumn colEncaisse;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTheorique;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCompte;

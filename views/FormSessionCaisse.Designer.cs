@@ -33,8 +33,6 @@
             this.lblEtat = new System.Windows.Forms.Label();
             this.lblInfoSession = new System.Windows.Forms.Label();
             this.tlpChamps = new System.Windows.Forms.TableLayoutPanel();
-            this.lblFond = new System.Windows.Forms.Label();
-            this.numFond = new System.Windows.Forms.NumericUpDown();
             this.lblMontantReel = new System.Windows.Forms.Label();
             this.numMontantReel = new System.Windows.Forms.NumericUpDown();
             this.lblCommentaireLabel = new System.Windows.Forms.Label();
@@ -44,7 +42,6 @@
             this.btnCloture = new System.Windows.Forms.Button();
             this.btnOuvrir = new System.Windows.Forms.Button();
             this.btnAnnuler = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.numFond)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMontantReel)).BeginInit();
             this.tlpRoot.SuspendLayout();
             this.tlpChamps.SuspendLayout();
@@ -109,47 +106,22 @@
             this.tlpChamps.ColumnCount = 2;
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpChamps.RowCount = 3;
+            this.tlpChamps.RowCount = 2;
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.tlpChamps.Controls.Add(this.lblFond, 0, 0);
-            this.lblFond.TabIndex = 0;
-            this.tlpChamps.Controls.Add(this.numFond, 1, 0);
-            this.numFond.TabIndex = 1;
-            this.tlpChamps.Controls.Add(this.lblMontantReel, 0, 1);
+            this.tlpChamps.Controls.Add(this.lblMontantReel, 0, 0);
             this.lblMontantReel.TabIndex = 2;
-            this.tlpChamps.Controls.Add(this.numMontantReel, 1, 1);
+            this.tlpChamps.Controls.Add(this.numMontantReel, 1, 0);
             this.numMontantReel.TabIndex = 3;
-            this.tlpChamps.Controls.Add(this.lblCommentaireLabel, 0, 2);
+            this.tlpChamps.Controls.Add(this.lblCommentaireLabel, 0, 1);
             this.lblCommentaireLabel.TabIndex = 4;
-            this.tlpChamps.Controls.Add(this.txtCommentaire, 1, 2);
+            this.tlpChamps.Controls.Add(this.txtCommentaire, 1, 1);
             this.txtCommentaire.TabIndex = 5;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpChamps.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.tlpChamps.Name = "tlpChamps";
-            // 
-            // lblFond
-            // 
-            this.lblFond.Text = "Fond de caisse au départ";
-            this.lblFond.AutoSize = true;
-            this.lblFond.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblFond.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
-            this.lblFond.Name = "lblFond";
-            // 
-            // numFond
-            // 
-            this.numFond.Width = 170;
-            this.numFond.Minimum = new decimal(new int[] { 0, 0, 0, 0});
-            this.numFond.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0});
-            this.numFond.ThousandsSeparator = true;
-            this.numFond.DecimalPlaces = 0;
-            this.numFond.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.numFond.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numFond.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
-            this.numFond.Name = "numFond";
             // 
             // lblMontantReel
             // 
@@ -255,7 +227,6 @@
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMontantReel)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numFond)).EndInit();
 
         }
 
@@ -266,8 +237,6 @@
         private System.Windows.Forms.Label lblEtat;
         private System.Windows.Forms.Label lblInfoSession;
         private System.Windows.Forms.TableLayoutPanel tlpChamps;
-        private System.Windows.Forms.Label lblFond;
-        private System.Windows.Forms.NumericUpDown numFond;
         private System.Windows.Forms.Label lblMontantReel;
         private System.Windows.Forms.NumericUpDown numMontantReel;
         private System.Windows.Forms.Label lblCommentaireLabel;

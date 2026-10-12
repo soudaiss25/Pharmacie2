@@ -295,7 +295,7 @@ namespace Pharmacie2.views.UserControls
 
                         decimal encaisse = paiementsSession.Where(p => ids.Contains(p.VenteId)).Sum(p => p.Montant);
                         decimal rendu = ventesSession.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantRendu);
-                        decimal theorique = s.FondOuverture + encaisse - rendu;
+                        decimal theorique = encaisse - rendu;
                         decimal? ecart = s.MontantCompteCloture.HasValue ? s.MontantCompteCloture.Value - theorique : null;
 
                         lignes.Add(new
@@ -305,7 +305,6 @@ namespace Pharmacie2.views.UserControls
                             Ouverture = s.DateOuverture.ToString("dd/MM/yyyy HH:mm"),
                             Cloture = s.DateCloture.HasValue ? s.DateCloture.Value.ToString("dd/MM/yyyy HH:mm") : "En cours",
                             s.Statut,
-                            Fond = s.FondOuverture,
                             Encaisse = encaisse,
                             Theorique = theorique,
                             Compte = s.MontantCompteCloture,
@@ -392,7 +391,7 @@ namespace Pharmacie2.views.UserControls
                     var paiements = ctx.paiement.AsNoTracking().Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin).ToList();
                     decimal encaisse = paiements.Where(p => ids.Contains(p.VenteId)).Sum(p => p.Montant);
                     decimal rendu = actives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantRendu);
-                    decimal theorique = session.FondOuverture + encaisse - rendu;
+                    decimal theorique = encaisse - rendu;
                     decimal? ecart = session.MontantCompteCloture.HasValue ? session.MontantCompteCloture.Value - theorique : null;
 
                     string caissier = session.User != null ? $"{session.User.Prenom} {session.User.Nom}" : "—";
@@ -400,7 +399,7 @@ namespace Pharmacie2.views.UserControls
                     lblDetailSession.Text =
                         $"{caissier} — du {debut:dd/MM/yyyy HH:mm} à " +
                         $"{(session.DateCloture.HasValue ? session.DateCloture.Value.ToString("HH:mm") : "maintenant")} — " +
-                        $"fond de caisse {Format.Montant(session.FondOuverture)} — encaissé {Format.Montant(encaisse)} — " +
+                        $"encaissé {Format.Montant(encaisse)} — " +
                         $"attendu {Format.Montant(theorique)}" +
                         (ecart.HasValue ? $" — écart {(ecart >= 0 ? "+" : "")}{Format.Montant(ecart.Value)}" : "");
 
@@ -511,7 +510,7 @@ namespace Pharmacie2.views.UserControls
             tlpRapport.ResumeLayout(true);
             _compact = compact;
             AppliquerColonnesDetail();
-            ModeCompact.MasquerColonnes(dgvSessions, compact, "Fond", "Theorique", "Compte", "NbVentes");
+            ModeCompact.MasquerColonnes(dgvSessions, compact, "Theorique", "Compte", "NbVentes");
             ModeCompact.MasquerColonnes(dgvDetailSession, compact, "Verse");
             Theme.AjusterColonnes(dgvDetail);
             Theme.AjusterColonnes(dgvSessions);

@@ -40,10 +40,9 @@ namespace Pharmacie2.views
                 lblEtat.ForeColor = Theme.AttentionTexte;
                 btnOuvrir.Enabled = true;
                 btnCloture.Enabled = false;
-                numFond.Enabled = true;
                 numMontantReel.Enabled = false;
                 txtCommentaire.Enabled = false;
-                lblInfoSession.Text = "Indiquez l'argent qui se trouve déjà dans le tiroir, puis cliquez sur « Ouvrir la caisse ».";
+                lblInfoSession.Text = "Cliquez sur « Ouvrir la caisse » pour commencer la journée.";
                 AcceptButton = btnOuvrir;
             }
             else
@@ -52,8 +51,6 @@ namespace Pharmacie2.views
                 lblEtat.ForeColor = Theme.SuccesTexte;
                 btnOuvrir.Enabled = false;
                 btnCloture.Enabled = true;
-                numFond.Enabled = false;
-                numFond.Value = Math.Min(numFond.Maximum, _sessionOuverte.FondOuverture);
                 numMontantReel.Enabled = true;
                 txtCommentaire.Enabled = true;
                 lblInfoSession.Text = "Caisse en cours. Comptez l'argent du tiroir et saisissez le montant avant de clôturer.";
@@ -64,7 +61,7 @@ namespace Pharmacie2.views
         private void btnOuvrir_Click(object sender, EventArgs e)
         {
             var confirm = MessageBox.Show(
-                "Ouvrir la session de caisse maintenant ?",
+                "Ouvrir la caisse maintenant ?",
                 "Ouverture de caisse",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -77,7 +74,7 @@ namespace Pharmacie2.views
                 {
                     UserId = _userId,
                     DateOuverture = DateTime.Now,
-                    FondOuverture = numFond.Value,
+                    FondOuverture = 0m,   // règle du client : jamais de fond de caisse
                     Statut = "Ouverte",
                     CommentaireCloture = ""
                 });
