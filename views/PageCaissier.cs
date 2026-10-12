@@ -161,24 +161,12 @@ namespace Pharmacie2.views
 
                     var actives = ventes.Where(v => v.Statut == "Active").ToList();
 
-                    // Argent réellement encaissé par ce caissier depuis l'ouverture (nouvelles ventes ET règlements de crédits)
-                    var paiements = ctx.paiement
-                        .AsNoTracking()
-                        .Include(p => p.Vente)
-                        .Where(p => p.UserId == _user.Id && p.DatePaiement >= debut && p.DatePaiement <= fin
-                                 && p.Vente.Statut != "Annulée")
-                        .ToList();
-
-                    decimal Somme(Func<string, bool> mode) => paiements.Where(p => mode(p.Vente.Type ?? "")).Sum(p => p.Montant);
-                    decimal especes = Somme(t => t == ModesPaiement.Comptant);
-                    decimal cheque = Somme(t => t == ModesPaiement.Cheque);
-                    decimal digital = Somme(t => t == ModesPaiement.CarteBancaire || ModesPaiement.EstMobile(t));
-                    decimal mutuellePatient = Somme(t => t == ModesPaiement.Mutuelle);
-                    decimal credit = Somme(t => t == ModesPaiement.Credit);
-                    decimal totalEncaisse = paiements.Sum(p => p.Montant);
-
-                    decimal resteCredit = actives.Where(v => v.Type == ModesPaiement.Credit).Sum(v => v.MontantRestant);
-                    decimal partEntreprise = actives.Where(v => v.Type == ModesPaiement.Mutuelle && !v.MutuelleReglee).Sum(v => v.MontantMutuelle);
+                    // Argent réellement encaissé par ce caissier depuis l'ouverture (nouvelles ventes ET règlements de crédits) :
+                    // même calcul que l'écran Caisse (CaisseService)
+                    var caisse = CaisseService.Ventilation(ctx, session);
+                    decimal totalEncaisse = caisse.Encaisse;
+                    decimal resteCredit = caisse.ResteDuCredit;
+                    decimal partEntreprise = caisse.PartMutuelleEnAttente;
 
                     carteEncaisse.Valeur = Format.Montant(totalEncaisse);
                     carteEncaisse.Detail = $"depuis {debut:HH:mm}";
@@ -188,11 +176,13 @@ namespace Pharmacie2.views
                     carteReste.Detail = $"crédits : {Format.Montant(resteCredit)} — mutuelles : {Format.Montant(partEntreprise)}";
                     carteReste.Niveau = resteCredit + partEntreprise > 0 ? "attention" : "succes";
 
-                    lblEspeces.Text = "Espèces : " + Format.Montant(especes);
+                    caisse.HorsTiroir.TryGetValue(ModesPaiement.Cheque, out decimal cheque);
+                    decimal digital = caisse.TotalHorsTiroir - cheque;
+                    lblEspeces.Text = "Espèces dans le tiroir : " + Format.Montant(caisse.Especes);
                     lblCheque.Text = "Chèques : " + Format.Montant(cheque);
                     lblDigital.Text = "Carte et mobile : " + Format.Montant(digital);
-                    lblMutuelle.Text = "Part patient mutuelle : " + Format.Montant(mutuellePatient);
-                    lblCredit.Text = "Versements sur crédits : " + Format.Montant(credit);
+                    lblMutuelle.Text = "Part patient mutuelle : " + Format.Montant(caisse.PartPatientMutuelle);
+                    lblCredit.Text = "Versements sur crédits : " + Format.Montant(caisse.VersementsCredit);
                 }
             }
             catch (Exception ex)

@@ -77,34 +77,13 @@ namespace Pharmacie2.views.UserControls
                         .ToList();
 
                     var ventesActives = ventes.Where(v => v.Statut == "Active").ToList();
-                    var idsActives = ventesActives.Select(v => v.IdVente).ToHashSet();
 
-                    var paiements = ctx.paiement
-                        .AsNoTracking()
-                        .Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin)
-                        .ToList();
-
-                    // ── CE QUI EST PHYSIQUEMENT EN CAISSE ────────────────────
-                    // 1. Ventes comptant → montant total encaissé
-                    decimal caisseComptant = ventesActives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantTotal);
-
-                    // 2. Ventes mutuelle → part du patient versée en espèces
-                    decimal caissePatientMutuelle = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantTotal - v.MontantMutuelle);
-
-                    // 3. Ventes mutuelle → part de l'entreprise si déjà réglée
-                    decimal caisseEntrepriseMutuelle = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle && v.MutuelleReglee).Sum(v => v.MontantMutuelle);
-
-                    // 4. Ventes à crédit → versements reçus
-                    var idsCredit = ventesActives.Where(v => v.Type == ModesPaiement.Credit).Select(v => v.IdVente).ToHashSet();
-                    decimal avancesCredit = paiements.Where(p => idsCredit.Contains(p.VenteId)).Sum(p => p.Montant);
-
-                    decimal totalCaisse = caisseComptant + caissePatientMutuelle + caisseEntrepriseMutuelle + avancesCredit;
+                    // ── CE QUI EST PHYSIQUEMENT EN CAISSE : espèces réellement reçues (calcul unique, voir CaisseService) ──
+                    var caisse = CaisseService.Calculer(ctx, debut, fin, null);
+                    decimal avancesCredit = caisse.VersementsCredit;
+                    decimal totalCaisse = caisse.Especes;
                     decimal caTotal = ventesActives.Sum(v => v.MontantTotal);
-
-                    // Ventes électroniques (carte, chèque, mobile) : pas dans le tiroir
-                    decimal totalElectronique = ventesActives
-                        .Where(v => v.Type == ModesPaiement.CarteBancaire || v.Type == ModesPaiement.Cheque || ModesPaiement.EstMobile(v.Type))
-                        .Sum(v => v.MontantTotal);
+                    decimal caisseComptant = ventesActives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantTotal);
 
                     // ── Ventilation par moyen de paiement (montants facturés) ──
                     decimal caEspeces = caisseComptant;
@@ -132,18 +111,17 @@ namespace Pharmacie2.views.UserControls
                     cardCheque.Detail = "à déposer en banque";
 
                     // ── Ce qui doit être dans le tiroir ────────────────────
-                    lblEspecesRecues.Text = Format.Montant(caisseComptant);
-                    lblRendu.Text = Format.Montant(caissePatientMutuelle);
-                    lblCreditRecu.Text = Format.Montant(avancesCredit);
-                    decimal partEntrepriseEnAttente = caMutuelleEnt - caisseEntrepriseMutuelle;
+                    lblEspecesRecues.Text = Format.Montant(caisse.EspecesRecues);
+                    lblRendu.Text = caisse.RemboursementsEspeces < 0 ? Format.Montant(caisse.RemboursementsEspeces) : Format.Montant(0);
+                    lblCreditRecu.Text = Format.Montant(caisse.TotalHorsTiroir);
+                    decimal partEntrepriseEnAttente = caisse.PartMutuelleEnAttente;
                     lblMutuellePatient.Text = partEntrepriseEnAttente > 0
                         ? $"{Format.Montant(partEntrepriseEnAttente)} (pas encore reçu)"
                         : "Tout est réglé";
                     lblMutuellePatient.ForeColor = partEntrepriseEnAttente > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
                     lblTotalCaisse.Text = Format.Montant(totalCaisse);
-                    lblElectronique.Text = totalElectronique > 0
-                        ? $"En plus : {Format.Montant(totalElectronique)} payés par carte, chèque ou mobile (hors tiroir)"
-                        : "";
+                    var horsTiroir = caisse.HorsTiroir.Where(kv => kv.Value != 0).Select(kv => $"{kv.Key} {Format.Montant(kv.Value)}").ToList();
+                    lblElectronique.Text = horsTiroir.Count > 0 ? "Hors tiroir : " + string.Join(" — ", horsTiroir) : "";
 
                     // ── Grille ventilation ────────────────────────────────
                     dgvVentilation.DataSource = new[]
@@ -287,15 +265,10 @@ namespace Pharmacie2.views.UserControls
                             .Where(v => v.UserId == s.UserId && v.DateVente >= debut && v.DateVente <= fin && v.Statut == "Active")
                             .ToList();
 
-                        var ids = ventesSession.Select(v => v.IdVente).ToHashSet();
-                        var paiementsSession = ctx.paiement
-                            .AsNoTracking()
-                            .Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin)
-                            .ToList();
-
-                        decimal encaisse = paiementsSession.Where(p => ids.Contains(p.VenteId)).Sum(p => p.Montant);
-                        decimal rendu = ventesSession.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantRendu);
-                        decimal theorique = encaisse - rendu;
+                        var caisse = CaisseService.Ventilation(ctx, s);
+                        decimal encaisse = caisse.Encaisse;
+                        // Session clôturée : le montant attendu figé à la clôture ; sinon calcul en direct
+                        decimal theorique = caisse.Especes;
                         decimal? ecart = s.MontantCompteCloture.HasValue ? s.MontantCompteCloture.Value - theorique : null;
 
                         lignes.Add(new
@@ -387,11 +360,9 @@ namespace Pharmacie2.views.UserControls
                         Reste = v.MontantRestant
                     }).ToList();
 
-                    var ids = actives.Select(v => v.IdVente).ToHashSet();
-                    var paiements = ctx.paiement.AsNoTracking().Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin).ToList();
-                    decimal encaisse = paiements.Where(p => ids.Contains(p.VenteId)).Sum(p => p.Montant);
-                    decimal rendu = actives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantRendu);
-                    decimal theorique = encaisse - rendu;
+                    var caisse = CaisseService.Ventilation(ctx, session);
+                    decimal encaisse = caisse.Encaisse;
+                    decimal theorique = caisse.Especes;
                     decimal? ecart = session.MontantCompteCloture.HasValue ? session.MontantCompteCloture.Value - theorique : null;
 
                     string caissier = session.User != null ? $"{session.User.Prenom} {session.User.Nom}" : "—";
@@ -400,7 +371,7 @@ namespace Pharmacie2.views.UserControls
                         $"{caissier} — du {debut:dd/MM/yyyy HH:mm} à " +
                         $"{(session.DateCloture.HasValue ? session.DateCloture.Value.ToString("HH:mm") : "maintenant")} — " +
                         $"encaissé {Format.Montant(encaisse)} — " +
-                        $"attendu {Format.Montant(theorique)}" +
+                        $"espèces attendues {Format.Montant(theorique)}" +
                         (ecart.HasValue ? $" — écart {(ecart >= 0 ? "+" : "")}{Format.Montant(ecart.Value)}" : "");
 
                     lblDetailSession.ForeColor = ecart.HasValue && ecart < 0 ? Theme.UrgentTexte : Theme.SuccesTexte;

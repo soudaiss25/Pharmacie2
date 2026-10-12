@@ -400,7 +400,7 @@
             // 
             // lblEspecesTitle
             // 
-            this.lblEspecesTitle.Text = "Espèces des ventes au comptant";
+            this.lblEspecesTitle.Text = "Espèces reçues";
             this.lblEspecesTitle.AutoSize = true;
             this.lblEspecesTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblEspecesTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
@@ -417,7 +417,7 @@
             // 
             // lblRenduTitle
             // 
-            this.lblRenduTitle.Text = "Part des patients (mutuelle)";
+            this.lblRenduTitle.Text = "Remboursements en espèces";
             this.lblRenduTitle.AutoSize = true;
             this.lblRenduTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblRenduTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
@@ -434,7 +434,7 @@
             // 
             // lblCreditRecuTitle
             // 
-            this.lblCreditRecuTitle.Text = "Versements sur crédits";
+            this.lblCreditRecuTitle.Text = "Hors tiroir (chèque, carte, mobile)";
             this.lblCreditRecuTitle.AutoSize = true;
             this.lblCreditRecuTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCreditRecuTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
@@ -451,7 +451,7 @@
             // 
             // lblMutuellePatientTitle
             // 
-            this.lblMutuellePatientTitle.Text = "Part des mutuelles";
+            this.lblMutuellePatientTitle.Text = "Part des mutuelles en attente";
             this.lblMutuellePatientTitle.AutoSize = true;
             this.lblMutuellePatientTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMutuellePatientTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
@@ -939,7 +939,7 @@
             // 
             // colTheorique
             // 
-            this.colTheorique.HeaderText = "Attendu";
+            this.colTheorique.HeaderText = "Espèces attendues";
             this.colTheorique.Name = "Theorique";
             this.colTheorique.DataPropertyName = "Theorique";
             this.colTheorique.FillWeight = 9F;
