@@ -417,7 +417,7 @@
             // 
             // lblRenduTitle
             // 
-            this.lblRenduTitle.Text = "Remboursements en espèces";
+            this.lblRenduTitle.Text = "Remboursements";
             this.lblRenduTitle.AutoSize = true;
             this.lblRenduTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblRenduTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
@@ -434,7 +434,7 @@
             // 
             // lblCreditRecuTitle
             // 
-            this.lblCreditRecuTitle.Text = "Hors tiroir (chèque, carte, mobile)";
+            this.lblCreditRecuTitle.Text = "Hors tiroir";
             this.lblCreditRecuTitle.AutoSize = true;
             this.lblCreditRecuTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCreditRecuTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);
@@ -451,7 +451,7 @@
             // 
             // lblMutuellePatientTitle
             // 
-            this.lblMutuellePatientTitle.Text = "Part des mutuelles en attente";
+            this.lblMutuellePatientTitle.Text = "Mutuelles en attente";
             this.lblMutuellePatientTitle.AutoSize = true;
             this.lblMutuellePatientTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMutuellePatientTitle.Margin = new System.Windows.Forms.Padding(0, 4, 12, 4);

@@ -126,7 +126,7 @@ public static class LayoutSeed
                 };
                 v.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = qte, QuantiteUnites = qte * p.NbUniteParBoite, PrixUnitaire = p.PrixVente, UniteVendue = "Boîte" });
                 decimal verse = credit ? Math.Round(total / 3, 0) : total;
-                v.Paiements.Add(new Paiement { NumeroPaiement = "P-" + num, Montant = verse, UserId = caissier.Id, DatePaiement = v.DateVente });
+                v.Paiements.Add(new Paiement { NumeroPaiement = "P-" + num, Montant = verse, Mode = mode == ModesPaiement.Mvola ? ModesPaiement.Mvola : ModesPaiement.Especes, UserId = caissier.Id, DatePaiement = v.DateVente });
                 ctx.ventes.Add(v);
             }
         }
