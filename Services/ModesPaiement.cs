@@ -6,6 +6,7 @@ namespace Pharmacie2.Services
     /// </summary>
     public static class ModesPaiement
     {
+        public const string Especes = "Espèces";
         public const string Comptant = "Comptant";
         public const string Credit = "Crédit";
         public const string Mutuelle = "Mutuelle";
@@ -21,6 +22,9 @@ namespace Pharmacie2.Services
 
         /// <summary>Modes réglés en totalité au moment de la vente (montant versé = total).</summary>
         public static readonly string[] ReglesEnTotalite = { Cheque, CarteBancaire, Mvola, HuriMoney };
+
+        /// <summary>Modes dans lesquels un paiement peut être reçu (valeurs de Paiement.Mode) ; seules les espèces entrent dans le tiroir.</summary>
+        public static readonly string[] ModesDeReception = { Especes, Cheque, CarteBancaire, Mvola, HuriMoney };
 
         public static bool EstMobile(string? mode) => mode == Mvola || mode == HuriMoney;
     }

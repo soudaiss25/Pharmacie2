@@ -14,6 +14,8 @@ namespace Pharmacie2.views
             InitializeComponent();
             Theme.Appliquer(this);
             _venteId = venteId;
+            cbMode.Items.AddRange(ModesPaiement.ModesDeReception);
+            cbMode.SelectedItem = ModesPaiement.Especes;   // par défaut
             ChargerResume();
             ChargerPaiements();
         }
@@ -46,7 +48,7 @@ namespace Pharmacie2.views
                 // Maximum avant Value : on ne peut pas encaisser plus que ce que le patient doit
                 numMontant.Maximum = Math.Max(0m, Math.Ceiling(restantPatient));
                 numMontant.Value = numMontant.Maximum;
-                numMontant.Enabled = btnAjouterPaiement.Enabled = restantPatient > 0 && vente.Statut != "Annulée";
+                cbMode.Enabled = numMontant.Enabled = btnAjouterPaiement.Enabled = restantPatient > 0 && vente.Statut != "Annulée";
 
                 if (vente.Statut == "Annulée")
                     lblRetour.Text = "Cette vente est annulée : aucun paiement possible.";
@@ -73,6 +75,7 @@ namespace Pharmacie2.views
                     Numero = p.NumeroPaiement,
                     Date = p.DatePaiement.ToString("dd/MM/yyyy HH:mm"),
                     p.Montant,
+                    p.Mode,
                     Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "—"
                 }).ToList();
             }
@@ -125,6 +128,7 @@ namespace Pharmacie2.views
                     NumeroPaiement = "P-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
                     VenteId = _venteId,
                     Montant = montant,
+                    Mode = cbMode.SelectedItem?.ToString() ?? ModesPaiement.Especes,
                     DatePaiement = DateTime.Now,
                     UserId = SessionUtilisateur.IdCourant  // ← qui encaisse
                 });

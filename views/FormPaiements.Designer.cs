@@ -39,6 +39,8 @@
             this.flpSaisie = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSaisie = new System.Windows.Forms.Label();
             this.numMontant = new System.Windows.Forms.NumericUpDown();
+            this.lblModeSaisie = new System.Windows.Forms.Label();
+            this.cbMode = new System.Windows.Forms.ComboBox();
             this.btnAjouterPaiement = new System.Windows.Forms.Button();
             this.lblRetour = new System.Windows.Forms.Label();
             this.dgvPaiements = new System.Windows.Forms.DataGridView();
@@ -46,6 +48,7 @@
             this.colNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMontant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCaissier = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.numMontant)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPaiements)).BeginInit();
@@ -153,8 +156,12 @@
             this.lblSaisie.TabIndex = 0;
             this.flpSaisie.Controls.Add(this.numMontant);
             this.numMontant.TabIndex = 1;
+            this.flpSaisie.Controls.Add(this.lblModeSaisie);
+            this.lblModeSaisie.TabIndex = 2;
+            this.flpSaisie.Controls.Add(this.cbMode);
+            this.cbMode.TabIndex = 3;
             this.flpSaisie.Controls.Add(this.btnAjouterPaiement);
-            this.btnAjouterPaiement.TabIndex = 2;
+            this.btnAjouterPaiement.TabIndex = 4;
             this.flpSaisie.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpSaisie.AutoSize = true;
             this.flpSaisie.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -180,6 +187,20 @@
             this.numMontant.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
             this.numMontant.Name = "numMontant";
             // 
+            // lblModeSaisie
+            // 
+            this.lblModeSaisie.Text = "Mode";
+            this.lblModeSaisie.AutoSize = true;
+            this.lblModeSaisie.Margin = new System.Windows.Forms.Padding(0, 8, 8, 0);
+            this.lblModeSaisie.Name = "lblModeSaisie";
+            // 
+            // cbMode
+            // 
+            this.cbMode.Width = 150;
+            this.cbMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMode.Margin = new System.Windows.Forms.Padding(0, 4, 8, 0);
+            this.cbMode.Name = "cbMode";
+            // 
             // btnAjouterPaiement
             // 
             this.btnAjouterPaiement.Text = "Enregistrer le paiement";
@@ -202,6 +223,7 @@
             this.colNumero,
             this.colDate,
             this.colMontant,
+            this.colMode,
             this.colCaissier});
             this.dgvPaiements.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPaiements.AutoGenerateColumns = false;
@@ -243,6 +265,15 @@
             this.colMontant.MinimumWidth = 100;
             this.colMontant.ReadOnly = true;
             this.colMontant.Tag = "montant";
+            // 
+            // colMode
+            // 
+            this.colMode.HeaderText = "Mode";
+            this.colMode.Name = "Mode";
+            this.colMode.DataPropertyName = "Mode";
+            this.colMode.FillWeight = 20F;
+            this.colMode.MinimumWidth = 90;
+            this.colMode.ReadOnly = true;
             // 
             // colCaissier
             // 
@@ -294,6 +325,8 @@
         private System.Windows.Forms.FlowLayoutPanel flpSaisie;
         private System.Windows.Forms.Label lblSaisie;
         private System.Windows.Forms.NumericUpDown numMontant;
+        private System.Windows.Forms.Label lblModeSaisie;
+        private System.Windows.Forms.ComboBox cbMode;
         private System.Windows.Forms.Button btnAjouterPaiement;
         private System.Windows.Forms.Label lblRetour;
         private System.Windows.Forms.DataGridView dgvPaiements;
@@ -301,6 +334,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colNumero;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMontant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMode;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCaissier;
     }
 }

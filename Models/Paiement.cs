@@ -16,6 +16,10 @@ namespace Pharmacie2.Models
 
         public decimal Montant { get; set; }
 
+        /// <summary>Mode de ce paiement : Espèces, Chèque, Carte bancaire, Mvola ou Huri Money (seules les espèces entrent dans le tiroir). Un remboursement est un montant négatif.</summary>
+        [Required]
+        public string Mode { get; set; } = Pharmacie2.Services.ModesPaiement.Especes;
+
         public int VenteId { get; set; }
         public Vente Vente { get; set; }
 

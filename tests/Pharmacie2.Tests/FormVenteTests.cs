@@ -142,6 +142,65 @@ public class FormVenteTests
         Assert.Equal(98, ctx.produits.Single().QuantiteEnStock);
     }
 
+    [Theory]
+    [InlineData("Comptant", "Espèces")]
+    [InlineData("Chèque", "Chèque")]
+    [InlineData("Carte bancaire", "Carte bancaire")]
+    [InlineData("Mvola", "Mvola")]
+    [InlineData("Huri Money", "Huri Money")]
+    public void Chaque_paiement_enregistre_son_mode(string typeVente, string modeAttendu)
+    {
+        var (pid, _) = Preparer();
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 2, typeVente, x => { if (typeVente == "Comptant") UiHelper.Champ<NumericUpDown>(x, "numEspeces").Value = 2000; });
+            Valider(f);
+        });
+        using var ctx = new AppDbContext();
+        Assert.Equal(modeAttendu, ctx.paiement.Single().Mode);
+    }
+
+    [Fact]
+    public void Avance_de_credit_et_part_patient_de_mutuelle_choisissent_leur_mode_Especes_par_defaut()
+    {
+        var (pid, mid) = Preparer();
+        // Avance d'un crédit par Mvola
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 3, ModesPaiement.Credit, x =>
+            {
+                UiHelper.Champ<NumericUpDown>(x, "numEspeces").Value = 500;
+                UiHelper.Champ<ComboBox>(x, "cbModeRecu").SelectedItem = ModesPaiement.Mvola;
+            });
+            Valider(f);
+        });
+        // Avance d'un crédit sans toucher au mode : Espèces
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 1, ModesPaiement.Credit, x => UiHelper.Champ<NumericUpDown>(x, "numEspeces").Value = 200);
+            Assert.Equal(ModesPaiement.Especes, UiHelper.Champ<ComboBox>(f, "cbModeRecu").SelectedItem);
+            Valider(f);
+        });
+        // Part patient d'une mutuelle (20 % de 2 000 = 400) payée par carte : pas de monnaie, montant exact
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 2, ModesPaiement.Mutuelle, x =>
+            {
+                UiHelper.Champ<ComboBox>(x, "cbMutuelle").SelectedIndex = 0;
+                UiHelper.Champ<ComboBox>(x, "cbModeRecu").SelectedItem = ModesPaiement.CarteBancaire;
+            });
+            Valider(f);
+        });
+
+        using var ctx = new AppDbContext();
+        var ps = ctx.paiement.OrderBy(p => p.Id).ToList();
+        Assert.Equal(3, ps.Count);
+        Assert.Equal((ModesPaiement.Mvola, 500m), (ps[0].Mode, ps[0].Montant));
+        Assert.Equal((ModesPaiement.Especes, 200m), (ps[1].Mode, ps[1].Montant));
+        Assert.Equal((ModesPaiement.CarteBancaire, 400m), (ps[2].Mode, ps[2].Montant));
+        Assert.Equal(0m, ctx.ventes.OrderBy(v => v.IdVente).Last().MontantRendu);
+    }
+
     [Fact]
     public void Comptant_avec_especes_insuffisantes_n_enregistre_rien()
     {

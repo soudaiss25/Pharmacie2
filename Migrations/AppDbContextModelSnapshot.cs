@@ -248,6 +248,10 @@ namespace Pharmacie2.Migrations
                     b.Property<DateTime>("DatePaiement")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Mode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("Montant")
                         .HasColumnType("TEXT");
 

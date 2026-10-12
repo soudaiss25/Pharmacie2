@@ -72,6 +72,8 @@
             this.pnlEspeces = new System.Windows.Forms.TableLayoutPanel();
             this.lblEspeces = new System.Windows.Forms.Label();
             this.numEspeces = new System.Windows.Forms.NumericUpDown();
+            this.lblModeRecu = new System.Windows.Forms.Label();
+            this.cbModeRecu = new System.Windows.Forms.ComboBox();
             this.lblMontantRendu = new System.Windows.Forms.Label();
             this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnValider = new System.Windows.Forms.Button();
@@ -588,15 +590,20 @@
             this.pnlEspeces.ColumnCount = 2;
             this.pnlEspeces.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlEspeces.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.pnlEspeces.RowCount = 2;
+            this.pnlEspeces.RowCount = 3;
+            this.pnlEspeces.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlEspeces.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlEspeces.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlEspeces.Controls.Add(this.lblEspeces, 0, 0);
             this.lblEspeces.TabIndex = 0;
             this.pnlEspeces.Controls.Add(this.numEspeces, 1, 0);
             this.numEspeces.TabIndex = 1;
-            this.pnlEspeces.Controls.Add(this.lblMontantRendu, 0, 1);
-            this.lblMontantRendu.TabIndex = 2;
+            this.pnlEspeces.Controls.Add(this.lblModeRecu, 0, 1);
+            this.lblModeRecu.TabIndex = 2;
+            this.pnlEspeces.Controls.Add(this.cbModeRecu, 1, 1);
+            this.cbModeRecu.TabIndex = 3;
+            this.pnlEspeces.Controls.Add(this.lblMontantRendu, 0, 2);
+            this.lblMontantRendu.TabIndex = 4;
             this.pnlEspeces.SetColumnSpan(this.lblMontantRendu, 2);
             this.pnlEspeces.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlEspeces.AutoSize = true;
@@ -627,6 +634,25 @@
             this.numEspeces.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numEspeces.Name = "numEspeces";
             this.numEspeces.ValueChanged += new System.EventHandler(this.numEspeces_ValueChanged);
+            // 
+            // lblModeRecu
+            // 
+            this.lblModeRecu.Text = "Reçu par";
+            this.lblModeRecu.AutoSize = true;
+            this.lblModeRecu.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblModeRecu.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblModeRecu.Visible = false;
+            this.lblModeRecu.Name = "lblModeRecu";
+            // 
+            // cbModeRecu
+            // 
+            this.cbModeRecu.Width = 170;
+            this.cbModeRecu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbModeRecu.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbModeRecu.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cbModeRecu.Visible = false;
+            this.cbModeRecu.Name = "cbModeRecu";
+            this.cbModeRecu.SelectedIndexChanged += new System.EventHandler(this.cbModeRecu_SelectedIndexChanged);
             // 
             // lblMontantRendu
             // 
@@ -808,6 +834,8 @@
         private System.Windows.Forms.TableLayoutPanel pnlEspeces;
         private System.Windows.Forms.Label lblEspeces;
         private System.Windows.Forms.NumericUpDown numEspeces;
+        private System.Windows.Forms.Label lblModeRecu;
+        private System.Windows.Forms.ComboBox cbModeRecu;
         private System.Windows.Forms.Label lblMontantRendu;
         private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnValider;

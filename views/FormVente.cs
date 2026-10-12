@@ -156,6 +156,8 @@ namespace Pharmacie2.views
         {
             cbPaiement.Items.Clear();
             cbPaiement.Items.AddRange(ModesPaiement.Tous);
+            cbModeRecu.Items.AddRange(ModesPaiement.ModesDeReception);
+            cbModeRecu.SelectedItem = ModesPaiement.Especes;
             cbPaiement.SelectedIndex = 0;
         }
 
@@ -321,6 +323,12 @@ namespace Pharmacie2.views
             pnlEspeces.Visible = false;
             pnlMatricule.Visible = false;
 
+            // Avance (crédit) ou part du patient (mutuelle) : le mode de réception se choisit, Espèces par défaut
+            bool choixMode = ModeChoisi == ModesPaiement.Credit || ModeChoisi == ModesPaiement.Mutuelle;
+            lblModeRecu.Visible = cbModeRecu.Visible = choixMode;
+            cbModeRecu.SelectedItem = ModesPaiement.Especes;
+            numEspeces.Enabled = true;
+
             // Crédit et Mutuelle : le client est obligatoire, la section s'ouvre toute seule
             _clientObligatoire = ModeChoisi == ModesPaiement.Credit || ModeChoisi == ModesPaiement.Mutuelle;
             DefinirSectionClient(_clientObligatoire || _clientOuvert);
@@ -360,6 +368,30 @@ namespace Pharmacie2.views
 
         private void cbMutuelle_SelectedIndexChanged(object sender, EventArgs e)
             => AppliquerTauxMutuelle();
+
+        /// <summary>Mode dans lequel le patient règle ce qu'il paie maintenant (le paiement enregistré porte ce mode).</summary>
+        private string ModePaiementEnregistre => ModeChoisi switch
+        {
+            ModesPaiement.Comptant => ModesPaiement.Especes,
+            ModesPaiement.Credit or ModesPaiement.Mutuelle => cbModeRecu.SelectedItem?.ToString() ?? ModesPaiement.Especes,
+            _ => ModeChoisi
+        };
+
+        private void cbModeRecu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!cbModeRecu.Visible) return;
+            bool especes = ModePaiementEnregistre == ModesPaiement.Especes;
+            if (ModeChoisi == ModesPaiement.Mutuelle)
+            {
+                lblEspeces.Text = especes ? "Espèces reçues du patient" : "Reçu du patient";
+                // Hors espèces, le patient paie exactement sa part (pas de monnaie à rendre)
+                numEspeces.Enabled = especes;
+                if (!especes) AppliquerTauxMutuelle();
+            }
+            else
+                lblEspeces.Text = especes ? "Avance (facultatif)" : "Avance reçue (facultatif)";
+            ActualiserMessageEspeces();
+        }
 
         private void AppliquerTauxMutuelle()
         {
@@ -478,7 +510,7 @@ namespace Pharmacie2.views
 
                 partMutuelle = VenteModificationRegles.PartMutuelle(total, mutuelleChoisie.TauxPriseEnCharge);
                 decimal partPatient = total - partMutuelle;
-                especes = numEspeces.Value;
+                especes = ModePaiementEnregistre == ModesPaiement.Especes ? numEspeces.Value : partPatient;
 
                 if (especes < partPatient)
                 {
@@ -586,6 +618,7 @@ namespace Pharmacie2.views
                             NumeroPaiement = "P-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
                             VenteId = vente.IdVente,
                             Montant = verse,
+                            Mode = ModePaiementEnregistre,
                             DatePaiement = DateTime.Now,
                             UserId = SessionUtilisateur.IdCourant
                         });
