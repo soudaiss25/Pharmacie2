@@ -365,6 +365,9 @@ namespace Pharmacie2.Migrations
                     b.Property<decimal>("FondOuverture")
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal?>("MontantAttenduCloture")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal?>("MontantCompteCloture")
                         .HasColumnType("TEXT");
 

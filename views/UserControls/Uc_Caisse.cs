@@ -268,7 +268,7 @@ namespace Pharmacie2.views.UserControls
                         var caisse = CaisseService.Ventilation(ctx, s);
                         decimal encaisse = caisse.Encaisse;
                         // Session clôturée : le montant attendu figé à la clôture ; sinon calcul en direct
-                        decimal theorique = caisse.Especes;
+                        var (theorique, recalcule) = CaisseService.Attendu(ctx, s);
                         decimal? ecart = s.MontantCompteCloture.HasValue ? s.MontantCompteCloture.Value - theorique : null;
 
                         lignes.Add(new
@@ -279,7 +279,7 @@ namespace Pharmacie2.views.UserControls
                             Cloture = s.DateCloture.HasValue ? s.DateCloture.Value.ToString("dd/MM/yyyy HH:mm") : "En cours",
                             s.Statut,
                             Encaisse = encaisse,
-                            Theorique = theorique,
+                            Theorique = Format.Montant(theorique) + (recalcule ? " (recalculé)" : ""),
                             Compte = s.MontantCompteCloture,
                             Ecart = ecart,
                             NbVentes = ventesSession.Count.ToString()
@@ -362,7 +362,7 @@ namespace Pharmacie2.views.UserControls
 
                     var caisse = CaisseService.Ventilation(ctx, session);
                     decimal encaisse = caisse.Encaisse;
-                    decimal theorique = caisse.Especes;
+                    var (theorique, recalcule) = CaisseService.Attendu(ctx, session);
                     decimal? ecart = session.MontantCompteCloture.HasValue ? session.MontantCompteCloture.Value - theorique : null;
 
                     string caissier = session.User != null ? $"{session.User.Prenom} {session.User.Nom}" : "—";
@@ -371,7 +371,7 @@ namespace Pharmacie2.views.UserControls
                         $"{caissier} — du {debut:dd/MM/yyyy HH:mm} à " +
                         $"{(session.DateCloture.HasValue ? session.DateCloture.Value.ToString("HH:mm") : "maintenant")} — " +
                         $"encaissé {Format.Montant(encaisse)} — " +
-                        $"espèces attendues {Format.Montant(theorique)}" +
+                        $"espèces attendues {Format.Montant(theorique)}{(recalcule ? " (recalculé)" : "")}" +
                         (ecart.HasValue ? $" — écart {(ecart >= 0 ? "+" : "")}{Format.Montant(ecart.Value)}" : "");
 
                     lblDetailSession.ForeColor = ecart.HasValue && ecart < 0 ? Theme.UrgentTexte : Theme.SuccesTexte;

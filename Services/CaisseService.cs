@@ -47,6 +47,18 @@ namespace Pharmacie2.Services
         public static VentilationCaisse Ventilation(AppDbContext ctx, SessionCaisse session)
             => Calculer(ctx, session.DateOuverture, session.DateCloture ?? DateTime.Now, session.UserId);
 
+        /// <summary>
+        /// Montant à afficher pour une session : le montant figé à la clôture si la session est clôturée (jamais de recalcul) ;
+        /// pour une ancienne session clôturée sans valeur figée, la valeur recalculée (Recalcule = true, rien n'est écrit en base) ;
+        /// pour une session en cours, le calcul en direct.
+        /// </summary>
+        public static (decimal Montant, bool Recalcule) Attendu(AppDbContext ctx, SessionCaisse session)
+        {
+            if (session.Statut == "Clôturée" && session.MontantAttenduCloture.HasValue)
+                return (session.MontantAttenduCloture.Value, false);
+            return (EspecesAttendues(ctx, session), session.Statut == "Clôturée");
+        }
+
         /// <param name="userId">Caissier concerné ; null = tous les utilisateurs (rapport de caisse).</param>
         public static VentilationCaisse Calculer(AppDbContext ctx, DateTime debut, DateTime fin, int? userId)
         {

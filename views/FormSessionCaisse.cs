@@ -114,6 +114,8 @@ namespace Pharmacie2.views
                 session.MontantCompteCloture = montantCompte;
                 session.CommentaireCloture = txtCommentaire.Text.Trim();
                 session.Statut = "Clôturée";
+                // Figé pour toujours : une session clôturée n'est plus jamais recalculée
+                session.MontantAttenduCloture = CaisseService.EspecesAttendues(ctx, session);
                 ctx.SaveChanges();
             }
 

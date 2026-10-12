@@ -33,6 +33,9 @@ namespace Pharmacie2.Models
         /// <summary>Montant physiquement compté dans la caisse à la clôture.</summary>
         public decimal? MontantCompteCloture { get; set; }
 
+        /// <summary>Espèces attendues dans le tiroir, calculées et figées au moment de la clôture (null pour les anciennes sessions : voir CaisseService.Attendu).</summary>
+        public decimal? MontantAttenduCloture { get; set; }
+
         /// <summary>Commentaire libre à la clôture (ex: "5×1000 + 3×500…").</summary>
         public string CommentaireCloture { get; set; }
 
