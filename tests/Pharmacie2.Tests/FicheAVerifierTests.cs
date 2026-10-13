@@ -61,6 +61,8 @@ public class FicheAVerifierTests
             UiHelper.EnSta(() =>
             {
                 using var f = new FormAddProduit(ids.Prix);
+                f.Show();                      // le bandeau n'est « visible » que dans une fenêtre affichée
+                Application.DoEvents();
                 var bandeau = UiHelper.Champ<TableLayoutPanel>(f, "pnlFiche");
                 Assert.True(bandeau.Visible);
                 Assert.Contains("Prix : prix de vente", UiHelper.Champ<Label>(f, "lblFiche").Text);
