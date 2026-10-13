@@ -152,7 +152,7 @@ namespace Pharmacie2.views
             string uniteChoisie = cbUnite.SelectedItem?.ToString() ?? "Boîte";
             if (uniteChoisie != "Boîte" && ProduitSelectionne != null && ProduitSelectionne.NbUniteParBoite > 1 && ProduitSelectionne.PrixUnitaireVente <= 0)
             {
-                MessageBox.Show("Le prix de vente à l'unité de ce produit n'est pas renseigné." + BS + "n" + BS + "nOuvrez la fiche du produit (Catalogue produits) et saisissez-le, ou vendez à la boîte.",
+                MessageBox.Show("Le prix de vente à l'unité de ce produit n'est pas renseigné.\n\nOuvrez la fiche du produit (Catalogue produits) et saisissez-le, ou vendez à la boîte.",
                     "Prix à l'unité manquant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 DialogResult = DialogResult.None;
                 return;

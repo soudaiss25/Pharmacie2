@@ -381,7 +381,7 @@ namespace Pharmacie2.views
                 if (prixVenteUnite <= coutUnite)
                 {
                     MessageBox.Show(
-                        $"Le prix de vente à l'unité ({Format.Montant(prixVenteUnite.Value)}) doit être supérieur au prix d'achat d'une unité ({Format.Montant(Math.Round(coutUnite, 2))}, soit {Format.Montant(prixAchat)} pour {numNbUniteParBoite.Value:0} unités)." + BS + "n" + BS + "nAugmentez le prix à l'unité.",
+                        $"Le prix de vente à l'unité ({Format.Montant(prixVenteUnite.Value)}) doit être supérieur au prix d'achat d'une unité ({Format.Montant(Math.Round(coutUnite, 2))}, soit {Format.Montant(prixAchat)} pour {numNbUniteParBoite.Value:0} unités).\n\nAugmentez le prix à l'unité.",
                         "Marge invalide à l'unité", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     numPrixVenteUnite.Focus(); return;
                 }
@@ -446,7 +446,7 @@ namespace Pharmacie2.views
             if (_produitId != null && chkVenteDetail.Checked && _nbParBoiteOrigine > 1 && nbUniteParBoite != _nbParBoiteOrigine)
             {
                 var confPrix = MessageBox.Show(
-                    $"Vérifiez le prix à l'unité : {Format.Montant(prixVenteUnite!.Value)} pour 1 {uniteVente.ToLowerInvariant()} (boîte de {nbUniteParBoite}, prix de la boîte {Format.Montant(prixVente)})." + BS + "n" + BS + "nConfirmer ce prix ?",
+                    $"Vérifiez le prix à l'unité : {Format.Montant(prixVenteUnite!.Value)} pour 1 {uniteVente.ToLowerInvariant()} (boîte de {nbUniteParBoite}, prix de la boîte {Format.Montant(prixVente)}).\n\nConfirmer ce prix ?",
                     "Vérifiez le prix à l'unité", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confPrix != DialogResult.Yes) { numPrixVenteUnite.Focus(); return; }
             }
