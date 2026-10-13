@@ -382,7 +382,7 @@
             //
             // lblDescRapport
             // 
-            this.lblDescRapport.Text = "Crée un fichier ZIP sur le Bureau (journaux filtrés et informations techniques, sans aucune donnée de la pharmacie) à envoyer par WhatsApp ou e-mail.";
+            this.lblDescRapport.Text = "Crée un fichier ZIP sur le Bureau (journaux filtrés, informations techniques et dernier diagnostic) à envoyer par WhatsApp ou e-mail. Il ne contient aucune donnée personnelle : ni nom de client, ni téléphone, ni motif d'achat.";
             this.lblDescRapport.AutoSize = true;
             this.lblDescRapport.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDescRapport.MaximumSize = new System.Drawing.Size(520, 0);

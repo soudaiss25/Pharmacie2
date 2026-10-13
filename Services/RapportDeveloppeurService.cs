@@ -11,7 +11,7 @@ namespace Pharmacie2.Services
 {
     /// <summary>
     /// Prépare un ZIP à envoyer au développeur : journaux des 30 derniers jours (filtrés) et informations techniques.
-    /// AUCUNE donnée personnelle ni métier : ni la base, ni noms de clients, ni montants, ni mots de passe, ni clé de secours,
+    /// AUCUNE donnée personnelle : ni la base, ni noms de clients, ni téléphones, ni motifs d'achat, ni mots de passe, ni clé de secours,
     /// ni phrase secrète. Les journaux sont filtrés ligne par ligne : tout ce qui pourrait identifier quelqu'un est masqué.
     /// </summary>
     public static class RapportDeveloppeurService
@@ -189,6 +189,9 @@ namespace Pharmacie2.Services
             return zip;
         }
 
-        public const string MessageApresRapport = "Le rapport est sur le Bureau. Envoyez-le au développeur par WhatsApp ou par e-mail.";
+        /// <summary>Phrase affichée partout où le rapport est proposé (message d'erreur, Administration, base introuvable).</summary>
+        public const string MentionConfidentialite = "Il ne contient aucune donnée personnelle : ni nom de client, ni téléphone, ni motif d'achat.";
+
+        public const string MessageApresRapport = "Le rapport est sur le Bureau. Envoyez-le au développeur par WhatsApp ou par e-mail. " + MentionConfidentialite;
     }
 }

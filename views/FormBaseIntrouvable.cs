@@ -89,7 +89,7 @@ namespace Pharmacie2.views
             try
             {
                 string zip = RapportDeveloppeurService.Preparer(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), this);
-                MessageBox.Show("Le rapport est prêt sur le Bureau :\n" + Path.GetFileName(zip) + "\n\nEnvoyez-le au développeur. Il ne contient aucune donnée de la pharmacie.",
+                MessageBox.Show("Le rapport est prêt sur le Bureau :\n" + Path.GetFileName(zip) + "\n\nEnvoyez-le au développeur. " + RapportDeveloppeurService.MentionConfidentialite,
                     "Rapport prêt", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)

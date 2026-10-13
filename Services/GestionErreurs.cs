@@ -17,7 +17,7 @@
             Journal.Erreur(fatale ? "Erreur fatale non gérée" : "Erreur non gérée", ex);
             try
             {
-                var reponse = MessageBox.Show(MessageUtilisateur(fatale) + "\n\nVoulez-vous préparer un rapport à envoyer au développeur ? (aucune donnée de la pharmacie n'y figure)",
+                var reponse = MessageBox.Show(MessageUtilisateur(fatale) + "\n\nVoulez-vous préparer un rapport à envoyer au développeur ?\n" + RapportDeveloppeurService.MentionConfidentialite,
                     "Erreur", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
                 if (reponse == DialogResult.Yes)
                 {
