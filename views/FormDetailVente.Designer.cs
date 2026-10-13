@@ -60,6 +60,7 @@
             this.colPaiementNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPaiementDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPaiementMontant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPaiementMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPaiementCaissier = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLignes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPaiements)).BeginInit();
@@ -315,6 +316,7 @@
             this.colPaiementNumero,
             this.colPaiementDate,
             this.colPaiementMontant,
+            this.colPaiementMode,
             this.colPaiementCaissier});
             this.dgvPaiements.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPaiements.AutoGenerateColumns = false;
@@ -404,6 +406,15 @@
             this.colPaiementMontant.ReadOnly = true;
             this.colPaiementMontant.Tag = "montant";
             // 
+            // colPaiementMode
+            // 
+            this.colPaiementMode.HeaderText = "Mode";
+            this.colPaiementMode.Name = "Mode";
+            this.colPaiementMode.DataPropertyName = "Mode";
+            this.colPaiementMode.FillWeight = 22F;
+            this.colPaiementMode.MinimumWidth = 90;
+            this.colPaiementMode.ReadOnly = true;
+            // 
             // colPaiementCaissier
             // 
             this.colPaiementCaissier.HeaderText = "Encaissé par";
@@ -475,6 +486,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colPaiementNumero;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPaiementDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPaiementMontant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPaiementMode;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPaiementCaissier;
     }
 }

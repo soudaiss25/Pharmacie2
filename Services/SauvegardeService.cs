@@ -78,10 +78,10 @@ namespace Pharmacie2.Services
         private static void ExporterPaiements(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;NumeroPaiement;VenteId;Montant;DatePaiement;UserId");
+            sb.AppendLine("Id;NumeroPaiement;VenteId;Montant;Mode;Type;DatePaiement;UserId");
 
             foreach (var p in ctx.paiement.AsNoTracking().ToList())
-                sb.AppendLine($"{p.Id};{p.NumeroPaiement};{p.VenteId};{p.Montant};" +
+                sb.AppendLine($"{p.Id};{p.NumeroPaiement};{p.VenteId};{p.Montant};{p.Mode};{(p.Montant < 0 ? "Remboursement" : "Paiement")};" +
                     $"{p.DatePaiement:yyyy-MM-dd HH:mm:ss};{p.UserId}");
 
             Ecrire(Path.Combine(dossier, "paiements.csv"), sb.ToString());

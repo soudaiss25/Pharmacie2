@@ -23,6 +23,9 @@ namespace Pharmacie2.views
         private List<Mutuel> _mutuels;
         private int? _mutuelIdOrigine;   // mutuelle d'origine de la vente, présélectionnée dans la liste
         private decimal _total;
+        private decimal _verseActuel;                          // total net des paiements déjà enregistrés (remboursements déduits)
+        private string _modeRemboursement = ModesPaiement.Especes;   // mode du dernier paiement reçu : on rend dans le même mode
+        private decimal _tauxMutuelleOrigine;
         // Unités de base déjà retirées du stock par la vente d'origine, par produit
         private Dictionary<int, int> _unitesOriginales = new Dictionary<int, int>();
 
@@ -61,6 +64,7 @@ namespace Pharmacie2.views
                 var vente = ctx.ventes
                     .Include(v => v.Lignes).ThenInclude(l => l.Produit)
                     .Include(v => v.Mutuel)
+                    .Include(v => v.Paiements)
                     .FirstOrDefault(v => v.IdVente == _venteId);
 
                 if (vente == null)
@@ -87,6 +91,10 @@ namespace Pharmacie2.views
                 }
 
                 _mutuelIdOrigine = vente.MutuelId;
+                _tauxMutuelleOrigine = vente.TauxMutuelle;
+                _verseActuel = vente.Paiements.Sum(p => p.Montant);
+                _modeRemboursement = vente.Paiements.Where(p => p.Montant > 0).OrderByDescending(p => p.DatePaiement).ThenByDescending(p => p.Id)
+                                         .Select(p => p.Mode).FirstOrDefault() ?? ModesPaiement.Especes;
 
                 txtNom.Text = vente.NomClient;
                 txtPrenom.Text = vente.PrenomClient;
@@ -120,6 +128,8 @@ namespace Pharmacie2.views
         {
             cbPaiement.Items.Clear();
             cbPaiement.Items.AddRange(ModesPaiement.Tous);
+            cbModeComplement.Items.AddRange(ModesPaiement.ModesDeReception);
+            cbModeComplement.SelectedItem = ModesPaiement.Especes;   // par défaut
         }
 
         private void ChargerMutuelles()
@@ -214,6 +224,37 @@ namespace Pharmacie2.views
         {
             _total = _lignes.Where(l => !l.Supprimee).Sum(l => l.SousTotal);
             lblMontantTotal.Text = Format.Montant(_total);
+            MettreAJourAjustement();
+        }
+
+        /// <summary>Part prise en charge par la mutuelle pour le total actuel (même taux que l'enregistrement).</summary>
+        private decimal PartMutuelleActuelle()
+        {
+            if (cbPaiement.Text != ModesPaiement.Mutuelle || cbMutuelle.SelectedItem is not Mutuel m) return 0m;
+            decimal taux = m.IdMutuel == _mutuelIdOrigine && _tauxMutuelleOrigine > 0 ? _tauxMutuelleOrigine : m.TauxPriseEnCharge;
+            return VenteModificationRegles.PartMutuelle(_total, taux);
+        }
+
+        /// <summary>Annonce tout de suite ce qui sera à encaisser en plus ou à rendre au client.</summary>
+        private void MettreAJourAjustement()
+        {
+            if (string.IsNullOrEmpty(cbPaiement.Text) || _total <= 0) { lblAjustement.Text = ""; tlpModeComplement.Visible = false; return; }
+            decimal ajust = VenteModificationRegles.AjustementPaiements(cbPaiement.Text, _total, PartMutuelleActuelle(), _verseActuel);
+            tlpModeComplement.Visible = ajust > 0;
+            if (ajust > 0)
+            {
+                lblAjustement.Text = $"Le client paie {Format.Montant(ajust)} en plus";
+                lblAjustement.ForeColor = Theme.AttentionTexte;
+            }
+            else if (ajust < 0)
+            {
+                lblAjustement.Text = $"Rendre {Format.Montant(-ajust)} au client ({_modeRemboursement})";
+                lblAjustement.ForeColor = Theme.UrgentTexte;
+            }
+            else
+            {
+                lblAjustement.Text = "";
+            }
         }
 
         // ─── Sauvegarde ──────────────────────────────────────────────────
@@ -236,6 +277,21 @@ namespace Pharmacie2.views
                 "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (confirm != DialogResult.Yes) return;
+
+            // Complément à encaisser ou argent à rendre : annoncé et confirmé avant d'enregistrer quoi que ce soit
+            decimal ajustAnnonce = VenteModificationRegles.AjustementPaiements(cbPaiement.Text, total, PartMutuelleActuelle(), VerseEnBase());
+            string modeComplement = cbModeComplement.SelectedItem?.ToString() ?? ModesPaiement.Especes;
+            if (ajustAnnonce > 0)
+            {
+                if (MessageBox.Show($"Le client paie {Format.Montant(ajustAnnonce)} en plus ({modeComplement}).\n\nConfirmer l'encaissement de ce complément ?",
+                        "Complément à encaisser", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+            }
+            else if (ajustAnnonce < 0)
+            {
+                MessageBox.Show($"Rendre {Format.Montant(-ajustAnnonce)} au client.\n\nCe remboursement sera enregistré en {_modeRemboursement}.",
+                    "Rendre de l'argent au client", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
             try
             {
@@ -298,6 +354,24 @@ namespace Pharmacie2.views
                         });
                     }
 
+                    // ── 6. Paiements : complément à encaisser ou remboursement, dans la même transaction ──
+                    decimal verse = ctx.paiement.Where(p => p.VenteId == _venteId).ToList().Sum(p => p.Montant);
+                    decimal ajust = VenteModificationRegles.AjustementPaiements(vente.Type, total, vente.MontantMutuelle, verse);
+                    if (ajust != ajustAnnonce)
+                        throw new InvalidOperationException("Les paiements de cette vente ont changé entre-temps. Rouvrez la vente puis recommencez.");
+                    if (ajust != 0)
+                    {
+                        ctx.paiement.Add(new Paiement
+                        {
+                            NumeroPaiement = (ajust > 0 ? "P-" : "R-") + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
+                            VenteId = _venteId,
+                            Montant = ajust,
+                            Mode = ajust > 0 ? modeComplement : _modeRemboursement,
+                            DatePaiement = DateTime.Now,
+                            UserId = SessionUtilisateur.IdCourant
+                        });
+                    }
+
                     ctx.SaveChanges();
                     tx.Commit();
                 }
@@ -325,6 +399,13 @@ namespace Pharmacie2.views
             }
         }
 
+        /// <summary>Total net des paiements actuellement en base (relu au moment d'enregistrer).</summary>
+        private decimal VerseEnBase()
+        {
+            using var ctx = new AppDbContext();
+            return ctx.paiement.AsNoTracking().Where(p => p.VenteId == _venteId).ToList().Sum(p => p.Montant);
+        }
+
         private void btnAnnuler_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -335,6 +416,7 @@ namespace Pharmacie2.views
         {
             pnlMutuelle.Visible = cbPaiement.Text == "Mutuelle";
             pnlMatricule.Visible = cbPaiement.Text == "Mutuelle";
+            MettreAJourAjustement();
             if (cbPaiement.Text == "Mutuelle")
             {
                 cbMutuelle.DataSource = null;

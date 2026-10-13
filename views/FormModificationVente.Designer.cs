@@ -60,6 +60,10 @@
             this.pnlMutuelle = new System.Windows.Forms.TableLayoutPanel();
             this.lblMutuelle = new System.Windows.Forms.Label();
             this.cbMutuelle = new System.Windows.Forms.ComboBox();
+            this.lblAjustement = new System.Windows.Forms.Label();
+            this.tlpModeComplement = new System.Windows.Forms.TableLayoutPanel();
+            this.lblModeComplement = new System.Windows.Forms.Label();
+            this.cbModeComplement = new System.Windows.Forms.ComboBox();
             this.lblNotePaiement = new System.Windows.Forms.Label();
             this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnEnregistrer = new System.Windows.Forms.Button();
@@ -223,7 +227,9 @@
             // 
             this.tlpDroite.ColumnCount = 1;
             this.tlpDroite.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpDroite.RowCount = 7;
+            this.tlpDroite.RowCount = 9;
+            this.tlpDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpDroite.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -243,8 +249,12 @@
             this.pnlMatricule.TabIndex = 4;
             this.tlpDroite.Controls.Add(this.pnlMutuelle, 0, 5);
             this.pnlMutuelle.TabIndex = 5;
-            this.tlpDroite.Controls.Add(this.lblNotePaiement, 0, 6);
-            this.lblNotePaiement.TabIndex = 6;
+            this.tlpDroite.Controls.Add(this.lblAjustement, 0, 6);
+            this.lblAjustement.TabIndex = 6;
+            this.tlpDroite.Controls.Add(this.tlpModeComplement, 0, 7);
+            this.tlpModeComplement.TabIndex = 7;
+            this.tlpDroite.Controls.Add(this.lblNotePaiement, 0, 8);
+            this.lblNotePaiement.TabIndex = 8;
             this.tlpDroite.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpDroite.AutoSize = true;
             this.tlpDroite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -463,9 +473,51 @@
             this.cbMutuelle.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.cbMutuelle.Name = "cbMutuelle";
             // 
+            // lblAjustement
+            // 
+            this.lblAjustement.Text = "";
+            this.lblAjustement.AutoSize = true;
+            this.lblAjustement.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAjustement.Margin = new System.Windows.Forms.Padding(0, 8, 0, 2);
+            this.lblAjustement.Name = "lblAjustement";
+            // 
+            // tlpModeComplement
+            // 
+            this.tlpModeComplement.ColumnCount = 2;
+            this.tlpModeComplement.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpModeComplement.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpModeComplement.RowCount = 1;
+            this.tlpModeComplement.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpModeComplement.Controls.Add(this.lblModeComplement, 0, 0);
+            this.lblModeComplement.TabIndex = 0;
+            this.tlpModeComplement.Controls.Add(this.cbModeComplement, 1, 0);
+            this.cbModeComplement.TabIndex = 1;
+            this.tlpModeComplement.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpModeComplement.AutoSize = true;
+            this.tlpModeComplement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpModeComplement.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.tlpModeComplement.Visible = false;
+            this.tlpModeComplement.Name = "tlpModeComplement";
+            // 
+            // lblModeComplement
+            // 
+            this.lblModeComplement.Text = "Complément reçu par";
+            this.lblModeComplement.AutoSize = true;
+            this.lblModeComplement.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblModeComplement.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblModeComplement.Name = "lblModeComplement";
+            // 
+            // cbModeComplement
+            // 
+            this.cbModeComplement.Width = 170;
+            this.cbModeComplement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbModeComplement.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbModeComplement.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cbModeComplement.Name = "cbModeComplement";
+            // 
             // lblNotePaiement
             // 
-            this.lblNotePaiement.Text = "Les sommes déjà versées par le client ne changent pas.";
+            this.lblNotePaiement.Text = "Les sommes déjà versées restent enregistrées : un complément ou un remboursement s'ajoute comme un nouveau paiement.";
             this.lblNotePaiement.AutoSize = true;
             this.lblNotePaiement.Tag = "note";
             this.lblNotePaiement.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
@@ -621,6 +673,10 @@
         private System.Windows.Forms.TableLayoutPanel pnlMutuelle;
         private System.Windows.Forms.Label lblMutuelle;
         private System.Windows.Forms.ComboBox cbMutuelle;
+        private System.Windows.Forms.Label lblAjustement;
+        private System.Windows.Forms.TableLayoutPanel tlpModeComplement;
+        private System.Windows.Forms.Label lblModeComplement;
+        private System.Windows.Forms.ComboBox cbModeComplement;
         private System.Windows.Forms.Label lblNotePaiement;
         private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnEnregistrer;

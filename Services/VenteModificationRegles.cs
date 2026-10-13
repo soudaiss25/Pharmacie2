@@ -17,6 +17,21 @@ namespace Pharmacie2.Services
                 throw new InvalidOperationException(MessageVenteReglee);
         }
 
+        /// <summary>
+        /// Paiement à ajouter quand une vente est modifiée : positif = le client paie en plus (complément), négatif = on rend
+        /// de l'argent (remboursement), 0 = rien. Modes payés en totalité et part patient d'une mutuelle : le versé doit
+        /// égaler ce qui est dû. Crédit : aucun paiement automatique, sauf si le versé dépasse le nouveau total (remboursement).
+        /// Le rendu de monnaie d'origine n'intervient jamais : les paiements enregistrés sont déjà nets.
+        /// </summary>
+        public static decimal AjustementPaiements(string nouveauType, decimal montantTotal, decimal partMutuelle, decimal verse)
+        {
+            decimal du = montantTotal - (nouveauType == ModesPaiement.Mutuelle ? partMutuelle : 0m);
+            if (du < 0) du = 0;
+            if (nouveauType == ModesPaiement.Credit)
+                return verse > du ? du - verse : 0m;
+            return du - verse;
+        }
+
         /// <summary>Part prise en charge par la mutuelle, en KMF entiers (pas de centimes).</summary>
         public static decimal PartMutuelle(decimal total, decimal tauxPourcent)
             => Math.Round(total * tauxPourcent / 100m, 0, MidpointRounding.AwayFromZero);

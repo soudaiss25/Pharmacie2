@@ -83,6 +83,7 @@ namespace Pharmacie2.views
                     Numero = p.NumeroPaiement,
                     Date = p.DatePaiement.ToString("dd/MM/yyyy HH:mm"),
                     p.Montant,
+                    Mode = p.Montant < 0 ? "Remboursement (" + p.Mode + ")" : p.Mode,
                     Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "—"
                 }).ToList();
             }
