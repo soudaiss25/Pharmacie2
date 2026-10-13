@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pharmacie2.Models;
 
 namespace Pharmacie2.Services
 {
