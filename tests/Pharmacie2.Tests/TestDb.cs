@@ -132,6 +132,7 @@ public static class TestDb
         var p = new Produit
         {
             Nom = nom, Type = "Autre", PrixAchat = 100, PrixVente = prixVente, MargeBeneficiaire = 100,
+            PrixVenteUnite = nbParBoite > 1 ? Math.Round(prixVente / nbParBoite, 0) : null,
             QuantiteEnStock = stock, NbUniteParBoite = nbParBoite, UniteVente = unite, SeuilAlerte = 2,
             DateExpiration = DateTime.Today.AddYears(1)
         };

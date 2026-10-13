@@ -34,6 +34,12 @@ namespace Pharmacie2.Models
 
         public decimal PrixAchat { get; set; }
         public decimal PrixVente { get; set; }
+
+        /// <summary>
+        /// Prix de vente d'une unité (plaquette, comprimé…), fixé par le client en même temps que le prix de la boîte.
+        /// Null pour un produit vendu uniquement à la boîte. Jamais calculé à partir de PrixVente.
+        /// </summary>
+        public decimal? PrixVenteUnite { get; set; }
         public decimal MargeBeneficiaire { get; set; }
 
         /// <summary>
@@ -59,11 +65,11 @@ namespace Pharmacie2.Models
 
         // ── Propriétés calculées (non stockées) ───────────────────────
 
-        /// <summary>Prix d'une unité (plaquette/comprimé).</summary>
+        /// <summary>Prix d'une unité (plaquette/comprimé) = PrixVenteUnite ; le prix de la boîte pour un produit vendu uniquement à la boîte.</summary>
         [NotMapped]
         public decimal PrixUnitaireVente =>
             NbUniteParBoite > 1
-                ? Math.Round(PrixVente / NbUniteParBoite, 2)
+                ? PrixVenteUnite ?? 0m   // fixé par le client ; l'application ne le déduit JAMAIS du prix de la boîte
                 : PrixVente;
 
         /// <summary>

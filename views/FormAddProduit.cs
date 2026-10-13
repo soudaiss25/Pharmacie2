@@ -81,6 +81,7 @@ namespace Pharmacie2.views
             cmbUniteVente.SelectedIndexChanged += MettreAJourApercu;
             numNbUniteParBoite.ValueChanged += MettreAJourApercu;
             numPrixVente.ValueChanged += MettreAJourApercu;
+            numPrixVenteUnite.ValueChanged += MettreAJourApercu;
         }
 
         /// <summary>Colore le champ prix de vente en rouge si la marge est nulle ou négative.</summary>
@@ -108,6 +109,7 @@ namespace Pharmacie2.views
                 numPrixAchat.Value = Math.Min(numPrixAchat.Maximum, p.PrixAchat);
                 numMarge.Value = Math.Min(numMarge.Maximum, Math.Max(numMarge.Minimum, p.MargeBeneficiaire));
                 numPrixVente.Value = Math.Min(numPrixVente.Maximum, p.PrixVente);
+                numPrixVenteUnite.Value = Math.Min(numPrixVenteUnite.Maximum, p.PrixVenteUnite ?? 0m);   // jamais déduit du prix de la boîte
 
                 // Stock en unités de base → boîtes pleines + unités en vrac (la boîte entamée reste visible)
                 int nbParBoite = Math.Max(1, p.NbUniteParBoite);
@@ -275,7 +277,7 @@ namespace Pharmacie2.views
 
             pnlVenteDetail.Enabled = actif;
             numUnitesVrac.Enabled = actif;
-            if (!actif) numUnitesVrac.Value = 0;
+            if (!actif) { numUnitesVrac.Value = 0; numPrixVenteUnite.Value = 0; }
             pnlVenteDetail.BackColor = actif ? Theme.SuccesFond : Theme.Fond;
 
             if (!actif)
@@ -312,17 +314,16 @@ namespace Pharmacie2.views
                 return;
             }
 
-            // Prix par unité
-            decimal pv = numPrixVente.Value;
-            decimal prixParUnite = Math.Round(pv / nbParB, 2);
-
+            // Les deux prix sont ceux saisis par le client : rien n'est recalculé
+            bool aVerifier = _produitId != null && _nbParBoiteOrigine > 1 && nbParB != _nbParBoiteOrigine;
             lblApercu.Text =
-                $"1 boîte = {nbParB} {Format.Pluriel(nbParB, unite)}\n" +
-                $"Prix par {unite} : {Format.Montant(prixParUnite)}\n" +
+                $"1 boîte = {nbParB} {Format.Pluriel(nbParB, unite)}" + "\n" +
+                $"Prix de la boîte : {Format.Montant(numPrixVente.Value)}   |   Prix par {unite} : {Format.Montant(numPrixVenteUnite.Value)}" + "\n" +
                 $"Exemple : vendre 4 {Format.Pluriel(4, unite)} consomme " +
-                $"{Format.Compte((int)Math.Ceiling(4.0 / nbParB), "boîte")} du stock";
+                $"{Format.Compte((int)Math.Ceiling(4.0 / nbParB), "boîte")} du stock" +
+                (aVerifier ? "\n" + "Vérifiez le prix à l'unité" : "");
 
-            lblApercu.ForeColor = Theme.SuccesTexte;
+            lblApercu.ForeColor = aVerifier ? Theme.AttentionTexte : Theme.SuccesTexte;
         }
 
         // ── Validation et enregistrement ──────────────────────────────────
@@ -363,6 +364,27 @@ namespace Pharmacie2.views
                     "Si le produit est vendu à l'unité, le nombre d'unités par boîte doit être ≥ 2.",
                     "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 numNbUniteParBoite.Focus(); return;
+            }
+
+            // Règle du client : prix de vente > prix d'achat, à la boîte ET à l'unité ; le prix à l'unité est saisi, jamais calculé
+            decimal? prixVenteUnite = null;
+            if (chkVenteDetail.Checked)
+            {
+                prixVenteUnite = numPrixVenteUnite.Value;
+                decimal coutUnite = prixAchat / numNbUniteParBoite.Value;
+                if (prixVenteUnite <= 0)
+                {
+                    MessageBox.Show("Saisissez le prix de vente à l'unité : c'est vous qui le fixez, il n'est jamais calculé à partir du prix de la boîte.",
+                        "Prix à l'unité obligatoire", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numPrixVenteUnite.Focus(); return;
+                }
+                if (prixVenteUnite <= coutUnite)
+                {
+                    MessageBox.Show(
+                        $"Le prix de vente à l'unité ({Format.Montant(prixVenteUnite.Value)}) doit être supérieur au prix d'achat d'une unité ({Format.Montant(Math.Round(coutUnite, 2))}, soit {Format.Montant(prixAchat)} pour {numNbUniteParBoite.Value:0} unités)." + BS + "n" + BS + "nAugmentez le prix à l'unité.",
+                        "Marge invalide à l'unité", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    numPrixVenteUnite.Focus(); return;
+                }
             }
 
             decimal marge = numMarge.Value;
@@ -420,6 +442,15 @@ namespace Pharmacie2.views
                 numUnitesVrac.Focus(); return;
             }
 
+            // Le nombre d'unités par boîte change : le prix à l'unité n'est PAS modifié automatiquement, le client doit le confirmer
+            if (_produitId != null && chkVenteDetail.Checked && _nbParBoiteOrigine > 1 && nbUniteParBoite != _nbParBoiteOrigine)
+            {
+                var confPrix = MessageBox.Show(
+                    $"Vérifiez le prix à l'unité : {Format.Montant(prixVenteUnite!.Value)} pour 1 {uniteVente.ToLowerInvariant()} (boîte de {nbUniteParBoite}, prix de la boîte {Format.Montant(prixVente)})." + BS + "n" + BS + "nConfirmer ce prix ?",
+                    "Vérifiez le prix à l'unité", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (confPrix != DialogResult.Yes) { numPrixVenteUnite.Focus(); return; }
+            }
+
             try
             {
                 using (var ctx = new AppDbContext())
@@ -433,6 +464,7 @@ namespace Pharmacie2.views
                             PrixAchat = prixAchat,
                             MargeBeneficiaire = marge,
                             PrixVente = prixVente,
+                            PrixVenteUnite = prixVenteUnite,
                             QuantiteEnStock = stockEnUnites,
                             SeuilAlerte = (int)numSeuil.Value,
                             DateExpiration = dtpDateExpiration.Value,
@@ -455,6 +487,7 @@ namespace Pharmacie2.views
                         p.PrixAchat = prixAchat;
                         p.MargeBeneficiaire = marge;
                         p.PrixVente = prixVente;
+                        p.PrixVenteUnite = prixVenteUnite;
                         if (stockTouche)
                         {
                             int ancienStock = p.QuantiteEnStock;

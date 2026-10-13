@@ -319,6 +319,9 @@ namespace Pharmacie2.Migrations
                     b.Property<decimal>("PrixVente")
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal?>("PrixVenteUnite")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("QuantiteEnStock")
                         .HasColumnType("INTEGER");
 

@@ -14,8 +14,8 @@ existant cité ici) vérifie chaque règle quand c'est automatisable ; sinon la 
 | 5 | Vente à la plaquette possible ; stock toujours en unités de base. | Test `Regle05_*` ; `StockServiceTests`, `VenteTransactionTests` |
 | 6 | Crédit et Mutuelle sont des VENTES PARTIELLES : partout, on n'affiche comme encaissé que ce qui a été réellement reçu ; le reste est affiché à part (« reste dû », « part mutuelle en attente »). | Test `Regle06_*` (`Regle06VentesPartiellesTests`) |
 | 7 | La part mutuelle est un crédit de l'entreprise jusqu'au clic sur « Régler ». | `VenteMutuelleTests` (`MutuelleReglee_*`) |
-| 8 | Le client fixe lui-même le prix de la boîte ET le prix à l'unité ; l'application ne calcule jamais l'un à partir de l'autre. | Test `Regle08_*` (livré avec R6) |
-| 9 | Prix de vente > prix d'achat, obligatoire (à la boîte ET à l'unité). | Test `Regle09_*` (livré avec R6) |
+| 8 | Le client fixe lui-même le prix de la boîte ET le prix à l'unité ; l'application ne calcule jamais l'un à partir de l'autre. | Tests `Regle08_*` (`Regle08PrixUniteTests`) |
+| 9 | Prix de vente > prix d'achat, obligatoire (à la boîte ET à l'unité). | Tests `Regle09_*` (`Regle08PrixUniteTests`) |
 | 10 | Clôture de caisse sans mot de passe. | Manuel : §50 |
 | 11 | Chèque, Carte bancaire, Mvola et Huri Money sont toujours payés en totalité au moment de la vente. | `FormVenteTests.Modes_regles_en_totalite_enregistrent_toujours_le_montant_verse` ; test `Regle11_*` |
 | 12 | Montants en KMF sans centimes. | Test `Regle12_*` ; `FondationsTests` |

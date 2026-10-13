@@ -79,6 +79,8 @@
             this.cmbUniteVente = new System.Windows.Forms.ComboBox();
             this.lblNbUnite = new System.Windows.Forms.Label();
             this.numNbUniteParBoite = new System.Windows.Forms.NumericUpDown();
+            this.lblPrixUnite = new System.Windows.Forms.Label();
+            this.numPrixVenteUnite = new System.Windows.Forms.NumericUpDown();
             this.lblApercu = new System.Windows.Forms.Label();
             this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnEnregistrer = new System.Windows.Forms.Button();
@@ -91,6 +93,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numUnitesVrac)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSeuil)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNbUniteParBoite)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPrixVenteUnite)).BeginInit();
             this.tlpRoot.SuspendLayout();
             this.pnlVerification.SuspendLayout();
             this.flpVerification.SuspendLayout();
@@ -665,7 +668,8 @@
             this.pnlVenteDetail.ColumnCount = 2;
             this.pnlVenteDetail.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlVenteDetail.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.pnlVenteDetail.RowCount = 3;
+            this.pnlVenteDetail.RowCount = 4;
+            this.pnlVenteDetail.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlVenteDetail.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlVenteDetail.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.pnlVenteDetail.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -677,8 +681,12 @@
             this.lblNbUnite.TabIndex = 2;
             this.pnlVenteDetail.Controls.Add(this.numNbUniteParBoite, 1, 1);
             this.numNbUniteParBoite.TabIndex = 3;
-            this.pnlVenteDetail.Controls.Add(this.lblApercu, 0, 2);
-            this.lblApercu.TabIndex = 4;
+            this.pnlVenteDetail.Controls.Add(this.lblPrixUnite, 0, 2);
+            this.lblPrixUnite.TabIndex = 4;
+            this.pnlVenteDetail.Controls.Add(this.numPrixVenteUnite, 1, 2);
+            this.numPrixVenteUnite.TabIndex = 5;
+            this.pnlVenteDetail.Controls.Add(this.lblApercu, 0, 3);
+            this.lblApercu.TabIndex = 6;
             this.pnlVenteDetail.SetColumnSpan(this.lblApercu, 2);
             this.pnlVenteDetail.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlVenteDetail.AutoSize = true;
@@ -734,6 +742,26 @@
             this.numNbUniteParBoite.Margin = new System.Windows.Forms.Padding(0, 4, 8, 4);
             this.numNbUniteParBoite.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.numNbUniteParBoite.Name = "numNbUniteParBoite";
+            //
+            // lblPrixUnite
+            //
+            this.lblPrixUnite.Text = "Prix de vente à l'unité";
+            this.lblPrixUnite.AutoSize = true;
+            this.lblPrixUnite.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPrixUnite.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblPrixUnite.Name = "lblPrixUnite";
+            //
+            // numPrixVenteUnite
+            //
+            this.numPrixVenteUnite.Width = 130;
+            this.numPrixVenteUnite.Minimum = new decimal(new int[] { 0, 0, 0, 0});
+            this.numPrixVenteUnite.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0});
+            this.numPrixVenteUnite.ThousandsSeparator = true;
+            this.numPrixVenteUnite.DecimalPlaces = 0;
+            this.numPrixVenteUnite.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numPrixVenteUnite.Margin = new System.Windows.Forms.Padding(0, 4, 8, 4);
+            this.numPrixVenteUnite.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.numPrixVenteUnite.Name = "numPrixVenteUnite";
             // 
             // lblApercu
             // 
@@ -815,6 +843,7 @@
             this.tlpRoot.ResumeLayout(false);
             this.tlpRoot.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numNbUniteParBoite)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPrixVenteUnite)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSeuil)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUnitesVrac)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numQuantite)).EndInit();
@@ -878,6 +907,8 @@
         private System.Windows.Forms.ComboBox cmbUniteVente;
         private System.Windows.Forms.Label lblNbUnite;
         private System.Windows.Forms.NumericUpDown numNbUniteParBoite;
+        private System.Windows.Forms.Label lblPrixUnite;
+        private System.Windows.Forms.NumericUpDown numPrixVenteUnite;
         private System.Windows.Forms.Label lblApercu;
         private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnEnregistrer;

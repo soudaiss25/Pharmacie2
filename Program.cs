@@ -24,8 +24,10 @@ namespace Pharmacie2
                 try
                 {
                     bool repriseAttendue = RepriseVentesService.EstEnAttente(context);
+                    bool prixUniteAttendu = PrixUniteService.EstEnAttente(context);
                     context.Database.Migrate();
                     if (repriseAttendue) RepriseVentesService.Journaliser(context);   // une seule fois : au démarrage qui applique la migration
+                    if (prixUniteAttendu) PrixUniteService.Journaliser(context);
                     MotDePasseService.ConvertirMotsDePasseEnClair(context);   // idempotent
                     firstLaunch = !context.Users.Any();
                 }

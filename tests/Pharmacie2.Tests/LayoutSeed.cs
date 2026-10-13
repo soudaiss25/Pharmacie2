@@ -28,7 +28,7 @@ public static class LayoutSeed
 
         var p1 = new Produit
         {
-            Nom = "Doliprane 500 mg", Type = "Comprimé", PrixAchat = 800, PrixVente = 1500, MargeBeneficiaire = 87.5m,
+            Nom = "Doliprane 500 mg", Type = "Comprimé", PrixAchat = 800, PrixVente = 1500, PrixVenteUnite = 300, MargeBeneficiaire = 87.5m,
             QuantiteEnStock = 9, NbUniteParBoite = 5, UniteVente = "Plaquette", SeuilAlerte = 2,
             DateExpiration = DateTime.Today.AddMonths(8), FournisseurId = four.Id, StockAVerifier = true, UnitesManquantesEstimees = 40,
             MotifVerification = "10 boîte(s) reçue(s) avant la correction : seulement 10 unité(s) ajoutée(s) au lieu de 50."
@@ -95,7 +95,7 @@ public static class LayoutSeed
             var p = new Produit
             {
                 Nom = catalogue[i].nom, Type = catalogue[i].type,
-                PrixAchat = 300 + i * 40, PrixVente = 500 + i * 70, MargeBeneficiaire = 40 + i % 30,
+                PrixAchat = 300 + i * 40, PrixVente = 500 + i * 70, PrixVenteUnite = parBoite > 1 ? Math.Round((500m + i * 70) / parBoite, 0) : null, MargeBeneficiaire = 40 + i % 30,
                 QuantiteEnStock = i % 9 == 0 ? 0 : (5 + i * 7) % 90, NbUniteParBoite = parBoite, UniteVente = parBoite > 1 ? "Plaquette" : "Boîte",
                 SeuilAlerte = 3, DateExpiration = i == 5 ? DateTime.Today.AddDays(-12) : (i == 8 ? DateTime.Today.AddDays(15) : DateTime.Today.AddMonths(6 + i % 14)),
                 FournisseurId = four.Id
