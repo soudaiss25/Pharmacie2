@@ -12,7 +12,7 @@ existant cité ici) vérifie chaque règle quand c'est automatisable ; sinon la 
 | 3 | Facture complète : produits, total, vendeur, client, date, posologie. | Manuel : §1 (facture) |
 | 4 | Posologie affichée dès qu'on choisit le médicament. | Manuel : §1 (choix du produit) |
 | 5 | Vente à la plaquette possible ; stock toujours en unités de base. | Test `Regle05_*` ; `StockServiceTests`, `VenteTransactionTests` |
-| 6 | Crédit et Mutuelle sont des VENTES PARTIELLES : partout, on n'affiche comme encaissé que ce qui a été réellement reçu ; le reste est affiché à part (« reste dû », « part mutuelle en attente »). | Test `Regle06_*` (livré avec R3) |
+| 6 | Crédit et Mutuelle sont des VENTES PARTIELLES : partout, on n'affiche comme encaissé que ce qui a été réellement reçu ; le reste est affiché à part (« reste dû », « part mutuelle en attente »). | Test `Regle06_*` (`Regle06VentesPartiellesTests`) |
 | 7 | La part mutuelle est un crédit de l'entreprise jusqu'au clic sur « Régler ». | `VenteMutuelleTests` (`MutuelleReglee_*`) |
 | 8 | Le client fixe lui-même le prix de la boîte ET le prix à l'unité ; l'application ne calcule jamais l'un à partir de l'autre. | Test `Regle08_*` (livré avec R6) |
 | 9 | Prix de vente > prix d'achat, obligatoire (à la boîte ET à l'unité). | Test `Regle09_*` (livré avec R6) |

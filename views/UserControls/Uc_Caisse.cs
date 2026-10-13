@@ -85,29 +85,26 @@ namespace Pharmacie2.views.UserControls
                     decimal caTotal = ventesActives.Sum(v => v.MontantTotal);
                     decimal caisseComptant = ventesActives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantTotal);
 
-                    // ── Ventilation par moyen de paiement (montants facturés) ──
-                    decimal caEspeces = caisseComptant;
-                    decimal caCheque = ventesActives.Where(v => v.Type == ModesPaiement.Cheque).Sum(v => v.MontantTotal);
-                    decimal caCB = ventesActives.Where(v => v.Type == ModesPaiement.CarteBancaire).Sum(v => v.MontantTotal);
-                    decimal caMobileMoney = ventesActives.Where(v => ModesPaiement.EstMobile(v.Type)).Sum(v => v.MontantTotal);
-                    decimal caMutuelle = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantTotal);
+                    // ── Ventilation : ce qui a été RÉELLEMENT reçu, par type de vente (jamais le total facturé d'un crédit ou d'une mutuelle) ──
+                    decimal Recu(string type) => caisse.ParTypeDeVente[type];
+                    decimal recuMobile = Recu(ModesPaiement.Mvola) + Recu(ModesPaiement.HuriMoney);
                     decimal caMutuelleEnt = ventesActives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantMutuelle);
-                    decimal caCredit = ventesActives.Where(v => v.Type == ModesPaiement.Credit).Sum(v => v.MontantTotal);
-                    decimal resteCredit = ventesActives.Where(v => v.Type == ModesPaiement.Credit).Sum(v => v.MontantRestant);
+                    decimal resteCredit = caisse.ResteDuCredit;
+                    int Nb(Func<Vente, bool> f) => ventesActives.Count(f);
 
                     // ── Cartes ─────────────────────────────────────────────
                     cardVentes.Valeur = ventesActives.Count.ToString();
                     cardVentes.Detail = "pour " + Format.Montant(caTotal);
-                    cardComptant.Valeur = Format.Montant(caEspeces);
-                    cardComptant.Detail = $"{Format.Compte(ventesActives.Count(v => v.Type == ModesPaiement.Comptant), "vente")}";
-                    cardCredit.Valeur = Format.Montant(caCredit);
-                    cardCredit.Detail = $"versé : {Format.Montant(avancesCredit)}";
+                    cardComptant.Valeur = Format.Montant(Recu(ModesPaiement.Comptant));
+                    cardComptant.Detail = $"{Format.Compte(Nb(v => v.Type == ModesPaiement.Comptant), "vente")}";
+                    cardCredit.Valeur = Format.Montant(avancesCredit);
+                    cardCredit.Detail = $"reçu — reste dû : {Format.Montant(resteCredit)}";
                     cardCredit.Niveau = resteCredit > 0 ? "attention" : "succes";
-                    cardMutuelle.Valeur = Format.Montant(caMutuelle);
-                    cardMutuelle.Detail = $"part des entreprises : {Format.Montant(caMutuelleEnt)}";
-                    cardCB.Valeur = Format.Montant(caCB);
-                    cardCB.Detail = $"{Format.Compte(ventesActives.Count(v => v.Type == ModesPaiement.CarteBancaire), "vente")}";
-                    cardCheque.Valeur = Format.Montant(caCheque);
+                    cardMutuelle.Valeur = Format.Montant(caisse.PartPatientMutuelle);
+                    cardMutuelle.Detail = $"reçu des patients — en attente : {Format.Montant(caisse.PartMutuelleEnAttente)}";
+                    cardCB.Valeur = Format.Montant(Recu(ModesPaiement.CarteBancaire));
+                    cardCB.Detail = $"{Format.Compte(Nb(v => v.Type == ModesPaiement.CarteBancaire), "vente")}";
+                    cardCheque.Valeur = Format.Montant(Recu(ModesPaiement.Cheque));
                     cardCheque.Detail = "à déposer en banque";
 
                     // ── Ce qui doit être dans le tiroir ────────────────────
@@ -124,14 +121,15 @@ namespace Pharmacie2.views.UserControls
                     lblElectronique.Text = horsTiroir.Count > 0 ? "Hors tiroir : " + string.Join(" — ", horsTiroir) : "";
 
                     // ── Grille ventilation ────────────────────────────────
+                    decimal totalRecu = caisse.Encaisse;
                     dgvVentilation.DataSource = new[]
                     {
-                        new { Mode = "Espèces (comptant)",             NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Comptant),        Montant = caEspeces,     PctCA = Pct(caEspeces, caTotal),     Statut = "Dans le tiroir" },
-                        new { Mode = "Mvola / Huri Money",             NbVentes = ventesActives.Count(v => ModesPaiement.EstMobile(v.Type)),         Montant = caMobileMoney, PctCA = Pct(caMobileMoney, caTotal), Statut = "Électronique" },
-                        new { Mode = "Carte bancaire",                 NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.CarteBancaire),   Montant = caCB,          PctCA = Pct(caCB, caTotal),          Statut = "Électronique" },
-                        new { Mode = "Chèque",                         NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Cheque),          Montant = caCheque,      PctCA = Pct(caCheque, caTotal),      Statut = "À déposer en banque" },
-                        new { Mode = "Mutuelle (total facturé)",       NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Mutuelle),        Montant = caMutuelle,    PctCA = Pct(caMutuelle, caTotal),    Statut = "Part de l'entreprise en attente" },
-                        new { Mode = "Crédit (total facturé)",         NbVentes = ventesActives.Count(v => v.Type == ModesPaiement.Credit),          Montant = caCredit,      PctCA = Pct(caCredit, caTotal),      Statut = $"Versé {Format.Montant(avancesCredit)} — reste {Format.Montant(resteCredit)}" },
+                        new { Mode = "Espèces (comptant)",             NbVentes = Nb(v => v.Type == ModesPaiement.Comptant),        Montant = Recu(ModesPaiement.Comptant),     PctCA = Pct(Recu(ModesPaiement.Comptant), totalRecu),     Statut = "Dans le tiroir" },
+                        new { Mode = "Mvola / Huri Money",             NbVentes = Nb(v => ModesPaiement.EstMobile(v.Type)),         Montant = recuMobile,                       PctCA = Pct(recuMobile, totalRecu),                       Statut = "Électronique" },
+                        new { Mode = "Carte bancaire",                 NbVentes = Nb(v => v.Type == ModesPaiement.CarteBancaire),   Montant = Recu(ModesPaiement.CarteBancaire), PctCA = Pct(Recu(ModesPaiement.CarteBancaire), totalRecu), Statut = "Électronique" },
+                        new { Mode = "Chèque",                         NbVentes = Nb(v => v.Type == ModesPaiement.Cheque),          Montant = Recu(ModesPaiement.Cheque),       PctCA = Pct(Recu(ModesPaiement.Cheque), totalRecu),       Statut = "À déposer en banque" },
+                        new { Mode = "Mutuelle (part patient reçue)",  NbVentes = Nb(v => v.Type == ModesPaiement.Mutuelle),        Montant = caisse.PartPatientMutuelle,       PctCA = Pct(caisse.PartPatientMutuelle, totalRecu),       Statut = $"Part de l'entreprise en attente : {Format.Montant(caisse.PartMutuelleEnAttente)}" },
+                        new { Mode = "Crédit (versements reçus)",      NbVentes = Nb(v => v.Type == ModesPaiement.Credit),          Montant = avancesCredit,                    PctCA = Pct(avancesCredit, totalRecu),                    Statut = $"Reste dû : {Format.Montant(resteCredit)}" },
                     }.ToList();
 
                     // ── Grille détail ─────────────────────────────────────
@@ -341,13 +339,6 @@ namespace Pharmacie2.views.UserControls
 
                     var actives = ventes.Where(v => v.Statut == "Active").ToList();
 
-                    decimal sesEspeces = actives.Where(v => v.Type == ModesPaiement.Comptant).Sum(v => v.MontantTotal);
-                    decimal sesMobile = actives.Where(v => ModesPaiement.EstMobile(v.Type)).Sum(v => v.MontantTotal);
-                    decimal sesCB = actives.Where(v => v.Type == ModesPaiement.CarteBancaire).Sum(v => v.MontantTotal);
-                    decimal sesCheque = actives.Where(v => v.Type == ModesPaiement.Cheque).Sum(v => v.MontantTotal);
-                    decimal sesMutuelle = actives.Where(v => v.Type == ModesPaiement.Mutuelle).Sum(v => v.MontantTotal);
-                    decimal sesCredit = actives.Where(v => v.Type == ModesPaiement.Credit).Sum(v => v.MontantTotal);
-
                     dgvDetailSession.DataSource = ventes.Select(v => new
                     {
                         Heure = v.DateVente.ToString("HH:mm:ss"),
@@ -376,10 +367,13 @@ namespace Pharmacie2.views.UserControls
 
                     lblDetailSession.ForeColor = ecart.HasValue && ecart < 0 ? Theme.UrgentTexte : Theme.SuccesTexte;
 
+                    // Ce qui a réellement été reçu par type de vente ; le reste dû et la part des mutuelles en attente sont affichés à part
+                    decimal Recu(string type) => caisse.ParTypeDeVente[type];
                     lblVentilationSession.Text =
-                        $"Espèces : {Format.Montant(sesEspeces)}  |  Mobile : {Format.Montant(sesMobile)}  |  " +
-                        $"Carte : {Format.Montant(sesCB)}  |  Chèque : {Format.Montant(sesCheque)}  |  " +
-                        $"Mutuelle : {Format.Montant(sesMutuelle)}  |  Crédit : {Format.Montant(sesCredit)}";
+                        $"Comptant : {Format.Montant(Recu(ModesPaiement.Comptant))}  |  Mobile : {Format.Montant(Recu(ModesPaiement.Mvola) + Recu(ModesPaiement.HuriMoney))}  |  " +
+                        $"Carte : {Format.Montant(Recu(ModesPaiement.CarteBancaire))}  |  Chèque : {Format.Montant(Recu(ModesPaiement.Cheque))}\n" +
+                        $"Mutuelle (part patient reçue) : {Format.Montant(caisse.PartPatientMutuelle)}, part des entreprises en attente : {Format.Montant(caisse.PartMutuelleEnAttente)}  |  " +
+                        $"Crédit (versements reçus) : {Format.Montant(caisse.VersementsCredit)}, reste dû : {Format.Montant(caisse.ResteDuCredit)}";
                 }
             }
             catch (Exception ex)

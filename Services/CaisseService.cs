@@ -12,6 +12,7 @@ namespace Pharmacie2.Services
     /// <param name="RemboursementsEspeces">Espèces rendues aux clients (montants négatifs, ex. −500), 0 s'il n'y en a pas.</param>
     /// <param name="HorsTiroir">Chèque, Carte bancaire, Mvola, Huri Money : encaissés mais pas dans le tiroir, par mode.</param>
     /// <param name="Encaisse">Tout ce qui a été réellement reçu, tous modes confondus (remboursements déduits).</param>
+    /// <param name="ParTypeDeVente">Reçu (net) par type de vente (Comptant, Chèque, Carte bancaire, Mvola, Huri Money, Crédit, Mutuelle) : jamais le total facturé.</param>
     /// <param name="VentesPayees">Reçu sur des ventes réglées en totalité (Comptant, Chèque, Carte, Mvola, Huri Money).</param>
     /// <param name="VersementsCredit">Reçu sur des ventes à crédit (avances et remboursements de crédits, quelle que soit la date de la vente).</param>
     /// <param name="PartPatientMutuelle">Reçu des patients sur des ventes mutuelle.</param>
@@ -23,6 +24,7 @@ namespace Pharmacie2.Services
         decimal RemboursementsEspeces,
         IReadOnlyDictionary<string, decimal> HorsTiroir,
         decimal Encaisse,
+        IReadOnlyDictionary<string, decimal> ParTypeDeVente,
         decimal VentesPayees,
         decimal VersementsCredit,
         decimal PartPatientMutuelle,
@@ -86,6 +88,7 @@ namespace Pharmacie2.Services
                 RemboursementsEspeces: Somme(paiements.Where(p => p.Mode == ModesPaiement.Especes && p.Montant < 0)),
                 HorsTiroir: horsTiroir,
                 Encaisse: Somme(paiements),
+                ParTypeDeVente: ModesPaiement.Tous.ToDictionary(m => m, m => Somme(paiements.Where(p => p.Vente.Type == m))),
                 VentesPayees: Somme(paiements.Where(p => p.Vente.Type != ModesPaiement.Credit && p.Vente.Type != ModesPaiement.Mutuelle)),
                 VersementsCredit: Somme(paiements.Where(p => p.Vente.Type == ModesPaiement.Credit)),
                 PartPatientMutuelle: Somme(paiements.Where(p => p.Vente.Type == ModesPaiement.Mutuelle)),
