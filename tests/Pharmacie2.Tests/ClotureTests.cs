@@ -118,7 +118,7 @@ public class ClotureTests
             TestDb.Inserer(c, "SessionsCaisse", new() { ["Id"] = 2L, ["UserId"] = 1L, ["Statut"] = "Ouverte" });
             avant = TestDb.Comptes(c, TestDb.TablesMetier);
         }
-        TestDb.MigrerTout();
+        TestDb.MigrerJusqua(TestDb.MigrationId("AjoutAttenduCloture"));   // seulement cette migration
         using var c2 = TestDb.Ouvrir();
         var apres = TestDb.Comptes(c2, TestDb.TablesMetier);
         Assert.All(avant, kv => Assert.Equal(kv.Value, apres[kv.Key]));

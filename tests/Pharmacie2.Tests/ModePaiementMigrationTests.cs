@@ -26,11 +26,11 @@ public class ModePaiementMigrationTests
             avant = TestDb.Comptes(c, TestDb.TablesMetier);
         }
 
-        TestDb.MigrerTout();
+        TestDb.MigrerJusqua(TestDb.MigrationId("AjoutModePaiementPaiement"));   // seulement cette migration (la reprise R5 a son propre test)
 
         using var c2 = TestDb.Ouvrir();
         var apres = TestDb.Comptes(c2, TestDb.TablesMetier);
-        Assert.All(avant, kv => Assert.Equal(kv.Value, apres[kv.Key]));   // aucune ligne ajoutée ni perdue (R5 ne touche ici que des ventes soldées ou à crédit)
+        Assert.All(avant, kv => Assert.Equal(kv.Value, apres[kv.Key]));   // aucune ligne ajoutée ni perdue 
 
         string Mode(long venteId) => TestDb.Texte($"SELECT Mode FROM paiement WHERE VenteId={venteId} ORDER BY Id LIMIT 1");
         Assert.Equal("Espèces", Mode(1));       // Comptant
