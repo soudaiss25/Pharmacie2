@@ -25,6 +25,7 @@ namespace Pharmacie2.views
 
             Text = AppInfo.Titre("Caisse");
             BandeauNotification.Courant = bandeau;
+            MiseAJourUi.Installer(this, user);   // bandeau « mise à jour prête » (sans bouton pour un caissier) et annonce après une mise à jour
             string jour = DateTime.Today.ToString("dddd d MMMM yyyy", Fr);
             lblBienvenue.Text = $"Bonjour {user.Prenom} {user.Nom} — {jour}";
 

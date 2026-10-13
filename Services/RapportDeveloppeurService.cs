@@ -100,7 +100,10 @@ namespace Pharmacie2.Services
 
             sb.AppendLine($"Rapport LIGUAPHARME du {maintenant:dd/MM/yyyy HH:mm}");
             sb.AppendLine(new string('-', 50));
-            L("Version de l'application", Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "inconnue");
+            L("Version de l'application", AppInfo.Version);
+            L("Installée par Velopack", MiseAJourService.Instance.EstInstalle ? "oui (canal " + ParametresApp.Actuels.CanalMiseAJour + ")" : "non (exécution hors installation)");
+            L("Dossier d'installation prévu", MiseAJourService.DossierInstallation);
+            L("Dossier des données (jamais touché par une mise à jour)", CheminsApp.DossierDonnees);
             L("Windows", RuntimeInformation.OSDescription + " (" + RuntimeInformation.OSArchitecture + ")");
             L(".NET", RuntimeInformation.FrameworkDescription);
 

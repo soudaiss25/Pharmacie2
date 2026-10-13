@@ -20,6 +20,12 @@ namespace Pharmacie2.Services
         /// <summary>Verrouillage automatique après inactivité, en minutes (0 = désactivé).</summary>
         public int DelaiVerrouillageMinutes { get; set; } = 5;
 
+        /// <summary>Canal des mises à jour : « stable » (par défaut) ou « test » (réservé au développeur).</summary>
+        public string CanalMiseAJour { get; set; } = "stable";
+
+        /// <summary>Dernière version lancée : sert à annoncer « Application mise à jour en version X » au premier démarrage après une mise à jour.</summary>
+        public string? DerniereVersionLancee { get; set; }
+
         private static readonly object _verrou = new();
         private static ParametresApp? _actuels;
         private static string Chemin => Path.Combine(CheminsApp.DossierDonnees, "parametres.json");

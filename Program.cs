@@ -1,6 +1,7 @@
 ﻿using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Microsoft.EntityFrameworkCore;
+using Velopack;
 
 namespace Pharmacie2
 {
@@ -9,8 +10,15 @@ namespace Pharmacie2
         [STAThread]
         static void Main()
         {
+            // Velopack doit être la TOUTE première chose : lors d'une installation, d'une mise à jour ou d'une désinstallation,
+            // il prend la main puis quitte avant que le reste du programme ne s'exécute.
+            VelopackApp.Build().Run();
+
             ApplicationConfiguration.Initialize();
             GestionErreurs.Installer();   // journal + message simple en français pour toute erreur imprévue
+
+            // Mises à jour automatiques : rien ne se passe hors d'une vraie installation (Visual Studio, tests)
+            MiseAJourService.Instance.DetecterMiseAJourInstallee();
 
             // Doit passer AVANT tout accès à la base.
             MigrationEmplacementBase.Executer();
@@ -63,6 +71,8 @@ namespace Pharmacie2
                 }
             }
 
+            MiseAJourService.Instance.Demarrer();   // vérification 30 s après l'ouverture puis toutes les 4 h, en arrière-plan
+
             if (firstLaunch)
             {
                 Application.Run(new FormInitialize());
@@ -71,6 +81,9 @@ namespace Pharmacie2
             {
                 Application.Run(new Form1());
             }
+
+            // Fermeture normale : une mise à jour déjà téléchargée s'installe maintenant, sans redémarrage forcé
+            MiseAJourService.Instance.AppliquerALaFermeture();
         }
     }
 }

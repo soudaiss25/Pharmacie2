@@ -30,6 +30,7 @@ namespace Pharmacie2.views
             lblNomPharmacie.Text = AppInfo.NomPharmacie;
             lblUtilisateur.Text = $"{user.Prenom} {user.Nom} ({user.Role})";
             BandeauNotification.Courant = bandeau;
+            MiseAJourUi.Installer(this, user);   // bandeau « mise à jour prête » et annonce après une mise à jour
 
             flpMenu.Resize += (s, e) => AjusterBoutonsMenu();
             AjusterBoutonsMenu();

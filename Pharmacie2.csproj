@@ -8,6 +8,8 @@
     <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>resources\pharmacie_icon.ico</ApplicationIcon>
+    <!-- Version unique de l'application : affichée dans Administration et dans le rapport ; doit être égale au tag de publication (vX.Y.Z). -->
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,6 +51,7 @@
     </PackageReference>
     <PackageReference Include="PdfSharp-MigraDoc-GDI" Version="6.1.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+    <PackageReference Include="Velopack" Version="1.2.161" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,6 +17,7 @@ namespace Pharmacie2.views.UserControls
             Theme.Appliquer(this);
             numDelaiVerrouillage.Value = Math.Min(60, Math.Max(0, ParametresApp.Actuels.DelaiVerrouillageMinutes));
             ActualiserEtatExterne();
+            InitialiserMiseAJour();
         }
 
         private void btnUtilisateurs_Click(object sender, EventArgs e) => UtilisateursDemande?.Invoke();
@@ -138,6 +139,44 @@ namespace Pharmacie2.views.UserControls
                 Journal.Erreur("Préparation du rapport pour le développeur", ex);
                 MessageBox.Show("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // ── Mises à jour ──────────────────────────────────────────────────
+
+        private bool _canalEnChargement;
+
+        private void InitialiserMiseAJour()
+        {
+            var service = MiseAJourService.Instance;
+            lblVersion.Text = $"Version installée : {AppInfo.Version}" + (service.EstInstalle ? "" : " (copie non installée : lancée depuis Visual Studio)")
+                              + $" — canal : {(service.Canal == MiseAJourService.CanalTest ? "Test" : "Stable")}";
+            _canalEnChargement = true;
+            cbCanal.SelectedIndex = service.Canal == MiseAJourService.CanalTest ? 1 : 0;
+            _canalEnChargement = false;
+            // le choix du canal est réservé à l'Administrateur
+            bool admin = SessionUtilisateur.Courant?.Role == Roles.Administrateur;
+            cbCanal.Enabled = admin;
+            lblCanal.Enabled = admin;
+        }
+
+        private void cbCanal_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_canalEnChargement || SessionUtilisateur.Courant?.Role != Roles.Administrateur) return;
+            MiseAJourService.Instance.ChangerCanal(cbCanal.SelectedIndex == 1 ? MiseAJourService.CanalTest : MiseAJourService.CanalStable);
+            InitialiserMiseAJour();
+            lblDescMaj.Text = "Canal modifié. Cliquez sur « Rechercher une mise à jour maintenant » pour vérifier ce canal.";
+        }
+
+        private async void btnMaj_Click(object sender, EventArgs e)
+        {
+            btnMaj.Enabled = false;
+            lblDescMaj.Text = "Recherche en cours…";
+            try
+            {
+                var r = await MiseAJourService.Instance.VerifierEtTelechargerAsync();
+                lblDescMaj.Text = $"Version actuelle : {r.VersionActuelle}\nVersion disponible : {r.VersionDisponible ?? "aucune"}\n{r.Message}";
+            }
+            finally { if (!IsDisposed) btnMaj.Enabled = true; }
         }
 
         // ── Import d'une ancienne base (assistant) ────────────────────────

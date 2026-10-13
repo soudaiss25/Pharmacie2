@@ -56,6 +56,12 @@
             this.lblDescRapport = new System.Windows.Forms.Label();
             this.btnDiagnostic = new System.Windows.Forms.Button();
             this.btnImporter = new System.Windows.Forms.Button();
+            this.lblSectionMaj = new System.Windows.Forms.Label();
+            this.lblVersion = new System.Windows.Forms.Label();
+            this.btnMaj = new System.Windows.Forms.Button();
+            this.lblDescMaj = new System.Windows.Forms.Label();
+            this.lblCanal = new System.Windows.Forms.Label();
+            this.cbCanal = new System.Windows.Forms.ComboBox();
             this.lblDescImporter = new System.Windows.Forms.Label();
             this.lblDescDiagnostic = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numDelaiVerrouillage)).BeginInit();
@@ -94,7 +100,11 @@
             this.tlpActions.ColumnCount = 2;
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpActions.RowCount = 15;
+            this.tlpActions.RowCount = 19;
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -165,6 +175,20 @@
             this.btnImporter.TabIndex = 23;
             this.tlpActions.Controls.Add(this.lblDescImporter, 1, 14);
             this.lblDescImporter.TabIndex = 24;
+            this.tlpActions.Controls.Add(this.lblSectionMaj, 0, 15);
+            this.tlpActions.SetColumnSpan(this.lblSectionMaj, 2);
+            this.lblSectionMaj.TabIndex = 25;
+            this.tlpActions.Controls.Add(this.lblVersion, 0, 16);
+            this.tlpActions.SetColumnSpan(this.lblVersion, 2);
+            this.lblVersion.TabIndex = 26;
+            this.tlpActions.Controls.Add(this.btnMaj, 0, 17);
+            this.btnMaj.TabIndex = 27;
+            this.tlpActions.Controls.Add(this.lblDescMaj, 1, 17);
+            this.lblDescMaj.TabIndex = 28;
+            this.tlpActions.Controls.Add(this.lblCanal, 0, 18);
+            this.lblCanal.TabIndex = 29;
+            this.tlpActions.Controls.Add(this.cbCanal, 1, 18);
+            this.cbCanal.TabIndex = 30;
             this.tlpActions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpActions.AutoSize = true;
             this.tlpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -379,6 +403,60 @@
             this.btnDiagnostic.Click += new System.EventHandler(this.btnDiagnostic_Click);
             //
             //
+            // lblSectionMaj
+            //
+            this.lblSectionMaj.Text = "Mises à jour";
+            this.lblSectionMaj.AutoSize = true;
+            this.lblSectionMaj.Tag = "section";
+            this.lblSectionMaj.Margin = new System.Windows.Forms.Padding(0, 14, 0, 4);
+            this.lblSectionMaj.Name = "lblSectionMaj";
+            //
+            // lblVersion
+            //
+            this.lblVersion.Text = "";
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.MaximumSize = new System.Drawing.Size(820, 0);
+            this.lblVersion.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.lblVersion.Name = "lblVersion";
+            //
+            // btnMaj
+            //
+            this.btnMaj.Text = "Rechercher une mise à jour maintenant";
+            this.btnMaj.Width = 290;
+            this.btnMaj.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnMaj.Margin = new System.Windows.Forms.Padding(0, 6, 16, 6);
+            this.btnMaj.Name = "btnMaj";
+            this.btnMaj.Click += new System.EventHandler(this.btnMaj_Click);
+            //
+            // lblDescMaj
+            //
+            this.lblDescMaj.Text = "Le logiciel vérifie tout seul les mises à jour (30 secondes après l'ouverture, puis toutes les 4 heures). Elles s'installent à la fermeture de l'application.";
+            this.lblDescMaj.AutoSize = true;
+            this.lblDescMaj.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDescMaj.MaximumSize = new System.Drawing.Size(520, 0);
+            this.lblDescMaj.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.lblDescMaj.Name = "lblDescMaj";
+            //
+            // lblCanal
+            //
+            this.lblCanal.Text = "Canal de mise à jour";
+            this.lblCanal.AutoSize = true;
+            this.lblCanal.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCanal.Margin = new System.Windows.Forms.Padding(0, 6, 16, 6);
+            this.lblCanal.Name = "lblCanal";
+            //
+            // cbCanal
+            //
+            this.cbCanal.Width = 170;
+            this.cbCanal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbCanal.Items.AddRange(new object[] {
+            "Stable",
+            "Test"});
+            this.cbCanal.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbCanal.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cbCanal.Name = "cbCanal";
+            this.cbCanal.SelectedIndexChanged += new System.EventHandler(this.cbCanal_SelectedIndexChanged);
+            //
             // btnImporter
             //
             this.btnImporter.Text = "Importer une ancienne base…";
@@ -466,6 +544,12 @@
         private System.Windows.Forms.Button btnRapport;
         private System.Windows.Forms.Button btnDiagnostic;
         private System.Windows.Forms.Button btnImporter;
+        private System.Windows.Forms.Label lblSectionMaj;
+        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Button btnMaj;
+        private System.Windows.Forms.Label lblDescMaj;
+        private System.Windows.Forms.Label lblCanal;
+        private System.Windows.Forms.ComboBox cbCanal;
         private System.Windows.Forms.Label lblDescImporter;
         private System.Windows.Forms.Label lblDescDiagnostic;
         private System.Windows.Forms.Label lblDescRapport;
