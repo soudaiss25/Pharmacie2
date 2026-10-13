@@ -67,12 +67,23 @@ namespace Pharmacie2.views
             using var dlg = new OpenFileDialog
             {
                 Title = "Choisir le fichier PharmacieDB.sqlite",
-                Filter = "Base de données (*.sqlite)|*.sqlite|Tous les fichiers (*.*)|*.*",
+                Filter = "Base ou sauvegarde (*.sqlite;*.chiffre)|*.sqlite;*.chiffre|Tous les fichiers (*.*)|*.*",
                 CheckFileExists = true
             };
             if (dlg.ShowDialog(this) != DialogResult.OK) return;
 
             var info = new FileInfo(dlg.FileName);
+            if (info.Name.EndsWith(".chiffre", StringComparison.OrdinalIgnoreCase))
+            {
+                // sauvegarde chiffrée de la copie hors du PC (7a) : la phrase secrète est demandée ; les contrôles se font dans l'assistant
+                using var phrase = new FormPhraseSecrete(confirmer: false);
+                if (phrase.ShowDialog(this) != DialogResult.OK) return;
+                MigrationEmplacementBase.PhraseSaisie = phrase.Phrase;
+                FichierChoisi = info.FullName;
+                DialogResult = DialogResult.OK;
+                Close();
+                return;
+            }
             if (info.Length == 0 || MigrationEmplacementBase.CompterVentes(info.FullName) < 0)
             {
                 MessageBox.Show("Ce fichier n'est pas une base de données de la pharmacie (vide ou illisible). Choisissez un autre fichier.",

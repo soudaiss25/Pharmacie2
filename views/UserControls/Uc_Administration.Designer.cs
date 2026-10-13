@@ -55,6 +55,8 @@
             this.btnRapport = new System.Windows.Forms.Button();
             this.lblDescRapport = new System.Windows.Forms.Label();
             this.btnDiagnostic = new System.Windows.Forms.Button();
+            this.btnImporter = new System.Windows.Forms.Button();
+            this.lblDescImporter = new System.Windows.Forms.Label();
             this.lblDescDiagnostic = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numDelaiVerrouillage)).BeginInit();
             this.tlpRoot.SuspendLayout();
@@ -92,7 +94,8 @@
             this.tlpActions.ColumnCount = 2;
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpActions.RowCount = 14;
+            this.tlpActions.RowCount = 15;
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -158,6 +161,10 @@
             this.btnDiagnostic.TabIndex = 21;
             this.tlpActions.Controls.Add(this.lblDescDiagnostic, 1, 13);
             this.lblDescDiagnostic.TabIndex = 22;
+            this.tlpActions.Controls.Add(this.btnImporter, 0, 14);
+            this.btnImporter.TabIndex = 23;
+            this.tlpActions.Controls.Add(this.lblDescImporter, 1, 14);
+            this.lblDescImporter.TabIndex = 24;
             this.tlpActions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpActions.AutoSize = true;
             this.tlpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -371,6 +378,25 @@
             this.btnDiagnostic.Name = "btnDiagnostic";
             this.btnDiagnostic.Click += new System.EventHandler(this.btnDiagnostic_Click);
             //
+            //
+            // btnImporter
+            //
+            this.btnImporter.Text = "Importer une ancienne base…";
+            this.btnImporter.Width = 290;
+            this.btnImporter.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnImporter.Margin = new System.Windows.Forms.Padding(0, 6, 16, 6);
+            this.btnImporter.Name = "btnImporter";
+            this.btnImporter.Click += new System.EventHandler(this.btnImporter_Click);
+            //
+            // lblDescImporter
+            //
+            this.lblDescImporter.Text = "Reprend les données d'une ancienne base (.sqlite) ou d'une sauvegarde chiffrée, après contrôles. Le fichier d'origine n'est jamais modifié et la base actuelle est sauvegardée avant tout remplacement.";
+            this.lblDescImporter.AutoSize = true;
+            this.lblDescImporter.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDescImporter.MaximumSize = new System.Drawing.Size(520, 0);
+            this.lblDescImporter.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.lblDescImporter.Name = "lblDescImporter";
+            //
             // lblDescDiagnostic
             //
             this.lblDescDiagnostic.Text = "Cherche les anomalies dans les données et produit un rapport (exportable en Excel). Lecture seule : rien n'est modifié.";
@@ -439,6 +465,8 @@
         private System.Windows.Forms.Label lblSectionAssistance;
         private System.Windows.Forms.Button btnRapport;
         private System.Windows.Forms.Button btnDiagnostic;
+        private System.Windows.Forms.Button btnImporter;
+        private System.Windows.Forms.Label lblDescImporter;
         private System.Windows.Forms.Label lblDescDiagnostic;
         private System.Windows.Forms.Label lblDescRapport;
     }

@@ -18,8 +18,15 @@ namespace Pharmacie2.Models
         public DbSet<MutuelPaiement> MutuelPaiements { get; set; }
         public DbSet<DepenseAnnexe> DepensesAnnexes { get; set; }
 
+        private readonly string? _chemin;
+
+        public AppDbContext() { }
+
+        /// <summary>Contexte sur un autre fichier (copie de travail de l'assistant d'import) : le fichier est libéré à la fermeture.</summary>
+        public AppDbContext(string chemin) { _chemin = chemin; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Data Source={CheminsApp.CheminBase}");
+            => options.UseSqlite(_chemin == null ? $"Data Source={CheminsApp.CheminBase}" : $"Data Source={_chemin};Pooling=False");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

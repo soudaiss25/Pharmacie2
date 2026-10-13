@@ -140,6 +140,50 @@ namespace Pharmacie2.views.UserControls
             }
         }
 
+        // ── Import d'une ancienne base (assistant) ────────────────────────
+
+        private void btnImporter_Click(object sender, EventArgs e)
+        {
+            using var ofd = new OpenFileDialog
+            {
+                Title = "Choisissez l'ancienne base à importer",
+                Filter = "Base ou sauvegarde (*.sqlite;*.chiffre)|*.sqlite;*.chiffre|Tous les fichiers (*.*)|*.*",
+                InitialDirectory = ParametresApp.Actuels.DossierSauvegardeExterne is { Length: > 0 } ext && Directory.Exists(ext) ? ext : CheminsApp.DossierSauvegardes
+            };
+            if (ofd.ShowDialog(this) != DialogResult.OK) return;
+
+            string? phrase = null;
+            if (ofd.FileName.EndsWith(".chiffre", StringComparison.OrdinalIgnoreCase))
+            {
+                using var f = new FormPhraseSecrete(confirmer: false);
+                if (f.ShowDialog(this) != DialogResult.OK) return;
+                phrase = f.Phrase;
+            }
+
+            using (var assistant = new FormAssistantImport(ofd.FileName, phrase))
+                if (assistant.ShowDialog(this) != DialogResult.OK) return;   // annulé ou refusé : rien n'a été modifié
+
+            try
+            {
+                // Juste après l'import : diagnostic et corrections certaines, puis rapport
+                RapportDiagnostic rapport;
+                using (var ctx = new AppDbContext())
+                    rapport = DiagnosticBaseService.Executer(ctx, appliquer: true);
+                DiagnosticBaseService.Enregistrer(rapport);
+                using var fenetre = new FormDiagnostic(rapport, apresImport: true);
+                fenetre.ShowDialog(this);
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Diagnostic après import", ex);
+                MessageBox.Show("L'import est fait, mais le diagnostic n'a pas pu être lancé : " + ex.Message, "Diagnostic", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            MessageBox.Show("L'import est terminé. L'application va redémarrer.", "Importer une ancienne base", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Application.Restart();
+            Environment.Exit(0);
+        }
+
         // ── Diagnostic (lecture seule) ────────────────────────────────────
 
         private void btnDiagnostic_Click(object sender, EventArgs e)

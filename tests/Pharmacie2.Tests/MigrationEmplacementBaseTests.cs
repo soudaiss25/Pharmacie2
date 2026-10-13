@@ -28,20 +28,8 @@ public class MigrationEmplacementBaseTests : IDisposable
 
     private static string CreerBase(string dossier, int ventes, DateTime? date = null)
     {
-        string f = Path.Combine(dossier, CheminsApp.NomFichierBase);
-        using (var c = new SqliteConnection($"Data Source={f};Pooling=False"))
-        {
-            c.Open();
-            using var cmd = c.CreateCommand();
-            cmd.CommandText = "CREATE TABLE ventes (IdVente INTEGER PRIMARY KEY, numeroVente TEXT);";
-            cmd.ExecuteNonQuery();
-            for (int i = 1; i <= ventes; i++)
-            {
-                cmd.CommandText = $"INSERT INTO ventes (numeroVente) VALUES ('V-{i:D6}');";
-                cmd.ExecuteNonQuery();
-            }
-        }
-        SqliteConnection.ClearAllPools();
+        // une vraie base de la pharmacie (migrations, administrateur, ventes) : l'assistant d'import la contrôle avant de la reprendre
+        string f = TestDb.CreerBase(Path.Combine(dossier, CheminsApp.NomFichierBase), ventes);
         if (date.HasValue) File.SetLastWriteTime(f, date.Value);
         return f;
     }

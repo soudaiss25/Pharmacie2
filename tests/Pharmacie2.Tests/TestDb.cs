@@ -54,6 +54,38 @@ public static class TestDb
         return ctx.Database.GetMigrations().Single(m => m.EndsWith("_" + nom));
     }
 
+    /// <summary>
+    /// Crée une vraie base de la pharmacie (migrations appliquées jusqu'à <paramref name="migrationCible"/>, ou toutes) à un chemin donné,
+    /// avec un administrateur et <paramref name="ventes"/> ventes. N'utilise ni n'altère la base de test courante.
+    /// </summary>
+    public static string CreerBase(string chemin, int ventes, string? migrationCible = null, bool admin = true, bool adminActif = true)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(chemin)!);
+        using (var ctx = new AppDbContext(chemin))
+        {
+            var migrator = ctx.GetService<IMigrator>();
+            if (migrationCible == null) migrator.Migrate(); else migrator.Migrate(MigrationId(migrationCible));
+        }
+        using (var c = new SqliteConnection($"Data Source={chemin};Pooling=False"))
+        {
+            c.Open();
+            if (admin)
+            {
+                Inserer(c, "Users", new() { ["Id"] = 1L, ["Nom"] = "A", ["Login"] = "admin", ["MotDePasse"] = "x", ["Role"] = "Administrateur" });
+                if (!adminActif)
+                {
+                    using var cmd = c.CreateCommand();
+                    cmd.CommandText = "UPDATE Users SET Actif = 0";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            for (int i = 1; i <= ventes; i++)
+                Inserer(c, "ventes", new() { ["IdVente"] = (long)i, ["numeroVente"] = $"V-{i:D6}", ["Statut"] = "Active", ["MontantTotal"] = "1000", ["UserId"] = admin ? (object)1L : DBNull.Value });
+        }
+        SqliteConnection.ClearAllPools();
+        return chemin;
+    }
+
     public static void MigrerTout()
     {
         using var ctx = new AppDbContext();

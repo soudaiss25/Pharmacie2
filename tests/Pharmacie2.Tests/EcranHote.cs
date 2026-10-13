@@ -48,6 +48,8 @@ public static class EcranHote
     {
         switch (t.Name)
         {
+            case "FormAssistantImport":
+                return new Pharmacie2.views.FormAssistantImport(Path.Combine(Path.GetTempPath(), "inexistant", "PharmacieDB.sqlite"), null);
             case "FormChoixBase":
                 return new Pharmacie2.views.FormChoixBase(new[]
                 {

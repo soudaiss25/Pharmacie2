@@ -98,6 +98,11 @@ namespace Pharmacie2.Services
         /// <summary>Vrai si une ancienne base vient d'être copiée pendant ce démarrage : le diagnostic automatique s'exécutera après les migrations.</summary>
         public static bool ImportEffectue { get; private set; }
 
+        internal static void MarquerImportEffectue() => ImportEffectue = true;
+
+        /// <summary>Phrase secrète saisie pour un fichier .chiffre choisi à la main (jamais enregistrée ni journalisée).</summary>
+        public static string? PhraseSaisie { get; set; }
+
         private static bool ContientPharma(string? s)
             => s != null && (s.Contains("Pharma", StringComparison.OrdinalIgnoreCase) || s.Contains("LIGUAPHARME", StringComparison.OrdinalIgnoreCase));
 
@@ -164,19 +169,6 @@ namespace Pharmacie2.Services
             catch { return -1; }
         }
 
-        /// <summary>Copie la base choisie (et ses fichiers -wal / -shm) vers l'emplacement fixe. L'original est conservé.</summary>
-        public static void Copier(string source)
-        {
-            foreach (var suffixe in Suffixes)
-            {
-                string src = source + suffixe;
-                if (File.Exists(src))
-                    File.Copy(src, CheminsApp.CheminBase + suffixe, overwrite: false);
-            }
-            ImportEffectue = true;
-            Journal.Info($"Ancienne base copiée : {source} ({new FileInfo(source).Length} octets) -> {CheminsApp.CheminBase}. L'original est conservé.");
-        }
-
         public enum Issue { RienACopier, Copiee, Abandon }
 
         /// <summary>
@@ -184,30 +176,31 @@ namespace Pharmacie2.Services
         /// <paramref name="choisir"/> : plusieurs bases → la base retenue (null = abandon).
         /// <paramref name="fichierManuel"/> : application déjà installée mais base introuvable → fichier choisi par l'utilisateur (null = abandon).
         /// </summary>
-        public static Issue Executer(EmplacementsAnciens e, Func<IReadOnlyList<BaseTrouvee>, BaseTrouvee?> choisir, Func<string?> fichierManuel)
+        public static Issue Executer(EmplacementsAnciens e, Func<IReadOnlyList<BaseTrouvee>, BaseTrouvee?> choisir, Func<string?> fichierManuel,
+            Func<string, string?, bool>? importer = null)
         {
+            // L'import passe TOUJOURS par l'assistant (contrôles, copie de travail, comparaison avant / après, sauvegarde avant-import).
+            // Par défaut : déroulement sans écran, qui refuse l'import au moindre contrôle en échec.
+            importer ??= (source, phrase) => ImportBaseService.Importer(source, phrase).Issue == IssueImport.Importee;
             if (File.Exists(CheminsApp.CheminBase)) return Issue.RienACopier;
 
             var analyse = Analyser(e);
             switch (analyse.Cas)
             {
                 case CasBase.UneBase:
-                    Copier(analyse.NonVides[0].Chemin);
-                    return Issue.Copiee;
+                    return importer(analyse.NonVides[0].Chemin, null) ? Issue.Copiee : Issue.Abandon;
 
                 case CasBase.PlusieursBases:
                     var retenue = choisir(analyse.NonVides);   // la plus récente est présélectionnée par l'écran
                     if (retenue == null) return Issue.Abandon;
                     Journal.Info("Plusieurs bases non vides : l'utilisateur a choisi " + retenue.Chemin);
-                    Copier(retenue.Chemin);
-                    return Issue.Copiee;
+                    return importer(retenue.Chemin, null) ? Issue.Copiee : Issue.Abandon;
 
                 case CasBase.IntrouvableDejaInstallee:
                     Journal.Info("Application déjà installée mais aucune base non vide trouvée : écran « Base de données introuvable ».");
                     string? fichier = fichierManuel();
                     if (fichier == null) return Issue.Abandon;
-                    Copier(fichier);
-                    return Issue.Copiee;
+                    return importer(fichier, PhraseSaisie) ? Issue.Copiee : Issue.Abandon;
 
                 default:
                     Journal.Info("Aucune trace d'une ancienne installation : première installation, une nouvelle base sera créée dans " + CheminsApp.DossierDonnees);
@@ -220,7 +213,7 @@ namespace Pharmacie2.Services
         {
             try
             {
-                var issue = Executer(EmplacementsAnciens.Systeme(), ChoisirParmiPlusieurs, DemanderFichier);
+                var issue = Executer(EmplacementsAnciens.Systeme(), ChoisirParmiPlusieurs, DemanderFichier, LancerAssistant);
                 if (issue == Issue.Abandon)
                 {
                     // Jamais de base vide créée « en silence » alors qu'une installation existe
@@ -237,6 +230,13 @@ namespace Pharmacie2.Services
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
+        }
+
+        /// <summary>Écran de l'assistant d'import (annulable à chaque étape) ; vrai si l'import a été fait.</summary>
+        private static bool LancerAssistant(string source, string? phrase)
+        {
+            using var f = new FormAssistantImport(source, phrase);
+            return f.ShowDialog() == DialogResult.OK;
         }
 
         private static BaseTrouvee? ChoisirParmiPlusieurs(IReadOnlyList<BaseTrouvee> bases)
