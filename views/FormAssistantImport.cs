@@ -209,6 +209,13 @@ namespace Pharmacie2.views
 
         public DataGridView Grille => _grille;
 
+        /// <summary>La copie de travail est supprimée dès que la fenêtre est libérée (fermée ou non).</summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) { _service?.Dispose(); _service = null; }
+            base.Dispose(disposing);
+        }
+
         private void PreparerRapport()
         {
             try
