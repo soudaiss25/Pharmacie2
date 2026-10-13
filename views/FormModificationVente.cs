@@ -180,6 +180,9 @@ namespace Pharmacie2.views
                     ? produit.PrixVente
                     : produit.PrixUnitaireVente;
 
+                if (FicheAVerifierService.AvertissementPrix(produit, prixU) is { } avertissement)
+                    MessageBox.Show(avertissement, "Prix à vérifier", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 if (existant != null)
                     existant.Quantite += form.QuantiteSelectionnee;
                 else

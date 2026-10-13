@@ -286,6 +286,9 @@ namespace Pharmacie2.Migrations
                     b.Property<DateTime>("DateExpiration")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("FicheAVerifier")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("FournisseurId")
                         .HasColumnType("INTEGER");
 
@@ -297,6 +300,9 @@ namespace Pharmacie2.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MotifVerification")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MotifsFiche")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("NbFoisParJour")

@@ -30,6 +30,9 @@
         {
             this.tlpRoot = new System.Windows.Forms.TableLayoutPanel();
             this.pnlVerification = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlFiche = new System.Windows.Forms.TableLayoutPanel();
+            this.lblFiche = new System.Windows.Forms.Label();
+            this.btnFicheVerifiee = new System.Windows.Forms.Button();
             this.lblVerification = new System.Windows.Forms.Label();
             this.flpVerification = new System.Windows.Forms.FlowLayoutPanel();
             this.btnCorrection = new System.Windows.Forms.Button();
@@ -96,6 +99,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numPrixVenteUnite)).BeginInit();
             this.tlpRoot.SuspendLayout();
             this.pnlVerification.SuspendLayout();
+            this.pnlFiche.SuspendLayout();
             this.flpVerification.SuspendLayout();
             this.panelContenu.SuspendLayout();
             this.tlpContenu.SuspendLayout();
@@ -113,16 +117,19 @@
             // 
             this.tlpRoot.ColumnCount = 1;
             this.tlpRoot.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpRoot.RowCount = 3;
+            this.tlpRoot.RowCount = 4;
+            this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
             this.tlpRoot.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpRoot.Controls.Add(this.pnlVerification, 0, 0);
             this.pnlVerification.TabIndex = 0;
-            this.tlpRoot.Controls.Add(this.panelContenu, 0, 1);
-            this.panelContenu.TabIndex = 1;
-            this.tlpRoot.Controls.Add(this.flpBoutons, 0, 2);
-            this.flpBoutons.TabIndex = 2;
+            this.tlpRoot.Controls.Add(this.pnlFiche, 0, 1);
+            this.pnlFiche.TabIndex = 1;
+            this.tlpRoot.Controls.Add(this.panelContenu, 0, 2);
+            this.panelContenu.TabIndex = 2;
+            this.tlpRoot.Controls.Add(this.flpBoutons, 0, 3);
+            this.flpBoutons.TabIndex = 3;
             this.tlpRoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRoot.Padding = new System.Windows.Forms.Padding(16, 16, 16, 16);
             this.tlpRoot.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -147,7 +154,46 @@
             this.pnlVerification.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.pnlVerification.BackColor = System.Drawing.Color.FromArgb(255, 243, 224);
             this.pnlVerification.Name = "pnlVerification";
-            // 
+            //
+            // pnlFiche
+            //
+            this.pnlFiche.ColumnCount = 1;
+            this.pnlFiche.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.pnlFiche.RowCount = 2;
+            this.pnlFiche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFiche.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.pnlFiche.Controls.Add(this.lblFiche, 0, 0);
+            this.lblFiche.TabIndex = 0;
+            this.pnlFiche.Controls.Add(this.btnFicheVerifiee, 0, 1);
+            this.btnFicheVerifiee.TabIndex = 1;
+            this.pnlFiche.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFiche.AutoSize = true;
+            this.pnlFiche.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.pnlFiche.Visible = false;
+            this.pnlFiche.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.pnlFiche.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.pnlFiche.BackColor = System.Drawing.Color.FromArgb(255, 243, 224);
+            this.pnlFiche.Name = "pnlFiche";
+            //
+            // lblFiche
+            //
+            this.lblFiche.Text = "";
+            this.lblFiche.AutoSize = true;
+            this.lblFiche.MaximumSize = new System.Drawing.Size(900, 0);
+            this.lblFiche.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFiche.ForeColor = System.Drawing.Color.FromArgb(230, 81, 0);
+            this.lblFiche.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.lblFiche.Name = "lblFiche";
+            //
+            // btnFicheVerifiee
+            //
+            this.btnFicheVerifiee.Text = "J'ai vérifié cette fiche";
+            this.btnFicheVerifiee.AutoSize = true;
+            this.btnFicheVerifiee.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnFicheVerifiee.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.btnFicheVerifiee.Name = "btnFicheVerifiee";
+            this.btnFicheVerifiee.Click += new System.EventHandler(this.btnFicheVerifiee_Click);
+            //
             // lblVerification
             // 
             this.lblVerification.Text = "";
@@ -858,6 +904,9 @@
 
         private System.Windows.Forms.TableLayoutPanel tlpRoot;
         private System.Windows.Forms.TableLayoutPanel pnlVerification;
+        private System.Windows.Forms.TableLayoutPanel pnlFiche;
+        private System.Windows.Forms.Label lblFiche;
+        private System.Windows.Forms.Button btnFicheVerifiee;
         private System.Windows.Forms.Label lblVerification;
         private System.Windows.Forms.FlowLayoutPanel flpVerification;
         private System.Windows.Forms.Button btnCorrection;

@@ -117,6 +117,15 @@ namespace Pharmacie2.Models
         /// <summary>Explication affichée à l'utilisateur.</summary>
         public string? MotifVerification { get; set; }
 
+        /// <summary>
+        /// Fiche à vérifier (prix, péremption…) : badge visible dans Stock et Catalogue tant que le problème n'est pas réglé.
+        /// Posé uniquement par le diagnostic d'import ; levé par « J'ai vérifié cette fiche » ou par la correction du prix / de la date.
+        /// </summary>
+        public bool FicheAVerifier { get; set; }
+
+        /// <summary>Motifs de la fiche à vérifier, séparés par « ; » (chacun commence par « Prix : » ou « Péremption : »).</summary>
+        public string? MotifsFiche { get; set; }
+
         /// <summary>false = archivé : n'apparaît plus dans les choix, mais reste dans l'historique.</summary>
         public bool Actif { get; set; } = true;
 

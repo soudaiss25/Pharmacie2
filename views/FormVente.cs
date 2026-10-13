@@ -249,6 +249,10 @@ namespace Pharmacie2.views
                     ? produit.PrixVente
                     : produit.PrixUnitaireVente;
 
+                // Prix signalé « à vérifier » (diagnostic de l'ancienne base) : avertissement avant l'ajout, la vente reste possible
+                if (FicheAVerifierService.AvertissementPrix(produit, prixU) is { } avertissement)
+                    MessageBox.Show(avertissement, "Prix à vérifier", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 // Si le produit est déjà dans la liste avec la même unité → cumul
                 var existant = _lignes.FirstOrDefault(l =>
                     l.ProduitId == produit.Id && l.UniteVendue == unite);

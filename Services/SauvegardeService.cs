@@ -92,13 +92,13 @@ namespace Pharmacie2.Services
             var sb = new StringBuilder();
             sb.AppendLine("Id;Nom;Type;PrixAchat;MargeBeneficiaire;PrixVente;PrixVenteUnite;" +
                           "QuantiteEnStock;SeuilAlerte;DateExpiration;UniteVente;" +
-                          "NbUniteParBoite;FournisseurId;Indication;Posologie;NbFoisParJour;Actif;StockAVerifier;UnitesManquantesEstimees");
+                          "NbUniteParBoite;FournisseurId;Indication;Posologie;NbFoisParJour;Actif;StockAVerifier;UnitesManquantesEstimees;FicheAVerifier;MotifsFiche");
 
             foreach (var p in ctx.produits.AsNoTracking().ToList())
                 sb.AppendLine($"{p.Id};{Echap(p.Nom)};{p.Type};{p.PrixAchat};{p.MargeBeneficiaire};" +
                     $"{p.PrixVente};{p.PrixVenteUnite};{p.QuantiteEnStock};{p.SeuilAlerte};" +
                     $"{p.DateExpiration:yyyy-MM-dd};{p.UniteVente};{p.NbUniteParBoite};" +
-                    $"{p.FournisseurId};{Echap(p.Indication)};{Echap(p.Posologie)};{p.NbFoisParJour};{p.Actif};{p.StockAVerifier};{p.UnitesManquantesEstimees}");
+                    $"{p.FournisseurId};{Echap(p.Indication)};{Echap(p.Posologie)};{p.NbFoisParJour};{p.Actif};{p.StockAVerifier};{p.UnitesManquantesEstimees};{p.FicheAVerifier};{Echap(p.MotifsFiche)}");
 
             Ecrire(Path.Combine(dossier, "produits.csv"), sb.ToString());
         }

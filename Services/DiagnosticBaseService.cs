@@ -80,6 +80,13 @@ namespace Pharmacie2.Services
                     Ajouter(code, GroupeConstat.AVerifier, objet, $"{phrase} — non corrigé (lecture seule) : {avant}");
             }
 
+            // Marquage de la fiche produit : seulement à l'import (jamais en lecture seule), journalisé
+            void Marquer(Produit p, string code, string motif)
+            {
+                if (FicheAVerifierService.Marquer(p, motif))
+                    Journal.Info($"Diagnostic {code} : {p.Nom} : fiche marquée « À vérifier » ({motif})");
+            }
+
             // ═══════════════ STOCK ═══════════════
             var produits = ctx.produits.ToList();
             // Produits déjà marqués « à vérifier » par l'ancienne réception ; ceux marqués par ce diagnostic (D1, D4) ont leur propre motif
@@ -133,7 +140,11 @@ namespace Pharmacie2.Services
                     decimal unite = p.PrixVenteUnite ?? 0m;
                     if (unite <= coutUnite) motifs.Add($"prix à l'unité ({M(unite)}) inférieur ou égal au coût d'achat d'une unité ({M(coutUnite)})");
                 }
-                if (motifs.Count > 0) Ajouter("D5", GroupeConstat.AVerifier, p.Nom, string.Join(" ; ", motifs));
+                if (motifs.Count > 0)
+                {
+                    Ajouter("D5", GroupeConstat.AVerifier, p.Nom, string.Join(" ; ", motifs) + (appliquer ? " — fiche marquée « À vérifier »" : ""));
+                    if (appliquer) foreach (var m in motifs) Marquer(p, "D5", FicheAVerifierService.PrefixePrix + " : " + m);
+                }
             }
 
             var parType = produits.GroupBy(p => p.Type ?? "").ToDictionary(
@@ -146,7 +157,11 @@ namespace Pharmacie2.Services
                              || (p.PrixVente > 0 && medV > 0 && p.PrixVente >= 50 * medV)
                              || (p.PrixAchat > 0 && p.PrixVente >= 10 * p.PrixAchat);
                 if (aberrant)
-                    Ajouter("D6", GroupeConstat.AVerifier, p.Nom, $"prix peut-être multiplié par 100 à la saisie (achat {M(p.PrixAchat)}, vente {M(p.PrixVente)})");
+                {
+                    string motif = $"prix peut-être multiplié par 100 à la saisie (achat {M(p.PrixAchat)}, vente {M(p.PrixVente)})";
+                    Ajouter("D6", GroupeConstat.AVerifier, p.Nom, motif + (appliquer ? " — fiche marquée « À vérifier »" : ""));
+                    if (appliquer) Marquer(p, "D6", FicheAVerifierService.PrefixePrix + " : " + motif);
+                }
             }
 
             foreach (var p in produits.Where(p => p.NbUniteParBoite > 1 && p.PrixVenteUnite != null))              // D7
@@ -155,7 +170,10 @@ namespace Pharmacie2.Services
             foreach (var p in produits)                                                                             // D8
             {
                 if (p.DateExpiration.Year < 2000 || p.DateExpiration.Year > 2100)
-                    Ajouter("D8", GroupeConstat.AVerifier, p.Nom, $"date de péremption vide ou invraisemblable ({p.DateExpiration:dd/MM/yyyy})");
+                {
+                    Ajouter("D8", GroupeConstat.AVerifier, p.Nom, $"date de péremption vide ou invraisemblable ({p.DateExpiration:dd/MM/yyyy})" + (appliquer ? " — fiche marquée « À vérifier »" : ""));
+                    if (appliquer) Marquer(p, "D8", FicheAVerifierService.PrefixePeremption + " : date vide ou invraisemblable");
+                }
                 else if (p.DateExpiration.Date < now.Date && p.QuantiteEnStock > 0)
                     Ajouter("D8", GroupeConstat.Information, p.Nom, $"périmé depuis le {p.DateExpiration:dd/MM/yyyy}, encore {p.QuantiteEnStock} unité(s) en stock");
             }

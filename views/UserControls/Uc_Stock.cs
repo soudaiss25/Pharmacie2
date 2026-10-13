@@ -96,13 +96,13 @@ namespace Pharmacie2.views.UserControls
             else if (cbSeuil.Text == "Péremption proche")
                 query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration >= aujourdhui && p.DateExpiration <= limite);
             else if (cbSeuil.Text == "À vérifier")
-                query = query.Where(p => p.StockAVerifier && p.Actif);
+                query = query.Where(p => (p.StockAVerifier || p.FicheAVerifier) && p.Actif);
             else if (cbSeuil.Text == "Normal")
                 query = query.Where(p => p.QuantiteEnStock > p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
 
             var data = query
                 .OrderByDescending(p => p.Actif)            // archivés en dernier
-                .ThenByDescending(p => p.StockAVerifier)    // produits « À vérifier » en premier
+                .ThenByDescending(p => p.StockAVerifier || p.FicheAVerifier)    // produits « À vérifier » en premier
                 .ThenBy(p => p.Nom)
                 .ToList()
                 .Select(p => new
@@ -115,7 +115,7 @@ namespace Pharmacie2.views.UserControls
                     Quantite = StockService.Formater(p),
                     Seuil = $"{Format.Compte(p.SeuilAlerte, "boîte")}",
                     Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
-                    Verification = !p.Actif ? "Archivé" : p.StockAVerifier ? "À vérifier" : "",
+                    Verification = !p.Actif ? "Archivé" : p.StockAVerifier || p.FicheAVerifier ? "À vérifier" : "",
                     Etat = !p.Actif ? "Archivé"
                          : p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui ? "Périmé"
                          : p.QuantiteEnStock <= 0 ? "Rupture"

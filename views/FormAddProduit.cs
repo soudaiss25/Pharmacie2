@@ -27,6 +27,12 @@ namespace Pharmacie2.views
         private string _motifVerification = "";
         private Produit _produitOrigine;
 
+        // Valeurs d'origine (mode modification) : un nouveau prix ou une nouvelle date lève le motif correspondant de la fiche à vérifier
+        private decimal _prixAchatOrigine, _prixVenteOrigine;
+        private decimal? _prixUniteOrigine;
+        private DateTime _dateOrigine;
+        private bool _ficheMarquee;
+
         // ── Constructeurs ─────────────────────────────────────────────────
 
         /// <summary>
@@ -68,6 +74,7 @@ namespace Pharmacie2.views
             this.Text = AppInfo.Titre("Modifier le produit");
             PreRemplir(produitId);
             AfficherBandeauVerification();
+            AfficherBandeauFiche();
         }
 
         // ── Câblage des événements ────────────────────────────────────────
@@ -104,6 +111,9 @@ namespace Pharmacie2.views
                 if (p == null) return;
 
                 txtNom.Text = p.Nom;
+                _prixAchatOrigine = p.PrixAchat; _prixVenteOrigine = p.PrixVente; _prixUniteOrigine = p.PrixVenteUnite; _dateOrigine = p.DateExpiration;
+                _ficheMarquee = p.FicheAVerifier;
+                _motifsFiche = FicheAVerifierService.Motifs(p);
                 cmbType.Text = p.Type;
                 // Ordre important : le prix de vente est saisi EN DERNIER (achat et marge le recalculent)
                 numPrixAchat.Value = Math.Min(numPrixAchat.Maximum, p.PrixAchat);
@@ -165,6 +175,27 @@ namespace Pharmacie2.views
                     cmbUniteVente.SelectedItem = p.UniteVente;
                 }
             }
+        }
+
+        // ── Bandeau « fiche à vérifier » (prix, péremption) ──────────────
+
+        private List<string> _motifsFiche = new();
+
+        private void AfficherBandeauFiche()
+        {
+            if (!_ficheMarquee || _motifsFiche.Count == 0) { pnlFiche.Visible = false; return; }
+            lblFiche.Text = "Fiche à vérifier (ancienne base) :" + Environment.NewLine + string.Join(Environment.NewLine, _motifsFiche.Select(m => "• " + m));
+            pnlFiche.Visible = true;
+        }
+
+        private void btnFicheVerifiee_Click(object sender, EventArgs e)
+        {
+            if (_produitId == null) return;
+            FicheAVerifierService.MarquerVerifiee(_produitId.Value);
+            _ficheMarquee = false;
+            _motifsFiche = new List<string>();
+            pnlFiche.Visible = false;
+            BandeauNotification.Succes("Fiche vérifiée");
         }
 
         // ── Bandeau « stock à vérifier » ──────────────────────────────────
@@ -488,6 +519,18 @@ namespace Pharmacie2.views
                         p.MargeBeneficiaire = marge;
                         p.PrixVente = prixVente;
                         p.PrixVenteUnite = prixVenteUnite;
+
+                        // Un nouveau prix ou une nouvelle date lève le motif correspondant de la fiche à vérifier
+                        if (p.FicheAVerifier)
+                        {
+                            string avant = p.MotifsFiche ?? "";
+                            bool prixChange = prixAchat != _prixAchatOrigine || prixVente != _prixVenteOrigine || prixVenteUnite != _prixUniteOrigine;
+                            bool dateChange = dtpDateExpiration.Value.Date != _dateOrigine.Date;
+                            if (prixChange) FicheAVerifierService.Lever(p, FicheAVerifierService.PrefixePrix);
+                            if (dateChange) FicheAVerifierService.Lever(p, FicheAVerifierService.PrefixePeremption);
+                            if ((prixChange || dateChange) && avant != (p.MotifsFiche ?? ""))
+                                Journal.Info($"Fiche produit « {p.Nom} » : motifs levés par correction ({(prixChange ? "prix" : "")}{(prixChange && dateChange ? ", " : "")}{(dateChange ? "date" : "")}). Avant : {avant}");
+                        }
                         if (stockTouche)
                         {
                             int ancienStock = p.QuantiteEnStock;

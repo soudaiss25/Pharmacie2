@@ -15,6 +15,7 @@ namespace Pharmacie2.Services
         Ruptures,
         PeremptionProche,
         StocksAVerifier,
+        FichesAVerifier,
         MutuellesEnRetard,
         SauvegardeExterne
     }
@@ -200,6 +201,10 @@ namespace Pharmacie2.Services
             var averifier = actifs.Where(p => p.StockAVerifier).OrderBy(p => p.Nom).ToList();
             if (averifier.Count > 0)
                 liste.Add(new AFaire(TypeAFaire.StocksAVerifier, "attention", Phrase(averifier.Count, "stock à vérifier", "stocks à vérifier", averifier.Select(p => p.Nom)), averifier.Count));
+
+            var fiches = actifs.Where(p => p.FicheAVerifier).OrderBy(p => p.Nom).ToList();
+            if (fiches.Count > 0)
+                liste.Add(new AFaire(TypeAFaire.FichesAVerifier, "attention", Phrase(fiches.Count, "fiche produit à vérifier", "fiches produits à vérifier", fiches.Select(p => p.Nom)), fiches.Count));
 
             var retards = MutuellesEnRetard(ctx, maintenant);
             if (retards.Count > 0)

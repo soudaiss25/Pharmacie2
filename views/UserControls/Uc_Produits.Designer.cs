@@ -54,7 +54,9 @@
             this.colUniteVente = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colExpiration = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFournisseur = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colVerification = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEtat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.chkAVerifier = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProduits)).BeginInit();
             this.tlpRoot.SuspendLayout();
             this.tlpEntete.SuspendLayout();
@@ -146,7 +148,8 @@
             // 
             // tlpFiltres
             // 
-            this.tlpFiltres.ColumnCount = 7;
+            this.tlpFiltres.ColumnCount = 8;
+            this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpFiltres.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -166,7 +169,8 @@
             this.cmbTypeFiltre.TabIndex = 3;
             this.tlpFiltres.Controls.Add(this.btnEffacer, 4, 0);
             this.btnEffacer.TabIndex = 4;
-            this.tlpFiltres.Controls.Add(this.lblCompteur, 5, 0);
+            this.tlpFiltres.Controls.Add(this.chkAVerifier, 5, 0);
+            this.tlpFiltres.Controls.Add(this.lblCompteur, 6, 0);
             this.lblCompteur.TabIndex = 5;
             this.tlpFiltres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpFiltres.AutoSize = true;
@@ -219,6 +223,14 @@
             this.btnEffacer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.btnEffacer.Name = "btnEffacer";
             // 
+            // chkAVerifier
+            //
+            this.chkAVerifier.Text = "À vérifier";
+            this.chkAVerifier.AutoSize = true;
+            this.chkAVerifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAVerifier.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.chkAVerifier.Name = "chkAVerifier";
+            //
             // lblCompteur
             // 
             this.lblCompteur.Text = "";
@@ -242,6 +254,7 @@
             this.colUniteVente,
             this.colExpiration,
             this.colFournisseur,
+            this.colVerification,
             this.colEtat});
             this.dgvProduits.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvProduits.AutoGenerateColumns = false;
@@ -352,6 +365,15 @@
             this.colFournisseur.MinimumWidth = 90;
             this.colFournisseur.ReadOnly = true;
             // 
+            // colVerification
+            //
+            this.colVerification.HeaderText = "À vérifier";
+            this.colVerification.Name = "Verification";
+            this.colVerification.DataPropertyName = "Verification";
+            this.colVerification.FillWeight = 8F;
+            this.colVerification.MinimumWidth = 80;
+            this.colVerification.ReadOnly = true;
+            //
             // colEtat
             // 
             this.colEtat.HeaderText = "État";
@@ -412,6 +434,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colUniteVente;
         private System.Windows.Forms.DataGridViewTextBoxColumn colExpiration;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFournisseur;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colVerification;
+        private System.Windows.Forms.CheckBox chkAVerifier;
         private System.Windows.Forms.DataGridViewTextBoxColumn colEtat;
     }
 }

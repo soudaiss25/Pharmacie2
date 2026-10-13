@@ -16,14 +16,14 @@ public class DiagnosticBaseTests
 {
     private const string Client = "Zéphyrine Rakotomalala";   // ne doit apparaître dans aucun rapport
 
-    private sealed class Ids
+    internal sealed class Ids
     {
         public int Neg, Nb0, Reception, Cmd, Prix, Aberrant, Unite, DateVide, Perime, Dup1, Dup2, Normal;
         public int V1, V2, V3a, V3b, V4a, V4b, V5, V6, V7, V8, V9, V10, V11, V12, V13;
         public int M1, M2, SessionHier, SessionAujourdhui;
     }
 
-    private static readonly DateTime Maintenant = new(2026, 10, 13, 10, 0, 0);
+    internal static readonly DateTime Maintenant = new(2026, 10, 13, 10, 0, 0);
 
     private static Produit Prod(string nom, decimal achat = 100, decimal vente = 200, int nb = 1, decimal? unite = null, string type = "Autre", int stock = 10, DateTime? exp = null)
         => new()
@@ -47,7 +47,7 @@ public class DiagnosticBaseTests
         => new() { NumeroPaiement = numero, Montant = montant, Mode = mode, UserId = userId, DatePaiement = date ?? Maintenant.AddDays(-3) };
 
     /// <summary>L'ancienne base : au moins un cas de chaque règle D1 à D23, plus des éléments normaux qui ne doivent rien déclencher.</summary>
-    private static Ids Preparer()
+    internal static Ids Preparer()
     {
         TestDb.Reinitialiser();
         TestDb.MigrerTout();
@@ -150,7 +150,7 @@ public class DiagnosticBaseTests
         return sb.ToString();
     }
 
-    private static RapportDiagnostic Lancer(bool appliquer)
+    internal static RapportDiagnostic Lancer(bool appliquer)
     {
         using var ctx = new AppDbContext();
         return DiagnosticBaseService.Executer(ctx, appliquer, Maintenant);

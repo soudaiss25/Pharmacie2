@@ -19,7 +19,8 @@ namespace Pharmacie2.views.UserControls
             cmbTypeFiltre.SelectedIndex = 0;
             txtRecherche.TextChanged += (s, e) => ChargerProduits();
             cmbTypeFiltre.SelectedIndexChanged += (s, e) => ChargerProduits();
-            btnEffacer.Click += (s, e) => { txtRecherche.Clear(); cmbTypeFiltre.SelectedIndex = 0; };
+            chkAVerifier.CheckedChanged += (s, e) => ChargerProduits();
+            btnEffacer.Click += (s, e) => { txtRecherche.Clear(); cmbTypeFiltre.SelectedIndex = 0; chkAVerifier.Checked = false; };
 
             // Archivage (remplace la suppression)
             _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Produit, SelectionProduit, ChargerProduits);
@@ -53,8 +54,11 @@ namespace Pharmacie2.views.UserControls
                     if (type != "Tous")
                         query = query.Where(p => p.Type == type);
 
+                    if (chkAVerifier.Checked)
+                        query = query.Where(p => (p.StockAVerifier || p.FicheAVerifier) && p.Actif);
+
                     DateTime aujourdhui = DateTime.Today;
-                    var data = query.OrderBy(p => p.Nom).ToList().Select(p => new
+                    var data = query.OrderByDescending(p => p.StockAVerifier || p.FicheAVerifier).ThenBy(p => p.Nom).ToList().Select(p => new
                     {
                         p.Id,
                         p.Nom,
@@ -67,6 +71,7 @@ namespace Pharmacie2.views.UserControls
                         UniteVente = p.UniteVente,
                         Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
                         Fournisseur = p.Fournisseur?.Nom ?? "—",
+                        Verification = !p.Actif ? "" : p.StockAVerifier || p.FicheAVerifier ? "À vérifier" : "",
                         Etat = !p.Actif ? "Archivé"
                              : p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui ? "Périmé"
                              : p.EstEnRupture() ? "Alerte"
@@ -90,7 +95,8 @@ namespace Pharmacie2.views.UserControls
             if (e.RowIndex < 0 || e.RowIndex >= dgvProduits.Rows.Count) return;
             string etat = dgvProduits.Rows[e.RowIndex].Cells["Etat"].Value?.ToString() ?? "";
 
-            Theme.ColorerEtat(dgvProduits, e, etat == "Archivé" ? "info" : etat == "Périmé" ? "urgent" : etat == "Alerte" ? "attention" : "");
+            string verif = dgvProduits.Rows[e.RowIndex].Cells["Verification"].Value?.ToString() ?? "";
+            Theme.ColorerEtat(dgvProduits, e, etat == "Archivé" ? "info" : etat == "Périmé" ? "urgent" : etat == "Alerte" || verif == "À vérifier" ? "attention" : "");
         }
 
         private void dgvProduits_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
