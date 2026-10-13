@@ -249,13 +249,13 @@ public class DiagnosticBaseTests
         Assert.Equal(-500m, ajust.Montant);
         Assert.Equal(ModesPaiement.Especes, ajust.Mode);
         Assert.Equal(ctx.ventes.Single(x => x.IdVente == ids.V1).DateVente, ajust.DatePaiement);
-        Assert.Equal(1000m, ctx.paiement.Where(x => x.VenteId == ids.V1).Sum(x => x.Montant));
+        Assert.Equal(1000m, ctx.paiement.Where(x => x.VenteId == ids.V1).ToList().Sum(x => x.Montant));
 
         Assert.True(ctx.ventes.Single(x => x.IdVente == ids.V6).MutuelleReglee);                   // D16
         Assert.Equal(ids.M2, ctx.ventes.Single(x => x.IdVente == ids.V7).MutuelId);                 // D17
         Assert.False(ctx.ventes.Single(x => x.IdVente == ids.V8).MutuelleReglee);                   // D18 : rien modifié
         Assert.Equal(ids.M1, ctx.ventes.Single(x => x.IdVente == ids.V9).MutuelId);                 // D19 : rien modifié
-        Assert.Equal(1200m, ctx.paiement.Where(x => x.VenteId == ids.V2).Sum(x => x.Montant));              // D12 : crédit sur-payé inchangé
+        Assert.Equal(1200m, ctx.paiement.Where(x => x.VenteId == ids.V2).ToList().Sum(x => x.Montant));              // D12 : crédit sur-payé inchangé
         Assert.Equal(1, ctx.paiement.Count(x => x.NumeroPaiement.StartsWith("P-AJUST-")));                   // un seul ajustement (D11)
     }
 

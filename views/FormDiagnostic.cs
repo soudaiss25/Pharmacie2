@@ -96,7 +96,8 @@ namespace Pharmacie2.views
 
         public DataGridView Grille(GroupeConstat g) => _grilles[g];
 
-        public bool BoutonSessionsVisible => _btnSessions.Visible;
+        /// <summary>Le bouton « Clôturer ces sessions » est proposé tant que des sessions sont restées ouvertes (même état que le bouton affiché).</summary>
+        public bool BoutonSessionsVisible => _rapport.SessionsOuvertes.Count > 0;
 
         private void Actualiser()
         {
