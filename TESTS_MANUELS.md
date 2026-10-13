@@ -462,3 +462,12 @@ Régler Windows en 1366 × 768 + zoom 125 %, ou réduire la fenêtre à la main 
 - [ ] Plusieurs bases non vides trouvées : une liste (emplacement, date, taille, ventes) s'affiche, la plus récente est sélectionnée ; le choix est respecté et le fichier est copié, pas déplacé.
 - [ ] Logiciel déjà installé mais base introuvable : écran « Base de données introuvable » (pas de création de compte administrateur), avec « Choisir le fichier… » et « Préparer un rapport pour le développeur ».
 - [ ] Vraie première installation (aucune trace) : écran de création du premier compte, comme avant.
+
+## 54. Diagnostic de la base (D1 à D23)
+- [ ] Juste après l'import d'une ancienne base (sur une COPIE) : une fenêtre « Diagnostic de l'ancienne base » s'ouvre avec trois onglets : « Corrigés automatiquement », « À vérifier », « Pour information ». Seules cinq corrections sont automatiques : stock négatif mis à 0, conditionnement nul mis à 1, vente sur-payée (paiement négatif `P-AJUST-…`), mutuelle marquée réglée, mutuelle de la vente rectifiée.
+- [ ] Les noms de produits et les numéros de vente sont affichés, jamais un nom de client.
+- [ ] « Exporter le rapport (Excel) » : un fichier avec un onglet par groupe, sans aucun nom de client.
+- [ ] Si des sessions de caisse sont restées ouvertes : le bouton « Clôturer ces sessions » les clôture (commentaire « Clôturée lors de l'import », montant attendu calculé) ; la session d'aujourd'hui n'est pas concernée.
+- [ ] Administration → « Lancer le diagnostic » : même rapport, mais **lecture seule** : rien n'est modifié, même les cas qui auraient été corrigés après un import apparaissent « à vérifier ».
+- [ ] « Préparer un rapport pour le développeur » : le ZIP contient `diagnostic_base.xlsx` si un diagnostic a été lancé.
+- [ ] Relancer le diagnostic juste après l'import : plus aucune correction automatique, et la base n'a pas changé.
