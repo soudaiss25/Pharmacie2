@@ -471,3 +471,25 @@ Régler Windows en 1366 × 768 + zoom 125 %, ou réduire la fenêtre à la main 
 - [ ] Administration → « Lancer le diagnostic » : même rapport, mais **lecture seule** : rien n'est modifié, même les cas qui auraient été corrigés après un import apparaissent « à vérifier ».
 - [ ] « Préparer un rapport pour le développeur » : le ZIP contient `diagnostic_base.xlsx` si un diagnostic a été lancé.
 - [ ] Relancer le diagnostic juste après l'import : plus aucune correction automatique, et la base n'a pas changé.
+
+## 55. Mises à jour automatiques (Velopack) : à faire sur le PC du développeur
+Release de test déjà publiée : <https://github.com/soudaiss25/Pharmacie2/releases/tag/v1.0.0-test> (canal Test). Voir `PUBLIER.md`.
+
+**Installation de la 1.0.0-test**
+- [ ] Renommer d'abord un éventuel raccourci « LIGUAPHARME » existant (« ANCIENNE version — ne plus utiliser »), puis lancer `LIGUAPHARME-test-Setup.exe` de la Release.
+- [ ] L'application s'installe dans `%LOCALAPPDATA%\LIGUAPHARME` (et non dans `Pharmacie2Data`) ; un raccourci « LIGUAPHARME » apparaît sur le Bureau.
+- [ ] SmartScreen : « Informations complémentaires » puis « Exécuter quand même » (voir `INSTALLATION_CLIENT.md`).
+- [ ] Premier lancement sur une COPIE de la base : l'assistant d'import s'ouvre (4 étapes, « Annuler » possible à chacune), puis le diagnostic.
+- [ ] Administration : « Version installée : 1.0.0-test » ; le canal est « Test » (le choisir si besoin). Le même numéro figure dans le rapport pour le développeur.
+- [ ] « Rechercher une mise à jour maintenant » : « Le logiciel est à jour ».
+
+**Publier la 1.0.1-test, puis vérifier**
+- [ ] Changer `<Version>` en `1.0.1`, commiter, CI vert, puis `git tag -a v1.0.1-test -m "test"` et `git push origin v1.0.1-test`. Attendre le workflow.
+- [ ] Sur le PC (application ouverte, au travail) : la mise à jour est **téléchargée en arrière-plan** (au plus 4 h après l'ouverture, ou tout de suite avec « Rechercher une mise à jour maintenant » : « Version disponible : 1.0.1-test »). L'écran ne se fige jamais.
+- [ ] Une bande grise apparaît en bas : « Une mise à jour (version 1.0.1-test) est prête. Elle sera installée à la prochaine ouverture de l'application. » (le bouton « Installer maintenant » n'est visible que pour l'Administrateur).
+- [ ] Ouvrir « Nouvelle vente », mettre un produit dans le panier, puis « Installer maintenant » : **refusé** avec le message « Une vente est en cours de saisie… ». Abandonner la vente : « Installer maintenant » demande une confirmation, puis l'application redémarre en 1.0.1-test.
+- [ ] Variante sans bouton : refaire une mise à jour (1.0.2-test), **fermer normalement** l'application : elle s'installe à la fermeture, sans redémarrage forcé. À la réouverture : bandeau « Application mise à jour en version 1.0.2-test ».
+- [ ] Après chaque mise à jour : **la base est intacte** (mêmes ventes, même stock, mêmes utilisateurs) ; le dossier `%LOCALAPPDATA%\Pharmacie2Data` n'a pas changé de contenu (sauf les sauvegardes du jour).
+- [ ] Si la version contient une migration : un fichier `PharmacieDB_avant-migration_<date>.sqlite` apparaît dans `Sauvegardes` au premier démarrage.
+- [ ] Couper le Wi-Fi puis « Rechercher une mise à jour maintenant » : message « La vérification n'a pas pu se faire… », aucune fenêtre d'erreur, l'application continue de fonctionner.
+- [ ] Un compte Caissier ne peut pas changer le canal (liste grisée) et ne voit pas « Installer maintenant ».
