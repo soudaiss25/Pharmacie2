@@ -23,7 +23,9 @@ namespace Pharmacie2
                 // L'application ne doit jamais tourner sur une base partiellement migrée.
                 try
                 {
+                    bool repriseAttendue = RepriseVentesService.EstEnAttente(context);
                     context.Database.Migrate();
+                    if (repriseAttendue) RepriseVentesService.Journaliser(context);   // une seule fois : au démarrage qui applique la migration
                     MotDePasseService.ConvertirMotsDePasseEnClair(context);   // idempotent
                     firstLaunch = !context.Users.Any();
                 }
