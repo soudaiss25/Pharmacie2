@@ -9,7 +9,7 @@ public class ArrondiRepriseVentesTests
     public void Vente_a_1666_67_partiellement_payee_donne_un_paiement_repris_exact_a_2_decimales()
     {
         TestDb.Reinitialiser();
-        TestDb.MigrerJusqua(TestDb.MigrationId("AjoutPrixVenteUnite"));
+        TestDb.MigrerJusqua(TestDb.MigrationId("AjoutAttenduCloture"));
         using (var c = TestDb.Ouvrir())
         {
             TestDb.Inserer(c, "Users", new() { ["Id"] = 1L, ["Nom"] = "A", ["Login"] = "admin", ["MotDePasse"] = "x", ["Role"] = "Administrateur" });
@@ -44,7 +44,7 @@ public class ArrondiRepriseVentesTests
     public void L_arrondi_ne_touche_que_les_paiements_de_reprise()
     {
         TestDb.Reinitialiser();
-        TestDb.MigrerJusqua(TestDb.MigrationId("AjoutPrixVenteUnite"));
+        TestDb.MigrerJusqua(TestDb.MigrationId("AjoutAttenduCloture"));
         using (var c = TestDb.Ouvrir())
         {
             TestDb.Inserer(c, "Users", new() { ["Id"] = 1L, ["Nom"] = "A", ["Login"] = "admin", ["MotDePasse"] = "x", ["Role"] = "Administrateur" });
