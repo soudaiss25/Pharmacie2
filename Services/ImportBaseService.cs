@@ -57,11 +57,19 @@ namespace Pharmacie2.Services
             Directory.CreateDirectory(_travail);
             Copie = Path.Combine(_travail, CheminsApp.NomFichierBase);
 
-            if (source.EndsWith(SauvegardeExterneService.Extension, StringComparison.OrdinalIgnoreCase) || source.EndsWith(".chiffre", StringComparison.OrdinalIgnoreCase))
-                SauvegardeExterneService.DechiffrerFichier(source, Copie, phrase ?? "");     // 7a : lève PhraseSecreteIncorrecteException si la phrase est fausse
-            else
-                foreach (var suffixe in new[] { "" }.Concat(Suffixes))
-                    if (File.Exists(source + suffixe)) CopierFichier(source + suffixe, Copie + suffixe);
+            try
+            {
+                if (source.EndsWith(SauvegardeExterneService.Extension, StringComparison.OrdinalIgnoreCase) || source.EndsWith(".chiffre", StringComparison.OrdinalIgnoreCase))
+                    SauvegardeExterneService.DechiffrerFichier(source, Copie, phrase ?? "");     // 7a : lève PhraseSecreteIncorrecteException si la phrase est fausse
+                else
+                    foreach (var suffixe in new[] { "" }.Concat(Suffixes))
+                        if (File.Exists(source + suffixe)) CopierFichier(source + suffixe, Copie + suffixe);
+            }
+            catch
+            {
+                Dispose();   // pas de copie de travail abandonnée si la phrase est fausse ou si la copie échoue
+                throw;
+            }
         }
 
         /// <summary>Copie un fichier même si une autre application l'a ouvert (lecture seule sur l'original).</summary>
