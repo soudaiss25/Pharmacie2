@@ -12,6 +12,11 @@ public class VenteMutuelleTests
         TestDb.MigrerTout();
         int pid = TestDb.NouveauProduit("Doliprane", 100, 1, "Boîte", 100m);
         using var ctx = new AppDbContext();
+        // Utilisateur connecté : les compléments et remboursements enregistrent qui les a encaissés
+        var admin = new User { Nom = "Said", Prenom = "Fatima", Role = Roles.Administrateur, Login = "admin", MotDePasse = MotDePasseService.Hacher("x") };
+        ctx.Users.Add(admin);
+        ctx.SaveChanges();
+        SessionUtilisateur.Courant = admin;
         var m0 = new Mutuel { NomEmployeur = "Aaa première", EmailContact = "", telephoneEmployeur = "", TauxPriseEnCharge = 30 };
         var m1 = new Mutuel { NomEmployeur = "Zzz entreprise", EmailContact = "", telephoneEmployeur = "", TauxPriseEnCharge = 50, Actif = !m1Archivee };
         ctx.mutuels.AddRange(m0, m1);
