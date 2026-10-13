@@ -15,6 +15,12 @@ namespace Pharmacie2.Services
 
         public const string Unite = "KMF";
 
+        /// <summary>Taille de fichier lisible : « 850 o », « 12,5 Ko », « 3,2 Mo ».</summary>
+        public static string Octets(long octets)
+            => octets < 1024 ? octets + "\u00A0o"
+             : octets < 1024 * 1024 ? (octets / 1024.0).ToString("0.#", _nombre) + "\u00A0Ko"
+             : (octets / 1048576.0).ToString("0.#", _nombre) + "\u00A0Mo";
+
         /// <summary>« 12 500 KMF » : aucune décimale, espace pour les milliers.</summary>
         public static string Montant(decimal montant) => Nombre(montant) + "\u00A0" + Unite;
 

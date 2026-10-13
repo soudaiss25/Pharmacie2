@@ -48,6 +48,12 @@ public static class EcranHote
     {
         switch (t.Name)
         {
+            case "FormChoixBase":
+                return new Pharmacie2.views.FormChoixBase(new[]
+                {
+                    new BaseTrouvee(@"C:\Users\caisse\AppData\Roaming\Pharmacie2\PharmacieDB.sqlite", 1_245_184, DateTime.Now.AddDays(-2), 412),
+                    new BaseTrouvee(@"C:\Program Files (x86)\LIGUAPHARME\PharmacieDB.sqlite", 98_304, DateTime.Now.AddDays(-190), 12)
+                });
             case "FormCleSecours": return new Pharmacie2.views.FormCleSecours("K7MQ-4XRT-9WPA-H3ZD");
             case "FormAddProduit": return new Pharmacie2.views.FormAddProduit(ids.Produit);
             case "FormAnnulationVente": return new Pharmacie2.views.FormAnnulationVente(ids.Vente);
