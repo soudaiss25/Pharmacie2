@@ -95,6 +95,9 @@ namespace Pharmacie2.Services
     {
         private static readonly string[] Suffixes = { "", "-wal", "-shm" };
 
+        /// <summary>Vrai si une ancienne base vient d'être copiée pendant ce démarrage : le diagnostic automatique s'exécutera après les migrations.</summary>
+        public static bool ImportEffectue { get; private set; }
+
         private static bool ContientPharma(string? s)
             => s != null && (s.Contains("Pharma", StringComparison.OrdinalIgnoreCase) || s.Contains("LIGUAPHARME", StringComparison.OrdinalIgnoreCase));
 
@@ -170,6 +173,7 @@ namespace Pharmacie2.Services
                 if (File.Exists(src))
                     File.Copy(src, CheminsApp.CheminBase + suffixe, overwrite: false);
             }
+            ImportEffectue = true;
             Journal.Info($"Ancienne base copiée : {source} ({new FileInfo(source).Length} octets) -> {CheminsApp.CheminBase}. L'original est conservé.");
         }
 

@@ -51,6 +51,19 @@ namespace Pharmacie2.Services
             {
                 EcrireEntree(archive, "infos.txt", Informations(now, ecran));
 
+                // dernier diagnostic de la base (numéros de vente et noms de produits seulement, jamais de nom de client)
+                var diagnostic = DiagnosticBaseService.Dernier();
+                if (diagnostic != null)
+                {
+                    string tmp = Path.Combine(Path.GetTempPath(), "diagnostic_" + Guid.NewGuid().ToString("N") + ".xlsx");
+                    try
+                    {
+                        DiagnosticBaseService.ExporterExcel(diagnostic, tmp);
+                        archive.CreateEntryFromFile(tmp, "diagnostic_base.xlsx", CompressionLevel.Optimal);
+                    }
+                    finally { try { File.Delete(tmp); } catch { } }
+                }
+
                 // journaux : lignes des 30 derniers jours, filtrées
                 var limite = now.Date.AddDays(-JoursDeJournaux);
                 foreach (var f in new DirectoryInfo(CheminsApp.DossierLogs).GetFiles("journal_*.log").OrderBy(f => f.Name))

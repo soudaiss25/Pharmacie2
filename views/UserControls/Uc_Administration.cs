@@ -139,6 +139,26 @@ namespace Pharmacie2.views.UserControls
             }
         }
 
+        // ── Diagnostic (lecture seule) ────────────────────────────────────
+
+        private void btnDiagnostic_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RapportDiagnostic rapport;
+                using (var ctx = new AppDbContext())
+                    rapport = DiagnosticBaseService.Executer(ctx, appliquer: false);   // jamais de correction automatique ici
+                DiagnosticBaseService.Enregistrer(rapport);
+                using var fenetre = new FormDiagnostic(rapport, apresImport: false);
+                fenetre.ShowDialog(this);
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Diagnostic de la base", ex);
+                MessageBox.Show("Le diagnostic n'a pas pu être fait : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         // ── Restauration ──────────────────────────────────────────────────
 
         private void btnRestaurer_Click(object sender, EventArgs e)

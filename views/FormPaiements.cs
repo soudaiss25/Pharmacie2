@@ -40,9 +40,9 @@ namespace Pharmacie2.views
                 lblRestant.Text = $"Reste à payer par le patient : {Format.Montant(restantPatient)}";
                 lblRestant.ForeColor = restantPatient > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
 
-                string vendeur = vente.User != null ? $"{vente.User.Prenom} {vente.User.Nom}" : "inconnu";
+                string vendeur = vente.User != null ? $"{vente.User.Prenom} {vente.User.Nom}" : "Vendeur inconnu";
                 string motif = !string.IsNullOrWhiteSpace(vente.MotifAchat) ? vente.MotifAchat : "—";
-                lblVendeurVente.Text = $"Vendeur : {vendeur}";
+                lblVendeurVente.Text = vente.User != null ? $"Vendeur : {vendeur}" : vendeur;
                 lblMotif.Text = $"Motif : {motif}";
 
                 // Maximum avant Value : on ne peut pas encaisser plus que ce que le patient doit
@@ -76,7 +76,7 @@ namespace Pharmacie2.views
                     Date = p.DatePaiement.ToString("dd/MM/yyyy HH:mm"),
                     p.Montant,
                     Mode = p.Montant < 0 ? "Remboursement (" + p.Mode + ")" : p.Mode,
-                    Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "—"
+                    Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "Vendeur inconnu"
                 }).ToList();
             }
         }

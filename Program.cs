@@ -30,6 +30,25 @@ namespace Pharmacie2
                     if (prixUniteAttendu) PrixUniteService.Journaliser(context);
                     MotDePasseService.ConvertirMotsDePasseEnClair(context);   // idempotent
                     firstLaunch = !context.Users.Any();
+
+                    // Juste après l'import d'une ancienne base : diagnostic (D1 à D23) + corrections certaines (D1, D4, D11, D16, D17) + rapport.
+                    // Une sauvegarde de la base copiée a été faite avant les migrations (SauvegardeAutomatique).
+                    if (MigrationEmplacementBase.ImportEffectue && !firstLaunch)
+                    {
+                        try
+                        {
+                            var rapport = DiagnosticBaseService.Executer(context, appliquer: true);
+                            DiagnosticBaseService.Enregistrer(rapport);
+                            using var fenetre = new Pharmacie2.views.FormDiagnostic(rapport, apresImport: true);
+                            fenetre.ShowDialog();
+                        }
+                        catch (Exception ex)
+                        {
+                            Journal.Erreur("Diagnostic de l'ancienne base", ex);
+                            MessageBox.Show("Le diagnostic de l'ancienne base n'a pas pu être fait : " + ex.Message + "\n\nVos données n'ont pas été modifiées par le diagnostic.",
+                                "Diagnostic", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

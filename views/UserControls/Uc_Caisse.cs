@@ -146,7 +146,7 @@ namespace Pharmacie2.views.UserControls
                             Total = v.MontantTotal,
                             Especes = v.MontantEspeces,
                             Rendu = v.MontantRendu,
-                            Vendeur = v.User != null ? $"{v.User.Prenom} {v.User.Nom}" : "—"
+                            Vendeur = v.User != null ? $"{v.User.Prenom} {v.User.Nom}" : "Vendeur inconnu"
                         }).ToList();
                 }
             }

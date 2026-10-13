@@ -54,6 +54,15 @@ public static class EcranHote
                     new BaseTrouvee(@"C:\Users\caisse\AppData\Roaming\Pharmacie2\PharmacieDB.sqlite", 1_245_184, DateTime.Now.AddDays(-2), 412),
                     new BaseTrouvee(@"C:\Program Files (x86)\LIGUAPHARME\PharmacieDB.sqlite", 98_304, DateTime.Now.AddDays(-190), 12)
                 });
+            case "FormDiagnostic":
+                {
+                    var r = new RapportDiagnostic { CorrectionsAppliquees = true, SessionsOuvertes = { 3 } };
+                    r.Constats.Add(new Constat("D1", GroupeConstat.Corrige, "Doliprane 500 mg", "stock négatif (−4) dans l'ancienne base (-4 → 0 et « À vérifier »)"));
+                    r.Constats.Add(new Constat("D6", GroupeConstat.AVerifier, "Sirop antitussif", "prix peut-être multiplié par 100 à la saisie (achat 25 000 KMF, vente 250 000 KMF)"));
+                    r.Constats.Add(new Constat("D22", GroupeConstat.AVerifier, "Session n°3", "ouverte le 02/03/2026 08:00 et jamais clôturée"));
+                    r.Constats.Add(new Constat("D9", GroupeConstat.Information, "Paracétamol 500 mg / Paracetamol 500mg", "doublon probable (aucune fusion automatique)"));
+                    return new Pharmacie2.views.FormDiagnostic(r, apresImport: true);
+                }
             case "FormCleSecours": return new Pharmacie2.views.FormCleSecours("K7MQ-4XRT-9WPA-H3ZD");
             case "FormAddProduit": return new Pharmacie2.views.FormAddProduit(ids.Produit);
             case "FormAnnulationVente": return new Pharmacie2.views.FormAnnulationVente(ids.Vente);

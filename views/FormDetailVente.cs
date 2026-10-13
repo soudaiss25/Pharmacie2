@@ -37,7 +37,7 @@ namespace Pharmacie2.views
                 lblClient.Text = $"{vente.PrenomClient} {vente.NomClient}".Trim() is { Length: > 0 } c ? c : "—";
                 lblTel.Text = string.IsNullOrWhiteSpace(vente.TelephoneClient) ? "—" : vente.TelephoneClient;
                 lblMotif.Text = "Motif : " + (!string.IsNullOrWhiteSpace(vente.MotifAchat) ? vente.MotifAchat : "—");
-                lblVendeur.Text = vente.User != null ? $"{vente.User.Prenom} {vente.User.Nom}" : "—";
+                lblVendeur.Text = vente.User != null ? $"{vente.User.Prenom} {vente.User.Nom}" : "Vendeur inconnu";
                 lblMode.Text = vente.MoyenPaiement;
                 lblStatut.Text = vente.Statut;
                 lblStatut.ForeColor = vente.Statut == "Annulée" ? Theme.UrgentTexte : Theme.SuccesTexte;
@@ -84,7 +84,7 @@ namespace Pharmacie2.views
                     Date = p.DatePaiement.ToString("dd/MM/yyyy HH:mm"),
                     p.Montant,
                     Mode = p.Montant < 0 ? "Remboursement (" + p.Mode + ")" : p.Mode,
-                    Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "—"
+                    Caissier = p.User != null ? $"{p.User.Prenom} {p.User.Nom}" : "Vendeur inconnu"
                 }).ToList();
             }
         }

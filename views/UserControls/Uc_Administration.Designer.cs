@@ -54,6 +54,8 @@
             this.lblSectionAssistance = new System.Windows.Forms.Label();
             this.btnRapport = new System.Windows.Forms.Button();
             this.lblDescRapport = new System.Windows.Forms.Label();
+            this.btnDiagnostic = new System.Windows.Forms.Button();
+            this.lblDescDiagnostic = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numDelaiVerrouillage)).BeginInit();
             this.tlpRoot.SuspendLayout();
             this.tlpActions.SuspendLayout();
@@ -90,7 +92,8 @@
             this.tlpActions.ColumnCount = 2;
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpActions.RowCount = 13;
+            this.tlpActions.RowCount = 14;
+            this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpActions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -151,6 +154,10 @@
             this.btnRapport.TabIndex = 19;
             this.tlpActions.Controls.Add(this.lblDescRapport, 1, 12);
             this.lblDescRapport.TabIndex = 20;
+            this.tlpActions.Controls.Add(this.btnDiagnostic, 0, 13);
+            this.btnDiagnostic.TabIndex = 21;
+            this.tlpActions.Controls.Add(this.lblDescDiagnostic, 1, 13);
+            this.lblDescDiagnostic.TabIndex = 22;
             this.tlpActions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpActions.AutoSize = true;
             this.tlpActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -354,7 +361,25 @@
             this.btnRapport.Margin = new System.Windows.Forms.Padding(0, 6, 16, 6);
             this.btnRapport.Name = "btnRapport";
             this.btnRapport.Click += new System.EventHandler(this.btnRapport_Click);
-            // 
+            //
+            // btnDiagnostic
+            //
+            this.btnDiagnostic.Text = "Lancer le diagnostic";
+            this.btnDiagnostic.Width = 290;
+            this.btnDiagnostic.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.btnDiagnostic.Margin = new System.Windows.Forms.Padding(0, 6, 16, 6);
+            this.btnDiagnostic.Name = "btnDiagnostic";
+            this.btnDiagnostic.Click += new System.EventHandler(this.btnDiagnostic_Click);
+            //
+            // lblDescDiagnostic
+            //
+            this.lblDescDiagnostic.Text = "Cherche les anomalies dans les données et produit un rapport (exportable en Excel). Lecture seule : rien n'est modifié.";
+            this.lblDescDiagnostic.AutoSize = true;
+            this.lblDescDiagnostic.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDescDiagnostic.MaximumSize = new System.Drawing.Size(520, 0);
+            this.lblDescDiagnostic.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.lblDescDiagnostic.Name = "lblDescDiagnostic";
+            //
             // lblDescRapport
             // 
             this.lblDescRapport.Text = "Crée un fichier ZIP sur le Bureau (journaux filtrés et informations techniques, sans aucune donnée de la pharmacie) à envoyer par WhatsApp ou e-mail.";
@@ -413,6 +438,8 @@
         private System.Windows.Forms.Label lblDelaiUnite;
         private System.Windows.Forms.Label lblSectionAssistance;
         private System.Windows.Forms.Button btnRapport;
+        private System.Windows.Forms.Button btnDiagnostic;
+        private System.Windows.Forms.Label lblDescDiagnostic;
         private System.Windows.Forms.Label lblDescRapport;
     }
 }
