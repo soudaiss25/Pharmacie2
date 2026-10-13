@@ -1,4 +1,5 @@
-﻿using Pharmacie2.Services;
+﻿using Pharmacie2.Models;
+using Pharmacie2.Services;
 using Pharmacie2.views.Composants;
 
 namespace Pharmacie2.views.UserControls
