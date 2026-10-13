@@ -422,3 +422,43 @@ Régler Windows en 1366 × 768 + zoom 125 %, ou réduire la fenêtre à la main 
 - [ ] « Changer d'utilisateur » sans vente en cours : retour à la connexion. Avec une vente en cours : « Une vente est en cours : elle sera abandonnée. Continuer ? » ; Non → l'écran reste verrouillé ; Oui → vente abandonnée, retour à la connexion.
 - [ ] « Mot de passe oublié ? » reste disponible sur l'écran de verrouillage (clé de secours).
 - [ ] Alt+F4 ne contourne pas le verrouillage.
+
+---
+
+# Règles du client : caisse et prix à l'unité (R1 à R8)
+
+À faire sur une COPIE de la base. Voir aussi `REGLES_METIER.md`.
+
+## 50. Caisse sans fond, clôture et attendu
+- [ ] Ouvrir la caisse : aucun champ « fond de caisse » ; le message dit seulement « Ouvrir la caisse maintenant ? », sans parler d'argent dans le tiroir.
+- [ ] Caisse (Administrateur) : ni colonne « Fond de caisse », ni mention d'un fond dans le détail d'une session.
+- [ ] Vente comptant de 3 000 KMF avec 5 000 donnés (rendu 2 000) : « Espèces attendues » de la session = **3 000 KMF**.
+- [ ] Vente par carte, chèque, Mvola ou Huri Money : l'attendu en espèces ne change pas ; le montant apparaît sous « Hors tiroir ».
+- [ ] **Remboursement d'un crédit de la veille en espèces** (Crédits clients → Encaisser, mode Espèces) : l'attendu augmente. Le même remboursement par **Mvola** : l'attendu ne change pas.
+- [ ] Clôturer la caisse : **aucun mot de passe** demandé. Rouvrir l'écran Caisse : l'attendu de la session clôturée est celui du moment de la clôture, même si une vente est modifiée ensuite.
+- [ ] Une ancienne session (avant la mise à jour) affiche son attendu suivi de « (recalculé) ».
+- [ ] Un crédit de 1 000 avec 300 d'avance : la session affiche « versements reçus : 300 KMF, reste dû : 700 KMF » (jamais 1 000 comme encaissé). Même chose pour la page du Caissier et le rapport.
+- [ ] Une vente mutuelle : « part patient reçue » et « part des entreprises en attente » séparées.
+- [ ] Un caissier ne voit que les ventes de **sa** session (page du Caissier).
+
+## 51. Modification d'une vente : complément ou remboursement
+- [ ] Vente comptant de 1 000 modifiée à 3 000 : message « Le client paie 2 000 KMF en plus », mode proposé Espèces ; après confirmation, un paiement de +2 000 apparaît dans l'historique, l'attendu en espèces augmente de 2 000.
+- [ ] Même vente réduite à 400 : message « Rendre 600 KMF au client » ; un paiement **Remboursement** de −600 (numéro `R-…`) apparaît, l'attendu diminue de 600.
+- [ ] Vente par carte réduite : le remboursement est en **Carte bancaire**, l'attendu en espèces ne change pas. Vente par carte augmentée : complément en Espèces par défaut (ou autre mode choisi).
+- [ ] Vente mutuelle : seule la part du patient est complétée ou rendue ; la part de la mutuelle reste « en attente ».
+- [ ] Vente à crédit modifiée : aucun paiement ajouté ; si le total devient inférieur à ce qui a déjà été versé, un remboursement est proposé.
+- [ ] Crédit passé en comptant : le complément est encaissé.
+- [ ] Au premier démarrage après la mise à jour, le journal contient « Reprise des ventes payées en totalité : N vente(s) réparée(s) » avec leurs numéros (sans nom de client).
+
+## 52. Prix à l'unité (fixé par le client)
+- [ ] Produit existant vendu au détail : le prix à l'unité affiché est celui d'avant la mise à jour (ex. 1 000 KMF la boîte de 3 plaquettes → 333 KMF) ; la liste est dans le journal pour vérification.
+- [ ] Nouveau produit, « Vente au détail » cochée : le champ « Prix de vente à l'unité » est **vide (0)** et obligatoire ; enregistrer sans le remplir est refusé.
+- [ ] Prix à l'unité inférieur ou égal au prix d'achat d'une unité (achat de la boîte ÷ nombre d'unités) : refusé avec un message clair. Idem prix de la boîte inférieur ou égal au prix d'achat.
+- [ ] L'aperçu affiche côte à côte le prix de la boîte et le prix de la plaquette saisis ; changer le prix de la boîte ne change pas celui de la plaquette.
+- [ ] Changer le nombre de plaquettes par boîte : le prix à l'unité reste inchangé, « Vérifiez le prix à l'unité » s'affiche et une confirmation est demandée avant d'enregistrer.
+- [ ] Vendre des plaquettes : la ligne de vente utilise exactement le prix saisi ; les anciennes lignes de vente ne changent pas.
+
+## 53. Retrouver l'ancienne base (déploiement d'avril)
+- [ ] Plusieurs bases non vides trouvées : une liste (emplacement, date, taille, ventes) s'affiche, la plus récente est sélectionnée ; le choix est respecté et le fichier est copié, pas déplacé.
+- [ ] Logiciel déjà installé mais base introuvable : écran « Base de données introuvable » (pas de création de compte administrateur), avec « Choisir le fichier… » et « Préparer un rapport pour le développeur ».
+- [ ] Vraie première installation (aucune trace) : écran de création du premier compte, comme avant.
