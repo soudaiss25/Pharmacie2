@@ -131,10 +131,15 @@ namespace Pharmacie2.Services
                 .Where(m => m != ModesPaiement.Especes)
                 .ToDictionary(m => m, m => Somme(paiements.Where(p => p.Mode == m)));
 
+            // Détail d'une session : les ventes dont un paiement est rattaché à cette session (même faites par un autre utilisateur), plus,
+            // pour les anciennes ventes et celles sans paiement, la règle d'origine (vendeur de la session, dates de la session)
             var ventes = ctx.ventes.AsNoTracking()
                 .Include(v => v.Paiements)
-                .Where(v => v.DateVente >= debut && v.DateVente <= fin && v.Statut == "Active"
-                         && (userId == null || v.UserId == userId))
+                .Where(v => v.Statut == "Active"
+                         && (sessionId == null
+                             ? v.DateVente >= debut && v.DateVente <= fin && (userId == null || v.UserId == userId)
+                             : v.Paiements.Any(p => p.SessionCaisseId == sessionId)
+                               || (!v.Paiements.Any(p => p.SessionCaisseId != null) && v.DateVente >= debut && v.DateVente <= fin && (userId == null || v.UserId == userId))))
                 .ToList();
 
             return new VentilationCaisse(

@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
@@ -168,6 +168,63 @@ public class SessionPaiementTests
         using var c2 = new AppDbContext();
         Assert.Equal(c.SessionCaissier, c2.paiement.Single().SessionCaisseId);
         Assert.Equal(1500m, Attendu(c.SessionCaissier));
+    }
+
+    // ───────── ventes faites par un autre utilisateur sur la caisse ouverte ─────────
+
+    private static void AjouterVente(AppDbContext ctx, string numero, string type, decimal total, decimal mutuelle, int vendeur, DateTime date, int? session, decimal verse, string mode = ModesPaiement.Especes)
+    {
+        var v = new Vente
+        {
+            numeroVente = numero, Statut = "Active", NomClient = "N", PrenomClient = "P", TelephoneClient = "", MotifAchat = "", MatriculeEmploye = "N/A",
+            MoyenPaiement = type, Type = type, MotifAnnulation = "", MontantTotal = total, MontantMutuelle = mutuelle, UserId = vendeur, DateVente = date
+        };
+        if (verse != 0) v.Paiements.Add(new Paiement { NumeroPaiement = "P-" + numero, Montant = verse, Mode = mode, UserId = vendeur, SessionCaisseId = session, DatePaiement = date });
+        ctx.ventes.Add(v);
+    }
+
+    [Fact]
+    public void Une_vente_de_l_administrateur_sur_la_caisse_du_caissier_apparait_dans_la_session_du_caissier()
+    {
+        var c = Preparer();
+        var maintenant = DateTime.Now;
+        using (var ctx = new AppDbContext())
+        {
+            // faites par l'administrateur, payées dans le tiroir du caissier
+            AjouterVente(ctx, "V-000001", ModesPaiement.Comptant, 3000, 0, c.Admin, maintenant.AddMinutes(-30), c.SessionCaissier, 3000);
+            AjouterVente(ctx, "V-000002", ModesPaiement.Credit, 5000, 0, c.Admin, maintenant.AddMinutes(-20), c.SessionCaissier, 1000);       // 4 000 restent dus
+            AjouterVente(ctx, "V-000003", ModesPaiement.Mutuelle, 10000, 7000, c.Admin, maintenant.AddMinutes(-10), c.SessionCaissier, 3000);  // part mutuelle 7 000 en attente
+            // faite par le caissier lui-même, sans aucun paiement (crédit pur) : règle d'origine, reste dans sa session
+            AjouterVente(ctx, "V-000004", ModesPaiement.Credit, 2000, 0, c.Caissier, maintenant.AddMinutes(-5), null, 0);
+            ctx.SaveChanges();
+        }
+        using var ctx2 = new AppDbContext();
+        var v = CaisseService.Ventilation(ctx2, ctx2.SessionsCaisse.Single(s => s.Id == c.SessionCaissier));
+        Assert.Equal(3000m, v.VentesPayees);                       // vendues par l'administrateur, visibles ici
+        Assert.Equal(1000m, v.VersementsCredit);
+        Assert.Equal(3000m, v.PartPatientMutuelle);
+        Assert.Equal(7000m, v.Especes);                            // l'argent est dans CE tiroir : 3 000 + 1 000 + 3 000
+        Assert.Equal(6000m, v.ResteDuCredit);                      // 4 000 (vente de l'admin) + 2 000 (crédit pur du caissier)
+        Assert.Equal(7000m, v.PartMutuelleEnAttente);
+    }
+
+    [Fact]
+    public void Une_vente_du_caissier_encaissee_dans_la_caisse_d_un_autre_n_est_plus_comptee_dans_sa_session()
+    {
+        var c = Preparer();
+        using (var ctx = new AppDbContext())
+        {
+            var autre = new SessionCaisse { UserId = c.Admin, DateOuverture = DateTime.Now.AddHours(-1), Statut = "Ouverte", CommentaireCloture = "" };
+            ctx.SessionsCaisse.Add(autre);
+            ctx.SaveChanges();
+            AjouterVente(ctx, "V-000001", ModesPaiement.Credit, 5000, 0, c.Caissier, DateTime.Now.AddMinutes(-20), autre.Id, 1000);
+            ctx.SaveChanges();
+        }
+        using var ctx2 = new AppDbContext();
+        var chez = CaisseService.Ventilation(ctx2, ctx2.SessionsCaisse.Single(s => s.Id == c.SessionCaissier));
+        Assert.Equal((0m, 0m), (chez.ResteDuCredit, chez.Especes));
+        var admin = CaisseService.Ventilation(ctx2, ctx2.SessionsCaisse.Single(s => s.UserId == c.Admin));
+        Assert.Equal((4000m, 1000m), (admin.ResteDuCredit, admin.Especes));
     }
 
     // ───────── anciens paiements : la règle d'origine est conservée ─────────
