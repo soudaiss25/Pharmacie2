@@ -172,7 +172,8 @@ public class Regle14MargeTests
         }
         string autres = "group_concat(Id || '|' || Nom || '|' || PrixAchat || '|' || PrixVente || '|' || IFNULL(PrixVenteUnite,'') || '|' || QuantiteEnStock, '#')";
         string avant = TestDb.Texte($"SELECT {autres} FROM produits");
-        var comptes = TestDb.Comptes(TestDb.Ouvrir(), TestDb.TablesMetier);
+        Dictionary<string, long> comptes;
+        using (var c0 = TestDb.Ouvrir()) comptes = TestDb.Comptes(c0, TestDb.TablesMetier);
 
         TestDb.MigrerJusqua(TestDb.MigrationId("RecalculMargeBeneficiaire"));
 
