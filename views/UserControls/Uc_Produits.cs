@@ -65,7 +65,7 @@ namespace Pharmacie2.views.UserControls
                         p.Type,
                         p.PrixAchat,
                         p.PrixVente,
-                        Marge = p.MargeBeneficiaire.ToString("0.#") + " %",
+                        Marge = MargeService.Texte(p),
                         Stock = StockService.Formater(p),
                         Seuil = $"{Format.Compte(p.SeuilAlerte, "boîte")}",
                         UniteVente = p.UniteVente,

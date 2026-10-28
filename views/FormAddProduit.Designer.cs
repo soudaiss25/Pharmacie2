@@ -50,7 +50,6 @@
             this.lblPrixAchat = new System.Windows.Forms.Label();
             this.numPrixAchat = new System.Windows.Forms.NumericUpDown();
             this.lblMarge = new System.Windows.Forms.Label();
-            this.numMarge = new System.Windows.Forms.NumericUpDown();
             this.lblPrixVente = new System.Windows.Forms.Label();
             this.numPrixVente = new System.Windows.Forms.NumericUpDown();
             this.lblFournisseur = new System.Windows.Forms.Label();
@@ -90,7 +89,6 @@
             this.btnEnregistrer = new System.Windows.Forms.Button();
             this.btnAnnuler = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numPrixAchat)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMarge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPrixVente)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPosologieJour)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numQuantite)).BeginInit();
@@ -320,14 +318,13 @@
             this.lblPrixAchat.TabIndex = 4;
             this.tlpProduit.Controls.Add(this.numPrixAchat, 1, 2);
             this.numPrixAchat.TabIndex = 5;
-            this.tlpProduit.Controls.Add(this.lblMarge, 0, 3);
-            this.lblMarge.TabIndex = 6;
-            this.tlpProduit.Controls.Add(this.numMarge, 1, 3);
-            this.numMarge.TabIndex = 7;
-            this.tlpProduit.Controls.Add(this.lblPrixVente, 0, 4);
-            this.lblPrixVente.TabIndex = 8;
-            this.tlpProduit.Controls.Add(this.numPrixVente, 1, 4);
-            this.numPrixVente.TabIndex = 9;
+            this.tlpProduit.Controls.Add(this.lblPrixVente, 0, 3);
+            this.lblPrixVente.TabIndex = 6;
+            this.tlpProduit.Controls.Add(this.numPrixVente, 1, 3);
+            this.numPrixVente.TabIndex = 7;
+            this.tlpProduit.Controls.Add(this.lblMarge, 0, 4);
+            this.tlpProduit.SetColumnSpan(this.lblMarge, 2);
+            this.lblMarge.TabIndex = 8;
             this.tlpProduit.Controls.Add(this.lblFournisseur, 0, 5);
             this.lblFournisseur.TabIndex = 10;
             this.tlpProduit.Controls.Add(this.cbFournisseur, 1, 5);
@@ -397,26 +394,14 @@
             this.numPrixAchat.Name = "numPrixAchat";
             // 
             // lblMarge
-            // 
-            this.lblMarge.Text = "Marge bénéfice (%)";
+            //
+            this.lblMarge.Text = "";
             this.lblMarge.AutoSize = true;
+            this.lblMarge.MaximumSize = new System.Drawing.Size(460, 0);
             this.lblMarge.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMarge.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
-            this.lblMarge.ForeColor = System.Drawing.Color.FromArgb(69, 90, 100);
+            this.lblMarge.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMarge.Margin = new System.Windows.Forms.Padding(0, 2, 0, 8);
             this.lblMarge.Name = "lblMarge";
-            // 
-            // numMarge
-            // 
-            this.numMarge.Width = 100;
-            this.numMarge.Minimum = new decimal(new int[] { 0, 0, 0, 0});
-            this.numMarge.Maximum = new decimal(new int[] { 100000, 0, 0, 0});
-            this.numMarge.Value = new decimal(new int[] { 0, 0, 0, 0});
-            this.numMarge.ThousandsSeparator = true;
-            this.numMarge.DecimalPlaces = 1;
-            this.numMarge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.numMarge.Margin = new System.Windows.Forms.Padding(0, 4, 8, 4);
-            this.numMarge.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numMarge.Name = "numMarge";
             // 
             // lblPrixVente
             // 
@@ -909,7 +894,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numQuantite)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPosologieJour)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPrixVente)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMarge)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPrixAchat)).EndInit();
 
         }
@@ -938,7 +922,6 @@
         private System.Windows.Forms.Label lblPrixAchat;
         private System.Windows.Forms.NumericUpDown numPrixAchat;
         private System.Windows.Forms.Label lblMarge;
-        private System.Windows.Forms.NumericUpDown numMarge;
         private System.Windows.Forms.Label lblPrixVente;
         private System.Windows.Forms.NumericUpDown numPrixVente;
         private System.Windows.Forms.Label lblFournisseur;

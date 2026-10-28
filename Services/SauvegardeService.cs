@@ -90,13 +90,13 @@ namespace Pharmacie2.Services
         private static void ExporterProduits(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;Nom;Type;PrixAchat;MargeBeneficiaire;PrixVente;PrixVenteUnite;" +
+            sb.AppendLine("Id;Nom;Type;PrixAchat;MargeBeneficiairePourcent;PrixVente;PrixVenteUnite;MargeKMF;" +
                           "QuantiteEnStock;SeuilAlerte;DateExpiration;PeremptionConnue;UniteVente;" +
                           "NbUniteParBoite;FournisseurId;Indication;Posologie;NbFoisParJour;Actif;StockAVerifier;UnitesManquantesEstimees;FicheAVerifier;MotifsFiche");
 
             foreach (var p in ctx.produits.AsNoTracking().ToList())
                 sb.AppendLine($"{p.Id};{Echap(p.Nom)};{p.Type};{p.PrixAchat};{p.MargeBeneficiaire};" +
-                    $"{p.PrixVente};{p.PrixVenteUnite};{p.QuantiteEnStock};{p.SeuilAlerte};" +
+                    $"{p.PrixVente};{p.PrixVenteUnite};{p.PrixVente - p.PrixAchat};{p.QuantiteEnStock};{p.SeuilAlerte};" +
                     $"{p.DateExpiration:yyyy-MM-dd};{p.PeremptionConnue};{p.UniteVente};{p.NbUniteParBoite};" +
                     $"{p.FournisseurId};{Echap(p.Indication)};{Echap(p.Posologie)};{p.NbFoisParJour};{p.Actif};{p.StockAVerifier};{p.UnitesManquantesEstimees};{p.FicheAVerifier};{Echap(p.MotifsFiche)}");
 

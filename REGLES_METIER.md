@@ -20,6 +20,7 @@ existant cité ici) vérifie chaque règle quand c'est automatisable ; sinon la 
 | 11 | Chèque, Carte bancaire, Mvola et Huri Money sont toujours payés en totalité au moment de la vente. | `FormVenteTests.Modes_regles_en_totalite_enregistrent_toujours_le_montant_verse` ; test `Regle11_*` |
 | 12 | Montants en KMF sans centimes. | Test `Regle12_*` ; `FondationsTests` |
 | 13 | Verrouillage automatique après 5 minutes d'inactivité (réglage par défaut validé par le client). | Test `Regle13_*` ; `VerrouillageTests` |
+| 14 | Le prix de vente n'est jamais recalculé automatiquement ; la marge s'affiche automatiquement (marge = prix de vente − prix d'achat, en KMF et en % du prix d'achat, à l'unité pour un produit au détail). | Tests `Regle14_*` (`Regle14MargeTests`) |
 
 ## Conséquences de calcul (déduites des règles ci-dessus)
 

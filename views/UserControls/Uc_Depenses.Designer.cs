@@ -848,7 +848,7 @@
             // 
             // colMarge
             // 
-            this.colMarge.HeaderText = "Marge";
+            this.colMarge.HeaderText = "Marge (% du chiffre d'affaires)";
             this.colMarge.Name = "Marge";
             this.colMarge.DataPropertyName = "Marge";
             this.colMarge.FillWeight = 8F;

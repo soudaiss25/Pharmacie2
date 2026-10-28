@@ -143,7 +143,7 @@ namespace Pharmacie2.views.UserControls
                     lblBeneficeNet.Text = Format.Montant(beneficeNet);
                     lblBeneficeNet.ForeColor = beneficeNet >= 0 ? Theme.SuccesTexte : Theme.UrgentTexte;
 
-                    lblMarge.Text = $"Marge : {margeNette:0.#} %";
+                    lblMarge.Text = $"Marge : {margeNette:0.#} % des revenus (bénéfice net ÷ revenus)";
                     lblMarge.ForeColor = margeNette >= 20 ? Theme.SuccesTexte : margeNette >= 0 ? Theme.AttentionTexte : Theme.UrgentTexte;
 
                     lblPeriodeMensuel.Text =

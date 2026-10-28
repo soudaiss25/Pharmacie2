@@ -541,7 +541,7 @@
             // 
             // colPourcentage
             // 
-            this.colPourcentage.HeaderText = "Part (%)";
+            this.colPourcentage.HeaderText = "Part de l'argent reçu (%)";
             this.colPourcentage.Name = "Pourcentage";
             this.colPourcentage.DataPropertyName = "Pourcentage";
             this.colPourcentage.FillWeight = 14F;

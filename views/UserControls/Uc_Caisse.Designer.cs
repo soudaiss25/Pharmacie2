@@ -772,7 +772,7 @@
             // 
             // colPctCA
             // 
-            this.colPctCA.HeaderText = "Part (%)";
+            this.colPctCA.HeaderText = "Part de l'argent reçu (%)";
             this.colPctCA.Name = "PctCA";
             this.colPctCA.DataPropertyName = "PctCA";
             this.colPctCA.FillWeight = 10F;

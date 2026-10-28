@@ -83,9 +83,12 @@ namespace Pharmacie2.views
 
         private void WireEvents()
         {
-            numPrixAchat.ValueChanged += RecalculerPrixVente;
-            numMarge.ValueChanged += RecalculerPrixVente;
+            // Le client tape ses deux prix ; le prix de vente n'est JAMAIS recalculé. La marge s'affiche automatiquement.
+            numPrixAchat.ValueChanged += VerifierMarge;
             numPrixVente.ValueChanged += VerifierMarge;
+            numPrixVenteUnite.ValueChanged += VerifierMarge;
+            numNbUniteParBoite.ValueChanged += VerifierMarge;
+            chkVenteDetail.CheckedChanged += VerifierMarge;
             chkVenteDetail.CheckedChanged += chkVenteDetail_CheckedChanged;
             cmbUniteVente.SelectedIndexChanged += MettreAJourApercu;
             numNbUniteParBoite.ValueChanged += MettreAJourApercu;
@@ -96,14 +99,37 @@ namespace Pharmacie2.views
             chkPasPeremption.CheckedChanged += (s, e) => { if (chkPasPeremption.Checked) dtpDateExpiration.Checked = false; };
         }
 
-        /// <summary>Colore le champ prix de vente en rouge si la marge est nulle ou négative.</summary>
+        /// <summary>
+        /// Affiche la marge en lecture seule, en direct (« Marge : 500 KMF (50 % du prix d'achat) », et à l'unité pour un produit au détail),
+        /// en vert si elle est positive et en rouge sinon. Ne modifie JAMAIS un prix.
+        /// </summary>
         private void VerifierMarge(object sender, EventArgs e)
         {
-            decimal achat = numPrixAchat.Value;
-            bool ok = numPrixVente.Value > achat && achat > 0;
-
+            decimal achat = numPrixAchat.Value, vente = numPrixVente.Value;
+            bool ok = vente > achat && achat > 0;
             numPrixVente.BackColor = ok ? Theme.SuccesFond : Theme.UrgentFond;
-            lblMarge.Text = !ok && achat > 0 ? "Marge bénéfice (%) : trop faible" : "Marge bénéfice (%)";
+
+            if (achat <= 0 && vente <= 0)
+            {
+                lblMarge.Text = "Marge : saisissez le prix d'achat et le prix de vente.";
+                lblMarge.ForeColor = Theme.Neutre;
+                return;
+            }
+
+            decimal marge = MargeService.Kmf(achat, vente);
+            bool positive = marge > 0;
+            lblMarge.Text = "Marge : " + MargeService.Texte(achat, vente);
+
+            if (chkVenteDetail.Checked && numNbUniteParBoite.Value > 1)
+            {
+                decimal margeUnite = Math.Round(MargeService.KmfUnite(achat, (int)numNbUniteParBoite.Value, numPrixVenteUnite.Value), 2);
+                decimal coutUnite = achat / numNbUniteParBoite.Value;
+                string pctUnite = coutUnite > 0 ? $" ({margeUnite / coutUnite * 100m:0.#} % du prix d'achat)" : "";
+                string unite = cmbUniteVente.SelectedItem?.ToString()?.ToLowerInvariant() ?? "unité";
+                lblMarge.Text += "\nPar " + unite + " : " + Format.Montant(margeUnite) + pctUnite;
+                positive &= margeUnite > 0;
+            }
+            lblMarge.ForeColor = positive ? Theme.SuccesTexte : Theme.UrgentTexte;
         }
 
         // ── Pré-remplissage en mode modification ──────────────────────────
@@ -121,9 +147,8 @@ namespace Pharmacie2.views
                 _aVentesUnite = ctx.LigneVentes.Any(l => l.ProduitId == p.Id && l.UniteVendue != StockService.UniteBoite);
                 _motifsFiche = FicheAVerifierService.Motifs(p);
                 cmbType.Text = p.Type;
-                // Ordre important : le prix de vente est saisi EN DERNIER (achat et marge le recalculent)
+                // Les deux prix sont affichés tels qu'enregistrés : aucun n'est recalculé à partir de l'autre
                 numPrixAchat.Value = Math.Min(numPrixAchat.Maximum, p.PrixAchat);
-                numMarge.Value = Math.Min(numMarge.Maximum, Math.Max(numMarge.Minimum, p.MargeBeneficiaire));
                 numPrixVente.Value = Math.Min(numPrixVente.Maximum, p.PrixVente);
                 numPrixVenteUnite.Value = Math.Min(numPrixVenteUnite.Maximum, p.PrixVenteUnite ?? 0m);   // jamais déduit du prix de la boîte
 
@@ -307,14 +332,6 @@ namespace Pharmacie2.views
             }
         }
 
-        // ── Calcul automatique prix de vente ──────────────────────────────
-
-        private void RecalculerPrixVente(object sender, EventArgs e)
-        {
-            decimal pv = Math.Round(numPrixAchat.Value * (1m + numMarge.Value / 100m), 0, MidpointRounding.AwayFromZero);
-            numPrixVente.Value = Math.Min(numPrixVente.Maximum, pv);
-        }
-
         // ── Activation/désactivation du bloc vente en détail ─────────────
 
         private void chkVenteDetail_CheckedChanged(object sender, EventArgs e)
@@ -391,9 +408,9 @@ namespace Pharmacie2.views
             if (prixVente <= prixAchat)
             {
                 MessageBox.Show(
-                    $"Le prix de vente ({Format.Montant(prixVente)}) doit être supérieur au prix d'achat ({Format.Montant(prixAchat)}).\n\nAjustez la marge bénéficiaire.",
+                    $"Le prix de vente ({Format.Montant(prixVente)}) doit être supérieur au prix d'achat ({Format.Montant(prixAchat)}).\n\nAugmentez le prix de vente ou corrigez le prix d'achat.",
                     "Marge invalide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                numMarge.Focus(); return;
+                numPrixVente.Focus(); return;
             }
 
             if (prixAchat <= 0)
@@ -454,7 +471,8 @@ namespace Pharmacie2.views
                 ? dtpDateExpiration.Value.Date
                 : (_produitId != null && _dateOrigine.Year >= 2000 ? _dateOrigine : new DateTime(2099, 12, 31));   // valeur sans effet : PeremptionConnue = false
 
-            decimal marge = numMarge.Value;
+            // La marge enregistrée est déduite des deux prix : (prix de vente − prix d'achat) ÷ prix d'achat × 100
+            decimal marge = MargeService.Enregistree(prixAchat, prixVente);
 
             int? fournisseurId = cbFournisseur.SelectedValue is int fId && fId > 0
                                    ? fId : (int?)null;

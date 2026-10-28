@@ -61,7 +61,7 @@ namespace Pharmacie2.Services
 
             // Argent reçu par moyen de paiement
             DrawTitreSection(ctx, "ARGENT REÇU PAR MOYEN DE PAIEMENT", vert);
-            DrawEntete(ctx, new[] { "Moyen de paiement", "Ventes", "Argent reçu", "Part" },
+            DrawEntete(ctx, new[] { "Moyen de paiement", "Ventes", "Argent reçu", "Part de l'argent reçu" },
                            new[] { 0.46, 0.14, 0.26, 0.14 });
             foreach (var m in stats.Modes)
                 DrawLigne(ctx, new[] { m.Mode, m.NbVentes.ToString(), Format.Montant(m.Recu), m.Pourcentage.ToString("0.#") + " %" },
@@ -250,7 +250,7 @@ namespace Pharmacie2.Services
             l++;
 
             Titre("Argent reçu par moyen de paiement");
-            Entete("Moyen de paiement", "Ventes", "Argent reçu", "Part");
+            Entete("Moyen de paiement", "Ventes", "Argent reçu", "Part de l'argent reçu");
             foreach (var m in stats.Modes)
             {
                 ws.Cell(l, 1).Value = m.Mode; ws.Cell(l, 2).Value = m.NbVentes;

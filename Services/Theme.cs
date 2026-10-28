@@ -398,7 +398,7 @@ namespace Pharmacie2.Services
                 return;
             }
 
-            if (g.Columns[e.ColumnIndex].HeaderText == "Part (%)" && (e.Value is decimal || e.Value is double))
+            if (g.Columns[e.ColumnIndex].HeaderText.StartsWith("Part") && g.Columns[e.ColumnIndex].HeaderText.EndsWith("(%)") && (e.Value is decimal || e.Value is double))
             {
                 e.Value = Math.Round(Convert.ToDecimal(e.Value), 1).ToString("0.#", new System.Globalization.CultureInfo("fr-FR")) + " %";
                 e.FormattingApplied = true;
