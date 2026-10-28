@@ -89,6 +89,7 @@ namespace Pharmacie2.views
             numPrixVenteUnite.ValueChanged += VerifierMarge;
             numNbUniteParBoite.ValueChanged += VerifierMarge;
             chkVenteDetail.CheckedChanged += VerifierMarge;
+            cmbUniteVente.SelectedIndexChanged += VerifierMarge;
             chkVenteDetail.CheckedChanged += chkVenteDetail_CheckedChanged;
             cmbUniteVente.SelectedIndexChanged += MettreAJourApercu;
             numNbUniteParBoite.ValueChanged += MettreAJourApercu;

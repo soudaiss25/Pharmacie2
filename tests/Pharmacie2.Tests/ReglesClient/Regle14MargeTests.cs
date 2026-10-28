@@ -102,6 +102,7 @@ public class Regle14MargeTests
             // produit au détail : marge d'une unité = prix à l'unité − prix d'achat de la boîte ÷ nombre d'unités
             UiHelper.Champ<NumericUpDown>(f, "numPrixVente").Value = 1500m;
             UiHelper.Champ<CheckBox>(f, "chkVenteDetail").Checked = true;
+            UiHelper.Champ<ComboBox>(f, "cmbUniteVente").SelectedItem = "Plaquette";
             UiHelper.Champ<NumericUpDown>(f, "numNbUniteParBoite").Value = 4;
             UiHelper.Champ<NumericUpDown>(f, "numPrixVenteUnite").Value = 400m;
             Assert.Contains("Par plaquette : 150 KMF (60 % du prix d'achat)", Normal(etiquette.Text));   // 400 − 250 ; 150 ÷ 250
