@@ -36,6 +36,12 @@ namespace Pharmacie2.Models
         /// <summary>Espèces attendues dans le tiroir, calculées et figées au moment de la clôture (null pour les anciennes sessions : voir CaisseService.Attendu).</summary>
         public decimal? MontantAttenduCloture { get; set; }
 
+        /// <summary>Motif obligatoire quand le montant compté diffère du montant attendu de plus de 100 KMF (« Vente oubliée », « Erreur de rendu de monnaie »…).</summary>
+        public string? MotifEcart { get; set; }
+
+        /// <summary>Commentaire facultatif sur l'écart.</summary>
+        public string? CommentaireEcart { get; set; }
+
         /// <summary>Commentaire libre à la clôture (ex: "5×1000 + 3×500…").</summary>
         public string CommentaireCloture { get; set; }
 

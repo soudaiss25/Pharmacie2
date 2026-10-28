@@ -65,6 +65,7 @@ public static class EcranHote
                     r.Constats.Add(new Constat("D9", GroupeConstat.Information, "Paracétamol 500 mg / Paracetamol 500mg", "doublon probable (aucune fusion automatique)"));
                     return new Pharmacie2.views.FormDiagnostic(r, apresImport: true);
                 }
+            case "FormEcartCloture": return new Pharmacie2.views.FormEcartCloture(-1500m);
             case "FormCleSecours": return new Pharmacie2.views.FormCleSecours("K7MQ-4XRT-9WPA-H3ZD");
             case "FormAddProduit": return new Pharmacie2.views.FormAddProduit(ids.Produit);
             case "FormAnnulationVente": return new Pharmacie2.views.FormAnnulationVente(ids.Vente);

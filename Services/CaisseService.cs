@@ -39,6 +39,18 @@ namespace Pharmacie2.Services
 
     public static class CaisseService
     {
+        /// <summary>Écart (en KMF) au-delà duquel un motif est obligatoire à la clôture. À 100 KMF ou moins : aucune question.</summary>
+        public const decimal SeuilEcart = 100m;
+
+        public static readonly string[] MotifsEcart = { "Vente oubliée", "Erreur de rendu de monnaie", "Paiement non saisi", "Inconnu" };
+
+        /// <summary>Écart d'une session clôturée = montant compté − montant attendu (figé, ou recalculé pour une ancienne session) ; null si pas de comptage.</summary>
+        public static decimal? Ecart(AppDbContext ctx, SessionCaisse session)
+        {
+            if (session.Statut != "Clôturée" || !session.MontantCompteCloture.HasValue) return null;
+            return session.MontantCompteCloture.Value - Attendu(ctx, session).Montant;
+        }
+
         public const string MessageAucuneCaisse = "Aucune caisse n'est ouverte : impossible d'encaisser de l'argent en espèces. Ouvrez la caisse d'abord (Caisse → Ouvrir la caisse), puis recommencez.";
 
         /// <summary>

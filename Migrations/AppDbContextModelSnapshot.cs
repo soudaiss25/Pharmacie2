@@ -374,6 +374,9 @@ namespace Pharmacie2.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CommentaireEcart")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime?>("DateCloture")
                         .HasColumnType("TEXT");
 
@@ -387,6 +390,9 @@ namespace Pharmacie2.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal?>("MontantCompteCloture")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MotifEcart")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Statut")

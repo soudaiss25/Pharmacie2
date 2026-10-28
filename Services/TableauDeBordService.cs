@@ -17,6 +17,7 @@ namespace Pharmacie2.Services
         PeremptionManquante,
         StocksAVerifier,
         FichesAVerifier,
+        EcartsCaisseRepetes,
         MutuellesEnRetard,
         SauvegardeExterne
     }
@@ -205,6 +206,11 @@ namespace Pharmacie2.Services
             if (fiches.Count > 0)
                 liste.Add(new AFaire(TypeAFaire.FichesAVerifier, "attention", Phrase(fiches.Count, "fiche produit à vérifier", "fiches produits à vérifier", fiches.Select(p => p.Nom)), fiches.Count));
 
+            var repetes = EcartsRepetes(ctx, maintenant);
+            if (repetes.Count > 0)
+                liste.Add(new AFaire(TypeAFaire.EcartsCaisseRepetes, "attention",
+                    Phrase(repetes.Count, $"caissier avec {NbEcartsAlerte} écarts de caisse ou plus en 7 jours", $"caissiers avec {NbEcartsAlerte} écarts de caisse ou plus en 7 jours", repetes.Select(r => $"{r.nom} ({r.nb})")), repetes.Count));
+
             var retards = MutuellesEnRetard(ctx, maintenant);
             if (retards.Count > 0)
             {
@@ -214,6 +220,22 @@ namespace Pharmacie2.Services
             }
 
             return liste;
+        }
+
+        public const int NbEcartsAlerte = 3;
+
+        /// <summary>Caissiers ayant au moins 3 écarts notables (plus de 100 KMF, en plus ou en moins) sur les 7 derniers jours.</summary>
+        public static List<(string nom, int nb)> EcartsRepetes(AppDbContext ctx, DateTime maintenant)
+        {
+            var depuis = maintenant.AddDays(-7);
+            var sessions = ctx.SessionsCaisse.AsNoTracking().Include(s => s.User)
+                .Where(s => s.Statut == "Clôturée" && s.DateCloture >= depuis && s.DateCloture <= maintenant).ToList();
+            return sessions
+                .Where(s => Math.Abs(CaisseService.Ecart(ctx, s) ?? 0m) > CaisseService.SeuilEcart)
+                .GroupBy(s => s.UserId)
+                .Where(g => g.Count() >= NbEcartsAlerte)
+                .Select(g => (g.First().User != null ? $"{g.First().User!.Prenom} {g.First().User!.Nom}" : "Utilisateur inconnu", g.Count()))
+                .ToList();
         }
 
         /// <summary>Mutuelles dont des parts de ventes actives sont impayées depuis plus de 30 jours.</summary>

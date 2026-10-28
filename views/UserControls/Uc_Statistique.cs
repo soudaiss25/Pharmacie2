@@ -167,6 +167,16 @@ namespace Pharmacie2.views.UserControls
                     "Plus gros débiteurs : " + string.Join(", ", debiteurs.Select(c => $"{c.Client} ({Format.Montant(c.Restant)})")),
                     "info", null));
 
+            if (s.Ecarts is { } e)
+            {
+                string Signe(decimal m) => (m > 0 ? "+" : "") + Format.Montant(m);
+                elements.Add(e.SessionsAvecEcart == 0
+                    ? new ElementAction("Écarts de caisse : aucun écart sur la période", "info", null)
+                    : new ElementAction($"Écarts de caisse : excédents {Format.Montant(e.Excedents)}, manquants {Format.Montant(e.Manquants)}, net {Signe(e.Net)}", e.Net < 0 ? "attention" : "info", null));
+                foreach (var c in e.ParCaissier.Take(5))
+                    elements.Add(new ElementAction($"      {c.Caissier} : {Format.Compte(c.Sessions, "session")} avec écart — excédents {Format.Montant(c.Excedents)}, manquants {Format.Montant(c.Manquants)}, net {Signe(c.Net)}", "info", null));
+            }
+
             listeAlertes.Definir(elements);
             _alertesTexte = string.Join("\n", elements.Select(e => e.Texte));
         }

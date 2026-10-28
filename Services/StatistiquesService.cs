@@ -11,11 +11,22 @@ namespace Pharmacie2.Services
 
     public record LigneMutuelleDue(string Mutuelle, int NbVentes, decimal TotalDu);
 
+    public record EcartCaissier(string Caissier, int Sessions, decimal Excedents, decimal Manquants)
+    {
+        public decimal Net => Excedents - Manquants;
+    }
+
+    /// <summary>Écarts de caisse des sessions clôturées pendant la période : excédents (compté > attendu), manquants (compté < attendu), net, par caissier.</summary>
+    public record EcartsCaisse(decimal Excedents, decimal Manquants, int SessionsAvecEcart, List<EcartCaissier> ParCaissier)
+    {
+        public decimal Net => Excedents - Manquants;
+    }
+
     public record StatsPeriode(
         decimal CA, decimal MargeBrute, decimal Depenses, decimal BeneficeNet,
         int NbVentes, int NbVentesASolder, decimal ArgentARecuperer,
         List<LigneMode> Modes, List<LigneTop> TopProduits, List<LigneCredit> Credits, List<LigneMutuelleDue> Mutuelles,
-        int LignesSansCout = 0);
+        int LignesSansCout = 0, EcartsCaisse? Ecarts = null);
 
     /// <summary>Statistiques d'une période. Les prix et quantités réellement pratiqués à la vente sont utilisés.</summary>
     public static class StatistiquesService
@@ -58,7 +69,25 @@ namespace Pharmacie2.Services
                 TopProduits(lignes),
                 Credits(ventes),
                 MutuellesDues(ctx, ventes),
-                calcul.LignesSansCout);
+                calcul.LignesSansCout,
+                EcartsDeCaisse(ctx, debut, fin));
+        }
+
+        public static EcartsCaisse EcartsDeCaisse(AppDbContext ctx, DateTime debut, DateTime fin)
+        {
+            var sessions = ctx.SessionsCaisse.AsNoTracking().Include(s => s.User)
+                .Where(s => s.Statut == "Clôturée" && s.DateCloture >= debut && s.DateCloture <= fin).ToList()
+                .Where(s => s.MontantCompteCloture.HasValue).ToList();
+            var lignes = new List<(string nom, decimal ecart)>();
+            foreach (var s in sessions)
+            {
+                decimal ecart = CaisseService.Ecart(ctx, s) ?? 0m;
+                if (ecart != 0) lignes.Add((s.User != null ? $"{s.User.Prenom} {s.User.Nom}" : "Utilisateur inconnu", ecart));
+            }
+            var parCaissier = lignes.GroupBy(l => l.nom)
+                .Select(g => new EcartCaissier(g.Key, g.Count(), g.Where(x => x.ecart > 0).Sum(x => x.ecart), -g.Where(x => x.ecart < 0).Sum(x => x.ecart)))
+                .OrderByDescending(c => c.Manquants + c.Excedents).ToList();
+            return new EcartsCaisse(lignes.Where(l => l.ecart > 0).Sum(l => l.ecart), -lignes.Where(l => l.ecart < 0).Sum(l => l.ecart), lignes.Count, parCaissier);
         }
 
         /// <summary>Argent réellement reçu pendant la période, par moyen de paiement de la vente d'origine.</summary>

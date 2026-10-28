@@ -11,6 +11,9 @@ namespace Pharmacie2.views
     public partial class FormSessionCaisse : Form
     {
         private readonly int _userId;
+
+        /// <summary>Demande le motif d'un écart notable (> 100 KMF). Remplaçable dans les tests ; null = clôture annulée.</summary>
+        public Func<decimal, (string Motif, string Commentaire)?>? DemandeMotifEcart { get; set; }
         private SessionCaisse _sessionOuverte;
 
         public FormSessionCaisse(int userId)
@@ -116,6 +119,16 @@ namespace Pharmacie2.views
                 session.Statut = "Clôturée";
                 // Figé pour toujours : une session clôturée n'est plus jamais recalculée
                 session.MontantAttenduCloture = CaisseService.EspecesAttendues(ctx, session);
+
+                // Écart notable : le motif est obligatoire (la clôture reste sans mot de passe). Sans motif, rien n'est enregistré.
+                decimal ecart = montantCompte - session.MontantAttenduCloture.Value;
+                if (Math.Abs(ecart) > CaisseService.SeuilEcart)
+                {
+                    var reponse = DemandeMotifEcart != null ? DemandeMotifEcart(ecart) : DemanderMotifEcart(ecart);
+                    if (reponse == null) return;
+                    session.MotifEcart = reponse.Value.Motif;
+                    session.CommentaireEcart = string.IsNullOrWhiteSpace(reponse.Value.Commentaire) ? null : reponse.Value.Commentaire.Trim();
+                }
                 ctx.SaveChanges();
             }
 
@@ -123,6 +136,12 @@ namespace Pharmacie2.views
 
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private (string Motif, string Commentaire)? DemanderMotifEcart(decimal ecart)
+        {
+            using var f = new FormEcartCloture(ecart);
+            return f.ShowDialog(this) == DialogResult.OK ? (f.Motif, f.Commentaire) : null;
         }
 
         private void btnAnnuler_Click(object sender, EventArgs e) => Close();

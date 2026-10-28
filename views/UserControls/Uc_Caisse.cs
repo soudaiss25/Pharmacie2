@@ -363,7 +363,8 @@ namespace Pharmacie2.views.UserControls
                         $"{(session.DateCloture.HasValue ? session.DateCloture.Value.ToString("HH:mm") : "maintenant")} — " +
                         $"encaissé {Format.Montant(encaisse)} — " +
                         $"espèces attendues {Format.Montant(theorique)}{(recalcule ? " (recalculé)" : "")}" +
-                        (ecart.HasValue ? $" — écart {(ecart >= 0 ? "+" : "")}{Format.Montant(ecart.Value)}" : "");
+                        (ecart.HasValue ? $" — écart {(ecart >= 0 ? "+" : "")}{Format.Montant(ecart.Value)}" : "") +
+                        (!string.IsNullOrEmpty(session.MotifEcart) ? $" — motif : {session.MotifEcart}{(string.IsNullOrEmpty(session.CommentaireEcart) ? "" : " (" + session.CommentaireEcart + ")")}" : "");
 
                     lblDetailSession.ForeColor = ecart.HasValue && ecart < 0 ? Theme.UrgentTexte : Theme.SuccesTexte;
 
