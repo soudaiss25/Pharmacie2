@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 
 namespace Pharmacie2.Services
@@ -49,6 +49,21 @@ namespace Pharmacie2.Services
         {
             if (session.Statut != "Clôturée" || !session.MontantCompteCloture.HasValue) return null;
             return session.MontantCompteCloture.Value - Attendu(ctx, session).Montant;
+        }
+
+        /// <summary>La session ouverte de l'utilisateur, de n'importe quel jour (la plus récente s'il en reste plusieurs d'avant cette règle).</summary>
+        public static SessionCaisse? SessionOuverteDe(AppDbContext ctx, int userId)
+            => ctx.SessionsCaisse.AsNoTracking().Include(s => s.User).Where(s => s.UserId == userId && s.Statut == "Ouverte")
+                .OrderByDescending(s => s.DateOuverture).FirstOrDefault();
+
+        /// <summary>Ouvre une session : refusée (null) si l'utilisateur en a déjà une ouverte, qu'elle date d'aujourd'hui ou d'un jour précédent.</summary>
+        public static SessionCaisse? Ouvrir(AppDbContext ctx, int userId, DateTime? maintenant = null)
+        {
+            if (ctx.SessionsCaisse.Any(s => s.UserId == userId && s.Statut == "Ouverte")) return null;
+            var s = new SessionCaisse { UserId = userId, DateOuverture = maintenant ?? DateTime.Now, FondOuverture = 0m, Statut = "Ouverte", CommentaireCloture = "" };
+            ctx.SessionsCaisse.Add(s);
+            ctx.SaveChanges();
+            return s;
         }
 
         public const string MessageAucuneCaisse = "Aucune caisse n'est ouverte : impossible d'encaisser de l'argent en espèces. Ouvrez la caisse d'abord (Caisse → Ouvrir la caisse), puis recommencez.";

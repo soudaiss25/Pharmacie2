@@ -27,15 +27,8 @@ namespace Pharmacie2.views
         private void ChargerEtat()
         {
             using (var ctx = new AppDbContext())
-            {
-                _sessionOuverte = ctx.SessionsCaisse
-                    .Include(s => s.User)
-                    .Where(s => s.UserId == _userId
-                             && s.Statut == "Ouverte"
-                             && s.DateOuverture.Date == DateTime.Today)
-                    .OrderByDescending(s => s.DateOuverture)
-                    .FirstOrDefault();
-            }
+                _sessionOuverte = CaisseService.SessionOuverteDe(ctx, _userId);
+            bool ancienne = _sessionOuverte != null && _sessionOuverte.DateOuverture.Date < DateTime.Today;
 
             if (_sessionOuverte == null)
             {
@@ -51,12 +44,14 @@ namespace Pharmacie2.views
             else
             {
                 lblEtat.Text = $"Caisse ouverte le {_sessionOuverte.DateOuverture:dd/MM/yyyy à HH:mm}";
-                lblEtat.ForeColor = Theme.SuccesTexte;
+                lblEtat.ForeColor = ancienne ? Theme.AttentionTexte : Theme.SuccesTexte;
                 btnOuvrir.Enabled = false;
                 btnCloture.Enabled = true;
                 numMontantReel.Enabled = true;
                 txtCommentaire.Enabled = true;
-                lblInfoSession.Text = "Caisse en cours. Comptez l'argent du tiroir et saisissez le montant avant de clôturer.";
+                lblInfoSession.Text = ancienne
+                    ? "Cette caisse est restée ouverte depuis un jour précédent. Clôturez-la d'abord (comptez le tiroir), puis ouvrez la caisse du jour."
+                    : "Caisse en cours. Comptez l'argent du tiroir et saisissez le montant avant de clôturer.";
                 AcceptButton = btnCloture;
             }
         }
@@ -73,15 +68,13 @@ namespace Pharmacie2.views
 
             using (var ctx = new AppDbContext())
             {
-                ctx.SessionsCaisse.Add(new SessionCaisse
+                // Une seule session ouverte par utilisateur (aussi si la fenêtre était restée affichée pendant qu'une autre ouvrait la caisse)
+                if (CaisseService.Ouvrir(ctx, _userId) == null)
                 {
-                    UserId = _userId,
-                    DateOuverture = DateTime.Now,
-                    FondOuverture = 0m,   // règle du client : jamais de fond de caisse
-                    Statut = "Ouverte",
-                    CommentaireCloture = ""
-                });
-                ctx.SaveChanges();
+                    MessageBox.Show("Vous avez déjà une caisse ouverte. Clôturez-la avant d'en ouvrir une nouvelle.", "Ouverture de caisse", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ChargerEtat();
+                    return;
+                }
             }
 
             BandeauNotification.Succes("Caisse ouverte. Bonne journée !");
