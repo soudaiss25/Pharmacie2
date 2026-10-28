@@ -122,7 +122,8 @@ namespace Pharmacie2.views.UserControls
 
                     // ── Grille ventilation ────────────────────────────────
                     decimal totalRecu = caisse.Encaisse;
-                    dgvVentilation.DataSource = new[]
+                    var horsSession = CaisseService.EncaissementsHorsSession(ctx, debut, fin);
+                    var lignesVentilation = new[]
                     {
                         new { Mode = "Espèces (comptant)",             NbVentes = Nb(v => v.Type == ModesPaiement.Comptant),        Montant = Recu(ModesPaiement.Comptant),     PctCA = Pct(Recu(ModesPaiement.Comptant), totalRecu),     Statut = "Dans le tiroir" },
                         new { Mode = "Mvola / Huri Money",             NbVentes = Nb(v => ModesPaiement.EstMobile(v.Type)),         Montant = recuMobile,                       PctCA = Pct(recuMobile, totalRecu),                       Statut = "Électronique" },
@@ -131,6 +132,9 @@ namespace Pharmacie2.views.UserControls
                         new { Mode = "Mutuelle (part patient reçue)",  NbVentes = Nb(v => v.Type == ModesPaiement.Mutuelle),        Montant = caisse.PartPatientMutuelle,       PctCA = Pct(caisse.PartPatientMutuelle, totalRecu),       Statut = $"Part de l'entreprise en attente : {Format.Montant(caisse.PartMutuelleEnAttente)}" },
                         new { Mode = "Crédit (versements reçus)",      NbVentes = Nb(v => v.Type == ModesPaiement.Credit),          Montant = avancesCredit,                    PctCA = Pct(avancesCredit, totalRecu),                    Statut = $"Reste dû : {Format.Montant(resteCredit)}" },
                     }.ToList();
+                    if (horsSession.Nombre > 0)
+                        lignesVentilation.Add(new { Mode = "Encaissements hors session", NbVentes = horsSession.Nombre, Montant = horsSession.Montant, PctCA = Pct(horsSession.Montant, totalRecu), Statut = "Aucune caisse n'était ouverte" });
+                    dgvVentilation.DataSource = lignesVentilation;
 
                     // ── Grille détail ─────────────────────────────────────
                     dgvDetail.DataSource = ventes

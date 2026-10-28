@@ -227,6 +227,72 @@ public class SessionPaiementTests
         Assert.Equal((4000m, 1000m), (admin.ResteDuCredit, admin.Especes));
     }
 
+    // ───────── paiements hors espèces sans caisse ouverte ─────────
+
+    [Fact]
+    public void Un_paiement_hors_tiroir_va_dans_la_session_ouverte_la_plus_recente_sans_confirmation()
+    {
+        var c = Preparer();
+        using (var ctx = new AppDbContext())
+        {
+            var r = CaisseService.AffecterPaiement(ctx, c.Admin, ModesPaiement.Cheque, _ => throw new InvalidOperationException("aucune question hors tiroir"));
+            Assert.Equal((true, (int?)c.SessionCaissier, (string?)null), (r.Autorise, r.SessionCaisseId, r.Message));
+        }
+        Vendre(c.Produit, ModesPaiement.CarteBancaire, 2, null);
+        Assert.False(UiHelper.TitreVu("Caisse"));
+        using var ctx2 = new AppDbContext();
+        var p = ctx2.paiement.Single();
+        Assert.Equal(c.SessionCaissier, p.SessionCaisseId);
+        var v = CaisseService.Ventilation(ctx2, ctx2.SessionsCaisse.Single(s => s.Id == c.SessionCaissier));
+        Assert.Equal(2000m, v.HorsTiroir[ModesPaiement.CarteBancaire]);   // dans son « Hors tiroir »
+        Assert.Equal(0m, v.Especes);                                      // et pas dans le tiroir
+    }
+
+    [Fact]
+    public void Sans_aucune_session_le_paiement_hors_tiroir_reste_sans_session_et_apparait_dans_une_ligne_du_rapport()
+    {
+        var c = Preparer(sessionCaissierOuverte: false);
+        using (var ctx0 = new AppDbContext())
+        {
+            var ancienne = ctx0.SessionsCaisse.Single();
+            ancienne.DateCloture = DateTime.Today.AddMinutes(1);          // la session est close depuis longtemps : plus aucune caisse ouverte
+            ctx0.SaveChanges();
+        }
+        Vendre(c.Produit, ModesPaiement.Mvola, 2, null);
+        using (var ctx = new AppDbContext())
+        {
+            var p = ctx.paiement.Single();
+            Assert.Null(p.SessionCaisseId);
+            var (montant, nombre) = CaisseService.EncaissementsHorsSession(ctx, DateTime.Today, DateTime.Now.AddMinutes(1));
+            Assert.Equal((2000m, 1), (montant, nombre));
+        }
+
+        UiHelper.EnSta(() =>
+        {
+            using var hote = new Form();
+            var caisse = new Pharmacie2.views.UserControls.Uc_Caisse { Dock = DockStyle.Fill };
+            hote.Controls.Add(caisse);
+            hote.Show();
+            Application.DoEvents();
+            var g = UiHelper.Champ<DataGridView>(caisse, "dgvVentilation");
+            var ligne = g.Rows.Cast<DataGridViewRow>().Single(r => Convert.ToString(r.Cells["Mode"].Value) == "Encaissements hors session");
+            Assert.Equal(2000m, Convert.ToDecimal(ligne.Cells["Montant"].Value));
+            caisse.Dispose();
+        });
+    }
+
+    [Fact]
+    public void Un_paiement_dans_une_session_ou_ancien_sans_session_couverte_n_est_pas_hors_session()
+    {
+        var c = Preparer();
+        using (var ctx = new AppDbContext())
+        {
+            AjouterVente(ctx, "V-000001", ModesPaiement.CarteBancaire, 1000, 0, c.Caissier, DateTime.Now.AddMinutes(-5), null, 1000, ModesPaiement.CarteBancaire);   // ancien paiement, pendant la session du caissier
+            ctx.SaveChanges();
+            Assert.Equal((0m, 0), CaisseService.EncaissementsHorsSession(ctx, DateTime.Today, DateTime.Now.AddMinutes(1)));
+        }
+    }
+
     // ───────── anciens paiements : la règle d'origine est conservée ─────────
 
     [Fact]
@@ -265,7 +331,7 @@ public class SessionPaiementTests
         Assert.Equal((true, (int?)c.SessionCaissier, (string?)null), (avecQuestion.Autorise, avecQuestion.SessionCaisseId, avecQuestion.Message));
         var mvola = CaisseService.AffecterPaiement(ctx, c.Admin, ModesPaiement.Mvola, _ => throw new InvalidOperationException("aucune question pour Mvola"));
         Assert.True(mvola.Autorise);
-        Assert.Null(mvola.SessionCaisseId);
+        Assert.Equal(c.SessionCaissier, mvola.SessionCaisseId);        // hors tiroir : session ouverte la plus récente, sans question
         var propre = CaisseService.AffecterPaiement(ctx, c.Caissier, ModesPaiement.Especes, _ => throw new InvalidOperationException("sa propre session : aucune question"));
         Assert.Equal(c.SessionCaissier, propre.SessionCaisseId);
         }

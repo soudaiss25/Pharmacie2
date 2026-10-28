@@ -79,12 +79,29 @@ namespace Pharmacie2.Services
                 .OrderByDescending(s => s.DateOuverture).ToList();
             var propre = userId == null ? null : ouvertes.FirstOrDefault(s => s.UserId == userId);
             if (propre != null) return new AffectationPaiement(true, propre.Id, null);
-            if (mode != ModesPaiement.Especes) return new AffectationPaiement(true, null, null);
+            // Hors tiroir (chèque, carte, Mvola, Huri Money) : jamais refusé, jamais de question ; rattaché à la session ouverte la plus récente
+            // s'il y en a une (pour figurer dans son « Hors tiroir »), sinon sans session (ligne « Encaissements hors session » du rapport)
+            if (mode != ModesPaiement.Especes) return new AffectationPaiement(true, ouvertes.FirstOrDefault()?.Id, null);
 
             var autre = ouvertes.FirstOrDefault();   // la plus récente
             if (autre == null) return new AffectationPaiement(false, null, MessageAucuneCaisse);
             string nom = autre.User != null ? $"{autre.User.Prenom} {autre.User.Nom}" : "un autre utilisateur";
             return confirmerCaisseDe(nom) ? new AffectationPaiement(true, autre.Id, null) : new AffectationPaiement(false, null, null);
+        }
+
+        /// <summary>
+        /// Paiements encaissés sans aucune session de caisse (rattachés à aucune session et datés hors de toutes les sessions) sur la période.
+        /// </summary>
+        public static (decimal Montant, int Nombre) EncaissementsHorsSession(AppDbContext ctx, DateTime debut, DateTime fin)
+        {
+            var maintenant = DateTime.Now;
+            var sessions = ctx.SessionsCaisse.AsNoTracking().Select(s => new { s.DateOuverture, s.DateCloture }).ToList();
+            var paiements = ctx.paiement.AsNoTracking().Include(p => p.Vente)
+                .Where(p => p.SessionCaisseId == null && p.DatePaiement >= debut && p.DatePaiement <= fin && p.Vente.Statut != "Annulée")
+                .ToList()
+                .Where(p => !sessions.Any(s => p.DatePaiement >= s.DateOuverture && p.DatePaiement <= (s.DateCloture ?? maintenant)))
+                .ToList();
+            return (paiements.Sum(p => p.Montant), paiements.Count);
         }
 
         /// <summary>
