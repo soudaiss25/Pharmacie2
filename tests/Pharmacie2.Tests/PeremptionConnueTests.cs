@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
@@ -228,6 +228,51 @@ public class PeremptionConnueTests
         Assert.Equal(1, TestDb.Scalaire("SELECT COUNT(*) FROM produits WHERE Nom = 'Produit neuf' AND PeremptionConnue = 1"));
         Assert.Equal("2029-01-31", TestDb.Texte("SELECT substr(DateExpiration, 1, 10) FROM produits WHERE Nom = 'Produit neuf'"));
     }
+
+    [Fact]
+    public void Un_vrai_perime_jamais_vendu_apres_sa_date_est_dans_la_seconde_liste_en_tete_du_filtre()
+    {
+        Preparer();
+        int vraiId;
+        using (var ctx = new AppDbContext())
+        {
+            // expire 3 jours avant la première vente de la base, jamais vendu depuis : peut être un vrai périmé
+            var vrai = P("Peut-être périmé", PremiereVente.AddDays(-3), stock: 5);
+            ctx.produits.Add(vrai);
+            ctx.SaveChanges();
+            vraiId = vrai.Id;
+        }
+        var r = Lancer(appliquer: true);
+
+        var certaines = r.Constats.Where(c => c.Code == "D24").Select(c => c.Objet).ToList();
+        var prioritaires = r.Constats.Where(c => c.Code == "D24b").Select(c => c.Objet).ToList();
+        Assert.Equal(new[] { "Peut-être périmé" }, prioritaires);
+        Assert.Equal(2, certaines.Count);                                          // création du produit + vendu après
+        Assert.DoesNotContain("Peut-être périmé", certaines);
+        Assert.Contains("à vérifier en priorité", r.Constats.Single(c => c.Code == "D24b").Detail);
+        Assert.True(r.Constats.ToList().FindIndex(c => c.Code == "D24b") > r.Constats.ToList().FindLastIndex(c => c.Code == "D24"));   // listes séparées
+
+        var p = Lire(vraiId);
+        Assert.False(p.PeremptionConnue);
+        Assert.Equal("Péremption : probablement jamais saisie, à vérifier en priorité", p.MotifsFiche);
+        Assert.Equal("Péremption : jamais saisie", Lire(Ids0("Fausse date : vendu après")).MotifsFiche);
+
+        UiHelper.EnSta(() =>
+        {
+            using var hote = new Form();
+            var stock = new Uc_Stock { Dock = DockStyle.Fill };
+            hote.Controls.Add(stock);
+            hote.Show();
+            Application.DoEvents();
+            var g = UiHelper.Champ<DataGridView>(stock, "dgvStock");
+            stock.Filtrer("Sans date de péremption");
+            Assert.Equal("Peut-être périmé", Convert.ToString(g.Rows[0].Cells["Produit"].Value));   // en tête
+            Assert.Equal(3, g.Rows.Count);
+            stock.Dispose();
+        });
+    }
+
+    private static int Ids0(string nom) { using var ctx = new AppDbContext(); return ctx.produits.Single(p => p.Nom == nom).Id; }
 
     [Fact]
     public void Migration_AjoutPeremptionConnue_garde_les_produits_et_met_la_colonne_a_vrai()

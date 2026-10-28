@@ -104,6 +104,7 @@ namespace Pharmacie2.views.UserControls
 
             var data = query
                 .OrderByDescending(p => p.Actif)            // archivés en dernier
+                .ThenByDescending(p => p.MotifsFiche != null && p.MotifsFiche.Contains(FicheAVerifierService.MotifPeremptionPrioritaire))   // D24b : peut-être de vrais périmés
                 .ThenByDescending(p => p.StockAVerifier || p.FicheAVerifier)    // produits « À vérifier » en premier
                 .ThenBy(p => p.Nom)
                 .ToList()

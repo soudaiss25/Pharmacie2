@@ -12,6 +12,8 @@ namespace Pharmacie2.Services
         public const string PrefixePrix = "Prix";
         public const string PrefixePeremption = "Péremption";
         public const string PrefixeConditionnement = "Conditionnement";
+        /// <summary>Péremption sans date : jamais vendu après la date, donc peut-être un vrai périmé (D24, 2e liste).</summary>
+        public const string MotifPeremptionPrioritaire = PrefixePeremption + " : probablement jamais saisie, à vérifier en priorité";
         private const string Separateur = " ; ";
 
         public static List<string> Motifs(Produit p)

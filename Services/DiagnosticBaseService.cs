@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using ClosedXML.Excel;
@@ -213,18 +213,25 @@ namespace Pharmacie2.Services
                 var derniereVenteParProduit = ctx.LigneVentes.AsNoTracking().Where(l => l.Vente.Statut == "Active")
                     .Select(l => new { l.ProduitId, l.Vente.DateVente }).ToList()
                     .GroupBy(x => x.ProduitId).ToDictionary(g => g.Key, g => g.Max(x => x.DateVente));
+                // Deux listes : D24 = vendu après la date (date certainement fausse) ; D24b = seulement proche de la première vente et
+                // jamais vendu après la date (peut être un vrai périmé : à vérifier en priorité)
+                var candidats = new List<(Produit P, bool VenduApres)>();
                 foreach (var p in produits.Where(p => p.PeremptionConnue && p.DateExpiration.Date < now.Date))
                 {
                     bool venduApres = derniereVenteParProduit.TryGetValue(p.Id, out var derniere) && derniere > p.DateExpiration;
                     bool dateDeCreation = premiereVente.HasValue && p.DateExpiration >= premiereVente.Value.AddDays(-7);
-                    if (!venduApres && !dateDeCreation) continue;
+                    if (venduApres || dateDeCreation) candidats.Add((p, venduApres));
+                }
+                foreach (var (p, venduApres) in candidats.OrderByDescending(c => c.VenduApres))
+                {
                     peremptionFausse.Add(p.Id);
-                    string raison = venduApres ? "vendu après cette date" : "date de la création du produit";
-                    Corriger("D24", p.Nom, $"date {p.DateExpiration:dd/MM/yyyy} ({raison})", "péremption non renseignée", "date de péremption jamais saisie");
+                    string code = venduApres ? "D24" : "D24b";
+                    string raison = venduApres ? "vendu après cette date : date certainement fausse" : "jamais vendu après cette date : à vérifier en priorité";
+                    Corriger(code, p.Nom, $"date {p.DateExpiration:dd/MM/yyyy} ({raison})", "péremption non renseignée", "date de péremption jamais saisie");
                     if (appliquer)
                     {
                         p.PeremptionConnue = false;
-                        Marquer(p, "D24", FicheAVerifierService.PrefixePeremption + " : jamais saisie");
+                        Marquer(p, code, venduApres ? FicheAVerifierService.PrefixePeremption + " : jamais saisie" : FicheAVerifierService.MotifPeremptionPrioritaire);
                     }
                 }
                 if (peremptionFausse.Count > 0)
