@@ -77,6 +77,7 @@ public class Regle15CoutAchatTests
         Dictionary<string, long> avant;
         using (var c = TestDb.Ouvrir())
         {
+            using (var pragma = c.CreateCommand()) { pragma.CommandText = "PRAGMA foreign_keys = OFF"; pragma.ExecuteNonQuery(); }   // une ligne de vente orpheline (produit absent) pour le cas NULL
             TestDb.Inserer(c, "produits", new() { ["Id"] = 1L, ["Nom"] = "A", ["PrixAchat"] = "800", ["PrixVente"] = "1500", ["NbUniteParBoite"] = 5L });
             TestDb.Inserer(c, "produits", new() { ["Id"] = 2L, ["Nom"] = "B", ["PrixAchat"] = "500", ["PrixVente"] = "900", ["NbUniteParBoite"] = 1L });
             TestDb.Inserer(c, "produits", new() { ["Id"] = 3L, ["Nom"] = "C", ["PrixAchat"] = "300", ["PrixVente"] = "400", ["NbUniteParBoite"] = 0L });      // conditionnement invalide : max(1, …)
