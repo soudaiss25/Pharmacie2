@@ -32,6 +32,7 @@ namespace Pharmacie2.views
         private decimal? _prixUniteOrigine;
         private DateTime _dateOrigine;
         private bool _ficheMarquee;
+        private bool _peremptionOrigine = true;   // la date d'origine était-elle connue ?
 
         // ── Constructeurs ─────────────────────────────────────────────────
 
@@ -89,6 +90,9 @@ namespace Pharmacie2.views
             numNbUniteParBoite.ValueChanged += MettreAJourApercu;
             numPrixVente.ValueChanged += MettreAJourApercu;
             numPrixVenteUnite.ValueChanged += MettreAJourApercu;
+            // La date du jour n'est jamais proposée : soit une date est saisie (case cochée), soit « Pas de date de péremption »
+            dtpDateExpiration.ValueChanged += (s, e) => { if (dtpDateExpiration.Checked) chkPasPeremption.Checked = false; };
+            chkPasPeremption.CheckedChanged += (s, e) => { if (chkPasPeremption.Checked) dtpDateExpiration.Checked = false; };
         }
 
         /// <summary>Colore le champ prix de vente en rouge si la marge est nulle ou négative.</summary>
@@ -139,8 +143,17 @@ namespace Pharmacie2.views
                 numUnitesVrac.Value = Math.Min(numUnitesVrac.Maximum, _vracOrigine);
                 numSeuil.Value = p.SeuilAlerte;
 
-                if (p.DateExpiration > DateTime.MinValue)
+                _peremptionOrigine = p.PeremptionConnue;
+                if (p.PeremptionConnue && p.DateExpiration.Year >= 1900)
+                {
                     dtpDateExpiration.Value = p.DateExpiration;
+                    dtpDateExpiration.Checked = true;
+                }
+                else
+                {
+                    dtpDateExpiration.Checked = false;
+                    chkPasPeremption.Checked = !p.PeremptionConnue;   // date inconnue : il faut la saisir, ou confirmer qu'il n'y en a pas
+                }
 
                 if (p.FournisseurId.HasValue)
                     cbFournisseur.SelectedValue = p.FournisseurId.Value;
@@ -418,6 +431,18 @@ namespace Pharmacie2.views
                 }
             }
 
+            // Date de péremption : obligatoire (jamais la date du jour par défaut), sauf « Pas de date de péremption »
+            if (!dtpDateExpiration.Checked && !chkPasPeremption.Checked)
+            {
+                MessageBox.Show("Saisissez la date de péremption (cochez la case devant la date), ou cochez « Pas de date de péremption ».",
+                    "Date de péremption", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dtpDateExpiration.Focus(); return;
+            }
+            bool peremptionConnue = dtpDateExpiration.Checked;
+            DateTime dateExpiration = peremptionConnue
+                ? dtpDateExpiration.Value.Date
+                : (_produitId != null && _dateOrigine.Year >= 2000 ? _dateOrigine : new DateTime(2099, 12, 31));   // valeur sans effet : PeremptionConnue = false
+
             decimal marge = numMarge.Value;
 
             int? fournisseurId = cbFournisseur.SelectedValue is int fId && fId > 0
@@ -498,7 +523,8 @@ namespace Pharmacie2.views
                             PrixVenteUnite = prixVenteUnite,
                             QuantiteEnStock = stockEnUnites,
                             SeuilAlerte = (int)numSeuil.Value,
-                            DateExpiration = dtpDateExpiration.Value,
+                            DateExpiration = dateExpiration,
+                            PeremptionConnue = peremptionConnue,
                             UniteVente = uniteVente,
                             NbUniteParBoite = nbUniteParBoite,
                             FournisseurId = fournisseurId,
@@ -521,11 +547,12 @@ namespace Pharmacie2.views
                         p.PrixVenteUnite = prixVenteUnite;
 
                         // Un nouveau prix ou une nouvelle date lève le motif correspondant de la fiche à vérifier
+                        // (saisir une date pour une péremption jusque-là inconnue repasse PeremptionConnue à true)
                         if (p.FicheAVerifier)
                         {
                             string avant = p.MotifsFiche ?? "";
                             bool prixChange = prixAchat != _prixAchatOrigine || prixVente != _prixVenteOrigine || prixVenteUnite != _prixUniteOrigine;
-                            bool dateChange = dtpDateExpiration.Value.Date != _dateOrigine.Date;
+                            bool dateChange = peremptionConnue && (!_peremptionOrigine || dateExpiration.Date != _dateOrigine.Date);
                             if (prixChange) FicheAVerifierService.Lever(p, FicheAVerifierService.PrefixePrix);
                             if (dateChange) FicheAVerifierService.Lever(p, FicheAVerifierService.PrefixePeremption);
                             if ((prixChange || dateChange) && avant != (p.MotifsFiche ?? ""))
@@ -545,7 +572,8 @@ namespace Pharmacie2.views
                             }
                         }
                         p.SeuilAlerte = (int)numSeuil.Value;
-                        p.DateExpiration = dtpDateExpiration.Value;
+                        p.DateExpiration = dateExpiration;
+                        p.PeremptionConnue = peremptionConnue;
                         p.UniteVente = uniteVente;
                         p.NbUniteParBoite = nbUniteParBoite;
                         p.FournisseurId = fournisseurId;

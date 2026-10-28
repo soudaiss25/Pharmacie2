@@ -26,7 +26,7 @@ namespace Pharmacie2.views.UserControls
         /// <summary>Filtre la liste sur les produits dont le stock est à vérifier.</summary>
         public void FiltrerAVerifier() => Filtrer("À vérifier");
 
-        /// <summary>Applique un filtre depuis l'extérieur (« À vérifier », « Périmés », « Péremption proche », « En rupture »).</summary>
+        /// <summary>Applique un filtre depuis l'extérieur (« À vérifier », « Périmés », « Péremption proche », « Sans date de péremption », « En rupture »).</summary>
         public void Filtrer(string filtre)
         {
             if (filtre == "En rupture") cbDisponibilite.SelectedItem = filtre;
@@ -92,9 +92,11 @@ namespace Pharmacie2.views.UserControls
             if (cbSeuil.Text == "Sous le seuil")
                 query = query.Where(p => p.QuantiteEnStock <= p.SeuilAlerte * (p.NbUniteParBoite > 1 ? p.NbUniteParBoite : 1));
             else if (cbSeuil.Text == "Périmés")
-                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration < aujourdhui);
+                query = query.Where(p => p.Actif && p.PeremptionConnue && p.QuantiteEnStock > 0 && p.DateExpiration < aujourdhui);
             else if (cbSeuil.Text == "Péremption proche")
-                query = query.Where(p => p.Actif && p.QuantiteEnStock > 0 && p.DateExpiration >= aujourdhui && p.DateExpiration <= limite);
+                query = query.Where(p => p.Actif && p.PeremptionConnue && p.QuantiteEnStock > 0 && p.DateExpiration >= aujourdhui && p.DateExpiration <= limite);
+            else if (cbSeuil.Text == "Sans date de péremption")
+                query = query.Where(p => p.Actif && !p.PeremptionConnue);
             else if (cbSeuil.Text == "À vérifier")
                 query = query.Where(p => (p.StockAVerifier || p.FicheAVerifier) && p.Actif);
             else if (cbSeuil.Text == "Normal")
@@ -114,10 +116,10 @@ namespace Pharmacie2.views.UserControls
                     // Ex : 9 unités (5/boîte) → « 1 boîte(s) + 4 plaquette(s) »
                     Quantite = StockService.Formater(p),
                     Seuil = $"{Format.Compte(p.SeuilAlerte, "boîte")}",
-                    Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
+                    Expiration = p.PeremptionConnue ? p.DateExpiration.ToString("dd/MM/yyyy") : "Non renseignée",
                     Verification = !p.Actif ? "Archivé" : p.StockAVerifier || p.FicheAVerifier ? "À vérifier" : "",
                     Etat = !p.Actif ? "Archivé"
-                         : p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui ? "Périmé"
+                         : p.PeremptionConnue && p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui ? "Périmé"
                          : p.QuantiteEnStock <= 0 ? "Rupture"
                          : p.QuantiteEnStock <= StockService.SeuilEnUnites(p) ? "Alerte"
                          : "OK"
@@ -142,6 +144,8 @@ namespace Pharmacie2.views.UserControls
                 : etat == "Périmé" || etat == "Rupture" ? "urgent"
                 : etat == "Alerte" || verif == "À vérifier" ? "attention" : "";
             Theme.ColorerEtat(dgvStock, e, niveau);
+            if (dgvStock.Columns[e.ColumnIndex].Name == "Expiration" && Convert.ToString(e.Value) == "Non renseignée")
+                e.CellStyle.ForeColor = Theme.Neutre;   // date inconnue : en gris, jamais « Périmé »
         }
 
         // ── Ajouter ───────────────────────────────────────────────────────

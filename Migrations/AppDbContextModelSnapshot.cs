@@ -315,6 +315,9 @@ namespace Pharmacie2.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("PeremptionConnue")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Posologie")
                         .IsRequired()
                         .HasColumnType("TEXT");

@@ -228,7 +228,8 @@
             "Normal",
             "À vérifier",
             "Périmés",
-            "Péremption proche"});
+            "Péremption proche",
+            "Sans date de péremption"});
             this.cbSeuil.Name = "cbSeuil";
             this.cbSeuil.SelectedIndexChanged += new System.EventHandler(this.Filtre_Changed);
             // 

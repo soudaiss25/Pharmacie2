@@ -167,8 +167,37 @@ namespace Pharmacie2.Services
             foreach (var p in produits.Where(p => p.NbUniteParBoite > 1 && p.PrixVenteUnite != null))              // D7
                 Ajouter("D7", GroupeConstat.Information, p.Nom, $"prix à l'unité repris à la mise à jour : {M(p.PrixVenteUnite!.Value)} (boîte {M(p.PrixVente)}, {p.NbUniteParBoite} par boîte) : à faire vérifier par le client");
 
+            // D24 : l'ancienne fiche initialisait la date de péremption à la date de création. Une date passée qui n'a jamais été
+            // saisie se reconnaît à deux signes : le produit a été vendu APRÈS cette date, ou la date n'est pas antérieure de plus de 7 jours
+            // à la première vente de la base. Ces produits ne sont pas « périmés » : leur date est simplement inconnue.
+            var peremptionFausse = new HashSet<int>();
+            {
+                var datesVente = ctx.ventes.AsNoTracking().Where(v => v.Statut == "Active").Select(v => v.DateVente).ToList();
+                DateTime? premiereVente = datesVente.Count > 0 ? datesVente.Min() : null;
+                var derniereVenteParProduit = ctx.LigneVentes.AsNoTracking().Where(l => l.Vente.Statut == "Active")
+                    .Select(l => new { l.ProduitId, l.Vente.DateVente }).ToList()
+                    .GroupBy(x => x.ProduitId).ToDictionary(g => g.Key, g => g.Max(x => x.DateVente));
+                foreach (var p in produits.Where(p => p.PeremptionConnue && p.DateExpiration.Date < now.Date))
+                {
+                    bool venduApres = derniereVenteParProduit.TryGetValue(p.Id, out var derniere) && derniere > p.DateExpiration;
+                    bool dateDeCreation = premiereVente.HasValue && p.DateExpiration >= premiereVente.Value.AddDays(-7);
+                    if (!venduApres && !dateDeCreation) continue;
+                    peremptionFausse.Add(p.Id);
+                    string raison = venduApres ? "vendu après cette date" : "date de la création du produit";
+                    Corriger("D24", p.Nom, $"date {p.DateExpiration:dd/MM/yyyy} ({raison})", "péremption non renseignée", "date de péremption jamais saisie");
+                    if (appliquer)
+                    {
+                        p.PeremptionConnue = false;
+                        Marquer(p, "D24", FicheAVerifierService.PrefixePeremption + " : jamais saisie");
+                    }
+                }
+                if (peremptionFausse.Count > 0)
+                    Journal.Info($"Diagnostic D24 : {peremptionFausse.Count} produit(s) avec une date de péremption jamais saisie" + (appliquer ? " : marqués « Non renseignée »." : " (lecture seule : rien n'est modifié)."));
+            }
+
             foreach (var p in produits)                                                                             // D8
             {
+                if (!p.PeremptionConnue || peremptionFausse.Contains(p.Id)) continue;   // date inconnue : ni périmé ni invraisemblable (D24)
                 if (p.DateExpiration.Year < 2000 || p.DateExpiration.Year > 2100)
                 {
                     Ajouter("D8", GroupeConstat.AVerifier, p.Nom, $"date de péremption vide ou invraisemblable ({p.DateExpiration:dd/MM/yyyy})" + (appliquer ? " — fiche marquée « À vérifier »" : ""));

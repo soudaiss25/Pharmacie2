@@ -14,6 +14,7 @@ namespace Pharmacie2.Services
         Perimes,
         Ruptures,
         PeremptionProche,
+        PeremptionManquante,
         StocksAVerifier,
         FichesAVerifier,
         MutuellesEnRetard,
@@ -186,7 +187,7 @@ namespace Pharmacie2.Services
             using var ctx = new AppDbContext();
             var actifs = ctx.produits.AsNoTracking().Where(p => p.Actif).ToList();
 
-            var perimes = actifs.Where(p => p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui).OrderBy(p => p.DateExpiration).ToList();
+            var perimes = actifs.Where(p => p.PeremptionConnue && p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui).OrderBy(p => p.DateExpiration).ToList();
             if (perimes.Count > 0)
                 liste.Add(new AFaire(TypeAFaire.Perimes, "urgent", Phrase(perimes.Count, "produit périmé", "produits périmés", perimes.Select(p => p.Nom)), perimes.Count));
 
@@ -194,9 +195,13 @@ namespace Pharmacie2.Services
             if (ruptures.Count > 0)
                 liste.Add(new AFaire(TypeAFaire.Ruptures, "urgent", Phrase(ruptures.Count, "produit en rupture", "produits en rupture", ruptures.Select(p => p.Nom)), ruptures.Count));
 
-            var proches = actifs.Where(p => p.QuantiteEnStock > 0 && p.DateExpiration.Date >= aujourdhui && p.DateExpiration.Date <= limite).OrderBy(p => p.DateExpiration).ToList();
+            var proches = actifs.Where(p => p.PeremptionConnue && p.QuantiteEnStock > 0 && p.DateExpiration.Date >= aujourdhui && p.DateExpiration.Date <= limite).OrderBy(p => p.DateExpiration).ToList();
             if (proches.Count > 0)
                 liste.Add(new AFaire(TypeAFaire.PeremptionProche, "attention", Phrase(proches.Count, $"produit bientôt périmé (moins de {JoursAvantPeremption} jours)", $"produits bientôt périmés (moins de {JoursAvantPeremption} jours)", proches.Select(p => p.Nom)), proches.Count));
+
+            var sansDate = actifs.Where(p => !p.PeremptionConnue).OrderBy(p => p.Nom).ToList();
+            if (sansDate.Count > 0)
+                liste.Add(new AFaire(TypeAFaire.PeremptionManquante, "attention", Phrase(sansDate.Count, "produit sans date de péremption", "produits sans date de péremption", sansDate.Select(p => p.Nom)), sansDate.Count));
 
             var averifier = actifs.Where(p => p.StockAVerifier).OrderBy(p => p.Nom).ToList();
             if (averifier.Count > 0)

@@ -52,6 +52,12 @@ namespace Pharmacie2.Models
         public int SeuilAlerte { get; set; }
         public DateTime DateExpiration { get; set; }
 
+        /// <summary>
+        /// false = la date de péremption n'a jamais été saisie (l'ancienne fiche mettait la date du jour) : affichée « Non renseignée »,
+        /// jamais « Périmé », exclue des alertes de péremption. Saisir une date repasse à true.
+        /// </summary>
+        public bool PeremptionConnue { get; set; } = true;
+
         // ── Vente en détail ────────────────────────────────────────────
         /// <summary>Unité de vente : "Boîte", "Plaquette", "Comprimé"…</summary>
         public string UniteVente { get; set; } = "Boîte";

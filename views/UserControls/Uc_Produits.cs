@@ -69,11 +69,11 @@ namespace Pharmacie2.views.UserControls
                         Stock = StockService.Formater(p),
                         Seuil = $"{Format.Compte(p.SeuilAlerte, "boîte")}",
                         UniteVente = p.UniteVente,
-                        Expiration = p.DateExpiration.ToString("dd/MM/yyyy"),
+                        Expiration = p.PeremptionConnue ? p.DateExpiration.ToString("dd/MM/yyyy") : "Non renseignée",
                         Fournisseur = p.Fournisseur?.Nom ?? "—",
                         Verification = !p.Actif ? "" : p.StockAVerifier || p.FicheAVerifier ? "À vérifier" : "",
                         Etat = !p.Actif ? "Archivé"
-                             : p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui ? "Périmé"
+                             : p.PeremptionConnue && p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui ? "Périmé"
                              : p.EstEnRupture() ? "Alerte"
                              : "OK"
                     }).ToList();
@@ -97,6 +97,8 @@ namespace Pharmacie2.views.UserControls
 
             string verif = dgvProduits.Rows[e.RowIndex].Cells["Verification"].Value?.ToString() ?? "";
             Theme.ColorerEtat(dgvProduits, e, etat == "Archivé" ? "info" : etat == "Périmé" ? "urgent" : etat == "Alerte" || verif == "À vérifier" ? "attention" : "");
+            if (dgvProduits.Columns[e.ColumnIndex].Name == "Expiration" && Convert.ToString(e.Value) == "Non renseignée")
+                e.CellStyle.ForeColor = Theme.Neutre;   // date inconnue : en gris, jamais « Périmé »
         }
 
         private void dgvProduits_CellDoubleClick(object sender, DataGridViewCellEventArgs e)

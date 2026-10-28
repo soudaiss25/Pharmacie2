@@ -75,6 +75,7 @@
             this.numSeuil = new System.Windows.Forms.NumericUpDown();
             this.lblDateExpiration = new System.Windows.Forms.Label();
             this.dtpDateExpiration = new System.Windows.Forms.DateTimePicker();
+            this.chkPasPeremption = new System.Windows.Forms.CheckBox();
             this.lblSectionDetail = new System.Windows.Forms.Label();
             this.chkVenteDetail = new System.Windows.Forms.CheckBox();
             this.pnlVenteDetail = new System.Windows.Forms.TableLayoutPanel();
@@ -582,7 +583,8 @@
             this.tlpStock.ColumnCount = 2;
             this.tlpStock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpStock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpStock.RowCount = 3;
+            this.tlpStock.RowCount = 4;
+            this.tlpStock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpStock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpStock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpStock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -598,6 +600,8 @@
             this.lblDateExpiration.TabIndex = 4;
             this.tlpStock.Controls.Add(this.dtpDateExpiration, 1, 2);
             this.dtpDateExpiration.TabIndex = 5;
+            this.tlpStock.Controls.Add(this.chkPasPeremption, 1, 3);
+            this.chkPasPeremption.TabIndex = 6;
             this.tlpStock.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpStock.AutoSize = true;
             this.tlpStock.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -689,10 +693,20 @@
             // dtpDateExpiration
             // 
             this.dtpDateExpiration.Width = 150;
+            this.dtpDateExpiration.ShowCheckBox = true;
+            this.dtpDateExpiration.Checked = false;
             this.dtpDateExpiration.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDateExpiration.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.dtpDateExpiration.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.dtpDateExpiration.Name = "dtpDateExpiration";
+            //
+            // chkPasPeremption
+            //
+            this.chkPasPeremption.Text = "Pas de date de péremption";
+            this.chkPasPeremption.AutoSize = true;
+            this.chkPasPeremption.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkPasPeremption.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.chkPasPeremption.Name = "chkPasPeremption";
             // 
             // lblSectionDetail
             // 
@@ -949,6 +963,7 @@
         private System.Windows.Forms.NumericUpDown numSeuil;
         private System.Windows.Forms.Label lblDateExpiration;
         private System.Windows.Forms.DateTimePicker dtpDateExpiration;
+        private System.Windows.Forms.CheckBox chkPasPeremption;
         private System.Windows.Forms.Label lblSectionDetail;
         private System.Windows.Forms.CheckBox chkVenteDetail;
         private System.Windows.Forms.TableLayoutPanel pnlVenteDetail;

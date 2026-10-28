@@ -185,6 +185,7 @@ namespace Pharmacie2.views
                 case TypeAFaire.Perimes: OuvrirStock("Périmés"); break;
                 case TypeAFaire.Ruptures: OuvrirStock("En rupture"); break;
                 case TypeAFaire.PeremptionProche: OuvrirStock("Péremption proche"); break;
+                case TypeAFaire.PeremptionManquante: OuvrirStock("Sans date de péremption"); break;
                 case TypeAFaire.StocksAVerifier:
                 case TypeAFaire.FichesAVerifier: OuvrirStock("À vérifier"); break;
                 case TypeAFaire.SauvegardeExterne:

@@ -66,6 +66,8 @@ public class Regle08PrixUniteTests
                 UiHelper.Champ<CheckBox>(f, "chkVenteDetail").Checked = true;
                 UiHelper.Champ<NumericUpDown>(f, "numNbUniteParBoite").Value = 3;
                 UiHelper.Champ<NumericUpDown>(f, "numQuantite").Value = 5;
+                UiHelper.Champ<DateTimePicker>(f, "dtpDateExpiration").Value = new DateTime(2029, 1, 31);
+                UiHelper.Champ<DateTimePicker>(f, "dtpDateExpiration").Checked = true;   // la date est obligatoire
                 reglages(f);
                 UiHelper.Appeler(f, "btnEnregistrer_Click", null, EventArgs.Empty);
             });
