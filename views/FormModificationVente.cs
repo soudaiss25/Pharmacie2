@@ -298,6 +298,15 @@ namespace Pharmacie2.views
                     "Rendre de l'argent au client", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
+            // Complément encaissé ou argent rendu : il doit aller dans le bon tiroir
+            int? sessionAjust = null;
+            if (ajustAnnonce != 0)
+            {
+                var affectation = CaisseUi.Affecter(this, ajustAnnonce > 0 ? modeComplement : _modeRemboursement);
+                if (!affectation.Autorise) return;
+                sessionAjust = affectation.SessionCaisseId;
+            }
+
             try
             {
                 using (var ctx = new AppDbContext())
@@ -374,6 +383,7 @@ namespace Pharmacie2.views
                             VenteId = _venteId,
                             Montant = ajust,
                             Mode = ajust > 0 ? modeComplement : _modeRemboursement,
+                            SessionCaisseId = sessionAjust,
                             DatePaiement = DateTime.Now,
                             UserId = SessionUtilisateur.IdCourant
                         });

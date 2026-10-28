@@ -24,6 +24,8 @@ public class Regle15CoutAchatTests
         var p2 = new Produit { Nom = "Sirop", Type = "Autre", PrixAchat = 300, PrixVente = 500, NbUniteParBoite = 1, UniteVente = "Boîte", QuantiteEnStock = 100, SeuilAlerte = 1, DateExpiration = new DateTime(2029, 1, 1), Indication = "", Posologie = "" };
         ctx.produits.AddRange(p1, p2);
         ctx.SaveChanges();
+        ctx.SessionsCaisse.Add(new SessionCaisse { UserId = admin.Id, DateOuverture = DateTime.Today, Statut = "Ouverte", CommentaireCloture = "" });   // encaisser des espèces demande une caisse ouverte
+        ctx.SaveChanges();
         SessionUtilisateur.Courant = admin;
         return (p1.Id, p2.Id);
     }

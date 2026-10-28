@@ -34,8 +34,32 @@ namespace Pharmacie2.Services
         public decimal TotalHorsTiroir => HorsTiroir.Values.Sum();
     }
 
+    /// <summary>Où va l'argent d'un paiement : session de caisse retenue, ou refus avec un message clair (Message null = refus voulu par l'utilisateur).</summary>
+    public sealed record AffectationPaiement(bool Autorise, int? SessionCaisseId, string? Message);
+
     public static class CaisseService
     {
+        public const string MessageAucuneCaisse = "Aucune caisse n'est ouverte : impossible d'encaisser de l'argent en espèces. Ouvrez la caisse d'abord (Caisse → Ouvrir la caisse), puis recommencez.";
+
+        /// <summary>
+        /// Rattache un paiement au bon tiroir. Règle : la session ouverte de l'utilisateur ; sinon, pour des espèces, la session ouverte d'un autre utilisateur
+        /// après confirmation (« Cet argent va dans la caisse de … ? ») ; s'il n'y a aucune session ouverte, un paiement en espèces est refusé.
+        /// Chèque, carte, Mvola et Huri Money ne passent pas par le tiroir : jamais refusés.
+        /// </summary>
+        public static AffectationPaiement AffecterPaiement(AppDbContext ctx, int? userId, string mode, Func<string, bool> confirmerCaisseDe)
+        {
+            var ouvertes = ctx.SessionsCaisse.AsNoTracking().Include(s => s.User).Where(s => s.Statut == "Ouverte")
+                .OrderByDescending(s => s.DateOuverture).ToList();
+            var propre = userId == null ? null : ouvertes.FirstOrDefault(s => s.UserId == userId);
+            if (propre != null) return new AffectationPaiement(true, propre.Id, null);
+            if (mode != ModesPaiement.Especes) return new AffectationPaiement(true, null, null);
+
+            var autre = ouvertes.FirstOrDefault();   // la plus récente
+            if (autre == null) return new AffectationPaiement(false, null, MessageAucuneCaisse);
+            string nom = autre.User != null ? $"{autre.User.Prenom} {autre.User.Nom}" : "un autre utilisateur";
+            return confirmerCaisseDe(nom) ? new AffectationPaiement(true, autre.Id, null) : new AffectationPaiement(false, null, null);
+        }
+
         /// <summary>
         /// Espèces attendues dans le tiroir pour une session : somme des paiements en espèces du caissier de la session,
         /// datés pendant la session, sur des ventes non annulées. Les remboursements (montants négatifs) sont inclus.
@@ -47,7 +71,7 @@ namespace Pharmacie2.Services
 
         /// <summary>Ventilation d'une session (de l'ouverture à la clôture, ou à maintenant si elle est en cours).</summary>
         public static VentilationCaisse Ventilation(AppDbContext ctx, SessionCaisse session)
-            => Calculer(ctx, session.DateOuverture, session.DateCloture ?? DateTime.Now, session.UserId);
+            => Calculer(ctx, session.DateOuverture, session.DateCloture ?? DateTime.Now, session.UserId, session.Id);
 
         /// <summary>
         /// Montant à afficher pour une session : le montant figé à la clôture si la session est clôturée (jamais de recalcul) ;
@@ -62,14 +86,18 @@ namespace Pharmacie2.Services
         }
 
         /// <param name="userId">Caissier concerné ; null = tous les utilisateurs (rapport de caisse).</param>
-        public static VentilationCaisse Calculer(AppDbContext ctx, DateTime debut, DateTime fin, int? userId)
+        /// <param name="sessionId">
+        /// Pour le détail d'une session : les paiements rattachés à CETTE session (peu importe qui les a encaissés), plus les anciens paiements sans session
+        /// (règle d'origine : caissier de la session et dates de la session). Null : toutes les sessions (rapport de caisse par période).
+        /// </param>
+        public static VentilationCaisse Calculer(AppDbContext ctx, DateTime debut, DateTime fin, int? userId, int? sessionId = null)
         {
-            var paiements = ctx.paiement.AsNoTracking()
-                .Include(p => p.Vente)
-                .Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin
-                         && p.Vente.Statut != "Annulée"
-                         && (userId == null || p.UserId == userId))
-                .ToList();
+            var requete = ctx.paiement.AsNoTracking().Include(p => p.Vente).Where(p => p.Vente.Statut != "Annulée");
+            requete = sessionId == null
+                ? requete.Where(p => p.DatePaiement >= debut && p.DatePaiement <= fin && (userId == null || p.UserId == userId))
+                : requete.Where(p => p.SessionCaisseId == sessionId
+                                  || (p.SessionCaisseId == null && p.DatePaiement >= debut && p.DatePaiement <= fin && (userId == null || p.UserId == userId)));
+            var paiements = requete.ToList();
 
             decimal Somme(IEnumerable<Paiement> l) => l.Sum(p => p.Montant);
             var horsTiroir = ModesPaiement.ModesDeReception

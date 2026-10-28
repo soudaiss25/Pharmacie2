@@ -13,7 +13,12 @@ public static class UiHelper
     /// <summary>
     /// Ferme toute MessageBox : répond « Oui » (ou « Non » via WM_CLOSE) et note son titre.
     /// </summary>
-    public static CancellationTokenSource FermerLesMessages(bool repondreOui)
+    public static CancellationTokenSource FermerLesMessages(bool repondreOui) => FermerLesMessages(_ => repondreOui);
+
+    public static void ViderTitres() { lock (Titres) Titres.Clear(); }
+
+    /// <summary>Comme ci-dessus, mais la réponse (Oui / Non) dépend du titre de la fenêtre.</summary>
+    public static CancellationTokenSource FermerLesMessages(Func<string, bool> reponseOui)
     {
         var cts = new CancellationTokenSource();
         new Thread(() =>
@@ -26,7 +31,7 @@ public static class UiHelper
                     var sb = new System.Text.StringBuilder(256);
                     GetWindowText(h, sb, 256);
                     lock (Titres) Titres.Add(sb.ToString());
-                    if (repondreOui)
+                    if (reponseOui(sb.ToString()))
                     {
                         PostMessage(h, 0x0111, (IntPtr)6, IntPtr.Zero);   // WM_COMMAND IDYES
                         PostMessage(h, 0x0111, (IntPtr)1, IntPtr.Zero);   // WM_COMMAND IDOK

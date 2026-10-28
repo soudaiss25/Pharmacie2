@@ -123,12 +123,17 @@ namespace Pharmacie2.views
                         "Ajustement", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
+                string modePaiement = cbMode.SelectedItem?.ToString() ?? ModesPaiement.Especes;
+                var affectation = CaisseUi.Affecter(this, modePaiement);   // le bon tiroir, ou refus clair
+                if (!affectation.Autorise) return;
+
                 ctx.paiement.Add(new Paiement
                 {
                     NumeroPaiement = "P-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
                     VenteId = _venteId,
                     Montant = montant,
-                    Mode = cbMode.SelectedItem?.ToString() ?? ModesPaiement.Especes,
+                    SessionCaisseId = affectation.SessionCaisseId,
+                    Mode = modePaiement,
                     DatePaiement = DateTime.Now,
                     UserId = SessionUtilisateur.IdCourant  // ← qui encaisse
                 });

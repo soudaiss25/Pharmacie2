@@ -16,6 +16,8 @@ public class VenteMutuelleTests
         var admin = new User { Nom = "Said", Prenom = "Fatima", Role = Roles.Administrateur, Login = "admin", MotDePasse = MotDePasseService.Hacher("x") };
         ctx.Users.Add(admin);
         ctx.SaveChanges();
+        ctx.SessionsCaisse.Add(new SessionCaisse { UserId = admin.Id, DateOuverture = DateTime.Today, Statut = "Ouverte", CommentaireCloture = "" });   // encaisser des espèces demande une caisse ouverte
+        ctx.SaveChanges();
         SessionUtilisateur.Courant = admin;
         var m0 = new Mutuel { NomEmployeur = "Aaa première", EmailContact = "", telephoneEmployeur = "", TauxPriseEnCharge = 30 };
         var m1 = new Mutuel { NomEmployeur = "Zzz entreprise", EmailContact = "", telephoneEmployeur = "", TauxPriseEnCharge = 50, Actif = !m1Archivee };

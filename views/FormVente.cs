@@ -579,6 +579,16 @@ namespace Pharmacie2.views
                 especes = verse;
             }
 
+            // L'argent reçu doit aller dans le bon tiroir : sa propre session, sinon (après confirmation) celle d'un autre ;
+            // aucune caisse ouverte = pas d'encaissement en espèces
+            int? sessionPaiement = null;
+            if (verse > 0)
+            {
+                var affectation = CaisseUi.Affecter(this, ModePaiementEnregistre);
+                if (!affectation.Autorise) return;
+                sessionPaiement = affectation.SessionCaisseId;
+            }
+
             try
             {
                 using (var ctx = new AppDbContext())
@@ -653,6 +663,7 @@ namespace Pharmacie2.views
                             VenteId = vente.IdVente,
                             Montant = verse,
                             Mode = ModePaiementEnregistre,
+                            SessionCaisseId = sessionPaiement,
                             DatePaiement = DateTime.Now,
                             UserId = SessionUtilisateur.IdCourant
                         });

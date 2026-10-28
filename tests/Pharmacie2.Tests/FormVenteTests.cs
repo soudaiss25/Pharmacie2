@@ -15,7 +15,13 @@ public class FormVenteTests
         TestDb.Reinitialiser();
         TestDb.MigrerTout();
         var admin = new User { Nom = "Said", Prenom = "Fatima", Role = Roles.Administrateur, Login = "admin", MotDePasse = MotDePasseService.Hacher("x") };
-        using (var ctx = new AppDbContext()) { ctx.Users.Add(admin); ctx.SaveChanges(); }
+        using (var ctx = new AppDbContext())
+        {
+            ctx.Users.Add(admin);
+            ctx.SaveChanges();
+            ctx.SessionsCaisse.Add(new SessionCaisse { UserId = admin.Id, DateOuverture = DateTime.Today, Statut = "Ouverte", CommentaireCloture = "" });   // encaisser des espèces demande une caisse ouverte
+            ctx.SaveChanges();
+        }
         SessionUtilisateur.Courant = admin;
         int pid = TestDb.NouveauProduit("Doliprane", stock, nbParBoite, "Plaquette", prixVente: 1000m);
         int mid;

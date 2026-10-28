@@ -23,6 +23,12 @@ namespace Pharmacie2.Models
         public int VenteId { get; set; }
         public Vente Vente { get; set; }
 
+        /// <summary>
+        /// Tiroir (session de caisse) dans lequel l'argent est allé. Null pour les paiements d'avant cette fonction (règle d'origine : caissier + dates)
+        /// et pour les paiements hors tiroir sans session ouverte.
+        /// </summary>
+        public int? SessionCaisseId { get; set; }
+
         // ← NOUVEAU : qui a encaissé ce paiement
         public int? UserId { get; set; }
         [ForeignKey("UserId")]
