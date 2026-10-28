@@ -32,6 +32,7 @@ namespace Pharmacie2.views
         private decimal? _prixUniteOrigine;
         private DateTime _dateOrigine;
         private bool _ficheMarquee;
+        private bool _aVentesUnite;               // des ventes passées ont été faites à l'unité
         private bool _peremptionOrigine = true;   // la date d'origine était-elle connue ?
 
         // ── Constructeurs ─────────────────────────────────────────────────
@@ -117,6 +118,7 @@ namespace Pharmacie2.views
                 txtNom.Text = p.Nom;
                 _prixAchatOrigine = p.PrixAchat; _prixVenteOrigine = p.PrixVente; _prixUniteOrigine = p.PrixVenteUnite; _dateOrigine = p.DateExpiration;
                 _ficheMarquee = p.FicheAVerifier;
+                _aVentesUnite = ctx.LigneVentes.Any(l => l.ProduitId == p.Id && l.UniteVendue != StockService.UniteBoite);
                 _motifsFiche = FicheAVerifierService.Motifs(p);
                 cmbType.Text = p.Type;
                 // Ordre important : le prix de vente est saisi EN DERNIER (achat et marge le recalculent)
@@ -401,6 +403,15 @@ namespace Pharmacie2.views
                 numPrixAchat.Focus(); return;
             }
 
+            // Vente en détail : « Boîte » ne peut pas être l'unité de détail (la boîte est déjà l'unité de base)
+            if (chkVenteDetail.Checked && string.Equals(cmbUniteVente.SelectedItem?.ToString(), StockService.UniteBoite, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show(
+                    "« Boîte » ne peut pas être l'unité de détail : la boîte est déjà l'unité de base.\n\nChoisissez ce que l'on vend à l'unité : Plaquette, Comprimé, Gélule, Ampoule, Flacon, Sachet, Tube…",
+                    "Unité de détail", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmbUniteVente.Focus(); return;
+            }
+
             // Vente en détail — vérification
             if (chkVenteDetail.Checked && numNbUniteParBoite.Value <= 1)
             {
@@ -468,13 +479,14 @@ namespace Pharmacie2.views
                 || nbUniteParBoite != _nbParBoiteOrigine;
 
             // Changement de NbUniteParBoite avec du stock : ressaisie obligatoire du stock réel
-            if (_produitId != null && _stockOrigineUnites > 0 && nbUniteParBoite != _nbParBoiteOrigine)
+            if (_produitId != null && (_stockOrigineUnites > 0 || _aVentesUnite) && nbUniteParBoite != _nbParBoiteOrigine)
             {
                 if (!_nbAverti)
                 {
                     _nbAverti = true;
                     MessageBox.Show(
                         $"Vous modifiez le nombre d'unités par boîte (de {_nbParBoiteOrigine} à {nbUniteParBoite}).\n\n" +
+                        (_aVentesUnite ? "Ce produit a déjà été vendu à l'unité : les anciennes ventes gardent leur conditionnement d'origine, mais le stock doit être recompté avec le nouveau conditionnement.\n\n" : "") +
                         "Le stock actuel ne peut plus être converti automatiquement.\n" +
                         "Comptez le stock réel en rayon et saisissez-le (boîtes pleines + unités en vrac), puis enregistrez à nouveau.",
                         "Stock à ressaisir", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -553,6 +565,8 @@ namespace Pharmacie2.views
                             string avant = p.MotifsFiche ?? "";
                             bool prixChange = prixAchat != _prixAchatOrigine || prixVente != _prixVenteOrigine || prixVenteUnite != _prixUniteOrigine;
                             bool dateChange = peremptionConnue && (!_peremptionOrigine || dateExpiration.Date != _dateOrigine.Date);
+                            if (uniteVente != StockService.UniteBoite || nbUniteParBoite <= 1)
+                                FicheAVerifierService.Lever(p, FicheAVerifierService.PrefixeConditionnement);   // unité de détail corrigée
                             if (prixChange) FicheAVerifierService.Lever(p, FicheAVerifierService.PrefixePrix);
                             if (dateChange) FicheAVerifierService.Lever(p, FicheAVerifierService.PrefixePeremption);
                             if ((prixChange || dateChange) && avant != (p.MotifsFiche ?? ""))

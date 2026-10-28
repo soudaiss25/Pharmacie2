@@ -11,6 +11,7 @@ namespace Pharmacie2.Services
     {
         public const string PrefixePrix = "Prix";
         public const string PrefixePeremption = "Péremption";
+        public const string PrefixeConditionnement = "Conditionnement";
         private const string Separateur = " ; ";
 
         public static List<string> Motifs(Produit p)

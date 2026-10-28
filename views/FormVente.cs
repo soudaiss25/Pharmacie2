@@ -222,10 +222,14 @@ namespace Pharmacie2.views
             {
                 if (form.ShowDialog(this) != DialogResult.OK) return;
 
-                var produit = form.ProduitSelectionne;
-                int qte = form.QuantiteSelectionnee;
-                string unite = form.UniteSelectionnee;
+                AjouterLigne(form.ProduitSelectionne, form.QuantiteSelectionnee, form.UniteSelectionnee);
+            }
+        }
 
+        /// <summary>Ajoute au panier (contrôle du stock, avertissement de prix, proposition en boîtes). Appelée après le choix du produit.</summary>
+        private void AjouterLigne(Produit produit, int qte, string unite)
+        {
+            {
                 // ── Contrôle du stock en UNITÉS sur la quantité CUMULÉE du panier ──
                 int unitesPanier = _lignes
                     .Where(l => l.ProduitId == produit.Id)
@@ -244,6 +248,36 @@ namespace Pharmacie2.views
                     return;
                 }
 
+                // Vente à l'unité d'une boîte entière ou plus : on propose la même vente en boîtes (les deux totaux côte à côte).
+                // Le vendeur choisit ; rien n'est imposé.
+                if (ConditionnementService.Proposer(produit, qte, unite) is { } proposition
+                    && MessageBox.Show(proposition.Message(produit.Nom), "Vendre en boîtes ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    AjouterAuPanier(produit, proposition.Boites, StockService.UniteBoite);
+                    if (proposition.Reste > 0) AjouterAuPanier(produit, proposition.Reste, unite);
+                    FinAjout();
+                    return;
+                }
+
+                AjouterAuPanier(produit, qte, unite);
+                FinAjout();
+            }
+        }
+
+        private void FinAjout()
+        {
+            {
+                txtRecherche.Clear();
+                RafraichirGrille();
+                RecalculerTotal();
+                txtRecherche.Focus();
+            }
+        }
+
+        /// <summary>Une ligne du panier (cumul si le produit est déjà là avec la même unité) au prix saisi par le client.</summary>
+        private void AjouterAuPanier(Produit produit, int qte, string unite)
+        {
+            {
                 // Prix unitaire selon l'unité choisie
                 decimal prixU = unite == StockService.UniteBoite
                     ? produit.PrixVente
@@ -268,11 +302,6 @@ namespace Pharmacie2.views
                         PrixUnitaire = prixU,
                         UniteVendue = unite
                     });
-
-                txtRecherche.Clear();
-                RafraichirGrille();
-                RecalculerTotal();
-                txtRecherche.Focus();
             }
         }
 

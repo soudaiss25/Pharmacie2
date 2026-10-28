@@ -129,6 +129,42 @@ namespace Pharmacie2.Services
                 foreach (var l in c.Lignes)
                     Ajouter("D3", GroupeConstat.Information, l.Produit?.Nom ?? "(produit supprimé)", $"commande n°{c.Id} annulée, peut-être après réception");
 
+            // ═══════════════ CONDITIONNEMENT ET VENTES À L'UNITÉ ═══════════════
+            var lignesUnite = ctx.LigneVentes.AsNoTracking().Where(l => l.Vente.Statut == "Active" && l.UniteVendue != StockService.UniteBoite)
+                .Select(l => new { l.ProduitId, l.PrixUnitaire }).ToList();
+            var ventesUniteParProduit = lignesUnite.GroupBy(l => l.ProduitId).ToDictionary(g => g.Key, g => g.ToList());
+
+            foreach (var p in produits.Where(p => p.NbUniteParBoite > 1 && p.UniteVente == StockService.UniteBoite))        // D25
+            {
+                string motif = "l'unité de détail s'appelle « Boîte »";
+                Ajouter("D25", GroupeConstat.AVerifier, p.Nom, $"conditionnement : {motif} ({p.NbUniteParBoite} par boîte)" + (appliquer ? " — fiche marquée « À vérifier »" : ""));
+                if (appliquer) Marquer(p, "D25", FicheAVerifierService.PrefixeConditionnement + " : " + motif);
+            }
+
+            foreach (var p in produits.Where(p => p.NbUniteParBoite == 1 && ventesUniteParProduit.ContainsKey(p.Id)))        // D27
+            {
+                string motif = "conditionnement modifié après des ventes à l'unité";
+                Corriger("D27", p.Nom, "stock affiché", "stock « À vérifier »", $"{ventesUniteParProduit[p.Id].Count} vente(s) passée(s) à l'unité mais le produit est maintenant vendu à la boîte seulement");
+                if (appliquer)
+                {
+                    p.StockAVerifier = true;
+                    p.MotifVerification = string.IsNullOrEmpty(p.MotifVerification) ? motif : p.MotifVerification + " ; " + motif;
+                    dejaMarques.Remove(p.Id);
+                }
+            }
+
+            foreach (var p in produits.Where(p => p.UniteVente == "Plaquette" && p.NbUniteParBoite >= 20))                   // D28
+                Ajouter("D28", GroupeConstat.Information, p.Nom, $"unité probablement mal nommée : « Plaquette » pour {p.NbUniteParBoite} unités par boîte (comprimé ?)");
+
+            foreach (var p in produits)                                                                                       // D29
+            {
+                if (!ventesUniteParProduit.TryGetValue(p.Id, out var l)) continue;
+                var avecCentimes = l.Where(x => x.PrixUnitaire != Math.Truncate(x.PrixUnitaire)).ToList();
+                if (avecCentimes.Count == 0) continue;
+                Ajouter("D29", GroupeConstat.Information, p.Nom,
+                    $"{avecCentimes.Count} vente(s) passée(s) à l'unité avec un prix à centimes (ex. {avecCentimes[0].PrixUnitaire:0.##} KMF) : prix calculé par l'ancienne version, à faire vérifier ; prix à l'unité actuel : {(p.PrixVenteUnite.HasValue ? M(p.PrixVenteUnite.Value) : "non renseigné")}");
+            }
+
             // ═══════════════ PRIX ═══════════════
             foreach (var p in produits)                                                                             // D5
             {
