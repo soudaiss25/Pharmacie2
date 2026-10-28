@@ -110,7 +110,9 @@ namespace Pharmacie2.views.UserControls
 
                     // ── DÉPENSES ──────────────────────────────────────────
                     // Achat des produits vendus ce mois (coût réel à l'unité vendue)
-                    decimal cogs = lignes.Sum(l => TableauDeBordService.CoutAchat(l));
+                    var calculMarge = MargeVenteService.Calculer(lignes);
+                    decimal cogs = calculMarge.Cout;
+                    totalRevenus -= calculMarge.CaSansCout;   // les lignes sans coût connu sont exclues du résultat (et signalées plus bas)
 
                     decimal salaires = depenses.Where(d => d.Categorie == "Salaire").Sum(d => d.Montant);
                     decimal loyer = depenses.Where(d => d.Categorie == "Loyer").Sum(d => d.Montant);
@@ -148,6 +150,8 @@ namespace Pharmacie2.views.UserControls
 
                     lblPeriodeMensuel.Text =
                         $"{((MoisItem)cbMois.SelectedItem).Nom} {annee} — {Format.Compte(ventes.Count, "vente")}, {Format.Compte(depenses.Count, "dépense")} saisie{(depenses.Count > 1 ? "s" : "")}";
+                    if (calculMarge.Signalement is { } sansCout)
+                        lblPeriodeMensuel.Text += " — " + sansCout + " (exclues du résultat)";
                 }
             }
             catch (Exception ex)
@@ -206,7 +210,9 @@ namespace Pharmacie2.views.UserControls
                             .Where(l => idsMois.Contains(l.VenteId))
                             .ToList();
 
-                        decimal cogs = lignesVente.Sum(l => TableauDeBordService.CoutAchat(l));
+                        var calculMarge = MargeVenteService.Calculer(lignesVente);
+                        decimal cogs = calculMarge.Cout;
+                        ca -= calculMarge.CaSansCout;   // lignes sans coût connu : exclues du résultat
 
                         decimal depenses = ctx.DepensesAnnexes.AsNoTracking()
                             .Where(d => d.DateDepense >= debut && d.DateDepense <= fin)

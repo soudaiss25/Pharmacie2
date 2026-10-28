@@ -49,7 +49,7 @@ public static class LayoutSeed
             MontantTotal = 3000, MontantMutuelle = 2400, TauxMutuelle = 80, MutuelId = mut.IdMutuel, UserId = caissier.Id,
             DateVente = DateTime.Now.AddDays(-40)
         };
-        vente.Lignes.Add(new LigneVente { ProduitId = p1.Id, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });
+        vente.Lignes.Add(new LigneVente { ProduitId = p1.Id, CoutAchatUnitaire = 160m, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });
         vente.Paiements.Add(new Paiement { NumeroPaiement = "P-1", Montant = 600, UserId = caissier.Id });
         ctx.ventes.Add(vente);
 
@@ -124,7 +124,7 @@ public static class LayoutSeed
                     MatriculeEmploye = "", MoyenPaiement = mode, Type = mode, MontantTotal = total, UserId = caissier.Id,
                     DateVente = DateTime.Today.AddDays(-jour).AddHours(8 + k * 2)
                 };
-                v.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = qte, QuantiteUnites = qte * p.NbUniteParBoite, PrixUnitaire = p.PrixVente, UniteVendue = "Boîte" });
+                v.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = p.PrixAchat / Math.Max(1, p.NbUniteParBoite), Quantite = qte, QuantiteUnites = qte * p.NbUniteParBoite, PrixUnitaire = p.PrixVente, UniteVendue = "Boîte" });
                 decimal verse = credit ? Math.Round(total / 3, 0) : total;
                 v.Paiements.Add(new Paiement { NumeroPaiement = "P-" + num, Montant = verse, Mode = mode == ModesPaiement.Mvola ? ModesPaiement.Mvola : ModesPaiement.Especes, UserId = caissier.Id, DatePaiement = v.DateVente });
                 ctx.ventes.Add(v);

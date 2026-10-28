@@ -245,6 +245,7 @@ namespace Pharmacie2.Services
             Entete("Indicateur", "Valeur");
             ws.Cell(l, 1).Value = "Chiffre d'affaires"; ws.Cell(l++, 2).Value = Format.Montant(stats.CA);
             ws.Cell(l, 1).Value = "Bénéfice (après dépenses)"; ws.Cell(l++, 2).Value = Format.Montant(stats.BeneficeNet);
+            if (MargeVenteService.Signalement(stats.LignesSansCout) is { } sansCout) { ws.Cell(l, 1).Value = "Attention"; ws.Cell(l++, 2).Value = sansCout + " (exclues de la marge)"; }
             ws.Cell(l, 1).Value = "Ventes"; ws.Cell(l++, 2).Value = stats.NbVentes;
             ws.Cell(l, 1).Value = "Argent à récupérer"; ws.Cell(l++, 2).Value = Format.Montant(stats.ArgentARecuperer);
             l++;

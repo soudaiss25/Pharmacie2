@@ -36,6 +36,7 @@ namespace Pharmacie2.views
             public string ProduitNom { get; set; }
             public int Quantite { get; set; }
             public decimal PrixUnitaire { get; set; }
+            public decimal? CoutAchatUnitaire { get; set; }   // coût figé d'une ligne existante : conservé tel quel
             public string UniteVendue { get; set; }
             public bool Supprimee { get; set; }
             public decimal SousTotal => Quantite * PrixUnitaire;
@@ -113,6 +114,7 @@ namespace Pharmacie2.views
                     ProduitNom = l.Produit?.Nom ?? "—",
                     Quantite = l.Quantite,
                     PrixUnitaire = l.PrixUnitaire,
+                    CoutAchatUnitaire = l.CoutAchatUnitaire,
                     UniteVendue = l.UniteVendue
                 }).ToList();
 
@@ -353,6 +355,8 @@ namespace Pharmacie2.views
                             Quantite = l.Quantite,
                             QuantiteUnites = unites,
                             PrixUnitaire = l.PrixUnitaire,
+                            // ligne existante : son coût d'origine est conservé ; nouvelle ligne : coût du jour
+                            CoutAchatUnitaire = l.Id != null ? l.CoutAchatUnitaire : MargeVenteService.CoutUnitaireDuJour(prod),
                             UniteVendue = l.UniteVendue
                         });
                     }

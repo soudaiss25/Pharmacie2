@@ -21,6 +21,7 @@ existant cité ici) vérifie chaque règle quand c'est automatisable ; sinon la 
 | 12 | Montants en KMF sans centimes. | Test `Regle12_*` ; `FondationsTests` |
 | 13 | Verrouillage automatique après 5 minutes d'inactivité (réglage par défaut validé par le client). | Test `Regle13_*` ; `VerrouillageTests` |
 | 14 | Le prix de vente n'est jamais recalculé automatiquement ; la marge s'affiche automatiquement (marge = prix de vente − prix d'achat, en KMF et en % du prix d'achat, à l'unité pour un produit au détail). | Tests `Regle14_*` (`Regle14MargeTests`) |
+| 15 | La marge d'une vente utilise le prix d'achat du jour de la vente (coût figé sur chaque ligne de vente ; une ligne sans coût connu est exclue de la marge et signalée). | Tests `Regle15_*` (`Regle15CoutAchatTests`) |
 
 ## Conséquences de calcul (déduites des règles ci-dessus)
 

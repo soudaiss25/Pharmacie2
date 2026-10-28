@@ -117,7 +117,8 @@ namespace Pharmacie2.views.UserControls
                 carteCA.Tendance = p.CA == 0 ? 0 : Format.Tendance(s.CA, p.CA);
 
                 carteBenefice.Valeur = Format.Montant(s.BeneficeNet);
-                carteBenefice.Detail = Format.EvolutionOuTexte(s.BeneficeNet, p.BeneficeNet, sansBase) + (p.BeneficeNet == 0 ? "" : vs);
+                carteBenefice.Detail = Format.EvolutionOuTexte(s.BeneficeNet, p.BeneficeNet, sansBase) + (p.BeneficeNet == 0 ? "" : vs)
+                                       + (MargeVenteService.Signalement(s.LignesSansCout) is { } sans ? " — " + sans : "");
                 carteBenefice.Tendance = p.BeneficeNet == 0 ? 0 : Format.Tendance(s.BeneficeNet, p.BeneficeNet);
                 carteBenefice.Niveau = s.BeneficeNet >= 0 ? "succes" : "urgent";
 

@@ -14,7 +14,8 @@ namespace Pharmacie2.Services
     public record StatsPeriode(
         decimal CA, decimal MargeBrute, decimal Depenses, decimal BeneficeNet,
         int NbVentes, int NbVentesASolder, decimal ArgentARecuperer,
-        List<LigneMode> Modes, List<LigneTop> TopProduits, List<LigneCredit> Credits, List<LigneMutuelleDue> Mutuelles);
+        List<LigneMode> Modes, List<LigneTop> TopProduits, List<LigneCredit> Credits, List<LigneMutuelleDue> Mutuelles,
+        int LignesSansCout = 0);
 
     /// <summary>Statistiques d'une période. Les prix et quantités réellement pratiqués à la vente sont utilisés.</summary>
     public static class StatistiquesService
@@ -40,8 +41,9 @@ namespace Pharmacie2.Services
             // Chiffre d'affaires réel : quantité × prix pratiqué (boîte ou unité)
             var lignes = ventes.SelectMany(v => v.Lignes).ToList();
             decimal ca = lignes.Sum(l => l.Quantite * l.PrixUnitaire);
-            decimal cout = lignes.Sum(l => TableauDeBordService.CoutAchat(l));
-            decimal marge = ca - cout;
+            // Marge au prix d'achat du jour de la vente ; les lignes sans coût connu sont exclues de la marge (et signalées)
+            var calcul = MargeVenteService.Calculer(lignes);
+            decimal marge = calcul.MargeBrute;
 
             decimal depenses = ctx.DepensesAnnexes.AsNoTracking()
                 .Where(d => d.DateDepense >= debut && d.DateDepense <= fin)
@@ -55,7 +57,8 @@ namespace Pharmacie2.Services
                 ArgentRecuParMode(ctx, ventes, debut, fin),
                 TopProduits(lignes),
                 Credits(ventes),
-                MutuellesDues(ctx, ventes));
+                MutuellesDues(ctx, ventes),
+                calcul.LignesSansCout);
         }
 
         /// <summary>Argent réellement reçu pendant la période, par moyen de paiement de la vente d'origine.</summary>

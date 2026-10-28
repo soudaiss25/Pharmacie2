@@ -105,27 +105,21 @@ namespace Pharmacie2.Services
         }
 
         /// <summary>
-        /// Chiffre d'affaires réel (prix pratiqués à la vente, boîte ou unité) moins le coût d'achat des unités vendues.
+        /// Marge brute = chiffre d'affaires des lignes dont le coût est connu moins leur coût d'achat (prix d'achat du jour de la vente).
+        /// Les lignes sans coût connu sont exclues (voir <see cref="CalculMarge.Signalement"/>).
         /// </summary>
-        public static decimal MargeBrute(AppDbContext ctx, DateTime debut, DateTime fin)
+        public static decimal MargeBrute(AppDbContext ctx, DateTime debut, DateTime fin) => CalculerMarge(ctx, debut, fin).MargeBrute;
+
+        public static CalculMarge CalculerMarge(AppDbContext ctx, DateTime debut, DateTime fin)
         {
             var lignes = ctx.LigneVentes.AsNoTracking()
-                .Include(l => l.Produit)
                 .Where(l => l.Vente.Statut == "Active" && l.Vente.DateVente >= debut && l.Vente.DateVente <= fin)
                 .ToList();
-
-            decimal ca = lignes.Sum(l => l.Quantite * l.PrixUnitaire);
-            decimal cout = lignes.Sum(l => CoutAchat(l));
-            return ca - cout;
+            return MargeVenteService.Calculer(lignes);
         }
 
-        /// <summary>Coût d'achat des unités vendues : la boîte est achetée PrixAchat, une unité en coûte PrixAchat / NbUniteParBoite.</summary>
-        public static decimal CoutAchat(LigneVente l)
-        {
-            if (l.Produit == null) return 0m;
-            int unites = l.QuantiteUnites > 0 ? l.QuantiteUnites : l.Quantite;
-            return unites * l.Produit.PrixAchat / Math.Max(1, l.Produit.NbUniteParBoite);
-        }
+        /// <summary>Coût d'achat d'une ligne au prix d'achat du jour de la vente (0 si le coût est inconnu : la ligne est alors exclue de la marge).</summary>
+        public static decimal CoutAchat(LigneVente l) => MargeVenteService.Cout(l) ?? 0m;
 
         /// <summary>Bénéfice net = marge brute − dépenses annexes de la période.</summary>
         public static decimal Benefice(AppDbContext ctx, DateTime debut, DateTime fin)

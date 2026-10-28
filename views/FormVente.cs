@@ -603,6 +603,7 @@ namespace Pharmacie2.views
                             Quantite = ligne.Quantite,
                             QuantiteUnites = unites,
                             PrixUnitaire = ligne.PrixUnitaire,
+                            CoutAchatUnitaire = MargeVenteService.CoutUnitaireDuJour(produit),   // figé : la marge de cette vente ne change plus jamais
                             UniteVendue = ligne.UniteVendue
                         });
                     }

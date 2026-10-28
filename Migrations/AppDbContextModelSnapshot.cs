@@ -138,6 +138,9 @@ namespace Pharmacie2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<decimal?>("CoutAchatUnitaire")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("PrixUnitaire")
                         .HasColumnType("TEXT");
 

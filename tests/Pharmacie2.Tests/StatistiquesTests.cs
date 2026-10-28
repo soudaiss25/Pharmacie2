@@ -37,29 +37,29 @@ public class StatistiquesTests
 
             // Comptant : 2 boîtes (3000) + 3 plaquettes à 300 (900)
             var v1 = V("V-1", ModesPaiement.Comptant, Debut.AddDays(2), total: 3900);
-            v1.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });
-            v1.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 3, QuantiteUnites = 3, PrixUnitaire = 300, UniteVendue = "Plaquette" });
+            v1.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });
+            v1.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 3, QuantiteUnites = 3, PrixUnitaire = 300, UniteVendue = "Plaquette" });
             v1.Paiements.Add(new Paiement { NumeroPaiement = "P1", Montant = 3900, DatePaiement = Debut.AddDays(2) });
 
             // Mvola
             var v2 = V("V-2", ModesPaiement.Mvola, Debut.AddDays(3), total: 1500);
-            v2.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });
+            v2.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });
             v2.Paiements.Add(new Paiement { NumeroPaiement = "P2", Montant = 1500, DatePaiement = Debut.AddDays(3) });
 
             // Crédit : Ali doit 2000 (1000 versés)
             var v3 = V("V-3", ModesPaiement.Credit, Debut.AddDays(4), "Ali", 3000);
-            v3.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });
+            v3.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });
             v3.Paiements.Add(new Paiement { NumeroPaiement = "P3", Montant = 1000, DatePaiement = Debut.AddDays(4) });
 
             // Mutuelle : part entreprise 750 non réglée, patient a payé sa part
             var v4 = V("V-4", ModesPaiement.Mutuelle, Debut.AddDays(5), total: 1500);
             v4.MutuelId = m.IdMutuel; v4.MontantMutuelle = 750; v4.TauxMutuelle = 50;
-            v4.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });
+            v4.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });
             v4.Paiements.Add(new Paiement { NumeroPaiement = "P4", Montant = 750, DatePaiement = Debut.AddDays(5) });
 
             // Annulée : ignorée partout
             var v5 = V("V-5", ModesPaiement.Comptant, Debut.AddDays(6), total: 9999, statut: "Annulée");
-            v5.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 9999, UniteVendue = "Boîte" });
+            v5.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 9999, UniteVendue = "Boîte" });
             v5.Paiements.Add(new Paiement { NumeroPaiement = "P5", Montant = 9999, DatePaiement = Debut.AddDays(6) });
 
             ctx.ventes.AddRange(v1, v2, v3, v4, v5);

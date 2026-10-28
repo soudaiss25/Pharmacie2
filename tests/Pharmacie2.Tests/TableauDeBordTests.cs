@@ -93,16 +93,16 @@ public class TableauDeBordTests
             ctx.SaveChanges();
 
             var v = NouvelleVente("V-1", Maintenant.Date.AddDays(-3));
-            v.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });   // CA 3000, coût 1600
-            v.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 3, QuantiteUnites = 3, PrixUnitaire = 300, UniteVendue = "Plaquette" });   // CA 900, coût 3 x 160 = 480
+            v.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 2, QuantiteUnites = 10, PrixUnitaire = 1500, UniteVendue = "Boîte" });   // CA 3000, coût 1600
+            v.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 3, QuantiteUnites = 3, PrixUnitaire = 300, UniteVendue = "Plaquette" });   // CA 900, coût 3 x 160 = 480
             ctx.ventes.Add(v);
             ctx.DepensesAnnexes.Add(new DepenseAnnexe { Categorie = "Loyer", Description = "", Montant = 200, DateDepense = Maintenant.Date.AddDays(-2) });
 
             // mois précédent, même nombre de jours (1..15 septembre)
             var vp = NouvelleVente("V-0", new DateTime(2026, 9, 10, 10, 0, 0));
-            vp.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });    // 1500 - 800 = 700
+            vp.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });    // 1500 - 800 = 700
             var apres = NouvelleVente("V-00", new DateTime(2026, 9, 20, 10, 0, 0));
-            apres.Lignes.Add(new LigneVente { ProduitId = p.Id, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });  // après le 15 : ignorée
+            apres.Lignes.Add(new LigneVente { ProduitId = p.Id, CoutAchatUnitaire = 160m, Quantite = 1, QuantiteUnites = 5, PrixUnitaire = 1500, UniteVendue = "Boîte" });  // après le 15 : ignorée
             ctx.ventes.AddRange(vp, apres);
             ctx.SaveChanges();
         }
