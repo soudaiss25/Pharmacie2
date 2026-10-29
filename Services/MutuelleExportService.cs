@@ -8,319 +8,328 @@ using Pharmacie2.Models;
 namespace Pharmacie2.Services
 {
     /// <summary>
-    /// Génère un fichier Excel (.xlsx) listant tous les achats par mutuelle
-    /// pour une entreprise donnée sur une période donnée.
-    ///
-    /// Dépendance NuGet : ClosedXML (>= 0.102)
-    ///   dotnet add package ClosedXML
+    /// Fichier Excel (.xlsx) des achats d'une mutuelle pour une période.
+    ///   - « Pour l'entreprise » : ce que l'on peut envoyer à l'employeur (aucune information interne : ni téléphone, ni versement, ni reste dû du patient, ni motif) ;
+    ///   - « Interne (pharmacie) » : toutes les colonnes de suivi.
+    /// Par défaut seules les ventes non réglées sont exportées, pour ne jamais facturer deux fois la même vente.
     /// </summary>
     public static class MutuelleExportService
     {
-        // ─── DTO interne ─────────────────────────────────────────────────
+        public enum VersionFichier { Entreprise, Interne }
+
+        public const string PatientNonIdentifie = MutuelleService.PatientNonIdentifieLibelle;
+
+        public class LigneMedicament
+        {
+            public string NumeroVente { get; set; } = "";
+            public DateTime DateVente { get; set; }
+            public string Employe { get; set; } = "";
+            public string Produit { get; set; } = "";
+            public string UniteVendue { get; set; } = "";
+            public int Quantite { get; set; }
+            public decimal PrixUnitaire { get; set; }
+            public decimal SousTotal => Quantite * PrixUnitaire;
+        }
 
         public class LigneEmployeMutuelle
         {
-            public string NomEmployeur { get; set; }
-            public string MatriculeEmploye { get; set; }
-            public string NomClient { get; set; }
-            public string PrenomClient { get; set; }
-            public string TelephoneClient { get; set; }
+            public string NomEmployeur { get; set; } = "";
+            public string MatriculeEmploye { get; set; } = "";
+            public string NomClient { get; set; } = "";
+            public string PrenomClient { get; set; } = "";
+            public string TelephoneClient { get; set; } = "";
             public DateTime DateVente { get; set; }
-            public string NumeroVente { get; set; }
+            public string NumeroVente { get; set; } = "";
             public decimal MontantTotal { get; set; }
             public decimal TauxMutuelle { get; set; }
             public decimal PartMutuelle { get; set; }
             public decimal PartPatient { get; set; }
             public decimal MontantVerse { get; set; }
             public decimal ResteAPayer { get; set; }
-            public string Statut { get; set; }
+            public string Statut { get; set; } = "";
+            public string Motif { get; set; } = "";
+            public bool Reglee { get; set; }
+            public DateTime? DateReglement { get; set; }
+            public bool PatientNonIdentifie { get; set; }
+            public List<LigneMedicament> Medicaments { get; set; } = new();
+
+            public string TexteReglee => Reglee ? "Oui" + (DateReglement.HasValue ? $" ({DateReglement:dd/MM/yyyy})" : "") : "Non";
+            public string ResumeMedicaments => string.Join(" ; ", Medicaments.Select(m => $"{m.Produit} ×{m.Quantite} ({m.UniteVendue})"));
         }
 
         // ─── Requête données ─────────────────────────────────────────────
 
-        /// <summary>
-        /// Retourne les lignes de rapport pour une mutuelle sur une période,
-        /// en n'incluant que les ventes ACTIVES.
-        /// </summary>
-        public static List<LigneEmployeMutuelle> GetDonnees(
-            int mutuelId, DateTime debut, DateTime fin)
+        /// <summary>Ventes ACTIVES d'une mutuelle sur une période (seulement les non réglées si <paramref name="nonRegleesSeulement"/>).</summary>
+        public static List<LigneEmployeMutuelle> GetDonnees(int mutuelId, DateTime debut, DateTime fin, bool nonRegleesSeulement = false)
         {
             using var ctx = new AppDbContext();
 
             var ventes = ctx.ventes
                 .Include(v => v.Mutuel)
                 .Include(v => v.Paiements)
+                .Include(v => v.Lignes).ThenInclude(l => l.Produit)
                 .Where(v => v.MutuelId == mutuelId
                          && v.Type == "Mutuelle"
                          && v.Statut == "Active"
                          && v.DateVente >= debut
-                         && v.DateVente <= fin)
+                         && v.DateVente <= fin
+                         && (!nonRegleesSeulement || !v.MutuelleReglee))
                 .OrderBy(v => v.NomClient)
                 .ThenBy(v => v.DateVente)
                 .ToList();
 
-            return ventes.Select(v => new LigneEmployeMutuelle
+            var dates = ctx.MutuelPaiements.AsNoTracking().Where(p => p.MutuelId == mutuelId).ToList()
+                .GroupBy(p => p.VenteId).ToDictionary(g => g.Key, g => g.Max(p => p.DatePaiement));
+
+            return ventes.Select(v =>
             {
-                NomEmployeur = v.Mutuel?.NomEmployeur ?? "—",
-                MatriculeEmploye = v.MatriculeEmploye ?? "—",
-                NomClient = v.NomClient ?? "",
-                PrenomClient = v.PrenomClient ?? "",
-                TelephoneClient = v.TelephoneClient ?? "—",
-                DateVente = v.DateVente,
-                NumeroVente = v.numeroVente,
-                MontantTotal = v.MontantTotal,
-                TauxMutuelle = v.TauxMutuelle,
-                PartMutuelle = v.MontantMutuelle,
-                PartPatient = v.MontantTotal - v.MontantMutuelle,
-                MontantVerse = v.MontantVerse,
-                ResteAPayer = v.MontantRestant,
-                Statut = v.Statut
-            }).ToList();
+                bool inconnu = MutuelleService.PatientNonIdentifie(v);
+                string employe = inconnu ? PatientNonIdentifie : $"{v.PrenomClient} {v.NomClient}".Trim();
+                return new LigneEmployeMutuelle
+                {
+                    NomEmployeur = v.Mutuel?.NomEmployeur ?? "—",
+                    MatriculeEmploye = MutuelleService.MatriculeVide(v.MatriculeEmploye) ? "—" : v.MatriculeEmploye!,
+                    NomClient = v.NomClient ?? "",
+                    PrenomClient = v.PrenomClient ?? "",
+                    TelephoneClient = string.IsNullOrWhiteSpace(v.TelephoneClient) ? "—" : v.TelephoneClient,
+                    DateVente = v.DateVente,
+                    NumeroVente = v.numeroVente,
+                    MontantTotal = v.MontantTotal,
+                    TauxMutuelle = v.TauxMutuelle,
+                    PartMutuelle = v.MontantMutuelle,
+                    PartPatient = v.MontantTotal - v.MontantMutuelle,
+                    MontantVerse = v.MontantVerse,
+                    ResteAPayer = v.MontantRestant,
+                    Statut = v.Statut,
+                    Motif = v.MotifAchat ?? "",
+                    Reglee = v.MutuelleReglee,
+                    DateReglement = v.MutuelleReglee && dates.TryGetValue(v.IdVente, out var d) ? d : null,
+                    PatientNonIdentifie = inconnu,
+                    Medicaments = v.Lignes.OrderBy(l => l.Id).Select(l => new LigneMedicament
+                    {
+                        NumeroVente = v.numeroVente,
+                        DateVente = v.DateVente,
+                        Employe = employe,
+                        Produit = l.Produit?.Nom ?? "(produit supprimé)",
+                        UniteVendue = l.UniteVendue,
+                        Quantite = l.Quantite,
+                        PrixUnitaire = l.PrixUnitaire
+                    }).ToList()
+                };
+            }).OrderBy(l => l.PatientNonIdentifie)                    // les ventes sans identité en dernier
+              .ThenBy(l => l.NomClient).ThenBy(l => l.DateVente).ToList();
         }
 
         // ─── Export Excel ─────────────────────────────────────────────────
 
-        /// <summary>
-        /// Génère le fichier Excel et l'enregistre à <paramref name="cheminFichier"/>.
-        /// </summary>
+        private const string FormatMontant = "#,##0.00 \"KMF\"";
+
+        private sealed record Colonne(string Titre, Func<LigneEmployeMutuelle, object> Valeur, string Format = "");
+
         public static void Exporter(
             string cheminFichier,
             int mutuelId,
             string nomMutuelle,
             DateTime debut,
-            DateTime fin)
+            DateTime fin,
+            bool nonRegleesSeulement = true,
+            VersionFichier version = VersionFichier.Entreprise)
         {
-            var lignes = GetDonnees(mutuelId, debut, fin);
+            var lignes = GetDonnees(mutuelId, debut, fin, nonRegleesSeulement);
+            bool interne = version == VersionFichier.Interne;
+            string portee = nonRegleesSeulement ? "Ventes non réglées" : "Toutes les ventes";
 
             using var wb = new XLWorkbook();
 
-            // ── Feuille 1 : Détail employés ───────────────────────────────
+            // ── Feuille 1 : détail des ventes ─────────────────────────────
             var ws = wb.Worksheets.Add("Détail employés");
-
-            // ── Titre principal ───────────────────────────────────────────
-            ws.Cell("A1").Value = $"Rapport Mutuelle — {nomMutuelle}";
-            ws.Cell("A1").Style.Font.Bold = true;
-            ws.Cell("A1").Style.Font.FontSize = 16;
-            ws.Cell("A1").Style.Font.FontColor = XLColor.FromArgb(27, 94, 32);
-            ws.Range("A1:N1").Merge();
-
-            ws.Cell("A2").Value =
-                $"Période : du {debut:dd/MM/yyyy} au {fin:dd/MM/yyyy}" +
-                $"     Généré le : {DateTime.Now:dd/MM/yyyy HH:mm}";
-            ws.Cell("A2").Style.Font.Italic = true;
-            ws.Cell("A2").Style.Font.FontColor = XLColor.Gray;
-            ws.Range("A2:N2").Merge();
-
-            ws.Row(1).Height = 30;
-            ws.Row(2).Height = 20;
-
-            // ── En-têtes colonnes (ligne 4) ───────────────────────────────
-            var entetes = new[]
+            var communes = new List<Colonne>
             {
-                "N° Vente",
-                "Date",
-                "Matricule",
-                "Nom",
-                "Prénom",
-                "Téléphone",
-                "Motif / ordonnance",
-                "Montant total",
-                $"Taux mutuelle (%)",
-                $"Part {nomMutuelle}",
-                "Part patient",
-                "Montant versé",
-                "Reste à payer",
-                "Statut"
+                new("N° Vente", l => l.NumeroVente),
+                new("Date", l => l.DateVente.ToString("dd/MM/yyyy")),
+                new("Matricule", l => l.MatriculeEmploye),
+                new("Nom", l => l.PatientNonIdentifie ? PatientNonIdentifie : l.NomClient),
+                new("Prénom", l => l.PrenomClient),
             };
-
-            int headerRow = 4;
-            for (int i = 0; i < entetes.Length; i++)
+            var colonnes = new List<Colonne>(communes);
+            if (interne)
             {
-                var cell = ws.Cell(headerRow, i + 1);
-                cell.Value = entetes[i];
-                cell.Style.Font.Bold = true;
-                cell.Style.Font.FontColor = XLColor.White;
-                cell.Style.Fill.BackgroundColor = XLColor.FromArgb(46, 125, 50);
-                cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                cell.Style.Border.OutsideBorderColor = XLColor.White;
+                colonnes.Add(new("Téléphone", l => l.TelephoneClient));
+                colonnes.Add(new("Motif / ordonnance", l => l.Motif));
             }
+            else
+                colonnes.Add(new("Médicaments achetés", l => l.ResumeMedicaments));
+            colonnes.Add(new("Montant total", l => l.MontantTotal, FormatMontant));
+            colonnes.Add(new("Taux mutuelle (%)", l => l.TauxMutuelle / 100m, "0.0%"));
+            colonnes.Add(new($"Part {nomMutuelle}", l => l.PartMutuelle, FormatMontant));
+            if (interne)
+            {
+                colonnes.Add(new("Part patient", l => l.PartPatient, FormatMontant));
+                colonnes.Add(new("Montant versé", l => l.MontantVerse, FormatMontant));
+                colonnes.Add(new("Reste à payer", l => l.ResteAPayer, FormatMontant));
+                colonnes.Add(new("Statut", l => l.Statut));
+            }
+            colonnes.Add(new("Réglée par la mutuelle", l => l.TexteReglee));
 
+            int headerRow = EcrireEntete(ws, nomMutuelle, debut, fin, portee, colonnes.Count);
+            for (int i = 0; i < colonnes.Count; i++)
+                StyleEntete(ws.Cell(headerRow, i + 1), colonnes[i].Titre, XLColor.FromArgb(46, 125, 50));
             ws.Row(headerRow).Height = 22;
 
-            // ── Données ───────────────────────────────────────────────────
-            int dataRow = headerRow + 1;
+            int ligne = headerRow + 1;
             foreach (var l in lignes)
             {
-                ws.Cell(dataRow, 1).Value = l.NumeroVente;
-                ws.Cell(dataRow, 2).Value = l.DateVente.ToString("dd/MM/yyyy");
-                ws.Cell(dataRow, 3).Value = l.MatriculeEmploye;
-                ws.Cell(dataRow, 4).Value = l.NomClient;
-                ws.Cell(dataRow, 5).Value = l.PrenomClient;
-                ws.Cell(dataRow, 6).Value = l.TelephoneClient;
-                ws.Cell(dataRow, 7).Value = "—";          // Motif non stocké ici, extensible
-                ws.Cell(dataRow, 8).Value = l.MontantTotal;
-                ws.Cell(dataRow, 9).Value = l.TauxMutuelle / 100m; // format %
-                ws.Cell(dataRow, 10).Value = l.PartMutuelle;
-                ws.Cell(dataRow, 11).Value = l.PartPatient;
-                ws.Cell(dataRow, 12).Value = l.MontantVerse;
-                ws.Cell(dataRow, 13).Value = l.ResteAPayer;
-                ws.Cell(dataRow, 14).Value = l.Statut;
-
-                // Format monétaire colonnes 8–13
-                string fmt = "#,##0.00 \"KMF\"";
-                for (int c = 8; c <= 13; c++)
-                    ws.Cell(dataRow, c).Style.NumberFormat.Format = fmt;
-
-                // Format pourcentage colonne 9
-                ws.Cell(dataRow, 9).Style.NumberFormat.Format = "0.0%";
-
-                // Colorer ligne si reste > 0
-                if (l.ResteAPayer > 0)
+                for (int c = 0; c < colonnes.Count; c++)
                 {
-                    ws.Row(dataRow).Style.Fill.BackgroundColor =
-                        XLColor.FromArgb(255, 243, 205);
-                    ws.Cell(dataRow, 13).Style.Font.FontColor = XLColor.OrangeRed;
-                    ws.Cell(dataRow, 13).Style.Font.Bold = true;
+                    var cell = ws.Cell(ligne, c + 1);
+                    var valeur = colonnes[c].Valeur(l);
+                    if (valeur is decimal d) cell.Value = d; else cell.Value = Convert.ToString(valeur) ?? "";
+                    if (colonnes[c].Format != "") cell.Style.NumberFormat.Format = colonnes[c].Format;
                 }
-
-                // Alternance légère
-                if (dataRow % 2 == 0 && l.ResteAPayer <= 0)
-                    ws.Row(dataRow).Style.Fill.BackgroundColor =
-                        XLColor.FromArgb(240, 248, 240);
-
-                ws.Row(dataRow).Height = 18;
-                dataRow++;
+                if (l.PatientNonIdentifie) ws.Row(ligne).Style.Font.FontColor = XLColor.OrangeRed;
+                else if (ligne % 2 == 0) ws.Row(ligne).Style.Fill.BackgroundColor = XLColor.FromArgb(240, 248, 240);
+                ws.Row(ligne).Height = 18;
+                ligne++;
             }
 
-            // ── Ligne de totaux ───────────────────────────────────────────
             if (lignes.Count > 0)
             {
-                int totalRow = dataRow;
-                ws.Cell(totalRow, 1).Value = "TOTAL";
-                ws.Cell(totalRow, 1).Style.Font.Bold = true;
-
-                // Formules Excel dynamiques
-                string range(int col) =>
-                    $"{ColLetter(col)}{headerRow + 1}:{ColLetter(col)}{dataRow - 1}";
-
-                ws.Cell(totalRow, 8).FormulaA1 = $"=SUM({range(8)})";
-                ws.Cell(totalRow, 10).FormulaA1 = $"=SUM({range(10)})";
-                ws.Cell(totalRow, 11).FormulaA1 = $"=SUM({range(11)})";
-                ws.Cell(totalRow, 12).FormulaA1 = $"=SUM({range(12)})";
-                ws.Cell(totalRow, 13).FormulaA1 = $"=SUM({range(13)})";
-
-                string fmtTotal = "#,##0.00 \"KMF\"";
-                foreach (int c in new[] { 8, 10, 11, 12, 13 })
+                ws.Cell(ligne, 1).Value = "TOTAL";
+                ws.Cell(ligne, 1).Style.Font.Bold = true;
+                for (int c = 0; c < colonnes.Count; c++)
                 {
-                    ws.Cell(totalRow, c).Style.NumberFormat.Format = fmtTotal;
-                    ws.Cell(totalRow, c).Style.Font.Bold = true;
+                    if (colonnes[c].Format != FormatMontant) continue;
+                    string lettre = ColLetter(c + 1);
+                    var cell = ws.Cell(ligne, c + 1);
+                    cell.FormulaA1 = $"=SUM({lettre}{headerRow + 1}:{lettre}{ligne - 1})";
+                    cell.Style.NumberFormat.Format = FormatMontant;
+                    cell.Style.Font.Bold = true;
                 }
-
-                ws.Range(totalRow, 1, totalRow, entetes.Length)
-                  .Style.Fill.BackgroundColor = XLColor.FromArgb(200, 230, 200);
-                ws.Row(totalRow).Height = 22;
+                ws.Range(ligne, 1, ligne, colonnes.Count).Style.Fill.BackgroundColor = XLColor.FromArgb(200, 230, 200);
+                ws.Row(ligne).Height = 22;
             }
-
-            // ── Mise en forme finale ──────────────────────────────────────
             ws.Columns().AdjustToContents();
-            ws.Column(7).Width = 30; // motif
-
-            // Figer les 4 premières lignes + la colonne 1
             ws.SheetView.FreezeRows(headerRow);
             ws.SheetView.FreezeColumns(1);
 
-            // ── Feuille 2 : Récapitulatif par employé ─────────────────────
+            // ── Feuille 2 : récapitulatif par employé ─────────────────────
             var wsRecap = wb.Worksheets.Add("Récap par employé");
+            var recapHeaders = new List<string> { "Matricule", "Nom", "Prénom", "Nb achats", "Total achats", $"Part {nomMutuelle}" };
+            if (interne) recapHeaders.Add("Part patient");
+            int hRecap = EcrireEntete(wsRecap, nomMutuelle, debut, fin, portee, recapHeaders.Count);
+            for (int i = 0; i < recapHeaders.Count; i++)
+                StyleEntete(wsRecap.Cell(hRecap, i + 1), recapHeaders[i], XLColor.FromArgb(25, 118, 210));
+            wsRecap.Row(hRecap).Height = 22;
 
-            wsRecap.Cell("A1").Value =
-                $"Récapitulatif par employé — {nomMutuelle}  ({debut:MM/yyyy})";
-            wsRecap.Cell("A1").Style.Font.Bold = true;
-            wsRecap.Cell("A1").Style.Font.FontSize = 13;
-            wsRecap.Cell("A1").Style.Font.FontColor = XLColor.FromArgb(27, 94, 32);
-            wsRecap.Range("A1:G1").Merge();
-            wsRecap.Row(1).Height = 26;
-
-            string[] recapHeaders =
-            {
-                "Matricule", "Nom", "Prénom",
-                "Nb achats", "Total achats",
-                $"Part {nomMutuelle}", "Part patient"
-            };
-            for (int i = 0; i < recapHeaders.Length; i++)
-            {
-                var c = wsRecap.Cell(3, i + 1);
-                c.Value = recapHeaders[i];
-                c.Style.Font.Bold = true;
-                c.Style.Font.FontColor = XLColor.White;
-                c.Style.Fill.BackgroundColor = XLColor.FromArgb(25, 118, 210);
-                c.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            }
-            wsRecap.Row(3).Height = 22;
-
-            // Grouper par employé
-            var parEmploye = lignes
+            // Les ventes sans nom ni matricule sont regroupées sous « Patient non identifié », en dernier
+            var groupes = lignes.Where(l => !l.PatientNonIdentifie)
                 .GroupBy(l => new { l.MatriculeEmploye, l.NomClient, l.PrenomClient })
-                .OrderBy(g => g.Key.NomClient)
-                .Select(g => new
-                {
-                    g.Key.MatriculeEmploye,
-                    g.Key.NomClient,
-                    g.Key.PrenomClient,
-                    NbAchats = g.Count(),
-                    TotalAchats = g.Sum(x => x.MontantTotal),
-                    PartMutuelle = g.Sum(x => x.PartMutuelle),
-                    PartPatient = g.Sum(x => x.PartPatient)
-                })
+                .OrderBy(g => g.Key.NomClient).ThenBy(g => g.Key.PrenomClient)
+                .Select(g => (Matricule: g.Key.MatriculeEmploye, Nom: g.Key.NomClient, Prenom: g.Key.PrenomClient, Ventes: g.ToList()))
                 .ToList();
+            var inconnus = lignes.Where(l => l.PatientNonIdentifie).ToList();
+            if (inconnus.Count > 0) groupes.Add(("—", PatientNonIdentifie, "", inconnus));
 
-            int rr = 4;
-            foreach (var emp in parEmploye)
+            int derniereColonne = recapHeaders.Count;
+            int rr = hRecap + 1;
+            foreach (var g in groupes)
             {
-                wsRecap.Cell(rr, 1).Value = emp.MatriculeEmploye;
-                wsRecap.Cell(rr, 2).Value = emp.NomClient;
-                wsRecap.Cell(rr, 3).Value = emp.PrenomClient;
-                wsRecap.Cell(rr, 4).Value = emp.NbAchats;
-                wsRecap.Cell(rr, 5).Value = emp.TotalAchats;
-                wsRecap.Cell(rr, 6).Value = emp.PartMutuelle;
-                wsRecap.Cell(rr, 7).Value = emp.PartPatient;
-
-                string fmtR = "#,##0.00 \"KMF\"";
-                wsRecap.Cell(rr, 5).Style.NumberFormat.Format = fmtR;
-                wsRecap.Cell(rr, 6).Style.NumberFormat.Format = fmtR;
-                wsRecap.Cell(rr, 7).Style.NumberFormat.Format = fmtR;
-
-                if (rr % 2 == 0)
-                    wsRecap.Row(rr).Style.Fill.BackgroundColor =
-                        XLColor.FromArgb(235, 245, 255);
+                wsRecap.Cell(rr, 1).Value = g.Matricule;
+                wsRecap.Cell(rr, 2).Value = g.Nom;
+                wsRecap.Cell(rr, 3).Value = g.Prenom;
+                wsRecap.Cell(rr, 4).Value = g.Ventes.Count;
+                wsRecap.Cell(rr, 5).Value = g.Ventes.Sum(x => x.MontantTotal);
+                wsRecap.Cell(rr, 6).Value = g.Ventes.Sum(x => x.PartMutuelle);
+                if (interne) wsRecap.Cell(rr, 7).Value = g.Ventes.Sum(x => x.PartPatient);
+                for (int c = 5; c <= derniereColonne; c++) wsRecap.Cell(rr, c).Style.NumberFormat.Format = FormatMontant;
+                if (g.Nom == PatientNonIdentifie) wsRecap.Row(rr).Style.Font.FontColor = XLColor.OrangeRed;
                 wsRecap.Row(rr).Height = 18;
                 rr++;
             }
-
-            // Total récap
-            if (parEmploye.Count > 0)
+            if (groupes.Count > 0)
             {
                 wsRecap.Cell(rr, 2).Value = "TOTAL";
                 wsRecap.Cell(rr, 2).Style.Font.Bold = true;
-                wsRecap.Cell(rr, 5).FormulaA1 = $"=SUM(E4:E{rr - 1})";
-                wsRecap.Cell(rr, 6).FormulaA1 = $"=SUM(F4:F{rr - 1})";
-                wsRecap.Cell(rr, 7).FormulaA1 = $"=SUM(G4:G{rr - 1})";
-                foreach (int c in new[] { 5, 6, 7 })
+                for (int c = 5; c <= derniereColonne; c++)
                 {
-                    wsRecap.Cell(rr, c).Style.NumberFormat.Format = "#,##0.00 \"KMF\"";
+                    wsRecap.Cell(rr, c).FormulaA1 = $"=SUM({ColLetter(c)}{hRecap + 1}:{ColLetter(c)}{rr - 1})";
+                    wsRecap.Cell(rr, c).Style.NumberFormat.Format = FormatMontant;
                     wsRecap.Cell(rr, c).Style.Font.Bold = true;
                 }
-                wsRecap.Range(rr, 1, rr, 7)
-                       .Style.Fill.BackgroundColor = XLColor.FromArgb(200, 230, 200);
+                wsRecap.Range(rr, 1, rr, derniereColonne).Style.Fill.BackgroundColor = XLColor.FromArgb(200, 230, 200);
             }
-
             wsRecap.Columns().AdjustToContents();
 
-            // ── Sauvegarde ────────────────────────────────────────────────
+            // ── Feuille 3 : détail des médicaments (une ligne par produit acheté, un total par vente) ──
+            var wsMed = wb.Worksheets.Add("Détail des médicaments");
+            string[] medHeaders = { "N° Vente", "Date", "Employé", "Produit", "Unité vendue", "Quantité", "Prix unitaire", "Sous-total" };
+            int hMed = EcrireEntete(wsMed, nomMutuelle, debut, fin, portee, medHeaders.Length);
+            for (int i = 0; i < medHeaders.Length; i++)
+                StyleEntete(wsMed.Cell(hMed, i + 1), medHeaders[i], XLColor.FromArgb(123, 31, 162));
+            wsMed.Row(hMed).Height = 22;
+
+            int rm = hMed + 1;
+            foreach (var l in lignes)
+            {
+                int premiere = rm;
+                foreach (var m in l.Medicaments)
+                {
+                    wsMed.Cell(rm, 1).Value = m.NumeroVente;
+                    wsMed.Cell(rm, 2).Value = m.DateVente.ToString("dd/MM/yyyy");
+                    wsMed.Cell(rm, 3).Value = m.Employe;
+                    wsMed.Cell(rm, 4).Value = m.Produit;
+                    wsMed.Cell(rm, 5).Value = m.UniteVendue;
+                    wsMed.Cell(rm, 6).Value = m.Quantite;
+                    wsMed.Cell(rm, 7).Value = m.PrixUnitaire;
+                    wsMed.Cell(rm, 8).Value = m.SousTotal;
+                    wsMed.Cell(rm, 7).Style.NumberFormat.Format = FormatMontant;
+                    wsMed.Cell(rm, 8).Style.NumberFormat.Format = FormatMontant;
+                    rm++;
+                }
+                // total de la vente (numéro laissé vide : la ligne n'est pas un médicament)
+                wsMed.Cell(rm, 4).Value = $"Total de la vente {l.NumeroVente}";
+                wsMed.Cell(rm, 8).FormulaA1 = l.Medicaments.Count > 0 ? $"=SUM(H{premiere}:H{rm - 1})" : "=0";
+                wsMed.Cell(rm, 8).Style.NumberFormat.Format = FormatMontant;
+                wsMed.Range(rm, 1, rm, 8).Style.Font.Bold = true;
+                wsMed.Range(rm, 1, rm, 8).Style.Fill.BackgroundColor = XLColor.FromArgb(243, 229, 245);
+                rm++;
+            }
+            wsMed.Columns().AdjustToContents();
+
             wb.SaveAs(cheminFichier);
         }
 
         // ─── Helpers ─────────────────────────────────────────────────────
+
+        /// <summary>En-tête commun : pharmacie, entreprise, période, date d'édition, mention de portée. Retourne la ligne des titres de colonnes.</summary>
+        private static int EcrireEntete(IXLWorksheet ws, string nomMutuelle, DateTime debut, DateTime fin, string portee, int nbColonnes)
+        {
+            ws.Cell("A1").Value = AppInfo.NomPharmacie;
+            ws.Cell("A1").Style.Font.Bold = true;
+            ws.Cell("A1").Style.Font.FontSize = 16;
+            ws.Cell("A1").Style.Font.FontColor = XLColor.FromArgb(27, 94, 32);
+            ws.Cell("A2").Value = $"Entreprise : {nomMutuelle}";
+            ws.Cell("A2").Style.Font.Bold = true;
+            ws.Cell("A3").Value = $"Période : du {debut:dd/MM/yyyy} au {fin:dd/MM/yyyy}     Édité le : {DateTime.Now:dd/MM/yyyy HH:mm}";
+            ws.Cell("A3").Style.Font.Italic = true;
+            ws.Cell("A4").Value = portee;
+            ws.Cell("A4").Style.Font.Bold = true;
+            ws.Cell("A4").Style.Font.FontColor = XLColor.OrangeRed;
+            for (int r = 1; r <= 4; r++) ws.Range(r, 1, r, Math.Max(2, nbColonnes)).Merge();
+            ws.Row(1).Height = 30;
+            return 6;
+        }
+
+        private static void StyleEntete(IXLCell cell, string titre, XLColor fond)
+        {
+            cell.Value = titre;
+            cell.Style.Font.Bold = true;
+            cell.Style.Font.FontColor = XLColor.White;
+            cell.Style.Fill.BackgroundColor = fond;
+            cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            cell.Style.Border.OutsideBorderColor = XLColor.White;
+        }
 
         /// <summary>Convertit un numéro de colonne (1-based) en lettre Excel.</summary>
         private static string ColLetter(int col)

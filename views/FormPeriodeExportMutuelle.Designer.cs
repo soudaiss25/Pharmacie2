@@ -38,6 +38,10 @@
             this.dtpDebut = new System.Windows.Forms.DateTimePicker();
             this.lblFin = new System.Windows.Forms.Label();
             this.dtpFin = new System.Windows.Forms.DateTimePicker();
+            this.lblPortee = new System.Windows.Forms.Label();
+            this.cbPortee = new System.Windows.Forms.ComboBox();
+            this.lblVersion = new System.Windows.Forms.Label();
+            this.cbVersion = new System.Windows.Forms.ComboBox();
             this.panelEspace = new System.Windows.Forms.Panel();
             this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnExporter = new System.Windows.Forms.Button();
@@ -94,7 +98,9 @@
             this.tlpChamps.ColumnCount = 2;
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpChamps.RowCount = 3;
+            this.tlpChamps.RowCount = 5;
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -110,6 +116,14 @@
             this.lblFin.TabIndex = 4;
             this.tlpChamps.Controls.Add(this.dtpFin, 1, 2);
             this.dtpFin.TabIndex = 5;
+            this.tlpChamps.Controls.Add(this.lblPortee, 0, 3);
+            this.lblPortee.TabIndex = 6;
+            this.tlpChamps.Controls.Add(this.cbPortee, 1, 3);
+            this.cbPortee.TabIndex = 7;
+            this.tlpChamps.Controls.Add(this.lblVersion, 0, 4);
+            this.lblVersion.TabIndex = 8;
+            this.tlpChamps.Controls.Add(this.cbVersion, 1, 4);
+            this.cbVersion.TabIndex = 9;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -171,6 +185,44 @@
             this.dtpFin.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.dtpFin.Name = "dtpFin";
             // 
+            // lblPortee
+            // 
+            this.lblPortee.Text = "Ventes à exporter";
+            this.lblPortee.AutoSize = true;
+            this.lblPortee.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPortee.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblPortee.Name = "lblPortee";
+            // 
+            // cbPortee
+            // 
+            this.cbPortee.Width = 300;
+            this.cbPortee.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbPortee.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbPortee.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cbPortee.Items.AddRange(new object[] {
+            "Ventes non réglées uniquement",
+            "Toutes les ventes"});
+            this.cbPortee.Name = "cbPortee";
+            // 
+            // lblVersion
+            // 
+            this.lblVersion.Text = "Version du fichier";
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVersion.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblVersion.Name = "lblVersion";
+            // 
+            // cbVersion
+            // 
+            this.cbVersion.Width = 300;
+            this.cbVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbVersion.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbVersion.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cbVersion.Items.AddRange(new object[] {
+            "Pour l'entreprise",
+            "Interne (pharmacie)"});
+            this.cbVersion.Name = "cbVersion";
+            // 
             // panelEspace
             // 
             this.panelEspace.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -212,7 +264,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClientSize = new System.Drawing.Size(520, 330);
+            this.ClientSize = new System.Drawing.Size(560, 420);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -245,6 +297,10 @@
         private System.Windows.Forms.DateTimePicker dtpDebut;
         private System.Windows.Forms.Label lblFin;
         private System.Windows.Forms.DateTimePicker dtpFin;
+        private System.Windows.Forms.Label lblPortee;
+        private System.Windows.Forms.ComboBox cbPortee;
+        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.ComboBox cbVersion;
         private System.Windows.Forms.Panel panelEspace;
         private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnExporter;

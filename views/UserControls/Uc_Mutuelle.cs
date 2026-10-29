@@ -369,10 +369,10 @@ namespace Pharmacie2.views.UserControls
             using (var frmP = new FormPeriodeExportMutuelle(nom))
             {
                 if (frmP.ShowDialog() != DialogResult.OK) return;
-                var donnees = MutuelleExportService.GetDonnees(id, frmP.DateDebut, frmP.DateFin);
+                var donnees = MutuelleExportService.GetDonnees(id, frmP.DateDebut, frmP.DateFin, frmP.NonRegleesSeulement);
                 if (donnees.Count == 0)
                 {
-                    MessageBox.Show($"Aucune vente trouvée pour « {nom} » sur cette période.",
+                    MessageBox.Show($"Aucune vente {(frmP.NonRegleesSeulement ? "non réglée " : "")}trouvée pour « {nom} » sur cette période.",
                         "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -383,7 +383,7 @@ namespace Pharmacie2.views.UserControls
                     if (sfd.ShowDialog() != DialogResult.OK) return;
                     try
                     {
-                        MutuelleExportService.Exporter(sfd.FileName, id, nom, frmP.DateDebut, frmP.DateFin);
+                        MutuelleExportService.Exporter(sfd.FileName, id, nom, frmP.DateDebut, frmP.DateFin, frmP.NonRegleesSeulement, frmP.Version);
                         if (MessageBox.Show($"Export terminé : {Format.Compte(donnees.Count, "achat")}.\n\nOuvrir le fichier ?",
                             "Export Excel", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                             System.Diagnostics.Process.Start(

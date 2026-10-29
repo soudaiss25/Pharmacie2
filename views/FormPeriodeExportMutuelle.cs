@@ -13,6 +13,10 @@ namespace Pharmacie2.views
         public DateTime DateDebut { get; private set; }
         public DateTime DateFin { get; private set; }
 
+        /// <summary>true (par défaut) = « Ventes non réglées uniquement » : évite de refacturer ce que la mutuelle a déjà payé.</summary>
+        public bool NonRegleesSeulement => cbPortee.SelectedIndex == 0;
+        public MutuelleExportService.VersionFichier Version => cbVersion.SelectedIndex == 1 ? MutuelleExportService.VersionFichier.Interne : MutuelleExportService.VersionFichier.Entreprise;
+
         public FormPeriodeExportMutuelle(string nomMutuelle)
         {
             InitializeComponent();
@@ -27,6 +31,8 @@ namespace Pharmacie2.views
 
             // Raccourcis période
             cbPeriode.SelectedIndex = 0;
+            cbPortee.SelectedIndex = 0;
+            cbVersion.SelectedIndex = 0;
         }
 
         private void CbPeriode_SelectedIndexChanged(object sender, EventArgs e)
