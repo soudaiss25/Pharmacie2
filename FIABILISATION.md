@@ -1,4 +1,4 @@
-# Fiabilisation de LIGUAPHARME (Pharmacie2)
+﻿# Fiabilisation de LIGUAPHARME (Pharmacie2)
 
 Logiciel de gestion d'une petite pharmacie à Mohéli (KMF, travail en local, WinForms .NET 8, SQLite).
 **L'utilisateur final est l'oncle du développeur** (le client), pas « une pharmacienne » : ses règles métier sont dans
@@ -45,3 +45,26 @@ testées sur base remplie, archiver au lieu de supprimer, un commit par étape, 
 - Crédit : aucun paiement automatique à la modification, sauf remboursement si le versé dépasse le nouveau total.
 - Reprise des prix à l'unité : `ROUND(PrixVente / NbUniteParBoite, 0)` pour que les ventes continuent comme avant ; la liste (produit, prix de la boîte, prix repris) est écrite dans le journal au premier démarrage pour que le client la vérifie.
 - Une base est « non vide » si elle contient au moins une vente (ou est illisible) ; une base sans vente reste une trace d'installation.
+
+## Lot « vraie base » (corrections issues de l'analyse de la copie de la base réelle)
+
+Ordre imposé, un commit par point, CI vert à chaque étape. Aucune publication stable, aucun merge sur `master`.
+
+| Point | Sujet | Migration | Tests |
+|-------|-------|-----------|-------|
+| 1 | Péremptions jamais saisies (D24, D24b), « Non renseignée » | `AjoutPeremptionConnue` | `PeremptionConnueTests` |
+| 2 | Conditionnement et ventes à l'unité (D25, D27, D28, D29) | — | `ConditionnementTests` |
+| 3 | Marge affichée dans la fiche produit (règle 14) | `RecalculMargeBeneficiaire` (SQL) | `Regle14MargeTests` |
+| 4 | Coût d'achat figé à la vente (règle 15) | `AjoutCoutAchatLigneVente` | `Regle15CoutAchatTests` |
+| 5 | Paiements rattachés au bon tiroir (règle 19) | `AjoutSessionPaiement` | `SessionPaiementTests` |
+| 6 | Écarts de caisse justifiés (règle 20) | `AjoutEcartCloture` | `EcartClotureTests` |
+| 7 | Une seule session de caisse ouverte par utilisateur (règle 21) | — | `SessionsMultiplesTests` |
+| 8 | Mutuelles : matricule obligatoire par mutuelle, D26, D11/D12 étendus, badge « Patient non identifié » (règle 22) | `AjoutMatriculeObligatoire` | `MutuellePatientTests`, `FormVenteTests` |
+| C | Export Excel d'une mutuelle (non réglées par défaut, deux versions, détail des médicaments) | — | `MutuelleExportTests` |
+| B | Remboursements de commandes : dépense « pour note » reliée à la commande, jamais dans le bénéfice (règle 16) | `AjoutRemboursementCommande` | `RemboursementCommandeTests` |
+| 9 | Prestations (articles sans stock) (règle 23) | `AjoutTypeArticle` | `PrestationTests` |
+| 10 | Numéros de vente uniques (règle 24) | — | `NumerosVenteTests` |
+| 11 | Canaux Velopack : l'outil `tools/verifier_canaux.py` ; limite des 10 releases (voir `PUBLIER.md`) | — | `python tools/verifier_canaux.py --autotest` |
+
+Ordre des migrations de ce lot : `AjoutPeremptionConnue`, `RecalculMargeBeneficiaire`, `AjoutCoutAchatLigneVente`, `AjoutSessionPaiement`,
+`AjoutEcartCloture`, `AjoutMatriculeObligatoire`, `AjoutRemboursementCommande`, `AjoutTypeArticle` (toutes en ajout de colonne ou en SQL pur ; chacune testée sur base remplie).

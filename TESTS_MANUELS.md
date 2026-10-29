@@ -507,3 +507,66 @@ Release de test déjà publiée : <https://github.com/soudaiss25/Pharmacie2/rele
 - [ ] Ouvrir une caisse, saisir une dépense (n'importe quelle catégorie) : aucune question sur le tiroir ; les espèces attendues de la caisse ne changent pas.
 - [ ] Annuler une commande qui a déjà un remboursement : refusé avec un message clair. Supprimer le remboursement (administrateur) : le reste à payer se recalcule et l'annulation redevient possible.
 - [ ] Une commande créée avec « Payée à la commande » **cochée** n'a aucun reste à payer et n'est pas proposée dans la liste des remboursements.
+
+# Lot « vraie base » (analyse de la copie de la base réelle)
+
+## 57. Péremptions jamais saisies (point 1)
+- [ ] Après un import de la vraie base : dans Stock, les produits dont la date était celle de la création affichent « Non renseignée » (en gris), jamais « Périmé ».
+- [ ] Le filtre « Sans date de péremption » liste d'abord les produits « à vérifier en priorité » (jamais vendus après leur date).
+- [ ] Ma journée : une ligne orange « N produits sans date de péremption » ; elle ouvre le Stock filtré.
+- [ ] Ouvrir la fiche d'un de ces produits : saisir une vraie date (ou cocher « Pas de date de péremption ») lève le motif « Péremption » de la fiche.
+- [ ] Le rapport de diagnostic contient deux listes séparées : D24 (vendu après la date) et D24b (jamais vendu après la date, à vérifier en priorité).
+
+## 58. Conditionnement et ventes à l'unité (point 2)
+- [ ] Nouveau produit : « Boîte » n'est pas acceptée comme unité de détail (message clair).
+- [ ] Un produit déjà vendu à l'unité dont on change le nombre d'unités par boîte : l'application demande de recompter le stock réel et de confirmer le prix à l'unité.
+- [ ] Nouvelle vente à l'unité : quand la quantité atteint une boîte entière, l'application propose de la vendre en boîtes.
+- [ ] Les produits dont l'unité s'appelle « Boîte » alors qu'ils ont plusieurs unités par boîte sont marqués « Conditionnement » dans Stock (« À vérifier »).
+
+## 59. Marge dans la fiche produit (point 3)
+- [ ] Fiche produit : plus de champ « marge » à saisir ; la ligne « Marge : X KMF (Y % du prix d'achat) » se met à jour en tapant les deux prix (et « par plaquette » pour la vente à l'unité).
+- [ ] Le prix de vente n'est jamais modifié tout seul quand on change le prix d'achat.
+
+## 60. Coût d'achat figé à la vente (point 4)
+- [ ] Faire une vente, puis augmenter le prix d'achat du produit : la marge de la vente déjà faite (Statistiques, Ma journée, Dépenses) ne change pas.
+- [ ] Une nouvelle vente utilise le nouveau prix d'achat.
+- [ ] Une vente ancienne sans coût connu est exclue de la marge et signalée (« N lignes sans coût d'achat »).
+
+## 61. Paiements rattachés au bon tiroir (point 5)
+- [ ] Le caissier a une caisse ouverte. Connecté en administrateur (sans caisse), encaisser une vente en espèces : la question « Cet argent va dans la caisse de … ? » apparaît ; « Oui » : l'argent est dans le tiroir du caissier (Caisse → Sessions → détail).
+- [ ] « Non » : rien n'est enregistré, aucun message en plus.
+- [ ] Aucune caisse ouverte : un paiement en espèces est refusé avec un message clair ; une carte, un chèque, Mvola ou Huri Money passe.
+- [ ] Une carte payée sans caisse ouverte pour soi est rattachée à la session ouverte la plus récente, sans question ; sans aucune caisse ouverte, elle apparaît dans « Encaissements hors session » (Rapport de caisse).
+- [ ] Le détail d'une session contient aussi les ventes faites par un autre utilisateur et payées dans son tiroir, avec « Reste dû à ce jour » et « Part mutuelle en attente à ce jour » (infobulle : montant actuel de ces ventes).
+
+## 62. Écarts de caisse justifiés (point 6)
+- [ ] Clôturer avec un écart de 100 KMF ou moins : aucune question. Au-delà : la fenêtre demande un motif (Vente oubliée, Erreur de rendu de monnaie, Paiement non saisi, Inconnu) et un commentaire facultatif ; « Annuler » laisse la caisse ouverte.
+- [ ] La clôture ne demande jamais de mot de passe.
+- [ ] Statistiques : ligne « Écarts de caisse » (excédents, manquants, net, par caissier) ; Ma journée : alerte orange quand un caissier a 3 écarts notables en 7 jours.
+
+## 63. Sessions de caisse multiples (point 7)
+- [ ] Avec une caisse déjà ouverte : le bouton « Ouvrir la caisse » est grisé ; impossible d'en ouvrir une seconde.
+- [ ] Une caisse restée ouverte la veille : le message demande de la clôturer d'abord ; après la clôture, on peut ouvrir la caisse du jour.
+
+## 64. Mutuelles (point 8 et export)
+- [ ] Fiche mutuelle : case « Matricule de l'employé obligatoire » (décochée par défaut). Cochée : une vente sans matricule est refusée pour cette mutuelle seulement.
+- [ ] Une vente Mutuelle sans nom de patient est toujours refusée.
+- [ ] Écran Mutuelles : les ventes sans nom ni matricule portent le badge orange « Patient non identifié », avec leur nombre dans le récapitulatif.
+- [ ] Diagnostic (Administration) : D26 (ventes sans patient identifié par mutuelle et part en attente) ; D11 et D12 listent les parts patient sur-payées ou non réglées, sans rien corriger.
+- [ ] Export Excel : choix « Ventes non réglées uniquement » (par défaut) ou « Toutes les ventes », et version « Pour l'entreprise » ou « Interne (pharmacie) ». Une vente déjà réglée n'apparaît pas dans l'export par défaut.
+- [ ] Version « Pour l'entreprise » : aucun téléphone, versement, reste dû ni motif ; onglet « Détail des médicaments » avec un total par vente ; ventes sans identité regroupées en dernier sous « Patient non identifié ».
+
+## 65. Prestations (point 9)
+- [ ] Nouveau produit : cocher « Prestation (sans stock) » masque stock, conditionnement, péremption, fournisseur et prix d'achat ; seul le prix de vente est saisi.
+- [ ] Vendre un médicament et une prestation ensemble : le stock du médicament baisse, la prestation n'a aucun stock et n'est jamais refusée.
+- [ ] Annuler cette vente : le stock du médicament revient, rien d'autre ne bouge.
+- [ ] La prestation n'est ni dans Stock, ni dans les alertes de Ma journée, ni dans la feuille d'inventaire, ni dans le choix d'un produit à commander ; elle est dans Catalogue avec l'état « Prestation ».
+- [ ] Statistiques : ligne « Prestations : N prestations, chiffre d'affaires X ».
+- [ ] Sur un article existant, la case « Prestation » est grisée (un médicament ne devient pas une prestation).
+
+## 66. Numéros de vente (point 10)
+- [ ] Enregistrer plusieurs ventes d'affilée (et, si possible, deux fenêtres « Nouvelle vente » ouvertes ensemble) : chaque facture a un numéro différent (V-000001, V-000002…). Test automatique : `NumerosVenteTests`.
+
+## 67. Canaux de mise à jour (point 11)
+- [ ] `python tools/verifier_canaux.py` : affiche pour chaque canal le nombre de releases visibles par Velopack et dit si un canal est masqué. `--autotest` rejoue les scénarios sans réseau.
+- [ ] Avant de publier une version stable, vérifier que moins de 10 versions « test » ont été publiées depuis la dernière stable.

@@ -1,4 +1,4 @@
-# Publier une version (mises à jour automatiques Velopack)
+﻿# Publier une version (mises à jour automatiques Velopack)
 
 Pour le développeur. Les mises à jour de LIGUAPHARME arrivent toutes seules chez le client depuis les **Releases GitHub** du dépôt
 (<https://github.com/soudaiss25/Pharmacie2/releases>). Tout est automatique : on pousse un **tag**, le workflow
@@ -38,6 +38,18 @@ Pour le développeur. Les mises à jour de LIGUAPHARME arrivent toutes seules ch
 6. Vérifier : la Release `v1.1.0` n'est pas une pré-release et contient `releases.stable.json`.
 
 > Ne publiez jamais en stable une version qui n'a pas d'abord été publiée et essayée en test.
+
+## Les canaux stable et test peuvent-ils se masquer ?
+
+Velopack 1.2.161 (`GithubSource`) ne lit qu'**une page de 10 releases** (les 10 plus récentes, tous types confondus), puis retire les pré-releases
+pour le canal stable. Conséquences :
+
+- une version « test » publiée après une stable **ne masque pas** la stable (les pré-releases sont ignorées par le canal stable) ;
+- une version stable publiée après un test **ne masque pas** le test pour le canal test (le canal test lit toutes les releases et ignore celles qui n'ont pas son index) ;
+- **limite** : si 10 versions « test » ou plus sont publiées après la dernière stable, le canal stable ne voit plus rien (même si une stable plus récente que l'installation existe).
+
+Contrôle (lecture seule, sans jeton) : `python tools/verifier_canaux.py` ; scénarios simulés : `python tools/verifier_canaux.py --autotest`.
+Avant de publier une stable, vérifier que le compteur « pré-releases depuis la dernière stable » reste sous 9.
 
 ## Le workflow échoue : que faire ?
 
