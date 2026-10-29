@@ -33,6 +33,7 @@ namespace Pharmacie2.views.UserControls
             List<Fournisseur> liste;
             using (var ctx = new AppDbContext())
             {
+                _resteParFournisseur = RemboursementCommandeService.NonSoldees(ctx).GroupBy(d => d.FournisseurId).ToDictionary(g => g.Key, g => g.Sum(d => d.Reste));
                 var query = ctx.fournisseur.AsNoTracking().Where(f => f.Actif || archives);
 
                 if (!string.IsNullOrWhiteSpace(search))
@@ -56,6 +57,8 @@ namespace Pharmacie2.views.UserControls
             btnVoirCommandes.Enabled = false;
         }
 
+        private Dictionary<int, decimal> _resteParFournisseur = new();
+
         private Fournisseur? GetSelectedFournisseur()
         {
             if (dgvFournisseurs.CurrentRow == null) return null;
@@ -64,6 +67,14 @@ namespace Pharmacie2.views.UserControls
 
         private void dgvFournisseurs_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            if (e.RowIndex >= 0 && e.RowIndex < dgvFournisseurs.Rows.Count && dgvFournisseurs.Columns[e.ColumnIndex].Name == "ResteAPayer"
+                && dgvFournisseurs.Rows[e.RowIndex].DataBoundItem is Fournisseur fo)
+            {
+                decimal reste = _resteParFournisseur.TryGetValue(fo.Id, out var r) ? r : 0m;
+                e.Value = Format.Montant(reste);
+                e.FormattingApplied = true;
+                if (reste > 0m) e.CellStyle.ForeColor = Theme.AttentionTexte;
+            }
             if (e.RowIndex >= 0 && e.RowIndex < dgvFournisseurs.Rows.Count
                 && dgvFournisseurs.Rows[e.RowIndex].DataBoundItem is Fournisseur f && !f.Actif)
             {

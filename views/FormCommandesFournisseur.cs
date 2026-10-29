@@ -57,10 +57,14 @@ namespace Pharmacie2.views
 
                 // Filtre statut
                 string filtre = cbFiltreStatut.SelectedItem?.ToString() ?? "Tous";
-                if (filtre != "Tous")
+                bool seulementARembourser = filtre == "À rembourser";
+                if (filtre != "Tous" && !seulementARembourser)
                     query = query.Where(c => c.Statut == filtre);
 
                 var commandes = query.OrderByDescending(c => c.DateCommande).ToList();
+                var dettes = RemboursementCommandeService.Commandes(ctx, _fournisseurId).ToDictionary(d => d.CommandeId);
+                if (seulementARembourser)
+                    commandes = commandes.Where(c => dettes.TryGetValue(c.Id, out var d) && d.Reste > 0m).ToList();
 
                 dgvCommandes.Rows.Clear();
                 foreach (var cmd in commandes)
@@ -79,6 +83,8 @@ namespace Pharmacie2.views
                         cmd.Statut,
                         cmd.Lignes.Count,
                         cmd.MontantTotal,
+                        dettes.TryGetValue(cmd.Id, out var dette) ? dette.Etat : "—",
+                        dette?.Reste ?? 0m,
                         livraison,
                         reception,
                         string.IsNullOrWhiteSpace(cmd.NoteCommande) ? "—" : cmd.NoteCommande
@@ -97,7 +103,8 @@ namespace Pharmacie2.views
                     $"{Format.Compte(nbTotal, "commande")}  |  " +
                     $"{nbAttente} en attente  |  " +
                     $"{Format.Compte(nbRecu, "reçue")}  |  " +
-                    $"Total : {Format.Montant(total)}";
+                    $"Total : {Format.Montant(total)}  |  " +
+                    $"Reste à payer : {Format.Montant(commandes.Sum(c => dettes.TryGetValue(c.Id, out var d) ? d.Reste : 0m))}";
 
                 MettreAJourBoutons();
             }
@@ -149,6 +156,7 @@ namespace Pharmacie2.views
                 btnMarquerRecu.Enabled = false;
                 btnMarquerPartiel.Enabled = false;
                 btnAnnuler.Enabled = false;
+                btnRembourser.Enabled = false;
                 return;
             }
 
@@ -160,6 +168,7 @@ namespace Pharmacie2.views
             btnMarquerRecu.Enabled = ouverte && !heritee;   // une partielle ancienne se reçoit ligne par ligne
             btnMarquerPartiel.Enabled = ouverte;
             btnAnnuler.Enabled = ouverte;
+            btnRembourser.Enabled = Convert.ToDecimal(dgvCommandes.SelectedRows[0].Cells["colReste"].Value ?? 0m) > 0m;
         }
 
         // ── Marquer comme REÇUE → met à jour le stock ────────────────────
@@ -229,11 +238,26 @@ namespace Pharmacie2.views
                 var commande = ctx.commandes.Find(cmdId);
                 if (commande == null) return;
 
+                string? refus = RemboursementCommandeService.RefusAnnulation(ctx, cmdId);
+                if (refus != null)
+                {
+                    MessageBox.Show(refus, "Annulation impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 commande.Statut = "Annulée";
                 ctx.SaveChanges();
             }
 
             ChargerCommandes();
+        }
+
+        private void btnRembourser_Click(object sender, EventArgs e)
+        {
+            if (dgvCommandes.SelectedRows.Count == 0) return;
+            int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
+            using (var form = new FormAddDepense(cmdId))
+                if (form.ShowDialog(this) == DialogResult.OK)
+                    ChargerCommandes();
         }
 
         private void btnFermer_Click(object sender, EventArgs e) => Close();

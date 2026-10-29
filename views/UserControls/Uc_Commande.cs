@@ -69,9 +69,10 @@ namespace Pharmacie2.views.UserControls
                         .Include(c => c.Lignes).ThenInclude(l => l.Produit)
                         .AsQueryable();
 
-                    // Filtre statut
+                    // Filtre statut (« À rembourser » : reste à payer, filtré plus bas)
                     string statut = cbFiltreStatut.SelectedItem?.ToString() ?? "Tous";
-                    if (statut != "Tous")
+                    bool seulementARembourser = statut == "À rembourser";
+                    if (statut != "Tous" && !seulementARembourser)
                         query = query.Where(c => c.Statut == statut);
 
                     // Filtre fournisseur
@@ -88,6 +89,11 @@ namespace Pharmacie2.views.UserControls
 
                     var commandes = query.OrderByDescending(c => c.DateCommande).ToList();
 
+                    // Reste à payer de chaque commande (remboursements saisis dans Dépenses)
+                    var dettes = RemboursementCommandeService.Commandes(ctx).ToDictionary(d => d.CommandeId);
+                    if (seulementARembourser)
+                        commandes = commandes.Where(c => dettes.TryGetValue(c.Id, out var d) && d.Reste > 0m).ToList();
+
                     dgvCommandes.Rows.Clear();
 
                     foreach (var cmd in commandes)
@@ -103,6 +109,8 @@ namespace Pharmacie2.views.UserControls
                             cmd.Statut,
                             nbProduits,
                             montant,
+                            dettes.TryGetValue(cmd.Id, out var dette) ? dette.Etat : "—",
+                            dette?.Reste ?? 0m,
                             cmd.DateReception.HasValue
                                 ? cmd.DateReception.Value.ToString("dd/MM/yyyy") : "—",
                             string.IsNullOrWhiteSpace(cmd.NoteCommande) ? "—" : cmd.NoteCommande
@@ -122,7 +130,8 @@ namespace Pharmacie2.views.UserControls
                         $"{Format.Compte(nbTotal, "commande")}  |  " +
                         $"{nbAttente} en attente  |  " +
                         $"{Format.Compte(nbRecues, "reçue")}  |  " +
-                        $"Total : {Format.Montant(total)}";
+                        $"Total : {Format.Montant(total)}  |  " +
+                        $"Reste à payer : {Format.Montant(commandes.Sum(c => dettes.TryGetValue(c.Id, out var d) ? d.Reste : 0m))}";
 
                     MettreAJourBoutons();
                 }
@@ -187,6 +196,7 @@ namespace Pharmacie2.views.UserControls
                 btnMarquerRecu.Enabled = false;
                 btnMarquerPartiel.Enabled = false;
                 btnAnnuler.Enabled = false;
+                btnRembourser.Enabled = false;
                 return;
             }
 
@@ -199,6 +209,19 @@ namespace Pharmacie2.views.UserControls
             btnMarquerRecu.Enabled = ouverte && !heritee;   // une partielle ancienne se reçoit ligne par ligne
             btnMarquerPartiel.Enabled = ouverte;
             btnAnnuler.Enabled = ouverte;
+            btnRembourser.Enabled = Convert.ToDecimal(dgvCommandes.SelectedRows[0].Cells["colReste"].Value ?? 0m) > 0m;
+        }
+
+        /// <summary>Affiche seulement les commandes qui ont un reste à payer (depuis « Ma journée »).</summary>
+        public void FiltrerARembourser() => cbFiltreStatut.SelectedItem = "À rembourser";
+
+        private void btnRembourser_Click(object sender, EventArgs e)
+        {
+            if (dgvCommandes.SelectedRows.Count == 0) return;
+            int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
+            using (var form = new FormAddDepense(cmdId))
+                if (form.ShowDialog(this) == DialogResult.OK)
+                    ChargerCommandes();
         }
 
         // ══════════════════════════════════════════════════════════════════
@@ -260,6 +283,12 @@ namespace Pharmacie2.views.UserControls
 
             using (var ctx = new AppDbContext())
             {
+                string? refus = RemboursementCommandeService.RefusAnnulation(ctx, cmdId);
+                if (refus != null)
+                {
+                    MessageBox.Show(refus, "Annulation impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 var cmd = ctx.commandes.Find(cmdId);
                 if (cmd != null) { cmd.Statut = "Annulée"; ctx.SaveChanges(); }
             }

@@ -48,6 +48,7 @@
             this.dgvProduits = new System.Windows.Forms.DataGridView();
             this.colNom = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colContact = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colResteAPayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colProduitId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colProduitNom = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colProduitType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -214,7 +215,8 @@
             // 
             this.dgvFournisseurs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colNom,
-            this.colContact});
+            this.colContact,
+            this.colResteAPayer});
             this.dgvFournisseurs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvFournisseurs.AutoGenerateColumns = false;
             this.dgvFournisseurs.ReadOnly = true;
@@ -295,6 +297,15 @@
             this.colNom.MinimumWidth = 160;
             this.colNom.ReadOnly = true;
             // 
+            // colResteAPayer
+            //
+            this.colResteAPayer.HeaderText = "Reste à payer";
+            this.colResteAPayer.Name = "ResteAPayer";
+            this.colResteAPayer.FillWeight = 30F;
+            this.colResteAPayer.MinimumWidth = 110;
+            this.colResteAPayer.ReadOnly = true;
+            this.colResteAPayer.Tag = "montant";
+            //
             // colContact
             // 
             this.colContact.HeaderText = "Contact";
@@ -429,6 +440,7 @@
         private System.Windows.Forms.DataGridView dgvProduits;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNom;
         private System.Windows.Forms.DataGridViewTextBoxColumn colContact;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colResteAPayer;
         private System.Windows.Forms.DataGridViewTextBoxColumn colProduitId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colProduitNom;
         private System.Windows.Forms.DataGridViewTextBoxColumn colProduitType;

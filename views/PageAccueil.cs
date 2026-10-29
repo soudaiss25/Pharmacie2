@@ -192,6 +192,11 @@ namespace Pharmacie2.views
                 case TypeAFaire.SauvegardeExterne:
                     btnAdministration_Click(this, EventArgs.Empty);
                     break;
+                case TypeAFaire.DettesFournisseurs:
+                    var commandes = new Uc_Commande();
+                    Ouvrir(commandes, btnCommandes);
+                    commandes.FiltrerARembourser();
+                    break;
                 case TypeAFaire.MutuellesEnRetard:
                     var m = new Uc_Mutuelle();
                     Ouvrir(m, btnMutuelles);

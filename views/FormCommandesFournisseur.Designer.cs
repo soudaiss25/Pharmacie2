@@ -49,6 +49,9 @@
             this.colTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLivraison = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colReception = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEtatPaiement = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colReste = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnRembourser = new System.Windows.Forms.Button();
             this.colNote = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLigId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colProduit = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -130,7 +133,8 @@
             "En attente",
             "Reçu partiellement",
             "Reçu",
-            "Annulée"});
+            "Annulée",
+            "À rembourser"});
             this.cbFiltreStatut.SelectedIndex = 0;
             this.cbFiltreStatut.Margin = new System.Windows.Forms.Padding(0, 4, 12, 0);
             this.cbFiltreStatut.Name = "cbFiltreStatut";
@@ -150,6 +154,8 @@
             this.colStatut,
             this.colNbLig,
             this.colTotal,
+            this.colEtatPaiement,
+            this.colReste,
             this.colLivraison,
             this.colReception,
             this.colNote});
@@ -189,8 +195,10 @@
             this.btnMarquerPartiel.TabIndex = 1;
             this.flpBoutons.Controls.Add(this.btnAnnuler);
             this.btnAnnuler.TabIndex = 2;
+            this.flpBoutons.Controls.Add(this.btnRembourser);
+            this.btnRembourser.TabIndex = 3;
             this.flpBoutons.Controls.Add(this.btnFermer);
-            this.btnFermer.TabIndex = 3;
+            this.btnFermer.TabIndex = 4;
             this.flpBoutons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpBoutons.AutoSize = true;
             this.flpBoutons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -214,6 +222,14 @@
             this.btnMarquerPartiel.Name = "btnMarquerPartiel";
             this.btnMarquerPartiel.Click += new System.EventHandler(this.btnMarquerPartiel_Click);
             // 
+            // btnRembourser
+            //
+            this.btnRembourser.Text = "Rembourser…";
+            this.btnRembourser.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnRembourser.Enabled = false;
+            this.btnRembourser.Name = "btnRembourser";
+            this.btnRembourser.Click += new System.EventHandler(this.btnRembourser_Click);
+            //
             // btnAnnuler
             // 
             this.btnAnnuler.Text = "Annuler la commande";
@@ -276,6 +292,26 @@
             this.colTotal.MinimumWidth = 100;
             this.colTotal.ReadOnly = true;
             this.colTotal.Tag = "montant";
+            // 
+            //
+            // colEtatPaiement
+            //
+            this.colEtatPaiement.HeaderText = "Paiement";
+            this.colEtatPaiement.Name = "colEtatPaiement";
+            this.colEtatPaiement.DataPropertyName = "colEtatPaiement";
+            this.colEtatPaiement.FillWeight = 12F;
+            this.colEtatPaiement.MinimumWidth = 110;
+            this.colEtatPaiement.ReadOnly = true;
+            //
+            // colReste
+            //
+            this.colReste.HeaderText = "Reste à payer";
+            this.colReste.Name = "colReste";
+            this.colReste.DataPropertyName = "colReste";
+            this.colReste.FillWeight = 12F;
+            this.colReste.MinimumWidth = 100;
+            this.colReste.ReadOnly = true;
+            this.colReste.Tag = "montant";
             // 
             // colLivraison
             // 
@@ -401,6 +437,9 @@
         private System.Windows.Forms.Button btnMarquerRecu;
         private System.Windows.Forms.Button btnMarquerPartiel;
         private System.Windows.Forms.Button btnAnnuler;
+        private System.Windows.Forms.Button btnRembourser;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEtatPaiement;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colReste;
         private System.Windows.Forms.Button btnFermer;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCmdId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDate;

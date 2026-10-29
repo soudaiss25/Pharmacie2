@@ -40,6 +40,9 @@
             this.numMontant = new System.Windows.Forms.NumericUpDown();
             this.lblDate = new System.Windows.Forms.Label();
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
+            this.lblCommande = new System.Windows.Forms.Label();
+            this.cbCommande = new System.Windows.Forms.ComboBox();
+            this.lblResteCommande = new System.Windows.Forms.Label();
             this.panelEspace = new System.Windows.Forms.Panel();
             this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnEnregistrer = new System.Windows.Forms.Button();
@@ -97,7 +100,9 @@
             this.tlpChamps.ColumnCount = 2;
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpChamps.RowCount = 4;
+            this.tlpChamps.RowCount = 6;
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -118,6 +123,12 @@
             this.lblDate.TabIndex = 6;
             this.tlpChamps.Controls.Add(this.dtpDate, 1, 3);
             this.dtpDate.TabIndex = 7;
+            this.tlpChamps.Controls.Add(this.lblCommande, 0, 4);
+            this.lblCommande.TabIndex = 8;
+            this.tlpChamps.Controls.Add(this.cbCommande, 1, 4);
+            this.cbCommande.TabIndex = 9;
+            this.tlpChamps.Controls.Add(this.lblResteCommande, 1, 5);
+            this.lblResteCommande.TabIndex = 10;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -143,7 +154,8 @@
             "Facture",
             "Loyer",
             "Fournitures",
-            "Autre"});
+            "Autre",
+            "Remboursement commande"});
             this.cbCategorie.Name = "cbCategorie";
             this.cbCategorie.SelectedIndexChanged += new System.EventHandler(this.cbCategorie_SelectedIndexChanged);
             // 
@@ -198,6 +210,34 @@
             this.dtpDate.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.dtpDate.Name = "dtpDate";
             // 
+            // lblCommande
+            //
+            this.lblCommande.Text = "Commande remboursée *";
+            this.lblCommande.AutoSize = true;
+            this.lblCommande.Visible = false;
+            this.lblCommande.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblCommande.Margin = new System.Windows.Forms.Padding(0, 6, 12, 6);
+            this.lblCommande.Name = "lblCommande";
+            //
+            // cbCommande
+            //
+            this.cbCommande.Width = 420;
+            this.cbCommande.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbCommande.Visible = false;
+            this.cbCommande.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cbCommande.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
+            this.cbCommande.Name = "cbCommande";
+            this.cbCommande.SelectedIndexChanged += new System.EventHandler(this.cbCommande_SelectedIndexChanged);
+            //
+            // lblResteCommande
+            //
+            this.lblResteCommande.Text = "";
+            this.lblResteCommande.AutoSize = true;
+            this.lblResteCommande.Visible = false;
+            this.lblResteCommande.Tag = "info";
+            this.lblResteCommande.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
+            this.lblResteCommande.Name = "lblResteCommande";
+            //
             // panelEspace
             // 
             this.panelEspace.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -239,7 +279,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClientSize = new System.Drawing.Size(560, 400);
+            this.ClientSize = new System.Drawing.Size(640, 460);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -275,6 +315,9 @@
         private System.Windows.Forms.NumericUpDown numMontant;
         private System.Windows.Forms.Label lblDate;
         private System.Windows.Forms.DateTimePicker dtpDate;
+        private System.Windows.Forms.Label lblCommande;
+        private System.Windows.Forms.ComboBox cbCommande;
+        private System.Windows.Forms.Label lblResteCommande;
         private System.Windows.Forms.Panel panelEspace;
         private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnEnregistrer;

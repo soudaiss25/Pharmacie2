@@ -190,6 +190,7 @@ namespace Pharmacie2.views
                         DateCommande = DateTime.Now,
                         Statut = "En attente",
                         NoteCommande = txtNote.Text.Trim(),
+                        PayeeALaCommande = chkPayee.Checked,   // décochée : à rembourser plus tard (Dépenses → Remboursement commande)
                         DateLivraisonPrevue = chkDateLivraison.Checked
                             ? dtpLivraisonPrevue.Value.Date
                             : (DateTime?)null

@@ -19,6 +19,12 @@ namespace Pharmacie2.Models
         /// </summary>
         public string Statut { get; set; } = "En attente";
 
+        /// <summary>
+        /// true = payée au moment de la commande : aucun reste à payer. false = à rembourser plus tard (une ou plusieurs fois)
+        /// par des dépenses « Remboursement commande » reliées à cette commande.
+        /// </summary>
+        public bool PayeeALaCommande { get; set; }
+
         // ── Fournisseur ─────────────────────────────────────────────────
         public int FournisseurId { get; set; }
 

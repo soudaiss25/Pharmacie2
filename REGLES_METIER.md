@@ -1,4 +1,4 @@
-# Règles métier du client (non négociables)
+﻿# Règles métier du client (non négociables)
 
 L'utilisateur final est l'oncle du développeur. Ces règles viennent de lui : aucune ne se change sans son accord.
 **À relire avant chaque lot de modifications.** Un test (dans `tests/Pharmacie2.Tests/ReglesClient/`, ou un test
@@ -22,6 +22,7 @@ existant cité ici) vérifie chaque règle quand c'est automatisable ; sinon la 
 | 13 | Verrouillage automatique après 5 minutes d'inactivité (réglage par défaut validé par le client). | Test `Regle13_*` ; `VerrouillageTests` |
 | 14 | Le prix de vente n'est jamais recalculé automatiquement ; la marge s'affiche automatiquement (marge = prix de vente − prix d'achat, en KMF et en % du prix d'achat, à l'unité pour un produit au détail). | Tests `Regle14_*` (`Regle14MargeTests`) |
 | 15 | La marge d'une vente utilise le prix d'achat du jour de la vente (coût figé sur chaque ligne de vente ; une ligne sans coût connu est exclue de la marge et signalée). | Tests `Regle15_*` (`Regle15CoutAchatTests`) |
+| 16 | Le coût des médicaments est compté au moment de la vente. Une dépense « Remboursement commande » est une note reliée à sa commande : elle réduit le reste à payer et n'entre jamais dans le bénéfice. Les dépenses sont payées avec la trésorerie de la pharmacie : elles ne touchent jamais à une caisse. | Tests `RemboursementCommandeTests` |
 
 ## Conséquences de calcul (déduites des règles ci-dessus)
 

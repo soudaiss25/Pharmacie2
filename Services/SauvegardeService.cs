@@ -117,12 +117,12 @@ namespace Pharmacie2.Services
         private static void ExporterCommandes(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;FournisseurId;DateCommande;Statut;NoteCommande;DateReception");
+            sb.AppendLine("Id;FournisseurId;DateCommande;Statut;NoteCommande;DateReception;PayeeALaCommande");
 
             foreach (var c in ctx.commandes.AsNoTracking().ToList())
                 sb.AppendLine($"{c.Id};{c.FournisseurId};{c.DateCommande:yyyy-MM-dd HH:mm:ss};" +
                     $"{c.Statut};{Echap(c.NoteCommande)};" +
-                    $"{(c.DateReception.HasValue ? c.DateReception.Value.ToString("yyyy-MM-dd") : "")}");
+                    $"{(c.DateReception.HasValue ? c.DateReception.Value.ToString("yyyy-MM-dd") : "")};{c.PayeeALaCommande}");
 
             Ecrire(Path.Combine(dossier, "commandes.csv"), sb.ToString());
         }
@@ -178,11 +178,11 @@ namespace Pharmacie2.Services
         private static void ExporterDepensesAnnexes(AppDbContext ctx, string dossier)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Id;Categorie;Description;Montant;DateDepense;UserId");
+            sb.AppendLine("Id;Categorie;Description;Montant;DateDepense;UserId;CommandeId");
 
             foreach (var d in ctx.DepensesAnnexes.AsNoTracking().ToList())
                 sb.AppendLine($"{d.Id};{Echap(d.Categorie)};{Echap(d.Description)};{d.Montant};" +
-                    $"{d.DateDepense:yyyy-MM-dd HH:mm:ss};{d.UserId}");
+                    $"{d.DateDepense:yyyy-MM-dd HH:mm:ss};{d.UserId};{d.CommandeId}");
 
             Ecrire(Path.Combine(dossier, "depenses_annexes.csv"), sb.ToString());
         }

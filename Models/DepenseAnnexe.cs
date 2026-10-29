@@ -29,6 +29,12 @@ namespace Pharmacie2.Models
         public int Mois => DateDepense.Month;
         public int Annee => DateDepense.Year;
 
+        /// <summary>
+        /// Pour une dépense « Remboursement commande » : la commande remboursée. Une telle dépense est une note : elle réduit le reste à payer
+        /// de la commande et n'entre jamais dans le bénéfice. Jamais rattachée à une session de caisse.
+        /// </summary>
+        public int? CommandeId { get; set; }
+
         /// <summary>Qui a saisi la dépense</summary>
         public int? UserId { get; set; }
         public User User { get; set; }

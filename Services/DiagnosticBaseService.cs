@@ -368,7 +368,7 @@ namespace Pharmacie2.Services
                 r.SessionsOuvertes.Add(s.Id);
             }
 
-            var depenses = ctx.DepensesAnnexes.AsNoTracking().ToList();                                             // D23
+            var depenses = ctx.DepensesAnnexes.AsNoTracking().HorsRemboursements().ToList();                                             // D23
             decimal medDep = Mediane(depenses.Select(d => d.Montant).Where(m => m > 0));
             if (medDep > 0)
                 foreach (var d in depenses.Where(d => d.Montant >= 50 * medDep))

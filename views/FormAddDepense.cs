@@ -9,11 +9,52 @@ namespace Pharmacie2.views
 {
     public partial class FormAddDepense : Form
     {
-        public FormAddDepense()
+        /// <summary>Choix de la liste des commandes : une commande non soldée et ce qu'il reste à payer.</summary>
+        private sealed class ChoixCommande
+        {
+            public DetteCommande Dette { get; }
+            public ChoixCommande(DetteCommande d) { Dette = d; }
+            public override string ToString()
+                => $"N°{Dette.CommandeId} — {Dette.Fournisseur} — {Dette.Date:dd/MM/yyyy} — total {Format.Montant(Dette.Total)} — reste {Format.Montant(Dette.Reste)}";
+        }
+
+        public FormAddDepense() : this(null) { }
+
+        /// <summary>Avec <paramref name="commandeId"/> : saisie d'un remboursement de cette commande (catégorie et commande présélectionnées).</summary>
+        public FormAddDepense(int? commandeId)
         {
             InitializeComponent();
             Theme.Appliquer(this);
             cbCategorie.SelectedIndex = -1;
+            if (commandeId != null)
+            {
+                cbCategorie.SelectedItem = RemboursementCommandeService.Categorie;
+                foreach (var item in cbCommande.Items.Cast<ChoixCommande>())
+                    if (item.Dette.CommandeId == commandeId) cbCommande.SelectedItem = item;
+            }
+        }
+
+        private bool EstRemboursement => cbCategorie.Text == RemboursementCommandeService.Categorie;
+
+        private void cbCommande_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbCommande.SelectedItem is not ChoixCommande c) { lblResteCommande.Text = ""; return; }
+            lblResteCommande.Text = $"Reste à payer sur cette commande : {Format.Montant(c.Dette.Reste)} (déjà remboursé : {Format.Montant(c.Dette.Rembourse)})";
+        }
+
+        private void AfficherChoixCommande()
+        {
+            bool visible = EstRemboursement;
+            lblCommande.Visible = cbCommande.Visible = lblResteCommande.Visible = visible;
+            if (!visible) return;
+            if (cbCommande.Items.Count == 0)
+            {
+                using var ctx = new AppDbContext();
+                foreach (var d in RemboursementCommandeService.NonSoldees(ctx))
+                    cbCommande.Items.Add(new ChoixCommande(d));
+            }
+            if (cbCommande.Items.Count == 0)
+                lblResteCommande.Text = "Aucune commande n'est à rembourser.";
         }
 
         private void btnEnregistrer_Click(object sender, EventArgs e)
@@ -34,6 +75,21 @@ namespace Pharmacie2.views
                 numMontant.Focus(); return;
             }
 
+            // Remboursement de commande : la commande est obligatoire et le montant ne dépasse jamais le reste à payer
+            int? commandeId = null;
+            if (EstRemboursement)
+            {
+                commandeId = (cbCommande.SelectedItem as ChoixCommande)?.Dette.CommandeId;
+                using var ctxControle = new AppDbContext();
+                string? refus = RemboursementCommandeService.ControlerRemboursement(ctxControle, commandeId, montant);
+                if (refus != null)
+                {
+                    MessageBox.Show(refus, "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    (commandeId == null ? (Control)cbCommande : numMontant).Focus();
+                    return;
+                }
+            }
+
             try
             {
                 using (var ctx = new AppDbContext())
@@ -44,6 +100,7 @@ namespace Pharmacie2.views
                         Description = txtDescription.Text.Trim(),
                         Montant = montant,
                         DateDepense = dtpDate.Value.Date,
+                        CommandeId = commandeId,   // jamais de session de caisse : les dépenses sont payées par la trésorerie de la pharmacie
                         UserId = SessionUtilisateur.IdCourant
                     });
                     ctx.SaveChanges();
@@ -69,6 +126,7 @@ namespace Pharmacie2.views
 
         private void cbCategorie_SelectedIndexChanged(object sender, EventArgs e)
         {
+            AfficherChoixCommande();
             // Placeholder selon la catégorie
             txtDescription.PlaceholderText = cbCategorie.Text switch
             {
@@ -76,6 +134,7 @@ namespace Pharmacie2.views
                 "Facture" => "Ex: Facture électricité — Mai 2026",
                 "Loyer" => "Ex: Loyer local pharmacie — Mai 2026",
                 "Fournitures" => "Ex: Sacs, étiquettes, stylos...",
+                RemboursementCommandeService.Categorie => "Ex: Remboursement du grossiste — acompte d'octobre",
                 _ => "Description de la dépense..."
             };
         }

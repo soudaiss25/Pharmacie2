@@ -43,6 +43,7 @@
             this.dtpLivraisonPrevue = new System.Windows.Forms.DateTimePicker();
             this.lblNoteLabel = new System.Windows.Forms.Label();
             this.txtNote = new System.Windows.Forms.TextBox();
+            this.chkPayee = new System.Windows.Forms.CheckBox();
             this.panelEspace = new System.Windows.Forms.Panel();
             this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnValider = new System.Windows.Forms.Button();
@@ -101,7 +102,8 @@
             this.tlpChamps.ColumnCount = 2;
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpChamps.RowCount = 6;
+            this.tlpChamps.RowCount = 7;
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -130,6 +132,8 @@
             this.lblNoteLabel.TabIndex = 9;
             this.tlpChamps.Controls.Add(this.txtNote, 1, 5);
             this.txtNote.TabIndex = 10;
+            this.tlpChamps.Controls.Add(this.chkPayee, 1, 6);
+            this.chkPayee.TabIndex = 11;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -218,6 +222,14 @@
             this.dtpLivraisonPrevue.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.dtpLivraisonPrevue.Name = "dtpLivraisonPrevue";
             // 
+            // chkPayee
+            //
+            this.chkPayee.Text = "Payée à la commande";
+            this.chkPayee.AutoSize = true;
+            this.chkPayee.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkPayee.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.chkPayee.Name = "chkPayee";
+            //
             // lblNoteLabel
             // 
             this.lblNoteLabel.Text = "Note";
@@ -275,7 +287,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClientSize = new System.Drawing.Size(600, 440);
+            this.ClientSize = new System.Drawing.Size(600, 480);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -315,6 +327,7 @@
         private System.Windows.Forms.DateTimePicker dtpLivraisonPrevue;
         private System.Windows.Forms.Label lblNoteLabel;
         private System.Windows.Forms.TextBox txtNote;
+        private System.Windows.Forms.CheckBox chkPayee;
         private System.Windows.Forms.Panel panelEspace;
         private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnValider;

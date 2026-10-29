@@ -90,6 +90,7 @@
             this.btnSupprimerDep = new System.Windows.Forms.Button();
             this.dgvHistorique = new System.Windows.Forms.DataGridView();
             this.lblTotalHistorique = new System.Windows.Forms.Label();
+            this.lblRemboursements = new System.Windows.Forms.Label();
             this.colMois = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCA = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCOGS = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -725,9 +726,10 @@
             // 
             this.tlpHisto.ColumnCount = 1;
             this.tlpHisto.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpHisto.RowCount = 3;
+            this.tlpHisto.RowCount = 4;
             this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
+            this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpHisto.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpHisto.Controls.Add(this.pnlFiltreHisto, 0, 0);
             this.pnlFiltreHisto.TabIndex = 0;
@@ -735,6 +737,8 @@
             this.dgvHistorique.TabIndex = 1;
             this.tlpHisto.Controls.Add(this.lblTotalHistorique, 0, 2);
             this.lblTotalHistorique.TabIndex = 2;
+            this.tlpHisto.Controls.Add(this.lblRemboursements, 0, 3);
+            this.lblRemboursements.TabIndex = 3;
             this.tlpHisto.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHisto.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.tlpHisto.Name = "tlpHisto";
@@ -796,6 +800,14 @@
             this.lblTotalHistorique.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTotalHistorique.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
             this.lblTotalHistorique.Name = "lblTotalHistorique";
+            //
+            // lblRemboursements
+            //
+            this.lblRemboursements.Text = "";
+            this.lblRemboursements.AutoSize = true;
+            this.lblRemboursements.Tag = "info";
+            this.lblRemboursements.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.lblRemboursements.Name = "lblRemboursements";
             // 
             // colMois
             // 
@@ -1016,6 +1028,7 @@
         private System.Windows.Forms.Button btnSupprimerDep;
         private System.Windows.Forms.DataGridView dgvHistorique;
         private System.Windows.Forms.Label lblTotalHistorique;
+        private System.Windows.Forms.Label lblRemboursements;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMois;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCA;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCOGS;

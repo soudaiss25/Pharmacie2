@@ -57,6 +57,9 @@
             this.colNbProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMontant = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colReception = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEtatPaiement = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colReste = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnRembourser = new System.Windows.Forms.Button();
             this.colNote = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLProduit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLQte = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -135,6 +138,8 @@
             this.btnMarquerPartiel.TabIndex = 2;
             this.tlpEnteteActions.Controls.Add(this.btnAnnuler);
             this.btnAnnuler.TabIndex = 3;
+            this.tlpEnteteActions.Controls.Add(this.btnRembourser);
+            this.btnRembourser.TabIndex = 4;
             this.tlpEnteteActions.AutoSize = true;
             this.tlpEnteteActions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpEnteteActions.WrapContents = false;
@@ -166,6 +171,14 @@
             this.btnMarquerPartiel.Name = "btnMarquerPartiel";
             this.btnMarquerPartiel.Click += new System.EventHandler(this.btnMarquerPartiel_Click);
             // 
+            // btnRembourser
+            //
+            this.btnRembourser.Text = "Rembourser…";
+            this.btnRembourser.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.btnRembourser.Enabled = false;
+            this.btnRembourser.Name = "btnRembourser";
+            this.btnRembourser.Click += new System.EventHandler(this.btnRembourser_Click);
+            //
             // btnAnnuler
             // 
             this.btnAnnuler.Text = "Annuler la commande";
@@ -231,7 +244,8 @@
             "En attente",
             "Reçu partiellement",
             "Reçu",
-            "Annulée"});
+            "Annulée",
+            "À rembourser"});
             this.cbFiltreStatut.SelectedIndex = 0;
             this.cbFiltreStatut.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cbFiltreStatut.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
@@ -313,6 +327,8 @@
             this.colStatut,
             this.colNbProd,
             this.colMontant,
+            this.colEtatPaiement,
+            this.colReste,
             this.colReception,
             this.colNote});
             this.dgvCommandes.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -397,6 +413,26 @@
             this.colMontant.MinimumWidth = 100;
             this.colMontant.ReadOnly = true;
             this.colMontant.Tag = "montant";
+            // 
+            //
+            // colEtatPaiement
+            //
+            this.colEtatPaiement.HeaderText = "Paiement";
+            this.colEtatPaiement.Name = "colEtatPaiement";
+            this.colEtatPaiement.DataPropertyName = "colEtatPaiement";
+            this.colEtatPaiement.FillWeight = 12F;
+            this.colEtatPaiement.MinimumWidth = 110;
+            this.colEtatPaiement.ReadOnly = true;
+            //
+            // colReste
+            //
+            this.colReste.HeaderText = "Reste à payer";
+            this.colReste.Name = "colReste";
+            this.colReste.DataPropertyName = "colReste";
+            this.colReste.FillWeight = 12F;
+            this.colReste.MinimumWidth = 100;
+            this.colReste.ReadOnly = true;
+            this.colReste.Tag = "montant";
             // 
             // colReception
             // 
@@ -497,6 +533,9 @@
         private System.Windows.Forms.Button btnMarquerRecu;
         private System.Windows.Forms.Button btnMarquerPartiel;
         private System.Windows.Forms.Button btnAnnuler;
+        private System.Windows.Forms.Button btnRembourser;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEtatPaiement;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colReste;
         private System.Windows.Forms.TableLayoutPanel tlpFiltres;
         private System.Windows.Forms.Label lblStatut;
         private System.Windows.Forms.ComboBox cbFiltreStatut;

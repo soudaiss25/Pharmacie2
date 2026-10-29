@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pharmacie2.Models;
 
 namespace Pharmacie2.Services
@@ -56,7 +56,7 @@ namespace Pharmacie2.Services
             var calcul = MargeVenteService.Calculer(lignes);
             decimal marge = calcul.MargeBrute;
 
-            decimal depenses = ctx.DepensesAnnexes.AsNoTracking()
+            decimal depenses = ctx.DepensesAnnexes.AsNoTracking().HorsRemboursements()   // un remboursement de commande n'entre jamais dans le bénéfice
                 .Where(d => d.DateDepense >= debut && d.DateDepense <= fin)
                 .Select(d => d.Montant).ToList().Sum();
 

@@ -19,6 +19,7 @@ namespace Pharmacie2.Services
         FichesAVerifier,
         EcartsCaisseRepetes,
         MutuellesEnRetard,
+        DettesFournisseurs,
         SauvegardeExterne
     }
 
@@ -125,7 +126,7 @@ namespace Pharmacie2.Services
         /// <summary>Bénéfice net = marge brute − dépenses annexes de la période.</summary>
         public static decimal Benefice(AppDbContext ctx, DateTime debut, DateTime fin)
         {
-            decimal depenses = ctx.DepensesAnnexes.AsNoTracking()
+            decimal depenses = ctx.DepensesAnnexes.AsNoTracking().HorsRemboursements()   // un remboursement de commande n'entre jamais dans le bénéfice
                 .Where(d => d.DateDepense >= debut && d.DateDepense <= fin)
                 .Select(d => d.Montant).ToList().Sum();
             return MargeBrute(ctx, debut, fin) - depenses;
@@ -218,6 +219,10 @@ namespace Pharmacie2.Services
                 liste.Add(new AFaire(TypeAFaire.MutuellesEnRetard, "attention",
                     (retards.Count > 1 ? $"{retards.Count} mutuelles n'ont pas réglé leur part" : "1 mutuelle n'a pas réglé sa part") + $" depuis plus de {JoursRetardMutuelle} jours : {Format.Montant(somme)}", retards.Count));
             }
+
+            decimal dettes = RemboursementCommandeService.DettesFournisseurs(ctx);
+            if (dettes > 0m)
+                liste.Add(new AFaire(TypeAFaire.DettesFournisseurs, "info", $"Dettes fournisseurs : {Format.Montant(dettes)}", RemboursementCommandeService.NonSoldees(ctx).Count));
 
             return liste;
         }

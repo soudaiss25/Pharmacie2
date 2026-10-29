@@ -17,6 +17,15 @@ namespace Pharmacie2.views.UserControls
 
             InitFiltres();
 
+            // Un remboursement de commande est une note : ligne grisée, jamais dans le bénéfice
+            dgvHistorique.CellFormatting += (s, e) =>
+            {
+                if (e.RowIndex < 0 || e.RowIndex >= dgvHistorique.Rows.Count) return;
+                if (Convert.ToString(dgvHistorique.Rows[e.RowIndex].Cells["Categorie"].Value) != RemboursementCommandeService.Categorie) return;
+                e.CellStyle.ForeColor = Theme.Neutre;
+                e.CellStyle.BackColor = Theme.InfoFond;
+            };
+
             cbMois.SelectedIndexChanged += (s, e) => ChargerResultatMensuel();
             cbAnnee.SelectedIndexChanged += (s, e) => { ChargerResultatMensuel(); ChargerResultatAnnuel(); };
             cbAnneeAnnuel.SelectedIndexChanged += (s, e) => ChargerResultatAnnuel();
@@ -46,7 +55,7 @@ namespace Pharmacie2.views.UserControls
             cbMois.SelectedIndex = DateTime.Now.Month - 1;
 
             cbFiltreHistoCat.Items.Add("Toutes");
-            foreach (var c in new[] { "Salaire", "Facture", "Loyer", "Fournitures", "Autre" })
+            foreach (var c in new[] { "Salaire", "Facture", "Loyer", "Fournitures", "Autre", RemboursementCommandeService.Categorie })
                 cbFiltreHistoCat.Items.Add(c);
             cbFiltreHistoCat.SelectedIndex = 0;
         }
@@ -84,7 +93,7 @@ namespace Pharmacie2.views.UserControls
                         .Where(l => idsVentesMois.Contains(l.VenteId))
                         .ToList();
 
-                    var depenses = ctx.DepensesAnnexes.AsNoTracking()
+                    var depenses = ctx.DepensesAnnexes.AsNoTracking().HorsRemboursements()   // les remboursements de commandes n'entrent jamais dans le résultat
                         .Where(d => d.DateDepense >= debut && d.DateDepense <= fin)
                         .ToList();
 
@@ -214,7 +223,7 @@ namespace Pharmacie2.views.UserControls
                         decimal cogs = calculMarge.Cout;
                         ca -= calculMarge.CaSansCout;   // lignes sans coût connu : exclues du résultat
 
-                        decimal depenses = ctx.DepensesAnnexes.AsNoTracking()
+                        decimal depenses = ctx.DepensesAnnexes.AsNoTracking().HorsRemboursements()
                             .Where(d => d.DateDepense >= debut && d.DateDepense <= fin)
                             .Select(d => d.Montant)
                             .ToList()   // ToList() obligatoire avant Sum() sur decimal avec SQLite
@@ -284,12 +293,18 @@ namespace Pharmacie2.views.UserControls
                         d.Id,
                         Date = d.DateDepense.ToString("dd/MM/yyyy"),
                         d.Categorie,
-                        d.Description,
+                        // un remboursement de commande est une note : elle est signalée dans la description
+                        Description = RemboursementCommandeService.EstRemboursement(d)
+                            ? (string.IsNullOrWhiteSpace(d.Description) ? "" : d.Description + " — ") + "Note : n'entre pas dans le bénéfice"
+                            : d.Description,
                         d.Montant,
                         Utilisateur = d.User != null ? $"{d.User.Prenom} {d.User.Nom}" : "—"
                     }).ToList();
 
-                    lblTotalHistorique.Text = $"Total affiché : {Format.Montant(depenses.Sum(d => d.Montant))} — {Format.Compte(depenses.Count, "dépense")}";
+                    var vraies = depenses.Where(d => !RemboursementCommandeService.EstRemboursement(d)).ToList();
+                    var notes = depenses.Where(RemboursementCommandeService.EstRemboursement).ToList();
+                    lblTotalHistorique.Text = $"Total affiché : {Format.Montant(vraies.Sum(d => d.Montant))} — {Format.Compte(vraies.Count, "dépense")}";
+                    lblRemboursements.Text = $"Remboursements de commandes (pour information) : {Format.Montant(notes.Sum(d => d.Montant))} — {Format.Compte(notes.Count, "remboursement")}";
                 }
             }
             catch (Exception ex)

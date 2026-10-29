@@ -493,3 +493,17 @@ Release de test déjà publiée : <https://github.com/soudaiss25/Pharmacie2/rele
 - [ ] Si la version contient une migration : un fichier `PharmacieDB_avant-migration_<date>.sqlite` apparaît dans `Sauvegardes` au premier démarrage.
 - [ ] Couper le Wi-Fi puis « Rechercher une mise à jour maintenant » : message « La vérification n'a pas pu se faire… », aucune fenêtre d'erreur, l'application continue de fonctionner.
 - [ ] Un compte Caissier ne peut pas changer le canal (liste grisée) et ne voit pas « Installer maintenant ».
+
+# Remboursement des commandes (dépense « pour note »)
+
+## 56. Rembourser une commande
+- [ ] Créer une commande en laissant « Payée à la commande » **décochée** (total par exemple 10 000 KMF). Dans Commandes : état « Non payée », reste à payer 10 000.
+- [ ] Dans Fournisseurs : la colonne « Reste à payer » du fournisseur affiche 10 000 ; dans Ma journée : ligne « Dettes fournisseurs : 10 000 KMF » (clic : ouvre les commandes à rembourser).
+- [ ] Dans Commandes, choisir la commande puis « Rembourser… » : la saisie s'ouvre avec la catégorie « Remboursement commande » et la commande présélectionnée ; saisir 3 000 : la commande passe à « Partiellement payée », reste 7 000.
+- [ ] Dans Dépenses, tenter un montant de 8 000 sur cette commande : refusé (« Le montant dépasse le reste à payer… »). Sans choisir de commande : refusé.
+- [ ] Rembourser 4 000 puis 3 000 : état « Payée », reste 0, la ligne disparaît de « Dettes fournisseurs ».
+- [ ] Onglet « Dépenses saisies » : les remboursements sont grisés avec « Note : n'entre pas dans le bénéfice » ; le total affiché ne les contient pas ; le sous-total « Remboursements de commandes (pour information) » les additionne.
+- [ ] Le **bénéfice du mois** (Dépenses), Ma journée et Statistiques sont **identiques** avant et après la saisie d'un remboursement.
+- [ ] Ouvrir une caisse, saisir une dépense (n'importe quelle catégorie) : aucune question sur le tiroir ; les espèces attendues de la caisse ne changent pas.
+- [ ] Annuler une commande qui a déjà un remboursement : refusé avec un message clair. Supprimer le remboursement (administrateur) : le reste à payer se recalcule et l'annulation redevient possible.
+- [ ] Une commande créée avec « Payée à la commande » **cochée** n'a aucun reste à payer et n'est pas proposée dans la liste des remboursements.

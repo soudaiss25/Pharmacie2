@@ -39,6 +39,9 @@ namespace Pharmacie2.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("PayeeALaCommande")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Statut")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -59,6 +62,9 @@ namespace Pharmacie2.Migrations
                     b.Property<string>("Categorie")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("CommandeId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DateDepense")
                         .HasColumnType("TEXT");
