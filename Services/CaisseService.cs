@@ -129,6 +129,14 @@ namespace Pharmacie2.Services
             return (EspecesAttendues(ctx, session), session.Statut == "Clôturée");
         }
 
+        /// <summary>Ventes (tous statuts) d'une période ou, avec <paramref name="sessionId"/>, du détail d'une session (voir <see cref="Calculer"/>).</summary>
+        public static IQueryable<Vente> VentesConcernees(AppDbContext ctx, DateTime debut, DateTime fin, int? userId, int? sessionId = null)
+            => ctx.ventes.AsNoTracking().Include(v => v.Paiements)
+                .Where(v => sessionId == null
+                    ? v.DateVente >= debut && v.DateVente <= fin && (userId == null || v.UserId == userId)
+                    : v.Paiements.Any(p => p.SessionCaisseId == sessionId)
+                      || (!v.Paiements.Any(p => p.SessionCaisseId != null) && v.DateVente >= debut && v.DateVente <= fin && (userId == null || v.UserId == userId)));
+
         /// <param name="userId">Caissier concerné ; null = tous les utilisateurs (rapport de caisse).</param>
         /// <param name="sessionId">
         /// Pour le détail d'une session : les paiements rattachés à CETTE session (peu importe qui les a encaissés), plus les anciens paiements sans session
@@ -150,14 +158,7 @@ namespace Pharmacie2.Services
 
             // Détail d'une session : les ventes dont un paiement est rattaché à cette session (même faites par un autre utilisateur), plus,
             // pour les anciennes ventes et celles sans paiement, la règle d'origine (vendeur de la session, dates de la session)
-            var ventes = ctx.ventes.AsNoTracking()
-                .Include(v => v.Paiements)
-                .Where(v => v.Statut == "Active"
-                         && (sessionId == null
-                             ? v.DateVente >= debut && v.DateVente <= fin && (userId == null || v.UserId == userId)
-                             : v.Paiements.Any(p => p.SessionCaisseId == sessionId)
-                               || (!v.Paiements.Any(p => p.SessionCaisseId != null) && v.DateVente >= debut && v.DateVente <= fin && (userId == null || v.UserId == userId))))
-                .ToList();
+            var ventes = VentesConcernees(ctx, debut, fin, userId, sessionId).Where(v => v.Statut == "Active").ToList();
 
             return new VentilationCaisse(
                 Especes: Somme(paiements.Where(p => p.Mode == ModesPaiement.Especes)),

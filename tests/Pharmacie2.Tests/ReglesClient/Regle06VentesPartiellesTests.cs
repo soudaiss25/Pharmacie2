@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Pharmacie2.Models;
 using Pharmacie2.Services;
 using Pharmacie2.views;
@@ -79,8 +79,10 @@ public class Regle06VentesPartiellesTests
 
             UiHelper.Appeler(uc, "ChargerDetailSession", sid);
             string v = UiHelper.Champ<Label>(uc, "lblVentilationSession").Text;
-            Assert.Contains("Crédit (versements reçus) : " + K(300) + ", reste dû : " + K(700), v);
-            Assert.Contains("Mutuelle (part patient reçue) : " + K(400) + ", part des entreprises en attente : " + K(1600), v);
+            Assert.Contains("Crédit (versements reçus) : " + K(300) + ", Reste dû à ce jour : " + K(700), v);
+            var infobulle = (ToolTip)uc.GetType().GetField("_infobulleSession", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.GetValue(uc)!;
+            Assert.Equal("Montant actuel de ces ventes, pas celui du jour de la session.", infobulle.GetToolTip(UiHelper.Champ<Label>(uc, "lblVentilationSession")));
+            Assert.Contains("Mutuelle (part patient reçue) : " + K(400) + ", Part mutuelle en attente à ce jour : " + K(1600), v);
             Assert.DoesNotContain(K(1000), v);       // total du crédit
             Assert.DoesNotContain(K(2000), v);       // total de la mutuelle
 

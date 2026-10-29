@@ -8,6 +8,7 @@ namespace Pharmacie2.views.UserControls
     public partial class Uc_Caisse : UserControl, IModeCompact
     {
         private int _sessionSelectionneeId = -1;
+        private readonly ToolTip _infobulleSession = new ToolTip();
 
         public Uc_Caisse()
         {
@@ -334,10 +335,7 @@ namespace Pharmacie2.views.UserControls
                     DateTime debut = session.DateOuverture;
                     DateTime fin = session.DateCloture ?? DateTime.Now;
 
-                    var ventes = ctx.ventes
-                        .AsNoTracking()
-                        .Include(v => v.Paiements)
-                        .Where(v => v.UserId == session.UserId && v.DateVente >= debut && v.DateVente <= fin)
+                    var ventes = CaisseService.VentesConcernees(ctx, debut, fin, session.UserId, session.Id)
                         .OrderByDescending(v => v.DateVente)
                         .ToList();
 
@@ -377,8 +375,9 @@ namespace Pharmacie2.views.UserControls
                     lblVentilationSession.Text =
                         $"Comptant : {Format.Montant(Recu(ModesPaiement.Comptant))}  |  Mobile : {Format.Montant(Recu(ModesPaiement.Mvola) + Recu(ModesPaiement.HuriMoney))}  |  " +
                         $"Carte : {Format.Montant(Recu(ModesPaiement.CarteBancaire))}  |  Chèque : {Format.Montant(Recu(ModesPaiement.Cheque))}\n" +
-                        $"Mutuelle (part patient reçue) : {Format.Montant(caisse.PartPatientMutuelle)}, part des entreprises en attente : {Format.Montant(caisse.PartMutuelleEnAttente)}  |  " +
-                        $"Crédit (versements reçus) : {Format.Montant(caisse.VersementsCredit)}, reste dû : {Format.Montant(caisse.ResteDuCredit)}";
+                        $"Mutuelle (part patient reçue) : {Format.Montant(caisse.PartPatientMutuelle)}, Part mutuelle en attente à ce jour : {Format.Montant(caisse.PartMutuelleEnAttente)}  |  " +
+                        $"Crédit (versements reçus) : {Format.Montant(caisse.VersementsCredit)}, Reste dû à ce jour : {Format.Montant(caisse.ResteDuCredit)}";
+                    _infobulleSession.SetToolTip(lblVentilationSession, "Montant actuel de ces ventes, pas celui du jour de la session.");
                 }
             }
             catch (Exception ex)
