@@ -16,21 +16,22 @@ namespace Pharmacie2.Services
         public static int EnUnites(Produit p, int quantite, string unite)
             => unite == UniteBoite ? quantite * NbParBoite(p) : quantite;
 
-        public static bool EstDisponible(Produit p, int unites) => p.QuantiteEnStock >= unites;
+        public static bool EstDisponible(Produit p, int unites) => p.SansStock || p.QuantiteEnStock >= unites;
 
         /// <summary>Retire du stock. Lève une exception si le stock est insuffisant (jamais d'écrêtage).</summary>
         public static void Retirer(Produit p, int unites)
         {
+            if (p.SansStock) return;   // prestation : aucun mouvement de stock
             if (!EstDisponible(p, unites))
                 throw new StockInsuffisantException(
                     $"Stock insuffisant pour « {p.Nom} ».\nDisponible : {Formater(p)}");
             p.QuantiteEnStock -= unites;
         }
 
-        public static void Ajouter(Produit p, int unites) => p.QuantiteEnStock += unites;
+        public static void Ajouter(Produit p, int unites) { if (!p.SansStock) p.QuantiteEnStock += unites; }
 
         /// <summary>Ex : « 2 boîte(s) + 4 plaquette(s) ».</summary>
-        public static string Formater(Produit p) => Formater(p, p.QuantiteEnStock);
+        public static string Formater(Produit p) => p.SansStock ? "—" : Formater(p, p.QuantiteEnStock);
 
         public static string Formater(Produit p, int unites)
         {

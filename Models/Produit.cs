@@ -49,6 +49,12 @@ namespace Pharmacie2.Models
         /// </summary>
         public int QuantiteEnStock { get; set; }
 
+        /// <summary>
+        /// true = prestation (injection, pansement, conseil…) : un article vendu sans stock, sans conditionnement, sans péremption,
+        /// sans fournisseur ni prix d'achat. Aucun contrôle ni mouvement de stock ; exclu du Stock, des alertes, des commandes et de l'inventaire.
+        /// </summary>
+        public bool SansStock { get; set; }
+
         public int SeuilAlerte { get; set; }
         public DateTime DateExpiration { get; set; }
 

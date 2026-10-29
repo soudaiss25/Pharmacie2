@@ -50,6 +50,7 @@
             this.lblPrixAchat = new System.Windows.Forms.Label();
             this.numPrixAchat = new System.Windows.Forms.NumericUpDown();
             this.lblMarge = new System.Windows.Forms.Label();
+            this.chkPrestation = new System.Windows.Forms.CheckBox();
             this.lblPrixVente = new System.Windows.Forms.Label();
             this.numPrixVente = new System.Windows.Forms.NumericUpDown();
             this.lblFournisseur = new System.Windows.Forms.Label();
@@ -299,7 +300,8 @@
             this.tlpProduit.ColumnCount = 2;
             this.tlpProduit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpProduit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpProduit.RowCount = 6;
+            this.tlpProduit.RowCount = 7;
+            this.tlpProduit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpProduit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpProduit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpProduit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -329,6 +331,9 @@
             this.lblFournisseur.TabIndex = 10;
             this.tlpProduit.Controls.Add(this.cbFournisseur, 1, 5);
             this.cbFournisseur.TabIndex = 11;
+            this.tlpProduit.Controls.Add(this.chkPrestation, 0, 6);
+            this.tlpProduit.SetColumnSpan(this.chkPrestation, 2);
+            this.chkPrestation.TabIndex = 12;
             this.tlpProduit.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpProduit.AutoSize = true;
             this.tlpProduit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -393,6 +398,14 @@
             this.numPrixAchat.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.numPrixAchat.Name = "numPrixAchat";
             // 
+            // chkPrestation
+            //
+            this.chkPrestation.Text = "Prestation (sans stock)";
+            this.chkPrestation.AutoSize = true;
+            this.chkPrestation.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkPrestation.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.chkPrestation.Name = "chkPrestation";
+            //
             // lblMarge
             //
             this.lblMarge.Text = "";
@@ -922,6 +935,7 @@
         private System.Windows.Forms.Label lblPrixAchat;
         private System.Windows.Forms.NumericUpDown numPrixAchat;
         private System.Windows.Forms.Label lblMarge;
+        private System.Windows.Forms.CheckBox chkPrestation;
         private System.Windows.Forms.Label lblPrixVente;
         private System.Windows.Forms.NumericUpDown numPrixVente;
         private System.Windows.Forms.Label lblFournisseur;

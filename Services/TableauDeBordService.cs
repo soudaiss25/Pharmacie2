@@ -181,7 +181,7 @@ namespace Pharmacie2.Services
             var liste = new List<AFaire>();
 
             using var ctx = new AppDbContext();
-            var actifs = ctx.produits.AsNoTracking().Where(p => p.Actif).ToList();
+            var actifs = ctx.produits.AsNoTracking().Where(p => p.Actif && !p.SansStock).ToList();   // une prestation n'a ni stock ni péremption
 
             var perimes = actifs.Where(p => p.PeremptionConnue && p.QuantiteEnStock > 0 && p.DateExpiration.Date < aujourdhui).OrderBy(p => p.DateExpiration).ToList();
             if (perimes.Count > 0)

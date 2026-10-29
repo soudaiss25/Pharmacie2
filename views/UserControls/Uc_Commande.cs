@@ -299,7 +299,7 @@ namespace Pharmacie2.views.UserControls
         private void btnNouvelleCommande_Click(object sender, EventArgs e)
         {
             // Étape 1 : choisir le produit à commander
-            using (var choix = new FormChoixProduit())
+            using (var choix = new FormChoixProduit(pourCommande: true))
             {
                 // On veut juste choisir le produit, pas valider une vente
                 // FormChoixProduit renvoie le produit sélectionné

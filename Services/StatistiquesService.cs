@@ -22,11 +22,14 @@ namespace Pharmacie2.Services
         public decimal Net => Excedents - Manquants;
     }
 
+    /// <summary>Prestations (articles sans stock) vendues pendant la période : chiffre d'affaires et nombre de prestations.</summary>
+    public record StatPrestations(decimal CA, int Nombre);
+
     public record StatsPeriode(
         decimal CA, decimal MargeBrute, decimal Depenses, decimal BeneficeNet,
         int NbVentes, int NbVentesASolder, decimal ArgentARecuperer,
         List<LigneMode> Modes, List<LigneTop> TopProduits, List<LigneCredit> Credits, List<LigneMutuelleDue> Mutuelles,
-        int LignesSansCout = 0, EcartsCaisse? Ecarts = null);
+        int LignesSansCout = 0, EcartsCaisse? Ecarts = null, StatPrestations? Prestations = null);
 
     /// <summary>Statistiques d'une période. Les prix et quantités réellement pratiqués à la vente sont utilisés.</summary>
     public static class StatistiquesService
@@ -61,16 +64,18 @@ namespace Pharmacie2.Services
                 .Select(d => d.Montant).ToList().Sum();
 
             var aSolder = ventes.Where(v => v.MontantRestant > 0).ToList();
+            var prestations = lignes.Where(l => l.Produit?.SansStock == true).ToList();   // ligne « Prestations » distincte des médicaments
 
             return new StatsPeriode(
                 ca, marge, depenses, marge - depenses,
                 ventes.Count, aSolder.Count, aSolder.Sum(v => v.MontantRestant),
                 ArgentRecuParMode(ctx, ventes, debut, fin),
-                TopProduits(lignes),
+                TopProduits(lignes.Where(l => l.Produit?.SansStock != true).ToList()),
                 Credits(ventes),
                 MutuellesDues(ctx, ventes),
                 calcul.LignesSansCout,
-                EcartsDeCaisse(ctx, debut, fin));
+                EcartsDeCaisse(ctx, debut, fin),
+                new StatPrestations(prestations.Sum(l => l.Quantite * l.PrixUnitaire), prestations.Sum(l => l.Quantite)));
         }
 
         public static EcartsCaisse EcartsDeCaisse(AppDbContext ctx, DateTime debut, DateTime fin)

@@ -91,6 +91,7 @@ namespace Pharmacie2.views
             chkVenteDetail.CheckedChanged += VerifierMarge;
             cmbUniteVente.SelectedIndexChanged += VerifierMarge;
             chkVenteDetail.CheckedChanged += chkVenteDetail_CheckedChanged;
+            chkPrestation.CheckedChanged += (s, e) => AppliquerPrestation();
             cmbUniteVente.SelectedIndexChanged += MettreAJourApercu;
             numNbUniteParBoite.ValueChanged += MettreAJourApercu;
             numPrixVente.ValueChanged += MettreAJourApercu;
@@ -104,6 +105,19 @@ namespace Pharmacie2.views
         /// Affiche la marge en lecture seule, en direct (« Marge : 500 KMF (50 % du prix d'achat) », et à l'unité pour un produit au détail),
         /// en vert si elle est positive et en rouge sinon. Ne modifie JAMAIS un prix.
         /// </summary>
+        /// <summary>
+        /// Prestation (sans stock) : on masque stock, conditionnement, péremption, fournisseur et prix d'achat ; seul le prix de vente est saisi.
+        /// </summary>
+        private void AppliquerPrestation()
+        {
+            bool prestation = chkPrestation.Checked;
+            lblPrixAchat.Visible = numPrixAchat.Visible = lblMarge.Visible = !prestation;
+            lblFournisseur.Visible = cbFournisseur.Visible = !prestation;
+            tlpDroite.Visible = !prestation;   // stock, seuil, péremption, vente à l'unité
+            if (prestation) lblMarge.Text = "";
+            else VerifierMarge(this, EventArgs.Empty);
+        }
+
         private void VerifierMarge(object sender, EventArgs e)
         {
             decimal achat = numPrixAchat.Value, vente = numPrixVente.Value;
@@ -143,6 +157,8 @@ namespace Pharmacie2.views
                 if (p == null) return;
 
                 txtNom.Text = p.Nom;
+                chkPrestation.Checked = p.SansStock;
+                chkPrestation.Enabled = false;   // un article existant ne change pas de nature (évite un stock incohérent)
                 _prixAchatOrigine = p.PrixAchat; _prixVenteOrigine = p.PrixVente; _prixUniteOrigine = p.PrixVenteUnite; _dateOrigine = p.DateExpiration;
                 _ficheMarquee = p.FicheAVerifier;
                 _aVentesUnite = ctx.LigneVentes.Any(l => l.ProduitId == p.Id && l.UniteVendue != StockService.UniteBoite);
@@ -402,6 +418,8 @@ namespace Pharmacie2.views
                 txtNom.Focus(); return;
             }
 
+            if (chkPrestation.Checked) { EnregistrerPrestation(); return; }
+
             decimal prixAchat = numPrixAchat.Value;
             decimal prixVente = numPrixVente.Value;
 
@@ -620,6 +638,56 @@ namespace Pharmacie2.views
 
                 BandeauNotification.Succes("Produit enregistré : " + txtNom.Text.Trim());
 
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>Enregistre une prestation : prix de vente seul, aucun stock, aucun conditionnement, aucune péremption, coût d'achat 0.</summary>
+        private void EnregistrerPrestation()
+        {
+            decimal prixVente = numPrixVente.Value;
+            if (prixVente <= 0)
+            {
+                MessageBox.Show("Saisissez le prix de vente de la prestation.", "Validation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                numPrixVente.Focus(); return;
+            }
+
+            try
+            {
+                using (var ctx = new AppDbContext())
+                {
+                    var p = _produitId == null ? new Produit() : ctx.produits.Find(_produitId.Value);
+                    if (p == null) return;
+
+                    p.Nom = txtNom.Text.Trim();
+                    p.Type = cmbType.SelectedItem?.ToString() ?? "Autre";
+                    p.SansStock = true;
+                    p.PrixAchat = 0m;                       // pas de coût d'achat : la marge est le prix de vente
+                    p.MargeBeneficiaire = 0m;
+                    p.PrixVente = prixVente;
+                    p.PrixVenteUnite = null;
+                    p.QuantiteEnStock = 0;
+                    p.SeuilAlerte = 0;
+                    p.UniteVente = StockService.UniteBoite;
+                    p.NbUniteParBoite = 1;
+                    p.DateExpiration = new DateTime(2099, 12, 31);   // sans effet : une prestation n'a pas de péremption
+                    p.PeremptionConnue = true;
+                    p.FournisseurId = null;
+                    p.Indication = txtIndication.Text.Trim();
+                    p.Posologie = txtPosologie.Text.Trim();
+                    p.NbFoisParJour = (int)numPosologieJour.Value;
+                    if (_produitId == null) ctx.produits.Add(p);
+                    ctx.SaveChanges();
+                }
+
+                BandeauNotification.Succes("Prestation enregistrée : " + txtNom.Text.Trim());
                 DialogResult = DialogResult.OK;
                 Close();
             }

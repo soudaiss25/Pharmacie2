@@ -76,7 +76,7 @@ namespace Pharmacie2.views.UserControls
             var query = ctx.produits
                 .AsNoTracking()
                 .Include(p => p.Fournisseur)
-                .Where(p => p.Actif || archives)
+                .Where(p => (p.Actif || archives) && !p.SansStock)   // une prestation n'a pas de stock
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))

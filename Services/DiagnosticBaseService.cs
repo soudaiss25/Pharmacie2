@@ -88,7 +88,7 @@ namespace Pharmacie2.Services
             }
 
             // ═══════════════ STOCK ═══════════════
-            var produits = ctx.produits.ToList();
+            var produits = ctx.produits.Where(p => !p.SansStock).ToList();   // les prestations n'ont ni stock, ni prix d'achat, ni péremption
             // Produits déjà marqués « à vérifier » par l'ancienne réception ; ceux marqués par ce diagnostic (D1, D4) ont leur propre motif
             static bool MotifDiagnostic(string? m) => m != null && (m.StartsWith("stock négatif") || m.StartsWith("conditionnement"));
             var dejaMarques = produits.Where(p => p.StockAVerifier && !MotifDiagnostic(p.MotifVerification)).Select(p => p.Id).ToHashSet();

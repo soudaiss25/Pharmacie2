@@ -16,7 +16,7 @@ namespace Pharmacie2.Services
             using (var ctx = new AppDbContext())
             {
                 produits = ctx.produits.AsNoTracking()
-                    .Where(p => p.Actif)
+                    .Where(p => p.Actif && !p.SansStock)   // une prestation n'a pas de stock à compter
                     .OrderByDescending(p => p.StockAVerifier)
                     .ThenBy(p => p.Nom)
                     .ToList();

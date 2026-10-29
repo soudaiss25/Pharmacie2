@@ -167,6 +167,9 @@ namespace Pharmacie2.views.UserControls
                     "Plus gros débiteurs : " + string.Join(", ", debiteurs.Select(c => $"{c.Client} ({Format.Montant(c.Restant)})")),
                     "info", null));
 
+            if (s.Prestations is { Nombre: > 0 } prestations)
+                elements.Add(new ElementAction($"Prestations : {Format.Compte(prestations.Nombre, "prestation")}, chiffre d'affaires {Format.Montant(prestations.CA)}", "info", null));
+
             if (s.Ecarts is { } e)
             {
                 string Signe(decimal m) => (m > 0 ? "+" : "") + Format.Montant(m);

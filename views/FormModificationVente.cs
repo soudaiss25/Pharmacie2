@@ -164,7 +164,7 @@ namespace Pharmacie2.views
                 int unitesDemandees = StockService.EnUnites(produit, form.QuantiteSelectionnee, form.UniteSelectionnee);
                 _unitesOriginales.TryGetValue(produit.Id, out int dejaRetirees);
 
-                if (unitesPanier + unitesDemandees > produit.QuantiteEnStock + dejaRetirees)
+                if (!produit.SansStock && unitesPanier + unitesDemandees > produit.QuantiteEnStock + dejaRetirees)
                 {
                     MessageBox.Show(
                         $"Stock insuffisant pour « {produit.Nom} ».\n" +

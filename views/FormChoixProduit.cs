@@ -16,8 +16,14 @@ namespace Pharmacie2.views
         /// <summary>Texte de recherche pré-rempli à l'ouverture (saisi dans la fenêtre de vente).</summary>
         public string FiltreInitial { get; set; } = "";
 
-        public FormChoixProduit()
+        /// <summary>true pour une commande au fournisseur : les prestations (sans stock) ne sont pas proposées.</summary>
+        private readonly bool _pourCommande;
+
+        public FormChoixProduit() : this(false) { }
+
+        public FormChoixProduit(bool pourCommande)
         {
+            _pourCommande = pourCommande;
             InitializeComponent();
             Theme.Appliquer(this);
             ChargerProduits();
@@ -32,7 +38,7 @@ namespace Pharmacie2.views
         {
             using (var ctx = new AppDbContext())
             {
-                var query = ctx.produits.Include(p => p.Fournisseur).Where(p => p.Actif).AsQueryable();
+                var query = ctx.produits.Include(p => p.Fournisseur).Where(p => p.Actif && (!_pourCommande || !p.SansStock)).AsQueryable();
                 if (!string.IsNullOrWhiteSpace(filtre))
                     query = query.Where(p => p.Nom.ToLower().Contains(filtre.ToLower()));
 

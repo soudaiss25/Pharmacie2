@@ -349,6 +349,9 @@ namespace Pharmacie2.Migrations
                     b.Property<int>("QuantiteEnStock")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("SansStock")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SeuilAlerte")
                         .HasColumnType("INTEGER");
 
