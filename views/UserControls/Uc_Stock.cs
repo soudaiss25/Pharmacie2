@@ -55,7 +55,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Export de la feuille d'inventaire", ex);
-                MessageBox.Show("Impossible de créer la feuille d'inventaire : " + ex.Message,
+                Messages.Afficher("Impossible de créer la feuille d'inventaire : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -166,7 +166,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (dgvStock.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Sélectionnez un produit à modifier.",
+                Messages.Afficher("Sélectionnez un produit à modifier.",
                     "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -202,7 +202,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (dgvStock.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Sélectionnez un produit à commander.",
+                Messages.Afficher("Sélectionnez un produit à commander.",
                     "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }

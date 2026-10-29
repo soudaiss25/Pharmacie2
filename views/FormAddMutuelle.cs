@@ -43,7 +43,7 @@ namespace Pharmacie2.views
         {
             if (string.IsNullOrWhiteSpace(txtNomEmployeur.Text))
             {
-                MessageBox.Show("Le nom de l'employeur est obligatoire.", "Validation",
+                Messages.Afficher("Le nom de l'employeur est obligatoire.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNomEmployeur.Focus();
                 return;
@@ -60,7 +60,7 @@ namespace Pharmacie2.views
                         var m = ctx.mutuels.Find(_mutuel.IdMutuel);
                         if (m == null)
                         {
-                            MessageBox.Show("Mutuelle introuvable.", "Erreur",
+                            Messages.Afficher("Mutuelle introuvable.", "Erreur",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
@@ -91,7 +91,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Enregistrement d'une mutuelle", ex);
-                MessageBox.Show("La mutuelle n'a pas pu être enregistrée : " + ex.Message, "Erreur",
+                Messages.Afficher("La mutuelle n'a pas pu être enregistrée : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

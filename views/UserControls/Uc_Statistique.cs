@@ -147,7 +147,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Calcul des statistiques", ex);
-                MessageBox.Show("Les statistiques n'ont pas pu être calculées : " + ex.Message,
+                Messages.Afficher("Les statistiques n'ont pas pu être calculées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -203,7 +203,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Export Excel des statistiques", ex);
-                MessageBox.Show("Export impossible : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Export impossible : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -224,7 +224,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Export PDF des statistiques", ex);
-                MessageBox.Show("Export impossible : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Export impossible : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

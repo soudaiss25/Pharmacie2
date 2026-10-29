@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Vérifie que les canaux de mise à jour « stable » et « test » ne se masquent pas l'un l'autre.
 
@@ -103,6 +103,16 @@ def _fabrique(sequence):
     return sortie
 
 
+GARDER_TESTS = 5   # nombre de pré-releases « -test » conservées par l'élagage de release.yml
+
+
+def elaguer(releases, courante, garder=GARDER_TESTS):
+    """Reproduit l'étape d'élagage de release.yml : seules des pré-releases dont le tag finit par « -test », jamais la courante, jamais une stable."""
+    candidates = sorted([r for r in releases if r["prerelease"] and r["tag_name"].endswith("-test")], key=lambda r: r["published_at"], reverse=True)
+    a_supprimer = {r["tag_name"] for r in candidates[garder:] if r["tag_name"] != courante}
+    return [r for r in releases if r["tag_name"] not in a_supprimer]
+
+
 def autotest():
     cas = [
         ("une version test publiée APRÈS une stable ne masque pas la stable (canal stable)", ["stable", "test"], "stable", True),
@@ -122,6 +132,31 @@ def autotest():
         if ok != attendu:
             echecs += 1
         print(f"[{statut}] {libelle} → canal {canal} {'voit' if ok else 'ne voit PAS'} sa dernière release")
+    # 12 publications test d'affilée après une stable, avec l'élagage après CHAQUE publication : la stable reste visible
+    depot = _fabrique(["stable"])
+    for i in range(12):
+        nouvelle = _fabrique(["stable"] + ["test"] * (i + 1))[-1]
+        nouvelle["tag_name"] = f"v-nouveau{i}-test"
+        depot.append(nouvelle)
+        depot = elaguer(depot, nouvelle["tag_name"])
+        stables = [r for r in depot if not r["prerelease"]]
+        vues = releases_visibles(depot, "stable")
+        if not stables or not vues or vues[0]["tag_name"] != stables[0]["tag_name"] or sum(1 for r in depot if r["prerelease"]) > GARDER_TESTS:
+            echecs += 1
+            print(f"[ÉCHEC] avec élagage, la stable est masquée ou trop de tests restent après {i + 1} publications")
+            break
+    else:
+        print(f"[OK ] 12 publications test d'affilée après une stable, avec élagage (on garde {GARDER_TESTS} tests) → la stable reste visible, "
+              f"{sum(1 for r in depot if r['prerelease'])} test(s) conservé(s)")
+    # l'élagage ne supprime jamais une stable ni une pré-release dont le tag ne finit pas par -test, ni la version courante
+    melange = _fabrique(["stable", "stable"] + ["test"] * 8)
+    melange.append({"tag_name": "v9-beta", "published_at": datetime(2025, 1, 1).isoformat(), "prerelease": True, "assets": []})
+    garde = {r["tag_name"] for r in elaguer(melange, melange[-2]["tag_name"])}
+    if not {"v0-stable", "v1-stable", "v9-beta"} <= garde or len([t for t in garde if t.endswith("-test")]) != GARDER_TESTS:
+        echecs += 1
+        print("[ÉCHEC] l'élagage a supprimé une release qu'il devait garder")
+    else:
+        print("[OK ] l'élagage ne touche ni aux stables, ni aux tags qui ne finissent pas par -test")
     # le canal stable ne propose jamais une pré-release
     mixte = _fabrique(["stable", "test"])
     assert all(not r["prerelease"] for r in releases_visibles(mixte, "stable")), "le canal stable ne doit jamais proposer une pré-release"

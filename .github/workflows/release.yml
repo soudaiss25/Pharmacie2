@@ -103,3 +103,25 @@ jobs:
           --outputDir Releases
         env:
           VPK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 7. Canal test seulement : on ne garde que les 5 dernières pré-releases « -test ».
+      #    Velopack ne lit que les 10 dernières releases : au-delà de 9 pré-releases après la dernière stable, le canal stable serait masqué.
+      #    Garde-fous : jamais une release stable, seulement une pré-release dont le tag finit par « -test », jamais celle qui vient d'être publiée.
+      #    Le tag correspondant est supprimé avec la release. Voir PUBLIER.md et tools/verifier_canaux.py.
+      - name: Élaguer les anciennes pré-releases test (garder les 5 dernières)
+        if: steps.infos.outputs.canal == 'test'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          COURANT="v${{ steps.infos.outputs.version }}"
+          A_SUPPRIMER=$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" --jq '
+            [ .[] | select(.draft == false and .prerelease == true and (.tag_name | endswith("-test"))) ]
+            | sort_by(.published_at) | reverse | .[5:] | .[].tag_name')
+          for TAG in $A_SUPPRIMER; do
+            if [ "$TAG" = "$COURANT" ]; then echo "Conservée (version qui vient d'être publiée) : $TAG"; continue; fi
+            case "$TAG" in *-test) ;; *) echo "::warning::Tag ignoré (ne finit pas par -test) : $TAG"; continue;; esac
+            echo "Suppression de l'ancienne pré-release test : $TAG"
+            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+          done

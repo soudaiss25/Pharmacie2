@@ -132,7 +132,7 @@ namespace Pharmacie2.views
 
             if (string.IsNullOrWhiteSpace(fournisseurNom))
             {
-                MessageBox.Show("Le nom du fournisseur est obligatoire.", "Validation",
+                Messages.Afficher("Le nom du fournisseur est obligatoire.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtFournisseur.Focus();
                 return;
@@ -140,7 +140,7 @@ namespace Pharmacie2.views
 
             if (qte <= 0)
             {
-                MessageBox.Show("La quantité doit être supérieure à 0.", "Validation",
+                Messages.Afficher("La quantité doit être supérieure à 0.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -155,7 +155,7 @@ namespace Pharmacie2.views
 
                     if (fournisseur != null && !fournisseur.Actif)
                     {
-                        MessageBox.Show(
+                        Messages.Afficher(
                             $"Le fournisseur « {fournisseur.Nom} » est archivé.\nRéactivez-le dans l'écran Fournisseurs avant de lui commander.",
                             "Fournisseur archivé", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
@@ -172,7 +172,7 @@ namespace Pharmacie2.views
                     var produit = ctx.produits.Find(_produitId);
                     if (produit == null)
                     {
-                        MessageBox.Show("Produit introuvable.", "Erreur",
+                        Messages.Afficher("Produit introuvable.", "Erreur",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
@@ -216,7 +216,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Création de commande", ex);
-                MessageBox.Show("La commande n'a pas pu être enregistrée : " + ex.Message, "Erreur",
+                Messages.Afficher("La commande n'a pas pu être enregistrée : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

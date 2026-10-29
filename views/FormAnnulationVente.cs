@@ -57,13 +57,13 @@ namespace Pharmacie2.views
         {
             if (string.IsNullOrWhiteSpace(txtMotif.Text))
             {
-                MessageBox.Show("Le motif d'annulation est obligatoire.", "Validation",
+                Messages.Afficher("Le motif d'annulation est obligatoire.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtMotif.Focus();
                 return;
             }
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 "Confirmer l'annulation de cette vente ?\nLe stock sera remis à jour.",
                 "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
@@ -83,7 +83,7 @@ namespace Pharmacie2.views
 
                     if (vente.Statut == "Annulée")
                     {
-                        MessageBox.Show("Cette vente est déjà annulée.", "Info",
+                        Messages.Afficher("Cette vente est déjà annulée.", "Info",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
@@ -116,7 +116,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Annulation de la vente " + _venteId, ex);
-                MessageBox.Show("Erreur : " + ex.Message + "\n\nLa vente n'a pas été annulée.", "Erreur",
+                Messages.Afficher("Erreur : " + ex.Message + "\n\nLa vente n'a pas été annulée.", "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

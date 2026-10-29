@@ -46,7 +46,7 @@ namespace Pharmacie2.views
             {
                 if (string.IsNullOrWhiteSpace(txtNom.Text))
                 {
-                    MessageBox.Show("Le nom est obligatoire.", "Validation",
+                    Messages.Afficher("Le nom est obligatoire.", "Validation",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtNom.Focus();
                     return;
@@ -63,7 +63,7 @@ namespace Pharmacie2.views
                         var exists = context.fournisseur.Any(f => f.Nom.ToLower() == nom.ToLower());
                         if (exists)
                         {
-                            MessageBox.Show("Ce fournisseur existe déjà.", "Info",
+                            Messages.Afficher("Ce fournisseur existe déjà.", "Info",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
@@ -83,7 +83,7 @@ namespace Pharmacie2.views
                         var fDb = context.fournisseur.Find(_fournisseur.Id);
                         if (fDb == null)
                         {
-                            MessageBox.Show("Fournisseur introuvable.", "Erreur",
+                            Messages.Afficher("Fournisseur introuvable.", "Erreur",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
@@ -102,7 +102,7 @@ BandeauNotification.Succes("Fournisseur enregistré : " + nom);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

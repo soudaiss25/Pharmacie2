@@ -166,7 +166,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Résultat mensuel", ex);
-                MessageBox.Show("Le résultat du mois n'a pas pu être calculé : " + ex.Message,
+                Messages.Afficher("Le résultat du mois n'a pas pu être calculé : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -246,7 +246,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Résultat annuel", ex);
-                MessageBox.Show("Le résultat de l'année n'a pas pu être calculé : " + ex.Message,
+                Messages.Afficher("Le résultat de l'année n'a pas pu être calculé : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -310,7 +310,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Historique des dépenses", ex);
-                MessageBox.Show("Les dépenses n'ont pas pu être affichées : " + ex.Message,
+                Messages.Afficher("Les dépenses n'ont pas pu être affichées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -337,12 +337,12 @@ namespace Pharmacie2.views.UserControls
 
             if (SessionUtilisateur.Courant?.Role != Roles.Administrateur)
             {
-                MessageBox.Show("Seul l'administrateur peut supprimer une dépense.",
+                Messages.Afficher("Seul l'administrateur peut supprimer une dépense.",
                     "Accès refusé", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (MessageBox.Show("Supprimer cette dépense ?", "Confirmation",
+            if (Messages.Afficher("Supprimer cette dépense ?", "Confirmation",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
             int id = Convert.ToInt32(dgvHistorique.SelectedRows[0].Cells["Id"].Value);

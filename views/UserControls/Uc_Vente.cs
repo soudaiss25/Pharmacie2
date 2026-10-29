@@ -146,7 +146,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Sélectionnez une vente.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             using (var form = new FormDetailVente(id))
@@ -157,21 +157,21 @@ namespace Pharmacie2.views.UserControls
         {
             if (!Roles.EstGestionnaire(SessionUtilisateur.Courant?.Role))
             {
-                MessageBox.Show("Accès réservé à l'administrateur ou au pharmacien.",
+                Messages.Afficher("Accès réservé à l'administrateur ou au pharmacien.",
                     "Accès refusé", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente à modifier.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Sélectionnez une vente à modifier.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             string statut = dgvVentes.SelectedRows[0].Cells["Statut"].Value?.ToString() ?? "";
             if (statut == "Annulée")
             {
-                MessageBox.Show("Impossible de modifier une vente annulée.", "Info",
+                Messages.Afficher("Impossible de modifier une vente annulée.", "Info",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -187,7 +187,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Sélectionnez une vente.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -198,13 +198,13 @@ namespace Pharmacie2.views.UserControls
 
                 if (vente.Statut == "Annulée")
                 {
-                    MessageBox.Show("Impossible d'encaisser une vente annulée.", "Info",
+                    Messages.Afficher("Impossible d'encaisser une vente annulée.", "Info",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 if (vente.RestantPatient <= 0)
                 {
-                    MessageBox.Show(vente.MontantRestant > 0
+                    Messages.Afficher(vente.MontantRestant > 0
                             ? "Le patient a tout payé. La part de la mutuelle se règle depuis l'écran Mutuelles."
                             : "Cette vente est déjà soldée.",
                         "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -222,14 +222,14 @@ namespace Pharmacie2.views.UserControls
         {
             if (SessionUtilisateur.Courant?.Role != Roles.Administrateur)
             {
-                MessageBox.Show("Seul l'administrateur peut annuler une vente.",
+                Messages.Afficher("Seul l'administrateur peut annuler une vente.",
                     "Accès refusé", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (VenteSelectionnee() is not int id)
             {
-                MessageBox.Show("Sélectionnez une vente à annuler.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Sélectionnez une vente à annuler.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 

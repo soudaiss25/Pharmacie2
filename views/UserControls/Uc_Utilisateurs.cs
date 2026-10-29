@@ -67,7 +67,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Chargement des utilisateurs", ex);
-                MessageBox.Show("Les utilisateurs n'ont pas pu être affichés : " + ex.Message,
+                Messages.Afficher("Les utilisateurs n'ont pas pu être affichés : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -145,7 +145,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (dgvUtilisateurs.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Sélectionnez un utilisateur à modifier.",
+                Messages.Afficher("Sélectionnez un utilisateur à modifier.",
                     "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -168,7 +168,7 @@ namespace Pharmacie2.views.UserControls
                     {
                         if (ctx.Users.Any(u => u.Login == txtLogin.Text.Trim()))
                         {
-                            MessageBox.Show("Cet identifiant est déjà utilisé.", "Doublon",
+                            Messages.Afficher("Cet identifiant est déjà utilisé.", "Doublon",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             txtLogin.Focus();
                             return;
@@ -191,14 +191,14 @@ namespace Pharmacie2.views.UserControls
                         var u = ctx.Users.Find(_idEnCours);
                         if (u == null)
                         {
-                            MessageBox.Show("Utilisateur introuvable.", "Erreur",
+                            Messages.Afficher("Utilisateur introuvable.", "Erreur",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
 
                         if (ctx.Users.Any(x => x.Login == txtLogin.Text.Trim() && x.Id != _idEnCours))
                         {
-                            MessageBox.Show("Cet identifiant est déjà utilisé.", "Doublon",
+                            Messages.Afficher("Cet identifiant est déjà utilisé.", "Doublon",
                                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             txtLogin.Focus();
                             return;
@@ -223,7 +223,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Enregistrement d'un utilisateur", ex);
-                MessageBox.Show("L'utilisateur n'a pas pu être enregistré : " + ex.Message, "Erreur",
+                Messages.Afficher("L'utilisateur n'a pas pu être enregistré : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -254,19 +254,19 @@ namespace Pharmacie2.views.UserControls
         private bool ValiderFormulaire()
         {
             if (string.IsNullOrWhiteSpace(txtNom.Text))
-            { MessageBox.Show("Nom obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtNom.Focus(); return false; }
+            { Messages.Afficher("Nom obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtNom.Focus(); return false; }
 
             if (string.IsNullOrWhiteSpace(txtPrenom.Text))
-            { MessageBox.Show("Prénom obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtPrenom.Focus(); return false; }
+            { Messages.Afficher("Prénom obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtPrenom.Focus(); return false; }
 
             if (string.IsNullOrWhiteSpace(txtLogin.Text))
-            { MessageBox.Show("L'identifiant de connexion est obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtLogin.Focus(); return false; }
+            { Messages.Afficher("L'identifiant de connexion est obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtLogin.Focus(); return false; }
 
             if (_mode == Mode.Ajout && string.IsNullOrWhiteSpace(txtMotDePasse.Text))
-            { MessageBox.Show("Mot de passe obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtMotDePasse.Focus(); return false; }
+            { Messages.Afficher("Mot de passe obligatoire.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtMotDePasse.Focus(); return false; }
 
             if (cbRole.SelectedIndex < 0)
-            { MessageBox.Show("Sélectionnez un rôle.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); cbRole.Focus(); return false; }
+            { Messages.Afficher("Sélectionnez un rôle.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); cbRole.Focus(); return false; }
 
             return true;
         }

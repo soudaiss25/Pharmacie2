@@ -58,7 +58,7 @@ namespace Pharmacie2.views
 
         private void btnOuvrir_Click(object sender, EventArgs e)
         {
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 "Ouvrir la caisse maintenant ?",
                 "Ouverture de caisse",
                 MessageBoxButtons.YesNo,
@@ -71,7 +71,7 @@ namespace Pharmacie2.views
                 // Une seule session ouverte par utilisateur (aussi si la fenêtre était restée affichée pendant qu'une autre ouvrait la caisse)
                 if (CaisseService.Ouvrir(ctx, _userId) == null)
                 {
-                    MessageBox.Show("Vous avez déjà une caisse ouverte. Clôturez-la avant d'en ouvrir une nouvelle.", "Ouverture de caisse", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Messages.Afficher("Vous avez déjà une caisse ouverte. Clôturez-la avant d'en ouvrir une nouvelle.", "Ouverture de caisse", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     ChargerEtat();
                     return;
                 }
@@ -89,7 +89,7 @@ namespace Pharmacie2.views
 
             decimal montantCompte = numMontantReel.Value;
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 $"Clôturer la session caisse ?\n\n" +
                 $"Montant compté en caisse : {Format.Montant(montantCompte)}\n\n" +
                 $"Confirmez-vous la clôture ?",

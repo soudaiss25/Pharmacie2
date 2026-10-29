@@ -84,7 +84,7 @@ namespace Pharmacie2.views
         private void btnChangerUtilisateur_Click(object sender, EventArgs e)
         {
             if (VerrouillageAuto.VenteEnCours() &&
-                MessageBox.Show(this, "Une vente est en cours : elle sera abandonnée. Continuer ?", "Changer d'utilisateur",
+                Messages.Afficher(this, "Une vente est en cours : elle sera abandonnée. Continuer ?", "Changer d'utilisateur",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 

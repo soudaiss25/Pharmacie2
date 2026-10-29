@@ -53,9 +53,15 @@ public static class LayoutSeed
         vente.Paiements.Add(new Paiement { NumeroPaiement = "P-1", Montant = 600, UserId = caissier.Id });
         ctx.ventes.Add(vente);
 
-        var cmd = new Commande { FournisseurId = four.Id, Statut = "En attente" };
+        var cmd = new Commande { FournisseurId = four.Id, Statut = "En attente", PayeeALaCommande = false };
         cmd.Lignes.Add(new LigneCommande { ProduitId = p1.Id, Quantite = 10, PrixAchatUnitaire = 800 });
         ctx.commandes.Add(cmd);
+
+        ctx.SaveChanges();
+        // Dépenses de TOUTES les catégories, y compris un remboursement relié à la commande ci-dessus
+        foreach (var cat in new[] { "Salaire", "Facture", "Loyer", "Fournitures", "Autre" })
+            ctx.DepensesAnnexes.Add(new DepenseAnnexe { Categorie = cat, Description = "Démo " + cat, Montant = 1000, DateDepense = DateTime.Today.AddDays(-1), UserId = admin.Id });
+        ctx.DepensesAnnexes.Add(new DepenseAnnexe { Categorie = "Remboursement commande", Description = "Acompte", Montant = 2000, DateDepense = DateTime.Today, CommandeId = cmd.Id, UserId = admin.Id });
 
         var session = new SessionCaisse { UserId = caissier.Id, DateOuverture = DateTime.Today, Statut = "Ouverte", CommentaireCloture = "" };
         ctx.SessionsCaisse.Add(session);

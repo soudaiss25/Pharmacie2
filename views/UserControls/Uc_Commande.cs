@@ -139,7 +139,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Chargement des commandes", ex);
-                MessageBox.Show("Les commandes n'ont pas pu être affichées : " + ex.Message,
+                Messages.Afficher("Les commandes n'ont pas pu être affichées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -157,7 +157,7 @@ namespace Pharmacie2.views.UserControls
 
             if (dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() == "Reçu partiellement"
                 && CommandeService.EstPartielleHeritee(cmdId))
-                MessageBox.Show(CommandeService.MessageQuantiteInconnue, "Attention",
+                Messages.Afficher(CommandeService.MessageQuantiteInconnue, "Attention",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             try
@@ -184,7 +184,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Chargement des lignes de la commande", ex);
-                MessageBox.Show("Impossible d'afficher le détail de la commande : " + ex.Message,
+                Messages.Afficher("Impossible d'afficher le détail de la commande : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -234,7 +234,7 @@ namespace Pharmacie2.views.UserControls
 
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 "Tout le reste de cette commande est-il arrivé ?\n\n" +
                 "Le stock de chaque produit sera mis à jour.",
                 "Confirmation réception",
@@ -253,7 +253,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Réception de la commande " + cmdId, ex);
-                MessageBox.Show("Erreur : " + ex.Message,
+                Messages.Afficher("Erreur : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -277,7 +277,7 @@ namespace Pharmacie2.views.UserControls
 
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
-            if (MessageBox.Show("Annuler cette commande ? Cette action ne peut pas être défaite.", "Confirmation",
+            if (Messages.Afficher("Annuler cette commande ? Cette action ne peut pas être défaite.", "Confirmation",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
@@ -286,7 +286,7 @@ namespace Pharmacie2.views.UserControls
                 string? refus = RemboursementCommandeService.RefusAnnulation(ctx, cmdId);
                 if (refus != null)
                 {
-                    MessageBox.Show(refus, "Annulation impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Messages.Afficher(refus, "Annulation impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 var cmd = ctx.commandes.Find(cmdId);

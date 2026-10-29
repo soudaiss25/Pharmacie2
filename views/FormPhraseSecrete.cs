@@ -36,14 +36,14 @@ namespace Pharmacie2.views
         {
             if (txtPhrase.Text.Length < (_confirmer ? 8 : 1))
             {
-                MessageBox.Show(_confirmer ? "La phrase secrète doit contenir au moins 8 caractères." : "Saisissez la phrase secrète.",
+                Messages.Afficher(_confirmer ? "La phrase secrète doit contenir au moins 8 caractères." : "Saisissez la phrase secrète.",
                     "Phrase secrète", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtPhrase.Focus();
                 return;
             }
             if (_confirmer && txtPhrase.Text != txtConfirmation.Text)
             {
-                MessageBox.Show("Les deux saisies ne sont pas identiques.", "Phrase secrète", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher("Les deux saisies ne sont pas identiques.", "Phrase secrète", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtConfirmation.Clear();
                 txtConfirmation.Focus();
                 return;

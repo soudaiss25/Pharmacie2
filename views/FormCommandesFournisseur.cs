@@ -123,7 +123,7 @@ namespace Pharmacie2.views
 
             if (dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() == "Reçu partiellement"
                 && CommandeService.EstPartielleHeritee(cmdId))
-                MessageBox.Show(CommandeService.MessageQuantiteInconnue, "Attention",
+                Messages.Afficher(CommandeService.MessageQuantiteInconnue, "Attention",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             using (var ctx = new AppDbContext())
@@ -180,7 +180,7 @@ namespace Pharmacie2.views
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
             string statut = dgvCommandes.SelectedRows[0].Cells["colStatut"].Value?.ToString() ?? "";
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 "Tout le reste de cette commande est-il arrivé ?\n\n" +
                 "Le stock de chaque produit sera mis à jour.",
                 "Confirmation réception",
@@ -199,7 +199,7 @@ namespace Pharmacie2.views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -225,7 +225,7 @@ namespace Pharmacie2.views
 
             int cmdId = Convert.ToInt32(dgvCommandes.SelectedRows[0].Cells["colCmdId"].Value);
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 "Annuler cette commande ?\nCette action ne peut pas être défaite.",
                 "Confirmation annulation",
                 MessageBoxButtons.YesNo,
@@ -241,7 +241,7 @@ namespace Pharmacie2.views
                 string? refus = RemboursementCommandeService.RefusAnnulation(ctx, cmdId);
                 if (refus != null)
                 {
-                    MessageBox.Show(refus, "Annulation impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Messages.Afficher(refus, "Annulation impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 commande.Statut = "Annulée";

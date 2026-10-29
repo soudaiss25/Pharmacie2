@@ -53,11 +53,11 @@ namespace Pharmacie2.views.Composants
             var service = MiseAJourService.Instance;
             var r = service.TenterInstallation(
                 Pharmacie2.views.Composants.VerrouillageAuto.VenteEnCours,
-                () => MessageBox.Show(FindForm(),
+                () => Messages.Afficher(FindForm(),
                           $"Installer la version {service.VersionPrete} maintenant ?\n\nL'application va se fermer puis se rouvrir toute seule. Vos données ne sont pas touchées.",
                           "Installer la mise à jour", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
             if (!r.Lancee && r.Message.Length > 0 && r.Message != "Installation annulée.")
-                MessageBox.Show(FindForm(), r.Message, "Installer la mise à jour", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher(FindForm(), r.Message, "Installer la mise à jour", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 

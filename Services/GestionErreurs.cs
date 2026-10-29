@@ -17,12 +17,12 @@
             Journal.Erreur(fatale ? "Erreur fatale non gérée" : "Erreur non gérée", ex);
             try
             {
-                var reponse = MessageBox.Show(MessageUtilisateur(fatale) + "\n\nVoulez-vous préparer un rapport à envoyer au développeur ?\n" + RapportDeveloppeurService.MentionConfidentialite,
+                var reponse = Messages.Afficher(MessageUtilisateur(fatale) + "\n\nVoulez-vous préparer un rapport à envoyer au développeur ?\n" + RapportDeveloppeurService.MentionConfidentialite,
                     "Erreur", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
                 if (reponse == DialogResult.Yes)
                 {
                     RapportDeveloppeurService.PreparerSurLeBureauEtMontrer();
-                    MessageBox.Show(RapportDeveloppeurService.MessageApresRapport, "Rapport pour le développeur", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Messages.Afficher(RapportDeveloppeurService.MessageApresRapport, "Rapport pour le développeur", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex2)

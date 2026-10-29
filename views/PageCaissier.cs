@@ -189,7 +189,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Chargement des ventes de la session", ex);
-                MessageBox.Show("Impossible d'afficher les ventes : " + ex.Message,
+                Messages.Afficher("Impossible d'afficher les ventes : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -254,7 +254,7 @@ namespace Pharmacie2.views
             // Vérifier qu'une session est bien ouverte avant de vendre
             if (GetSessionActive() == null)
             {
-                var rep = MessageBox.Show(
+                var rep = Messages.Afficher(
                     "Aucune caisse ouverte.\nVoulez-vous en ouvrir une ?",
                     "Caisse requise", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 

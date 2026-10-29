@@ -158,7 +158,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Rapport de caisse", ex);
-                MessageBox.Show($"Le rapport de caisse n'a pas pu être calculé : {ex.Message}",
+                Messages.Afficher($"Le rapport de caisse n'a pas pu être calculé : {ex.Message}",
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -296,7 +296,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Sessions de caisse", ex);
-                MessageBox.Show($"Les sessions n'ont pas pu être affichées : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher($"Les sessions n'ont pas pu être affichées : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -383,7 +383,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Détail d'une session de caisse", ex);
-                MessageBox.Show($"Le détail de la session n'a pas pu être affiché : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher($"Le détail de la session n'a pas pu être affiché : {ex.Message}", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

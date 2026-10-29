@@ -86,7 +86,7 @@ namespace Pharmacie2.views
             decimal montant = numMontant.Value;
             if (montant <= 0)
             {
-                MessageBox.Show("Saisissez un montant supérieur à 0.", "Validation",
+                Messages.Afficher("Saisissez un montant supérieur à 0.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 numMontant.Focus();
                 return;
@@ -102,7 +102,7 @@ namespace Pharmacie2.views
 
                 if (vente.Statut == "Annulée")
                 {
-                    MessageBox.Show("Impossible d'encaisser une vente annulée.", "Information",
+                    Messages.Afficher("Impossible d'encaisser une vente annulée.", "Information",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -111,7 +111,7 @@ namespace Pharmacie2.views
 
                 if (restant <= 0)
                 {
-                    MessageBox.Show("Cette vente est déjà entièrement payée par le patient.",
+                    Messages.Afficher("Cette vente est déjà entièrement payée par le patient.",
                         "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -119,7 +119,7 @@ namespace Pharmacie2.views
                 if (montant > restant)
                 {
                     montant = restant;   // jamais plus que ce que le patient doit
-                    MessageBox.Show($"Montant ramené au reste à payer : {Format.Montant(restant)}",
+                    Messages.Afficher($"Montant ramené au reste à payer : {Format.Montant(restant)}",
                         "Ajustement", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 

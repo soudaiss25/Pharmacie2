@@ -86,7 +86,7 @@ namespace Pharmacie2.views
             }
             if (info.Length == 0 || MigrationEmplacementBase.CompterVentes(info.FullName) < 0)
             {
-                MessageBox.Show("Ce fichier n'est pas une base de données de la pharmacie (vide ou illisible). Choisissez un autre fichier.",
+                Messages.Afficher("Ce fichier n'est pas une base de données de la pharmacie (vide ou illisible). Choisissez un autre fichier.",
                     "Fichier non valide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -100,13 +100,13 @@ namespace Pharmacie2.views
             try
             {
                 string zip = RapportDeveloppeurService.Preparer(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), this);
-                MessageBox.Show("Le rapport est prêt sur le Bureau :\n" + Path.GetFileName(zip) + "\n\nEnvoyez-le au développeur. " + RapportDeveloppeurService.MentionConfidentialite,
+                Messages.Afficher("Le rapport est prêt sur le Bureau :\n" + Path.GetFileName(zip) + "\n\nEnvoyez-le au développeur. " + RapportDeveloppeurService.MentionConfidentialite,
                     "Rapport prêt", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 Journal.Erreur("Rapport (base introuvable)", ex);
-                MessageBox.Show("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

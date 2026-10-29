@@ -241,7 +241,7 @@ namespace Pharmacie2.views
                     string dejaPanier = unitesPanier > 0
                         ? $"\nDéjà dans le panier : {StockService.Formater(produit, unitesPanier)}"
                         : "";
-                    MessageBox.Show(
+                    Messages.Afficher(
                         $"Stock insuffisant pour « {produit.Nom} ».\n" +
                         $"Disponible : {StockService.Formater(produit)}" + dejaPanier,
                         "Stock insuffisant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -251,7 +251,7 @@ namespace Pharmacie2.views
                 // Vente à l'unité d'une boîte entière ou plus : on propose la même vente en boîtes (les deux totaux côte à côte).
                 // Le vendeur choisit ; rien n'est imposé.
                 if (ConditionnementService.Proposer(produit, qte, unite) is { } proposition
-                    && MessageBox.Show(proposition.Message(produit.Nom), "Vendre en boîtes ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    && Messages.Afficher(proposition.Message(produit.Nom), "Vendre en boîtes ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     AjouterAuPanier(produit, proposition.Boites, StockService.UniteBoite);
                     if (proposition.Reste > 0) AjouterAuPanier(produit, proposition.Reste, unite);
@@ -285,7 +285,7 @@ namespace Pharmacie2.views
 
                 // Prix signalé « à vérifier » (diagnostic de l'ancienne base) : avertissement avant l'ajout, la vente reste possible
                 if (FicheAVerifierService.AvertissementPrix(produit, prixU) is { } avertissement)
-                    MessageBox.Show(avertissement, "Prix à vérifier", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Messages.Afficher(avertissement, "Prix à vérifier", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 // Si le produit est déjà dans la liste avec la même unité → cumul
                 var existant = _lignes.FirstOrDefault(l =>
@@ -495,7 +495,7 @@ namespace Pharmacie2.views
         {
             if (_lignes.Count == 0)
             {
-                MessageBox.Show("Ajoutez au moins un médicament.", "Validation",
+                Messages.Afficher("Ajoutez au moins un médicament.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtRecherche.Focus();
                 return;
@@ -508,7 +508,7 @@ namespace Pharmacie2.views
                 && string.IsNullOrWhiteSpace(txtNom.Text) && string.IsNullOrWhiteSpace(txtPrenom.Text))
             {
                 DefinirSectionClient(true);
-                MessageBox.Show("Indiquez le nom du client : il est obligatoire pour une vente à crédit ou avec mutuelle.", "Validation",
+                Messages.Afficher("Indiquez le nom du client : il est obligatoire pour une vente à crédit ou avec mutuelle.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNom.Focus();
                 return;
@@ -523,7 +523,7 @@ namespace Pharmacie2.views
                 especes = numEspeces.Value;
                 if (especes < total)
                 {
-                    MessageBox.Show($"Le montant reçu en espèces est insuffisant : il manque {Format.Montant(total - especes)}.",
+                    Messages.Afficher($"Le montant reçu en espèces est insuffisant : il manque {Format.Montant(total - especes)}.",
                         "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     numEspeces.Focus();
                     return;
@@ -536,7 +536,7 @@ namespace Pharmacie2.views
                 mutuelleChoisie = cbMutuelle.SelectedItem as Mutuel;
                 if (mutuelleChoisie == null)
                 {
-                    MessageBox.Show("Choisissez la mutuelle qui prend en charge cette vente.", "Validation",
+                    Messages.Afficher("Choisissez la mutuelle qui prend en charge cette vente.", "Validation",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbMutuelle.Focus();
                     return;
@@ -544,7 +544,7 @@ namespace Pharmacie2.views
 
                 if (mutuelleChoisie.MatriculeObligatoire && string.IsNullOrWhiteSpace(txtMatricule.Text))
                 {
-                    MessageBox.Show($"Le matricule de l'employé est obligatoire pour la mutuelle « {mutuelleChoisie.NomEmployeur} ».", "Validation",
+                    Messages.Afficher($"Le matricule de l'employé est obligatoire pour la mutuelle « {mutuelleChoisie.NomEmployeur} ».", "Validation",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtMatricule.Focus();
                     return;
@@ -556,7 +556,7 @@ namespace Pharmacie2.views
 
                 if (especes < partPatient)
                 {
-                    MessageBox.Show(
+                    Messages.Afficher(
                         $"Espèces insuffisantes pour la part du patient.\nAttendu : {Format.Montant(partPatient)}",
                         "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     numEspeces.Focus();
@@ -571,7 +571,7 @@ namespace Pharmacie2.views
                 especes = numEspeces.Value;
                 if (especes > total)
                 {
-                    MessageBox.Show(
+                    Messages.Afficher(
                         $"L'avance ({Format.Montant(especes)}) ne peut pas dépasser le total ({Format.Montant(total)}).",
                         "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     numEspeces.Focus();
@@ -694,7 +694,7 @@ namespace Pharmacie2.views
                 if (mode == ModesPaiement.Mutuelle) msg += $"\n\nPart de l'entreprise (crédit) : {Format.Montant(partMutuelle)}";
                 msg += "\n\nVoulez-vous imprimer la facture ?";
 
-                var res = MessageBox.Show(msg, "Vente enregistrée",
+                var res = Messages.Afficher(msg, "Vente enregistrée",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
                 if (res == DialogResult.Yes && _derniereVenteId > 0)
@@ -706,7 +706,7 @@ namespace Pharmacie2.views
             catch (StockInsuffisantException ex)
             {
                 // Stock insuffisant à la validation : rien n'a été enregistré
-                MessageBox.Show(ex.Message + "\n\nAucune vente n'a été enregistrée.", "Vente non enregistrée",
+                Messages.Afficher(ex.Message + "\n\nAucune vente n'a été enregistrée.", "Vente non enregistrée",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
@@ -717,7 +717,7 @@ namespace Pharmacie2.views
                     msg += "\n\nDétail : " + ex.InnerException.Message;
                 if (ex.InnerException?.InnerException != null)
                     msg += "\n\n" + ex.InnerException.InnerException.Message;
-                MessageBox.Show(msg + "\n\nAucune vente n'a été enregistrée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher(msg + "\n\nAucune vente n'a été enregistrée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -767,7 +767,7 @@ namespace Pharmacie2.views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur lors de l'impression : " + ex.Message,
+                Messages.Afficher("Erreur lors de l'impression : " + ex.Message,
                     "Erreur impression", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

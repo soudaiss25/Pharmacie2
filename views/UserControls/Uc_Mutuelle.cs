@@ -121,7 +121,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Chargement des mutuelles", ex);
-                MessageBox.Show("Les mutuelles n'ont pas pu être affichées : " + ex.Message,
+                Messages.Afficher("Les mutuelles n'ont pas pu être affichées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -199,7 +199,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Chargement des ventes à régler", ex);
-                MessageBox.Show("Les ventes à régler n'ont pas pu être affichées : " + ex.Message,
+                Messages.Afficher("Les ventes à régler n'ont pas pu être affichées : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -217,7 +217,7 @@ namespace Pharmacie2.views.UserControls
             foreach (DataGridViewRow row in dgvVentesImpayees.Rows)
                 totalDu += Convert.ToDecimal(row.Cells["colMontantMutuelle"].Value);
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 $"Régler TOUTES les ventes impayées de « {_mutuelleSelectionneeNom} » ?\n\n" +
                 $"Nombre de ventes : {dgvVentesImpayees.Rows.Count}\n" +
                 $"Montant total    : {Format.Montant(totalDu)}",
@@ -246,12 +246,12 @@ namespace Pharmacie2.views.UserControls
 
             if (ids.Count == 0)
             {
-                MessageBox.Show("Cochez au moins une vente à régler.",
+                Messages.Afficher("Cochez au moins une vente à régler.",
                     "Sélection vide", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 $"Régler {Format.Compte(ids.Count, "vente")} sélectionnée{(ids.Count > 1 ? "s" : "")} ?\nMontant : {Format.Montant(total)}",
                 "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -310,7 +310,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Règlement de mutuelle", ex);
-                MessageBox.Show("Le règlement n'a pas pu être enregistré : " + ex.Message,
+                Messages.Afficher("Le règlement n'a pas pu être enregistré : " + ex.Message,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -359,7 +359,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (dgvMutuelles.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Sélectionnez une mutuelle avant d'exporter.",
+                Messages.Afficher("Sélectionnez une mutuelle avant d'exporter.",
                     "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -372,7 +372,7 @@ namespace Pharmacie2.views.UserControls
                 var donnees = MutuelleExportService.GetDonnees(id, frmP.DateDebut, frmP.DateFin, frmP.NonRegleesSeulement);
                 if (donnees.Count == 0)
                 {
-                    MessageBox.Show($"Aucune vente {(frmP.NonRegleesSeulement ? "non réglée " : "")}trouvée pour « {nom} » sur cette période.",
+                    Messages.Afficher($"Aucune vente {(frmP.NonRegleesSeulement ? "non réglée " : "")}trouvée pour « {nom} » sur cette période.",
                         "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -384,7 +384,7 @@ namespace Pharmacie2.views.UserControls
                     try
                     {
                         MutuelleExportService.Exporter(sfd.FileName, id, nom, frmP.DateDebut, frmP.DateFin, frmP.NonRegleesSeulement, frmP.Version);
-                        if (MessageBox.Show($"Export terminé : {Format.Compte(donnees.Count, "achat")}.\n\nOuvrir le fichier ?",
+                        if (Messages.Afficher($"Export terminé : {Format.Compte(donnees.Count, "achat")}.\n\nOuvrir le fichier ?",
                             "Export Excel", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
                             System.Diagnostics.Process.Start(
                                 new System.Diagnostics.ProcessStartInfo
@@ -393,7 +393,7 @@ namespace Pharmacie2.views.UserControls
                     catch (Exception ex)
                     {
                         Journal.Erreur("Export des achats de la mutuelle", ex);
-                        MessageBox.Show("L'export n'a pas pu être créé : " + ex.Message,
+                        Messages.Afficher("L'export n'a pas pu être créé : " + ex.Message,
                             "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }

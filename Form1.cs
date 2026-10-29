@@ -73,7 +73,7 @@ namespace Pharmacie2
 
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(mdp))
             {
-                MessageBox.Show("Veuillez remplir tous les champs.", "Connexion",
+                Messages.Afficher("Veuillez remplir tous les champs.", "Connexion",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -83,7 +83,7 @@ namespace Pharmacie2
 
                 if (resultat == ResultatConnexion.CompteArchive)
                 {
-                    MessageBox.Show("Ce compte a été archivé. Contactez un administrateur.", "Connexion",
+                    Messages.Afficher("Ce compte a été archivé. Contactez un administrateur.", "Connexion",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtPassword.Clear();
                     return;
@@ -91,7 +91,7 @@ namespace Pharmacie2
 
                 if (resultat != ResultatConnexion.Succes || user == null)
                 {
-                    MessageBox.Show("Identifiant ou mot de passe incorrect.", "Connexion",
+                    Messages.Afficher("Identifiant ou mot de passe incorrect.", "Connexion",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtPassword.Clear();
                     txtPassword.Focus();
@@ -120,7 +120,7 @@ namespace Pharmacie2
                     int nbAVerifier = VerificationStockService.NombreAVerifier();
                     if (nbAVerifier > 0)
                     {
-                        verifierStock = MessageBox.Show(
+                        verifierStock = Messages.Afficher(
                             $"{Format.Compte(nbAVerifier, "produit")} {(nbAVerifier > 1 ? "ont" : "a")} peut-être un stock incorrect à cause d'une ancienne erreur du logiciel.\n\n" +
                             "Voulez-vous les vérifier maintenant ?",
                             "Stock à vérifier", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;

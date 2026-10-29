@@ -23,7 +23,7 @@ namespace Pharmacie2
                 string.IsNullOrWhiteSpace(txtLogin.Text) ||
                 string.IsNullOrWhiteSpace(txtPassword.Text))
             {
-                MessageBox.Show("Tous les champs sont obligatoires.",
+                Messages.Afficher("Tous les champs sont obligatoires.",
                                 "Erreur",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Warning);
@@ -39,7 +39,7 @@ namespace Pharmacie2
 
                 if (loginExists)
                 {
-                    MessageBox.Show("Cet identifiant existe déjà.",
+                    Messages.Afficher("Cet identifiant existe déjà.",
                                     "Erreur",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Warning);

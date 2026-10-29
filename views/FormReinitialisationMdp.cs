@@ -21,12 +21,12 @@ namespace Pharmacie2.views
         {
             if (string.IsNullOrWhiteSpace(txtLogin.Text) || string.IsNullOrWhiteSpace(txtCle.Text) || string.IsNullOrWhiteSpace(txtMdp.Text))
             {
-                MessageBox.Show("Remplissez tous les champs.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher("Remplissez tous les champs.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (txtMdp.Text.Trim() != txtMdp2.Text.Trim())
             {
-                MessageBox.Show("Les deux mots de passe ne sont pas identiques.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher("Les deux mots de passe ne sont pas identiques.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtMdp2.Focus();
                 return;
             }
@@ -35,7 +35,7 @@ namespace Pharmacie2.views
             {
                 int userId = CleSecoursService.Reinitialiser(txtLogin.Text, txtCle.Text, txtMdp.Text);
 
-                MessageBox.Show("Votre mot de passe a été modifié.\n\nUne nouvelle clé de secours va s'afficher : l'ancienne n'est plus valable.",
+                Messages.Afficher("Votre mot de passe a été modifié.\n\nUne nouvelle clé de secours va s'afficher : l'ancienne n'est plus valable.",
                     "Mot de passe modifié", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 FormCleSecours.GenererAfficherEtEnregistrer(this, userId);
@@ -45,18 +45,18 @@ namespace Pharmacie2.views
             }
             catch (CleSecoursBloqueeException ex)
             {
-                MessageBox.Show(ex.Message, "Fonction bloquée", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher(ex.Message, "Fonction bloquée", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (CleSecoursInvalideException ex)
             {
-                MessageBox.Show(ex.Message, "Clé incorrecte", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher(ex.Message, "Clé incorrecte", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtCle.Clear();
                 txtCle.Focus();
             }
             catch (Exception ex)
             {
                 Journal.Erreur("Réinitialisation du mot de passe par clé de secours", ex);
-                MessageBox.Show("La réinitialisation n'a pas pu être faite : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("La réinitialisation n'a pas pu être faite : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

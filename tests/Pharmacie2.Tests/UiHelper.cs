@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Pharmacie2;
 
 /// <summary>Aides pour piloter des formulaires WinForms sans les afficher (tests).</summary>
 public static class UiHelper
@@ -9,6 +12,52 @@ public static class UiHelper
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr h, System.Text.StringBuilder sb, int max);
 
     public static readonly List<string> Titres = new();
+
+    /// <summary>Messages d'erreur (icône Erreur ou titre « Erreur ») émis par l'application depuis le dernier <see cref="ViderErreurs"/>.</summary>
+    public static readonly List<string> ErreursAffichees = new();
+
+    private static readonly List<Func<string, bool>> Repondeurs = new();
+
+    public static void ViderErreurs() { lock (ErreursAffichees) ErreursAffichees.Clear(); }
+
+    public static string[] Erreurs() { lock (ErreursAffichees) return ErreursAffichees.ToArray(); }
+
+    /// <summary>
+    /// Initialisation de tout le projet de tests, avant le moindre contrôle : une exception non gérée dans un écran fait échouer le test
+    /// (jamais de boîte « Une exception non gérée s'est produite » à laquelle personne ne répondrait), et aucun message de l'application
+    /// n'ouvre de fenêtre modale : ils sont interceptés, notés, et reçoivent une réponse automatique.
+    /// </summary>
+    [ModuleInitializer]
+    internal static void InitialiserLesTests()
+    {
+        ConfigurerExceptions();
+        Messages.Intercepteur = Intercepter;
+    }
+
+    private static void ConfigurerExceptions()
+    {
+        try { Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); }
+        catch (InvalidOperationException) { /* déjà configuré après la création d'un contrôle sur ce thread : sans importance ici */ }
+    }
+
+    private static DialogResult? Intercepter(MessageAffiche m)
+    {
+        lock (Titres) Titres.Add(m.Titre);
+        if (m.Icone == MessageBoxIcon.Error || m.Titre == "Erreur")
+            lock (ErreursAffichees) ErreursAffichees.Add($"{m.Titre} : {m.Texte}");
+
+        bool oui;
+        lock (Repondeurs) oui = Repondeurs.Count > 0 && Repondeurs[^1](m.Titre);
+        return m.Boutons switch
+        {
+            MessageBoxButtons.OK => DialogResult.OK,
+            MessageBoxButtons.OKCancel => oui ? DialogResult.OK : DialogResult.Cancel,
+            MessageBoxButtons.YesNo => oui ? DialogResult.Yes : DialogResult.No,
+            MessageBoxButtons.YesNoCancel => oui ? DialogResult.Yes : DialogResult.No,
+            MessageBoxButtons.RetryCancel => DialogResult.Cancel,
+            _ => DialogResult.OK
+        };
+    }
 
     /// <summary>
     /// Ferme toute MessageBox : répond « Oui » (ou « Non » via WM_CLOSE) et note son titre.
@@ -21,6 +70,9 @@ public static class UiHelper
     public static CancellationTokenSource FermerLesMessages(Func<string, bool> reponseOui)
     {
         var cts = new CancellationTokenSource();
+        lock (Repondeurs) Repondeurs.Add(reponseOui);
+        cts.Token.Register(() => { lock (Repondeurs) Repondeurs.Remove(reponseOui); });
+        // les messages de l'application sont interceptés (voir Intercepter) ; ce fil ne ferme que les autres fenêtres modales (dialogues)
         new Thread(() =>
         {
             while (!cts.IsCancellationRequested)
@@ -62,7 +114,7 @@ public static class UiHelper
     public static void EnSta(Action a)
     {
         Exception err = null;
-        var t = new Thread(() => { try { a(); } catch (Exception e) { err = e; } });
+        var t = new Thread(() => { ConfigurerExceptions(); try { a(); } catch (Exception e) { err = e; } });
         t.SetApartmentState(ApartmentState.STA);
         t.Start();
         t.Join();

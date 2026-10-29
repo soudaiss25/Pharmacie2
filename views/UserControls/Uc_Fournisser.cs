@@ -146,7 +146,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (dgvProduits.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Sélectionnez un produit dans la liste pour le commander.",
+                Messages.Afficher("Sélectionnez un produit dans la liste pour le commander.",
                     "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -190,7 +190,7 @@ namespace Pharmacie2.views.UserControls
             var selected = GetSelectedFournisseur();
             if (selected == null)
             {
-                MessageBox.Show("Sélectionnez un fournisseur.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Sélectionnez un fournisseur.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -199,7 +199,7 @@ namespace Pharmacie2.views.UserControls
                 fournisseurDb = ctxEdit.fournisseur.AsNoTracking().FirstOrDefault(x => x.Id == selected.Id);
             if (fournisseurDb == null)
             {
-                MessageBox.Show("Fournisseur introuvable.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Fournisseur introuvable.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ChargerFournisseurs(txtSearch.Text);
                 return;
             }

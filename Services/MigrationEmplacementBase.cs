@@ -224,7 +224,7 @@ namespace Pharmacie2.Services
             {
                 Journal.Erreur("Échec de la copie de l'ancienne base", ex);
                 // Sans cette copie, l'application créerait une base vide : on refuse de continuer en silence.
-                MessageBox.Show(
+                Messages.Afficher(
                     "Impossible de récupérer l'ancienne base de données.\n\n" + ex.Message +
                     "\n\nL'application va se fermer pour éviter de créer une base vide.",
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);

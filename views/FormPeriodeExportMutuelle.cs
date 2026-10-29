@@ -71,7 +71,7 @@ namespace Pharmacie2.views
         {
             if (dtpFin.Value < dtpDebut.Value)
             {
-                MessageBox.Show(
+                Messages.Afficher(
                     "La date de fin doit être postérieure à la date de début.",
                     "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

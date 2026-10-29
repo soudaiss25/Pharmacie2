@@ -104,7 +104,7 @@ namespace Pharmacie2.views
 
             if (quantites.Count == 0)
             {
-                MessageBox.Show("Saisissez au moins une quantité reçue.", "Réception", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Saisissez au moins une quantité reçue.", "Réception", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace Pharmacie2.views
                 int boites = CommandeService.Receptionner(_commandeId, quantites);
                 if (boites <= 0)
                 {
-                    MessageBox.Show("Aucune boîte à enregistrer.", "Réception", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Messages.Afficher("Aucune boîte à enregistrer.", "Réception", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 BandeauNotification.Succes($"Réception enregistrée : {Format.Compte(boites, "boîte")}. Le stock est à jour.");
@@ -123,7 +123,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Réception de la commande " + _commandeId, ex);
-                MessageBox.Show("La réception n'a pas pu être enregistrée : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("La réception n'a pas pu être enregistrée : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

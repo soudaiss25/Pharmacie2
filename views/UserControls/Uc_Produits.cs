@@ -87,7 +87,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Catalogue produits", ex);
-                MessageBox.Show("Les produits n'ont pas pu être affichés : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Les produits n'ont pas pu être affichés : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (dgvProduits.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Sélectionnez un produit.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Sélectionnez un produit.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             int id = Convert.ToInt32(dgvProduits.SelectedRows[0].Cells["Id"].Value);

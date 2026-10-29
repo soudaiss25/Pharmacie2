@@ -293,7 +293,7 @@ namespace Pharmacie2.views
 
         private void AppliquerCorrection(int nouveauStock)
         {
-            var conf = MessageBox.Show(
+            var conf = Messages.Afficher(
                 $"Ajouter {Format.Compte(_unitesManquantes, "unité")} au stock ?\n\n" +
                 $"Stock actuel : {StockService.Formater(_produitOrigine)}\n" +
                 $"Nouveau stock : {StockService.Formater(_produitOrigine, nouveauStock)}\n\n" +
@@ -311,13 +311,13 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Correction de stock", ex);
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void ResoudreEtFermer(ChoixVerification choix, string question, string resultat)
         {
-            if (MessageBox.Show(question, "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (Messages.Afficher(question, "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             try
             {
@@ -329,7 +329,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Vérification de stock", ex);
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -413,7 +413,7 @@ namespace Pharmacie2.views
             // ── Validations ───────────────────────────────────────────────
             if (string.IsNullOrWhiteSpace(txtNom.Text))
             {
-                MessageBox.Show("Le nom du produit est obligatoire.", "Validation",
+                Messages.Afficher("Le nom du produit est obligatoire.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNom.Focus(); return;
             }
@@ -426,7 +426,7 @@ namespace Pharmacie2.views
             // Vérification marge obligatoire
             if (prixVente <= prixAchat)
             {
-                MessageBox.Show(
+                Messages.Afficher(
                     $"Le prix de vente ({Format.Montant(prixVente)}) doit être supérieur au prix d'achat ({Format.Montant(prixAchat)}).\n\nAugmentez le prix de vente ou corrigez le prix d'achat.",
                     "Marge invalide", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 numPrixVente.Focus(); return;
@@ -434,7 +434,7 @@ namespace Pharmacie2.views
 
             if (prixAchat <= 0)
             {
-                MessageBox.Show("Le prix d'achat doit être supérieur à 0.",
+                Messages.Afficher("Le prix d'achat doit être supérieur à 0.",
                     "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 numPrixAchat.Focus(); return;
             }
@@ -442,7 +442,7 @@ namespace Pharmacie2.views
             // Vente en détail : « Boîte » ne peut pas être l'unité de détail (la boîte est déjà l'unité de base)
             if (chkVenteDetail.Checked && string.Equals(cmbUniteVente.SelectedItem?.ToString(), StockService.UniteBoite, StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show(
+                Messages.Afficher(
                     "« Boîte » ne peut pas être l'unité de détail : la boîte est déjà l'unité de base.\n\nChoisissez ce que l'on vend à l'unité : Plaquette, Comprimé, Gélule, Ampoule, Flacon, Sachet, Tube…",
                     "Unité de détail", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmbUniteVente.Focus(); return;
@@ -451,7 +451,7 @@ namespace Pharmacie2.views
             // Vente en détail — vérification
             if (chkVenteDetail.Checked && numNbUniteParBoite.Value <= 1)
             {
-                MessageBox.Show(
+                Messages.Afficher(
                     "Si le produit est vendu à l'unité, le nombre d'unités par boîte doit être ≥ 2.",
                     "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 numNbUniteParBoite.Focus(); return;
@@ -465,13 +465,13 @@ namespace Pharmacie2.views
                 decimal coutUnite = prixAchat / numNbUniteParBoite.Value;
                 if (prixVenteUnite <= 0)
                 {
-                    MessageBox.Show("Saisissez le prix de vente à l'unité : c'est vous qui le fixez, il n'est jamais calculé à partir du prix de la boîte.",
+                    Messages.Afficher("Saisissez le prix de vente à l'unité : c'est vous qui le fixez, il n'est jamais calculé à partir du prix de la boîte.",
                         "Prix à l'unité obligatoire", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     numPrixVenteUnite.Focus(); return;
                 }
                 if (prixVenteUnite <= coutUnite)
                 {
-                    MessageBox.Show(
+                    Messages.Afficher(
                         $"Le prix de vente à l'unité ({Format.Montant(prixVenteUnite.Value)}) doit être supérieur au prix d'achat d'une unité ({Format.Montant(Math.Round(coutUnite, 2))}, soit {Format.Montant(prixAchat)} pour {numNbUniteParBoite.Value:0} unités).\n\nAugmentez le prix à l'unité.",
                         "Marge invalide à l'unité", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     numPrixVenteUnite.Focus(); return;
@@ -481,7 +481,7 @@ namespace Pharmacie2.views
             // Date de péremption : obligatoire (jamais la date du jour par défaut), sauf « Pas de date de péremption »
             if (!dtpDateExpiration.Checked && !chkPasPeremption.Checked)
             {
-                MessageBox.Show("Saisissez la date de péremption (cochez la case devant la date), ou cochez « Pas de date de péremption ».",
+                Messages.Afficher("Saisissez la date de péremption (cochez la case devant la date), ou cochez « Pas de date de péremption ».",
                     "Date de péremption", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 dtpDateExpiration.Focus(); return;
             }
@@ -521,7 +521,7 @@ namespace Pharmacie2.views
                 if (!_nbAverti)
                 {
                     _nbAverti = true;
-                    MessageBox.Show(
+                    Messages.Afficher(
                         $"Vous modifiez le nombre d'unités par boîte (de {_nbParBoiteOrigine} à {nbUniteParBoite}).\n\n" +
                         (_aVentesUnite ? "Ce produit a déjà été vendu à l'unité : les anciennes ventes gardent leur conditionnement d'origine, mais le stock doit être recompté avec le nouveau conditionnement.\n\n" : "") +
                         "Le stock actuel ne peut plus être converti automatiquement.\n" +
@@ -531,7 +531,7 @@ namespace Pharmacie2.views
                     return;
                 }
 
-                var conf = MessageBox.Show(
+                var conf = Messages.Afficher(
                     $"Stock réel saisi : {Format.Compte((int)numQuantite.Value, "boîte")} + {Format.Compte((int)numUnitesVrac.Value, "unité")} " +
                     $"= {Format.Compte(stockEnUnites, "unité")} de base.\n\nConfirmer que c'est bien le stock réel ?",
                     "Confirmer le stock", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -540,7 +540,7 @@ namespace Pharmacie2.views
 
                         if (nbUniteParBoite > 1 && numUnitesVrac.Value >= nbUniteParBoite)
             {
-                MessageBox.Show(
+                Messages.Afficher(
                     $"Les unités en vrac doivent être inférieures au nombre d'unités par boîte ({nbUniteParBoite}).\n" +
                     "Ajoutez plutôt une boîte pleine.",
                     "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -550,7 +550,7 @@ namespace Pharmacie2.views
             // Le nombre d'unités par boîte change : le prix à l'unité n'est PAS modifié automatiquement, le client doit le confirmer
             if (_produitId != null && chkVenteDetail.Checked && _nbParBoiteOrigine > 1 && nbUniteParBoite != _nbParBoiteOrigine)
             {
-                var confPrix = MessageBox.Show(
+                var confPrix = Messages.Afficher(
                     $"Vérifiez le prix à l'unité : {Format.Montant(prixVenteUnite!.Value)} pour 1 {uniteVente.ToLowerInvariant()} (boîte de {nbUniteParBoite}, prix de la boîte {Format.Montant(prixVente)}).\n\nConfirmer ce prix ?",
                     "Vérifiez le prix à l'unité", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (confPrix != DialogResult.Yes) { numPrixVenteUnite.Focus(); return; }
@@ -643,7 +643,7 @@ namespace Pharmacie2.views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -654,7 +654,7 @@ namespace Pharmacie2.views
             decimal prixVente = numPrixVente.Value;
             if (prixVente <= 0)
             {
-                MessageBox.Show("Saisissez le prix de vente de la prestation.", "Validation",
+                Messages.Afficher("Saisissez le prix de vente de la prestation.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 numPrixVente.Focus(); return;
             }
@@ -693,7 +693,7 @@ namespace Pharmacie2.views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

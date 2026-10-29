@@ -48,13 +48,13 @@ namespace Pharmacie2.views
                 var sel = selection();
                 if (sel == null)
                 {
-                    MessageBox.Show("Sélectionnez un élément archivé à réactiver.", "Info",
+                    Messages.Afficher("Sélectionnez un élément archivé à réactiver.", "Info",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 if (sel.Value.actif)
                 {
-                    MessageBox.Show("Cet élément n'est pas archivé.", "Info",
+                    Messages.Afficher("Cet élément n'est pas archivé.", "Info",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -66,7 +66,7 @@ namespace Pharmacie2.views
                 catch (Exception ex)
                 {
                     Journal.Erreur("Réactivation", ex);
-                    MessageBox.Show("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Messages.Afficher("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             };
 
@@ -83,7 +83,7 @@ namespace Pharmacie2.views
         {
             if (selection == null)
             {
-                MessageBox.Show("Sélectionnez d'abord un élément.", "Info",
+                Messages.Afficher("Sélectionnez d'abord un élément.", "Info",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
@@ -91,7 +91,7 @@ namespace Pharmacie2.views
             var (id, nom, actif) = selection.Value;
             if (!actif)
             {
-                MessageBox.Show($"« {nom} » est déjà archivé.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher($"« {nom} » est déjà archivé.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
@@ -99,7 +99,7 @@ namespace Pharmacie2.views
             {
                 if (!ArchivageService.AHistorique(type, id))
                 {
-                    var r = MessageBox.Show(
+                    var r = Messages.Afficher(
                         $"« {nom} » n'a aucun historique.\n\n" +
                         "Oui = supprimer définitivement\nNon = archiver seulement\nAnnuler = ne rien faire",
                         "Supprimer ou archiver ?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
@@ -110,7 +110,7 @@ namespace Pharmacie2.views
                         return true;
                     }
                 }
-                else if (MessageBox.Show(
+                else if (Messages.Afficher(
                     $"Archiver « {nom} » ?\n\n" +
                     "Il n'apparaîtra plus dans les choix (ventes, commandes…) mais restera dans l'historique et les statistiques. " +
                     "Vous pourrez le réactiver à tout moment.",
@@ -124,13 +124,13 @@ namespace Pharmacie2.views
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show(ex.Message, "Action impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher(ex.Message, "Action impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             catch (Exception ex)
             {
                 Journal.Erreur("Archivage", ex);
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }

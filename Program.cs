@@ -53,7 +53,7 @@ namespace Pharmacie2
                         catch (Exception ex)
                         {
                             Journal.Erreur("Diagnostic de l'ancienne base", ex);
-                            MessageBox.Show("Le diagnostic de l'ancienne base n'a pas pu être fait : " + ex.Message + "\n\nVos données n'ont pas été modifiées par le diagnostic.",
+                            Messages.Afficher("Le diagnostic de l'ancienne base n'a pas pu être fait : " + ex.Message + "\n\nVos données n'ont pas été modifiées par le diagnostic.",
                                 "Diagnostic", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
@@ -61,7 +61,7 @@ namespace Pharmacie2
                 catch (Exception ex)
                 {
                     Journal.Erreur("Échec de la migration de la base", ex);
-                    MessageBox.Show(
+                    Messages.Afficher(
                         "La mise à jour de la base a échoué. Vos données n'ont pas été perdues : " +
                         "une sauvegarde a été faite dans " + CheminsApp.DossierSauvegardes + "\n\n" +
                         "Contactez le développeur.",

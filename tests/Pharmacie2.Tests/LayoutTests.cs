@@ -41,11 +41,16 @@ public class LayoutTests
         var ids = LayoutSeed.PreparerDemo();
         var cts = UiHelper.FermerLesMessages(false);
         var erreurs = new List<string>();
+        UiHelper.ViderErreurs();
         try
         {
             UiHelper.EnSta(() => ExecuterVerifications(type, ids, erreurs));
         }
         finally { cts.Cancel(); Pharmacie2.Services.Theme.EchelleTest = null; }
+
+        // L'ouverture d'un écran ne doit émettre aucun message d'erreur (sur GitHub Actions, personne ne cliquerait)
+        foreach (var message in UiHelper.Erreurs())
+            erreurs.Add("message d'erreur émis à l'ouverture : " + message);
 
         if (!bloquant)
         {
@@ -56,6 +61,49 @@ public class LayoutTests
         }
 
         Assert.True(erreurs.Count == 0, nomEcran + " :\n  " + string.Join("\n  ", erreurs));
+    }
+
+    [Fact]
+    public void Ouvrir_les_depenses_de_toutes_categories_ne_produit_aucun_message_d_erreur()
+    {
+        var ids = LayoutSeed.PreparerDemo();
+        UiHelper.ViderErreurs();
+        UiHelper.EnSta(() =>
+        {
+            using var hote = new Form();
+            var uc = new Pharmacie2.views.UserControls.Uc_Depenses { Dock = DockStyle.Fill };
+            hote.Controls.Add(uc);
+            hote.Show();
+            Application.DoEvents();
+            var g = (DataGridView)uc.GetType().GetField("dgvHistorique", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.GetValue(uc)!;
+            var categories = g.Rows.Cast<DataGridViewRow>().Select(r => Convert.ToString(r.Cells["Categorie"].Value)).ToList();
+            foreach (var cat in new[] { "Salaire", "Facture", "Loyer", "Fournitures", "Autre", "Remboursement commande" })
+                Assert.Contains(cat, categories);
+            uc.Dispose();
+        });
+        Assert.True(UiHelper.Erreurs().Length == 0, string.Join(" | ", UiHelper.Erreurs()));
+    }
+
+    [Fact]
+    public void Un_message_d_erreur_est_intercepte_sans_fenetre_et_une_exception_non_geree_fait_echouer()
+    {
+        UiHelper.ViderErreurs();
+        var reponse = Pharmacie2.Messages.Afficher("Quelque chose a échoué", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);   // ne bloque pas : intercepté
+        Assert.Equal(DialogResult.OK, reponse);
+        Assert.Single(UiHelper.Erreurs());
+        UiHelper.ViderErreurs();
+
+        // une exception levée dans un gestionnaire d'événement remonte au test au lieu d'ouvrir la boîte « exception non gérée »
+        Assert.ThrowsAny<Exception>(() => UiHelper.EnSta(() =>
+        {
+            using var f = new Form();
+            var b = new Button();
+            b.Click += (s, e) => throw new InvalidOperationException("colonne introuvable");
+            f.Controls.Add(b);
+            f.Show();
+            b.PerformClick();
+            Application.DoEvents();
+        }));
     }
 
     [Fact]

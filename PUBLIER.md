@@ -48,6 +48,11 @@ pour le canal stable. Conséquences :
 - une version stable publiée après un test **ne masque pas** le test pour le canal test (le canal test lit toutes les releases et ignore celles qui n'ont pas son index) ;
 - **limite** : si 10 versions « test » ou plus sont publiées après la dernière stable, le canal stable ne voit plus rien (même si une stable plus récente que l'installation existe).
 
+**Élagage automatique** : après chaque publication sur le canal test, `release.yml` supprime les anciennes pré-releases test pour n'en garder que
+**5** (la plus récente est celle qui vient d'être publiée). Garde-fous : seules les pré-releases dont le tag finit par « -test » peuvent être supprimées ;
+jamais une release stable ; jamais la release qui vient d'être publiée. Le tag correspondant est supprimé avec la release. Le canal stable reste donc toujours visible
+(au plus 5 pré-releases après la dernière stable, pour une limite de 9). Conséquence : on ne peut pas revenir à une très ancienne version test ; les versions stables ne sont jamais supprimées.
+
 Contrôle (lecture seule, sans jeton) : `python tools/verifier_canaux.py` ; scénarios simulés : `python tools/verifier_canaux.py --autotest`.
 Avant de publier une stable, vérifier que le compteur « pré-releases depuis la dernière stable » reste sous 9.
 

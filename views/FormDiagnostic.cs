@@ -118,7 +118,7 @@ namespace Pharmacie2.views
 
         private void CloturerSessions()
         {
-            if (MessageBox.Show($"Clôturer {Format.Compte(_rapport.SessionsOuvertes.Count, "session")} restée(s) ouverte(s) ?\n\n" +
+            if (Messages.Afficher($"Clôturer {Format.Compte(_rapport.SessionsOuvertes.Count, "session")} restée(s) ouverte(s) ?\n\n" +
                                 "Chaque session est clôturée à la fin de sa journée, avec le commentaire « " + DiagnosticBaseService.CommentaireCloture + " » et le montant attendu calculé.",
                                 "Clôturer ces sessions", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             try
@@ -137,7 +137,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Clôture des sessions oubliées", ex);
-                MessageBox.Show("Les sessions n'ont pas pu être clôturées : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Les sessions n'ont pas pu être clôturées : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -156,12 +156,12 @@ namespace Pharmacie2.views
             try
             {
                 Exporter(dlg.FileName);
-                MessageBox.Show("Le rapport est enregistré :\n" + dlg.FileName, "Exporter le rapport", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Le rapport est enregistré :\n" + dlg.FileName, "Exporter le rapport", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 Journal.Erreur("Export du diagnostic", ex);
-                MessageBox.Show("Le rapport n'a pas pu être exporté : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Le rapport n'a pas pu être exporté : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -62,7 +62,7 @@ namespace Pharmacie2.views
             // Validations
             if (cbCategorie.SelectedIndex < 0)
             {
-                MessageBox.Show("Choisissez une catégorie.", "Validation",
+                Messages.Afficher("Choisissez une catégorie.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbCategorie.Focus(); return;
             }
@@ -70,7 +70,7 @@ namespace Pharmacie2.views
             decimal montant = numMontant.Value;
             if (montant <= 0)
             {
-                MessageBox.Show("Saisissez un montant supérieur à 0.", "Validation",
+                Messages.Afficher("Saisissez un montant supérieur à 0.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 numMontant.Focus(); return;
             }
@@ -84,7 +84,7 @@ namespace Pharmacie2.views
                 string? refus = RemboursementCommandeService.ControlerRemboursement(ctxControle, commandeId, montant);
                 if (refus != null)
                 {
-                    MessageBox.Show(refus, "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Messages.Afficher(refus, "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     (commandeId == null ? (Control)cbCommande : numMontant).Focus();
                     return;
                 }
@@ -113,7 +113,7 @@ namespace Pharmacie2.views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erreur : " + ex.Message, "Erreur",
+                Messages.Afficher("Erreur : " + ex.Message, "Erreur",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

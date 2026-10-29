@@ -70,14 +70,14 @@ namespace Pharmacie2.views
 
                 if (vente == null)
                 {
-                    MessageBox.Show("Vente introuvable.", "Erreur",
+                    Messages.Afficher("Vente introuvable.", "Erreur",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Close(); return;
                 }
 
                 if (vente.Statut == "Annulée")
                 {
-                    MessageBox.Show("Impossible de modifier une vente annulée.", "Erreur",
+                    Messages.Afficher("Impossible de modifier une vente annulée.", "Erreur",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     Close(); return;
                 }
@@ -85,7 +85,7 @@ namespace Pharmacie2.views
                 // Vente déjà réglée par la mutuelle : plus modifiable
                 if (vente.MutuelId != null && vente.MutuelleReglee)
                 {
-                    MessageBox.Show(VenteModificationRegles.MessageVenteReglee, "Modification impossible",
+                    Messages.Afficher(VenteModificationRegles.MessageVenteReglee, "Modification impossible",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     Load += (s, e) => Close();
                     return;
@@ -166,7 +166,7 @@ namespace Pharmacie2.views
 
                 if (!produit.SansStock && unitesPanier + unitesDemandees > produit.QuantiteEnStock + dejaRetirees)
                 {
-                    MessageBox.Show(
+                    Messages.Afficher(
                         $"Stock insuffisant pour « {produit.Nom} ».\n" +
                         $"Disponible : {StockService.Formater(produit, produit.QuantiteEnStock + dejaRetirees)}",
                         "Stock insuffisant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -183,7 +183,7 @@ namespace Pharmacie2.views
                     : produit.PrixUnitaireVente;
 
                 if (FicheAVerifierService.AvertissementPrix(produit, prixU) is { } avertissement)
-                    MessageBox.Show(avertissement, "Prix à vérifier", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Messages.Afficher(avertissement, "Prix à vérifier", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 if (existant != null)
                     existant.Quantite += form.QuantiteSelectionnee;
@@ -270,14 +270,14 @@ namespace Pharmacie2.views
 
             if (!actives.Any())
             {
-                MessageBox.Show("La vente doit contenir au moins un produit.", "Validation",
+                Messages.Afficher("La vente doit contenir au moins un produit.", "Validation",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             decimal total = _total;
 
-            var confirm = MessageBox.Show(
+            var confirm = Messages.Afficher(
                 "Enregistrer les modifications de cette vente ?",
                 "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -288,13 +288,13 @@ namespace Pharmacie2.views
             string modeComplement = cbModeComplement.SelectedItem?.ToString() ?? ModesPaiement.Especes;
             if (ajustAnnonce > 0)
             {
-                if (MessageBox.Show($"Le client paie {Format.Montant(ajustAnnonce)} en plus ({modeComplement}).\n\nConfirmer l'encaissement de ce complément ?",
+                if (Messages.Afficher($"Le client paie {Format.Montant(ajustAnnonce)} en plus ({modeComplement}).\n\nConfirmer l'encaissement de ce complément ?",
                         "Complément à encaisser", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
             else if (ajustAnnonce < 0)
             {
-                MessageBox.Show($"Rendre {Format.Montant(-ajustAnnonce)} au client.\n\nCe remboursement sera enregistré en {_modeRemboursement}.",
+                Messages.Afficher($"Rendre {Format.Montant(-ajustAnnonce)} au client.\n\nCe remboursement sera enregistré en {_modeRemboursement}.",
                     "Rendre de l'argent au client", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
@@ -403,7 +403,7 @@ namespace Pharmacie2.views
             catch (StockInsuffisantException ex)
             {
                 // Stock insuffisant : rien n'a été modifié
-                MessageBox.Show(ex.Message + "\n\nLa vente n'a pas été modifiée.", "Stock insuffisant",
+                Messages.Afficher(ex.Message + "\n\nLa vente n'a pas été modifiée.", "Stock insuffisant",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
@@ -412,7 +412,7 @@ namespace Pharmacie2.views
                 string msg = ex.Message;
                 if (ex.InnerException != null)
                     msg += "\n\nDétail : " + ex.InnerException.Message;
-                MessageBox.Show(msg + "\n\nLa vente n'a pas été modifiée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher(msg + "\n\nLa vente n'a pas été modifiée.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

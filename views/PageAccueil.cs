@@ -297,7 +297,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Sauvegarde CSV", ex);
-                MessageBox.Show("La sauvegarde a échoué : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("La sauvegarde a échoué : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -314,7 +314,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Ouverture du dossier des sauvegardes", ex);
-                MessageBox.Show("Impossible d'ouvrir le dossier des sauvegardes :\n" + CheminsApp.DossierSauvegardes,
+                Messages.Afficher("Impossible d'ouvrir le dossier des sauvegardes :\n" + CheminsApp.DossierSauvegardes,
                     "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

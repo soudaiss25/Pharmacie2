@@ -11,9 +11,9 @@ namespace Pharmacie2.views
             using var ctx = new AppDbContext();
             int? userId = SessionUtilisateur.IdCourant == 0 ? null : SessionUtilisateur.IdCourant;
             var r = CaisseService.AffecterPaiement(ctx, userId, mode,
-                nom => MessageBox.Show(proprietaire, $"Cet argent va dans la caisse de {nom} ?", "Caisse", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+                nom => Messages.Afficher(proprietaire, $"Cet argent va dans la caisse de {nom} ?", "Caisse", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
             if (!r.Autorise && r.Message != null)
-                MessageBox.Show(proprietaire, r.Message, "Encaissement impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher(proprietaire, r.Message, "Encaissement impossible", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return r;
         }
     }

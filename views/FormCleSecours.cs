@@ -56,7 +56,7 @@ namespace Pharmacie2.views
             catch (Exception ex)
             {
                 Journal.Erreur("Impression de la clé de secours", ex);   // la clé elle-même n'est jamais journalisée
-                MessageBox.Show("Impossible d'imprimer : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Impossible d'imprimer : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

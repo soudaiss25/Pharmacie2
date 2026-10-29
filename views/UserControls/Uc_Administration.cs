@@ -47,7 +47,7 @@ namespace Pharmacie2.views.UserControls
             string? dossier = null;
             string? drive = SauvegardeExterneService.DetecterGoogleDrive();
             if (drive != null &&
-                MessageBox.Show($"Google Drive a été trouvé sur cet ordinateur :\n{drive}\n\nUtiliser ce dossier pour les sauvegardes ?",
+                Messages.Afficher($"Google Drive a été trouvé sur cet ordinateur :\n{drive}\n\nUtiliser ce dossier pour les sauvegardes ?",
                     "Sauvegarde hors du PC", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 dossier = drive;
 
@@ -78,7 +78,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Configuration de la sauvegarde externe", ex);
-                MessageBox.Show("Le réglage n'a pas pu être enregistré : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Le réglage n'a pas pu être enregistré : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -90,7 +90,7 @@ namespace Pharmacie2.views.UserControls
         {
             if (!SauvegardeExterneService.EstConfiguree)
             {
-                MessageBox.Show("Choisissez d'abord le dossier de sauvegarde externe.", "Sauvegarde hors du PC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher("Choisissez d'abord le dossier de sauvegarde externe.", "Sauvegarde hors du PC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             CopierMaintenant();
@@ -115,7 +115,7 @@ namespace Pharmacie2.views.UserControls
             if (ok)
                 BandeauNotification.Succes("Copie chiffrée envoyée vers " + ParametresApp.Actuels.DossierSauvegardeExterne + ".");
             else
-                MessageBox.Show("La copie n'a pas pu être faite : le dossier est introuvable (clé débranchée ?) ou protégé.\n" +
+                Messages.Afficher("La copie n'a pas pu être faite : le dossier est introuvable (clé débranchée ?) ou protégé.\n" +
                                 "Rien n'est perdu : une nouvelle tentative aura lieu au prochain démarrage.",
                     "Sauvegarde hors du PC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
@@ -132,12 +132,12 @@ namespace Pharmacie2.views.UserControls
             try
             {
                 RapportDeveloppeurService.PreparerSurLeBureauEtMontrer(this);
-                MessageBox.Show(RapportDeveloppeurService.MessageApresRapport, "Rapport pour le développeur", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Messages.Afficher(RapportDeveloppeurService.MessageApresRapport, "Rapport pour le développeur", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 Journal.Erreur("Préparation du rapport pour le développeur", ex);
-                MessageBox.Show("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -215,10 +215,10 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Diagnostic après import", ex);
-                MessageBox.Show("L'import est fait, mais le diagnostic n'a pas pu être lancé : " + ex.Message, "Diagnostic", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher("L'import est fait, mais le diagnostic n'a pas pu être lancé : " + ex.Message, "Diagnostic", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            MessageBox.Show("L'import est terminé. L'application va redémarrer.", "Importer une ancienne base", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Messages.Afficher("L'import est terminé. L'application va redémarrer.", "Importer une ancienne base", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Application.Restart();
             Environment.Exit(0);
         }
@@ -239,7 +239,7 @@ namespace Pharmacie2.views.UserControls
             catch (Exception ex)
             {
                 Journal.Erreur("Diagnostic de la base", ex);
-                MessageBox.Show("Le diagnostic n'a pas pu être fait : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Le diagnostic n'a pas pu être fait : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -263,7 +263,7 @@ namespace Pharmacie2.views.UserControls
                 phrase = f.Phrase;
             }
 
-            if (MessageBox.Show(
+            if (Messages.Afficher(
                     "Les données actuelles de la pharmacie vont être REMPLACÉES par celles de cette sauvegarde :\n" + Path.GetFileName(ofd.FileName) +
                     "\n\nLa base actuelle est d'abord mise de côté dans le dossier des sauvegardes (« avant-restauration »). Continuer ?",
                     "Restaurer une sauvegarde", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
@@ -275,24 +275,24 @@ namespace Pharmacie2.views.UserControls
             }
             catch (PhraseSecreteIncorrecteException)
             {
-                MessageBox.Show("La phrase secrète est incorrecte (ou le fichier est abîmé). Rien n'a été modifié.", "Restaurer une sauvegarde",
+                Messages.Afficher("La phrase secrète est incorrecte (ou le fichier est abîmé). Rien n'a été modifié.", "Restaurer une sauvegarde",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             catch (FichierSauvegardeInvalideException ex)
             {
-                MessageBox.Show(ex.Message + "\nRien n'a été modifié.", "Restaurer une sauvegarde", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Messages.Afficher(ex.Message + "\nRien n'a été modifié.", "Restaurer une sauvegarde", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             catch (Exception ex)
             {
                 Journal.Erreur("Restauration d'une sauvegarde", ex);
-                MessageBox.Show("La restauration a échoué : " + ex.Message + "\nVos données actuelles n'ont pas été touchées.",
+                Messages.Afficher("La restauration a échoué : " + ex.Message + "\nVos données actuelles n'ont pas été touchées.",
                     "Restaurer une sauvegarde", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            MessageBox.Show("La sauvegarde a été restaurée. L'application va redémarrer.", "Restaurer une sauvegarde", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Messages.Afficher("La sauvegarde a été restaurée. L'application va redémarrer.", "Restaurer une sauvegarde", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Application.Restart();
             Environment.Exit(0);
         }

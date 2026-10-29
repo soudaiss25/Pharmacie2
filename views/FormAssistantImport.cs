@@ -221,13 +221,13 @@ namespace Pharmacie2.views
             try
             {
                 string zip = RapportDeveloppeurService.Preparer(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), this);
-                MessageBox.Show("Le rapport est prêt sur le Bureau :\n" + Path.GetFileName(zip) + "\n\nEnvoyez-le au développeur. " + RapportDeveloppeurService.MentionConfidentialite,
+                Messages.Afficher("Le rapport est prêt sur le Bureau :\n" + Path.GetFileName(zip) + "\n\nEnvoyez-le au développeur. " + RapportDeveloppeurService.MentionConfidentialite,
                     "Rapport prêt", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 Journal.Erreur("Rapport (assistant d'import)", ex);
-                MessageBox.Show("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Messages.Afficher("Le rapport n'a pas pu être préparé : " + ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

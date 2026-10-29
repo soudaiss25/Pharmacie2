@@ -10,30 +10,11 @@ public class FormAddProduitTests
     [DllImport("user32.dll")] static extern bool PostMessage(IntPtr h, uint msg, IntPtr w, IntPtr l);
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr h, System.Text.StringBuilder sb, int max);
 
-    private static readonly List<string> Boites = new();
+    /// <summary>Titres des messages affichés (les messages sont interceptés : voir UiHelper).</summary>
+    private static List<string> Boites => UiHelper.Titres;
 
-    /// <summary>Ferme automatiquement toute MessageBox (WM_CLOSE) pour ne pas bloquer le test.</summary>
-    private static CancellationTokenSource Fermeur()
-    {
-        var cts = new CancellationTokenSource();
-        new Thread(() =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                var h = FindWindow("#32770", null);
-                if (h != IntPtr.Zero)
-                {
-                    var sb = new System.Text.StringBuilder(256);
-                    GetWindowText(h, sb, 256);
-                    lock (Boites) Boites.Add(sb.ToString());
-                    PostMessage(h, 0x0010, IntPtr.Zero, IntPtr.Zero);
-                }
-                Thread.Sleep(100);
-            }
-        })
-        { IsBackground = true }.Start();
-        return cts;
-    }
+    /// <summary>Répond « Non » à tout message de l'application pour ne pas bloquer le test.</summary>
+    private static CancellationTokenSource Fermeur() => UiHelper.FermerLesMessages(false);
 
     private static T Champ<T>(object f, string nom)
         => (T)f.GetType().GetField(nom, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public).GetValue(f);
