@@ -36,6 +36,7 @@ namespace Pharmacie2.views
             numTaux.Value = Math.Min(100, Math.Max(0, mutuel.TauxPriseEnCharge));
             txtEmail.Text = mutuel.EmailContact;
             txtTelephone.Text = mutuel.telephoneEmployeur;
+            chkMatricule.Checked = mutuel.MatriculeObligatoire;
         }
 
         private void btnEnregistrer_Click(object sender, EventArgs e)
@@ -67,6 +68,7 @@ namespace Pharmacie2.views
                         m.TauxPriseEnCharge = taux;
                         m.EmailContact = txtEmail.Text.Trim();
                         m.telephoneEmployeur = txtTelephone.Text.Trim();
+                        m.MatriculeObligatoire = chkMatricule.Checked;
                     }
                     else
                     {
@@ -75,7 +77,8 @@ namespace Pharmacie2.views
                             NomEmployeur = txtNomEmployeur.Text.Trim(),
                             TauxPriseEnCharge = taux,
                             EmailContact = txtEmail.Text.Trim(),
-                            telephoneEmployeur = txtTelephone.Text.Trim()
+                            telephoneEmployeur = txtTelephone.Text.Trim(),
+                            MatriculeObligatoire = chkMatricule.Checked
                         });
                     }
                     ctx.SaveChanges();

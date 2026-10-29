@@ -40,6 +40,7 @@
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.lblTelephone = new System.Windows.Forms.Label();
             this.txtTelephone = new System.Windows.Forms.TextBox();
+            this.chkMatricule = new System.Windows.Forms.CheckBox();
             this.panelEspace = new System.Windows.Forms.Panel();
             this.flpBoutons = new System.Windows.Forms.FlowLayoutPanel();
             this.btnEnregistrer = new System.Windows.Forms.Button();
@@ -86,7 +87,8 @@
             this.tlpChamps.ColumnCount = 2;
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0F));
-            this.tlpChamps.RowCount = 5;
+            this.tlpChamps.RowCount = 6;
+            this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpChamps.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -110,11 +112,21 @@
             this.lblTelephone.TabIndex = 7;
             this.tlpChamps.Controls.Add(this.txtTelephone, 1, 4);
             this.txtTelephone.TabIndex = 8;
+            this.tlpChamps.Controls.Add(this.chkMatricule, 1, 5);
+            this.chkMatricule.TabIndex = 9;
             this.tlpChamps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpChamps.AutoSize = true;
             this.tlpChamps.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpChamps.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.tlpChamps.Name = "tlpChamps";
+            // 
+            // chkMatricule
+            // 
+            this.chkMatricule.Text = "Matricule de l'employé obligatoire";
+            this.chkMatricule.AutoSize = true;
+            this.chkMatricule.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkMatricule.Margin = new System.Windows.Forms.Padding(0, 6, 0, 4);
+            this.chkMatricule.Name = "chkMatricule";
             // 
             // lblNom
             // 
@@ -229,7 +241,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClientSize = new System.Drawing.Size(560, 340);
+            this.ClientSize = new System.Drawing.Size(560, 380);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -265,6 +277,7 @@
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label lblTelephone;
         private System.Windows.Forms.TextBox txtTelephone;
+        private System.Windows.Forms.CheckBox chkMatricule;
         private System.Windows.Forms.Panel panelEspace;
         private System.Windows.Forms.FlowLayoutPanel flpBoutons;
         private System.Windows.Forms.Button btnEnregistrer;

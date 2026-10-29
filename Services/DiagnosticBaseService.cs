@@ -282,6 +282,28 @@ namespace Pharmacie2.Services
                     ? "vente Mutuelle enregistrée sans mutuelle : la totalité apparaît comme dette du patient"
                     : $"part d'une mutuelle supprimée : {M(v.MontantMutuelle)}");
 
+            // D11 / D12 étendus aux ventes Mutuelle : la part du patient (total − part mutuelle) est sur-payée ou non réglée.
+            // Deux cas à lister, jamais de correction automatique (la part de l'entreprise n'est pas un paiement de la caisse).
+            foreach (var v in actives.Where(v => v.Type == ModesPaiement.Mutuelle))
+            {
+                decimal partPatient = v.MontantTotal - v.MontantMutuelle;
+                decimal payee = v.Paiements.Sum(p => p.Montant);
+                if (payee > partPatient + 0.005m)                                                                     // D11 (Mutuelle)
+                    Ajouter("D11", GroupeConstat.AVerifier, v.numeroVente, $"vente Mutuelle : part du patient sur-payée ({M(payee)} pour {M(partPatient)}) : aucune correction automatique");
+                else if (payee < partPatient - 0.005m)                                                                // D12 (Mutuelle)
+                    Ajouter("D12", GroupeConstat.AVerifier, v.numeroVente, $"vente Mutuelle : part du patient non réglée (reçu {M(payee)} sur {M(partPatient)}) : aucune correction automatique");
+            }
+
+            {                                                                                                         // D26
+                var noms = ctx.mutuels.AsNoTracking().ToDictionary(m => m.IdMutuel, m => m.NomEmployeur);
+                foreach (var g in actives.Where(v => v.Type == ModesPaiement.Mutuelle && MutuelleService.PatientNonIdentifie(v)).GroupBy(v => v.MutuelId).OrderBy(g => g.Key))
+                {
+                    string nom = g.Key != null && noms.TryGetValue(g.Key.Value, out var n) ? n : "Mutuelle supprimée";
+                    decimal enAttente = g.Where(v => !v.MutuelleReglee).Sum(v => v.MontantMutuelle);
+                    Ajouter("D26", GroupeConstat.Information, nom, $"{g.Count()} vente(s) Mutuelle sans nom ni matricule du patient, part de la mutuelle en attente : {M(enAttente)}");
+                }
+            }
+
             foreach (var g in ventes.GroupBy(v => v.numeroVente).Where(g => !string.IsNullOrEmpty(g.Key) && g.Count() > 1))   // D14
                 Ajouter("D14", GroupeConstat.AVerifier, g.Key, $"numéro de vente utilisé {g.Count()} fois (aucune renumérotation)");
 

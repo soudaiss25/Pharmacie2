@@ -434,6 +434,7 @@ namespace Pharmacie2.views
                 decimal partPatient = _total - partMutuelle;
 
                 txtTauxMutuelle.Text = m.TauxPriseEnCharge.ToString("0.##");
+                lblMatricule.Text = m.MatriculeObligatoire ? "Matricule de l'employé *" : "Matricule de l'employé";
                 lblPartMutuelle.Text = $"Pris en charge par la mutuelle : {Format.Montant(partMutuelle)} (crédit de l'entreprise)";
                 lblRestePatient.Text = $"À payer par le patient : {Format.Montant(partPatient)}";
                 DefinirEspeces(Math.Ceiling(partPatient));
@@ -538,6 +539,14 @@ namespace Pharmacie2.views
                     MessageBox.Show("Choisissez la mutuelle qui prend en charge cette vente.", "Validation",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cbMutuelle.Focus();
+                    return;
+                }
+
+                if (mutuelleChoisie.MatriculeObligatoire && string.IsNullOrWhiteSpace(txtMatricule.Text))
+                {
+                    MessageBox.Show($"Le matricule de l'employé est obligatoire pour la mutuelle « {mutuelleChoisie.NomEmployeur} ».", "Validation",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtMatricule.Focus();
                     return;
                 }
 

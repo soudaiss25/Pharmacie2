@@ -23,6 +23,15 @@ namespace Pharmacie2.views.UserControls
             _chkArchives = ArchivageUi.Installer(btnSupprimer, TypeElement.Mutuelle, SelectionMutuelle, ChargerMutuelles);
 
             this.Load += (s, e) => ChargerMutuelles();
+            dgvVentesImpayees.CellFormatting += (s, e) =>
+            {
+                if (e.RowIndex >= 0 && dgvVentesImpayees.Columns[e.ColumnIndex].Name == "colClient"
+                    && Convert.ToString(e.Value) == MutuelleService.PatientNonIdentifieLibelle)
+                {
+                    e.CellStyle.ForeColor = Theme.AttentionTexte;
+                    e.CellStyle.Font = Theme.PoliceGrille(dgvVentesImpayees, FontStyle.Bold);
+                }
+            };
             dgvMutuelles.CellFormatting += (s, e) =>
             {
                 if (e.RowIndex >= 0 && dgvMutuelles.Columns[e.ColumnIndex].Name == "TotalImpaye" && e.Value is decimal d && d > 0)
@@ -153,7 +162,8 @@ namespace Pharmacie2.views.UserControls
                     foreach (var v in ventes)
                     {
                         string client = $"{v.PrenomClient} {v.NomClient}".Trim();
-                        if (string.IsNullOrWhiteSpace(client)) client = "—";
+                        if (MutuelleService.PatientNonIdentifie(v)) client = MutuelleService.PatientNonIdentifieLibelle;
+                        else if (string.IsNullOrWhiteSpace(client)) client = "—";
                         string vendeur = v.User != null
                             ? $"{v.User.Prenom} {v.User.Nom}" : "—";
 
@@ -176,6 +186,9 @@ namespace Pharmacie2.views.UserControls
                         $"{nomMutuelle}  |  " +
                         $"{Format.Compte(nbVentes, "vente")} à régler  |  " +
                         $"Total dû : {Format.Montant(totalDu)}";
+                    int nonIdentifiees = ventes.Count(MutuelleService.PatientNonIdentifie);
+                    if (nonIdentifiees > 0)
+                        lblRecapImpaye.Text += $"  |  {MutuelleService.PatientNonIdentifieLibelle} : {Format.Compte(nonIdentifiees, "vente")}";
 
                     lblRecapImpaye.ForeColor = totalDu > 0 ? Theme.AttentionTexte : Theme.SuccesTexte;
 

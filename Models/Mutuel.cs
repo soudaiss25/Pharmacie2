@@ -28,6 +28,9 @@ namespace Pharmacie2.Models
         /// <summary>false = archivé : n'apparaît plus dans les choix, mais reste dans l'historique.</summary>
         public bool Actif { get; set; } = true;
 
+        /// <summary>true = la vente Mutuelle est refusée sans le matricule de l'employé (décoché par défaut).</summary>
+        public bool MatriculeObligatoire { get; set; }
+
 
     }
 }

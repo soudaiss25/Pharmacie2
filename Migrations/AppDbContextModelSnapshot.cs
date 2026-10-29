@@ -182,6 +182,9 @@ namespace Pharmacie2.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("MatriculeObligatoire")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("NomEmployeur")
                         .IsRequired()
                         .HasColumnType("TEXT");

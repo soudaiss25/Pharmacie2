@@ -346,4 +346,88 @@ public class FormVenteTests
         Assert.NotNull(v.DateAnnulation);
         Assert.Equal(100, ctx2.produits.Single().QuantiteEnStock);   // stock restitué
     }
+    // ───────── mutuelle : nom du patient et matricule obligatoire (réglage par mutuelle) ─────────
+
+    private static void ReglerMatricule(int mutuelleId, bool obligatoire)
+    {
+        using var ctx = new AppDbContext();
+        ctx.mutuels.Single(m => m.IdMutuel == mutuelleId).MatriculeObligatoire = obligatoire;
+        ctx.SaveChanges();
+    }
+
+    private static int VentesMutuelle() => (int)TestDb.Scalaire("SELECT COUNT(*) FROM ventes");
+
+    [Fact]
+    public void Mutuelle_sans_nom_de_patient_est_toujours_refusee()
+    {
+        var (pid, _) = Preparer();
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 2, ModesPaiement.Mutuelle, x =>
+            {
+                UiHelper.Champ<ComboBox>(x, "cbMutuelle").SelectedIndex = 0;
+                UiHelper.Champ<TextBox>(x, "txtNom").Text = "";
+                UiHelper.Champ<TextBox>(x, "txtMatricule").Text = "M-42";   // le matricule ne remplace pas le nom
+            });
+            Valider(f);
+        });
+        Assert.Equal(0, VentesMutuelle());
+    }
+
+    [Fact]
+    public void Matricule_obligatoire_coche_refuse_la_vente_sans_matricule_et_l_accepte_avec()
+    {
+        var (pid, mid) = Preparer();
+        ReglerMatricule(mid, true);
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 2, ModesPaiement.Mutuelle, x => UiHelper.Champ<ComboBox>(x, "cbMutuelle").SelectedIndex = 0);
+            Valider(f);
+        });
+        Assert.Equal(0, VentesMutuelle());                                // refusée sans matricule
+
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 2, ModesPaiement.Mutuelle, x =>
+            {
+                UiHelper.Champ<ComboBox>(x, "cbMutuelle").SelectedIndex = 0;
+                UiHelper.Champ<TextBox>(x, "txtMatricule").Text = "M-42";
+            });
+            Valider(f);
+        });
+        Assert.Equal(1, VentesMutuelle());
+        Assert.Equal("M-42", TestDb.Texte("SELECT MatriculeEmploye FROM ventes"));
+    }
+
+    [Fact]
+    public void Matricule_non_obligatoire_par_defaut_la_vente_est_acceptee_sans_matricule()
+    {
+        var (pid, mid) = Preparer();
+        using (var ctx = new AppDbContext()) Assert.False(ctx.mutuels.Single(m => m.IdMutuel == mid).MatriculeObligatoire);
+        AvecMessages(() =>
+        {
+            using var f = Panier(pid, 2, ModesPaiement.Mutuelle, x => UiHelper.Champ<ComboBox>(x, "cbMutuelle").SelectedIndex = 0);
+            Valider(f);
+        });
+        Assert.Equal(1, VentesMutuelle());
+    }
+
+    [Fact]
+    public void La_fiche_mutuelle_enregistre_la_case_matricule_obligatoire()
+    {
+        var (_, mid) = Preparer();
+        Mutuel m;
+        using (var ctx = new AppDbContext()) m = ctx.mutuels.Single(x => x.IdMutuel == mid);
+        AvecMessages(() =>
+        {
+            using var f = new FormAddMutuelle(m);
+            var coche = UiHelper.Champ<CheckBox>(f, "chkMatricule");
+            Assert.False(coche.Checked);                                    // décochée par défaut
+            Assert.Equal("Matricule de l'employé obligatoire", coche.Text);
+            coche.Checked = true;
+            UiHelper.Appeler(f, "btnEnregistrer_Click", null, EventArgs.Empty);
+        });
+        using var ctx2 = new AppDbContext();
+        Assert.True(ctx2.mutuels.Single(x => x.IdMutuel == mid).MatriculeObligatoire);
+    }
 }
