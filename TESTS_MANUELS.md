@@ -570,3 +570,9 @@ Release de test déjà publiée : <https://github.com/soudaiss25/Pharmacie2/rele
 ## 67. Canaux de mise à jour (point 11)
 - [ ] `python tools/verifier_canaux.py` : affiche pour chaque canal le nombre de releases visibles par Velopack et dit si un canal est masqué. `--autotest` rejoue les scénarios sans réseau.
 - [ ] Avant de publier une version stable, vérifier que moins de 10 versions « test » ont été publiées depuis la dernière stable.
+
+## 68. Assistant d'import, étape 4 : résumé avant remplacement
+- [ ] Importer une base de test : l'étape 4 affiche, dans le tableau, la base importée (fichier, dernière vente, ventes, produits, utilisateurs, chiffre d'affaires), la base actuelle qui sera remplacée (ventes et dernière vente, ou « vide »), le résultat des contrôles et de la comparaison avant / après, le diagnostic prévu (corrections automatiques, éléments « À vérifier ») et l'emplacement exact de la sauvegarde « avant-import ».
+- [ ] Base actuelle vide : aucun avertissement, « Importer » actif.
+- [ ] Base actuelle avec des ventes plus récentes que la base importée : message rouge « Attention : la base actuelle contient des ventes plus récentes que la base importée. Elles seront remplacées. » ; « Importer » reste grisé tant que « Je comprends » n'est pas coché.
+- [ ] Après l'import, le fichier de sauvegarde annoncé existe à l'emplacement affiché.

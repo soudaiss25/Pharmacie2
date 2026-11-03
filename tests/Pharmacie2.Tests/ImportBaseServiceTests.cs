@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Microsoft.Data.Sqlite;
 using Pharmacie2.Services;
 using Pharmacie2.views;
@@ -293,6 +293,153 @@ public class ImportBaseServiceTests : IDisposable
         }
         finally { cts.Cancel(); }
         Assert.Equal(5, Ventes(CheminsApp.CheminBase));
+    }
+
+    // ───────────── étape 4 : résumé avant remplacement ─────────────
+
+    private static void Dater(string base_, string premiere, string derniere)
+    {
+        using var c = new SqliteConnection($"Data Source={base_};Pooling=False");
+        c.Open();
+        using var cmd = c.CreateCommand();
+        cmd.CommandText = $"UPDATE ventes SET DateVente = '{premiere}'; UPDATE ventes SET DateVente = '{derniere}' WHERE IdVente = (SELECT MAX(IdVente) FROM ventes)";
+        cmd.ExecuteNonQuery();
+        SqliteConnection.ClearAllPools();
+    }
+
+    private static string Textes(FormAssistantImport f)
+        => string.Join(" || ", f.Grille.Rows.Cast<System.Windows.Forms.DataGridViewRow>().Select(r => Convert.ToString(r.Cells["Nom"].Value) + " : " + Convert.ToString(r.Cells["Detail"].Value)));
+
+    private static void ArriverALEtape4(FormAssistantImport f)
+    {
+        f.Demarrer();
+        f.Suivant();
+        f.Suivant();
+        Assert.Equal(FormAssistantImport.Etape.Remplacement, f.Courante);
+    }
+
+    [Fact]
+    public void Etape_4_avec_une_base_actuelle_vide_affiche_le_resume_sans_avertissement()
+    {
+        var avant = SauvegardesAvantImport().ToHashSet();
+        string source = TestDb.CreerBase(Fichier("resume"), 3);
+        Dater(source, "2026-09-01 10:00:00", "2026-10-20 15:30:00");
+        // base actuelle vide : migrée, sans aucune vente
+        TestDb.MigrerTout();
+        SqliteConnection.ClearAllPools();
+
+        var cts = UiHelper.FermerLesMessages(true);
+        try
+        {
+            UiHelper.EnSta(() =>
+            {
+                using var f = new FormAssistantImport(source, null);
+                ArriverALEtape4(f);
+                string texte = Textes(f);
+
+                Assert.Contains("Base importée : fichier " + CheminsApp.NomFichierBase, texte);
+                Assert.Contains("dernière vente : 20/10/2026 15:30", texte);
+                Assert.Contains("3 ventes", texte);
+                Assert.Contains("1 utilisateur", texte);
+                Assert.Contains("chiffre d'affaires total : " + Format.Montant(3000m), texte);
+                Assert.Contains("Base actuelle (sera remplacée) : vide (aucune vente)", texte);
+                Assert.Contains("Contrôles des étapes précédentes", texte);
+                Assert.Contains("Comparaison avant / après : ", texte);
+                Assert.Contains("aucune ligne perdue", texte);
+                Assert.Contains("Diagnostic de la base", texte);
+                Assert.Contains("élément", texte);
+                Assert.Contains("PharmacieDB_avant-import_", texte);                         // emplacement exact de la sauvegarde
+                Assert.Contains(CheminsApp.DossierSauvegardes, texte);
+
+                Assert.False(f.Avertissement.Visible);                                        // rien de plus récent à remplacer
+                Assert.False(f.CaseComprends.Visible);
+                Assert.True(f.BoutonImporter.Enabled);
+                f.Suivant();
+                Assert.Equal(FormAssistantImport.Etape.Termine, f.Courante);
+            });
+        }
+        finally { cts.Cancel(); }
+        Assert.Equal(3, Ventes(CheminsApp.CheminBase));
+        Assert.Single(SauvegardesAvantImport().Where(f => !avant.Contains(f)));                                              // la sauvegarde annoncée est bien celle qui est écrite
+    }
+
+    [Fact]
+    public void Etape_4_sans_aucune_base_actuelle_le_dit_et_ne_propose_aucune_sauvegarde()
+    {
+        string source = TestDb.CreerBase(Fichier("neuf"), 2);
+        UiHelper.EnSta(() =>
+        {
+            using var f = new FormAssistantImport(source, null);
+            ArriverALEtape4(f);
+            string texte = Textes(f);
+            Assert.Contains("aucune base sur cet ordinateur : vide", texte);
+            Assert.Contains("aucune (il n'y a pas de base actuelle à sauvegarder)", texte);
+            Assert.False(f.Avertissement.Visible);
+        });
+    }
+
+    [Fact]
+    public void Etape_4_avec_une_base_actuelle_plus_recente_avertit_en_rouge_et_exige_Je_comprends()
+    {
+        var avant = SauvegardesAvantImport().ToHashSet();
+        string source = TestDb.CreerBase(Fichier("ancienne2"), 3);
+        Dater(source, "2026-08-21 09:00:00", "2026-10-01 12:00:00");
+        // base actuelle : 4 ventes dont la dernière est postérieure à celle de la base importée
+        TestDb.CreerBase(CheminsApp.CheminBase, 4);
+        Dater(CheminsApp.CheminBase, "2026-10-02 09:00:00", "2026-10-24 17:45:00");
+
+        var cts = UiHelper.FermerLesMessages(true);
+        try
+        {
+            UiHelper.EnSta(() =>
+            {
+                using var f = new FormAssistantImport(source, null);
+                f.Show();
+                System.Windows.Forms.Application.DoEvents();
+                ArriverALEtape4(f);
+                string texte = Textes(f);
+
+                Assert.Contains("Base actuelle (sera remplacée) : 4 ventes ; dernière vente : 24/10/2026 17:45", texte);
+                Assert.True(f.Avertissement.Visible);
+                Assert.Equal("Attention : la base actuelle contient des ventes plus récentes que la base importée. Elles seront remplacées.", f.Avertissement.Text);
+                Assert.Equal(Pharmacie2.Services.Theme.UrgentTexte, f.Avertissement.ForeColor);     // rouge
+                Assert.True(f.CaseComprends.Visible);
+                Assert.False(f.CaseComprends.Checked);
+                Assert.False(f.BoutonImporter.Enabled);                                           // « Importer » grisé tant que la case n'est pas cochée
+
+                f.Suivant();                                                                      // même en forçant le clic : rien ne se passe
+                Assert.Equal(FormAssistantImport.Etape.Remplacement, f.Courante);
+
+                f.CaseComprends.Checked = true;
+                Assert.True(f.BoutonImporter.Enabled);
+                f.CaseComprends.Checked = false;
+                Assert.False(f.BoutonImporter.Enabled);                                           // décocher re-grise le bouton
+                f.CaseComprends.Checked = true;
+                f.Suivant();
+                Assert.Equal(FormAssistantImport.Etape.Termine, f.Courante);
+            });
+        }
+        finally { cts.Cancel(); }
+        Assert.Equal(3, Ventes(CheminsApp.CheminBase));                                           // remplacée par la base importée
+        Assert.Single(SauvegardesAvantImport().Where(f => !avant.Contains(f)));                                                  // et les 4 ventes récentes sont dans la sauvegarde
+        Assert.Equal(4, Ventes(SauvegardesAvantImport().Single(f => !avant.Contains(f))));
+    }
+
+    [Fact]
+    public void Etape_4_une_base_actuelle_plus_ancienne_que_l_importee_ne_demande_pas_de_confirmation()
+    {
+        string source = TestDb.CreerBase(Fichier("recente"), 3);
+        Dater(source, "2026-10-01 09:00:00", "2026-10-30 12:00:00");
+        TestDb.CreerBase(CheminsApp.CheminBase, 2);
+        Dater(CheminsApp.CheminBase, "2026-09-01 09:00:00", "2026-09-15 12:00:00");
+        UiHelper.EnSta(() =>
+        {
+            using var f = new FormAssistantImport(source, null);
+            ArriverALEtape4(f);
+            Assert.False(f.Avertissement.Visible);
+            Assert.False(f.CaseComprends.Visible);
+            Assert.True(f.BoutonImporter.Enabled);
+        });
     }
 
     [Fact]

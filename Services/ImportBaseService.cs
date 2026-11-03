@@ -1,4 +1,4 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -221,13 +221,31 @@ namespace Pharmacie2.Services
 
         // ───────────── remplacement de la base active ─────────────
 
+        /// <summary>Emplacement exact où sera écrite la sauvegarde « avant-import » (affiché avant la confirmation, puis utilisé tel quel).</summary>
+        public static string CheminSauvegardeAvantImport()
+            => Path.Combine(CheminsApp.DossierSauvegardes, $"PharmacieDB_avant-import_{DateTime.Now:yyyy-MM-dd_HHmmss}.sqlite");
+
+        /// <summary>Ce que le diagnostic ferait sur la copie migrée (lecture seule, rien n'est écrit) : corrections automatiques prévues et éléments « À vérifier ».</summary>
+        public (int Corrections, int AVerifier) ApercuDiagnostic()
+        {
+            using var ctx = new AppDbContext(Copie);
+            var rapport = DiagnosticBaseService.Executer(ctx, appliquer: false, DateTime.Now);
+            const string marque = "non corrigé (lecture seule)";
+            var averifier = rapport.De(GroupeConstat.AVerifier);
+            int corrections = averifier.Count(c => c.Detail.Contains(marque));
+            return (corrections, averifier.Count - corrections);
+        }
+
+        /// <summary>Résumé de la copie migrée (identique à l'ancienne base importée, mise à jour).</summary>
+        public ResumeBase ResumeImporte() => ResumeBase.Lire(Copie) with { Fichier = Path.GetFileName(_source) };
+
         /// <summary>Sauvegarde « avant-import » de la base active (si elle existe) puis remplacement par la copie migrée. Renvoie le chemin de la sauvegarde.</summary>
-        public string? Appliquer()
+        public string? Appliquer(string? cheminSauvegarde = null)
         {
             string? sauvegarde = null;
             if (File.Exists(CheminsApp.CheminBase))
             {
-                sauvegarde = Path.Combine(CheminsApp.DossierSauvegardes, $"PharmacieDB_avant-import_{DateTime.Now:yyyy-MM-dd_HHmmss}.sqlite");
+                sauvegarde = cheminSauvegarde ?? CheminSauvegardeAvantImport();
                 SauvegardeAutomatique.Sauvegarder(sauvegarde);
             }
 

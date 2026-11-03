@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using Pharmacie2.Services;
 
 namespace Pharmacie2.views
@@ -21,6 +21,9 @@ namespace Pharmacie2.views
         private readonly Button _btnSuivant = new();
         private readonly Button _btnAnnuler = new();
         private readonly Button _btnRapport = new();
+        private readonly Label _avertissement = new() { Name = "lblAvertissement", AutoSize = true, MaximumSize = new Size(820, 0), Visible = false, Margin = new Padding(0, 6, 0, 2), Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
+        private readonly CheckBox _chkComprends = new() { Name = "chkComprends", Text = "Je comprends", AutoSize = true, Visible = false, Margin = new Padding(0, 2, 0, 2) };
+        private string? _sauvegardePrevue;
 
         public Etape Courante { get; private set; } = Etape.Demarrage;
         public ResultatImport Resultat { get; } = new();
@@ -39,11 +42,12 @@ namespace Pharmacie2.views
             MaximizeBox = false;
             MinimizeBox = false;
 
-            var racine = new TableLayoutPanel { Name = "tlpRoot", Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 4, Padding = new Padding(16) };
+            var racine = new TableLayoutPanel { Name = "tlpRoot", Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 5, Padding = new Padding(16) };
             racine.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             racine.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             racine.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             racine.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            racine.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             racine.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             racine.Controls.Add(_titre, 0, 0);
             racine.Controls.Add(_consigne, 0, 1);
@@ -59,6 +63,13 @@ namespace Pharmacie2.views
             _grille.Columns.Add(new DataGridViewTextBoxColumn { Name = "Detail", HeaderText = "Détail", DataPropertyName = "Detail", FillWeight = 60, MinimumWidth = 220, ReadOnly = true });
             racine.Controls.Add(_grille, 0, 2);
 
+            // Étape 4 : avertissement rouge (base actuelle plus récente) et case « Je comprends » obligatoire avant « Importer »
+            var avertissements = new FlowLayoutPanel { Name = "flpAvertissement", Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, FlowDirection = FlowDirection.TopDown, WrapContents = false, Margin = new Padding(0) };
+            avertissements.Controls.Add(_avertissement);
+            avertissements.Controls.Add(_chkComprends);
+            racine.Controls.Add(avertissements, 0, 3);
+            _chkComprends.CheckedChanged += (s, e) => { if (Courante == Etape.Remplacement) _btnSuivant.Enabled = !_chkComprends.Visible || _chkComprends.Checked; };
+
             var bas = new FlowLayoutPanel
             {
                 Name = "flpBoutons", Dock = DockStyle.Fill, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink,
@@ -73,7 +84,7 @@ namespace Pharmacie2.views
             bas.Controls.Add(_btnAnnuler);
             bas.Controls.Add(_btnSuivant);
             bas.Controls.Add(_btnRapport);
-            racine.Controls.Add(bas, 0, 3);
+            racine.Controls.Add(bas, 0, 4);
 
             Controls.Add(racine);
             CancelButton = _btnAnnuler;
@@ -123,7 +134,7 @@ namespace Pharmacie2.views
             {
                 case Etape.Controles: MettreAJourEtComparer(); break;
                 case Etape.Comparaison: PreparerRemplacement(); break;
-                case Etape.Remplacement: Remplacer(); break;
+                case Etape.Remplacement: if (_btnSuivant.Enabled) Remplacer(); break;   // grisé tant que « Je comprends » n'est pas coché
                 case Etape.Termine: DialogResult = DialogResult.OK; Close(); break;
             }
         }
@@ -159,19 +170,74 @@ namespace Pharmacie2.views
         {
             Courante = Etape.Remplacement;
             bool active = File.Exists(CheminsApp.CheminBase);
+            var lignes = ResumeRemplacement();
             AfficherEtape("Étape 4 sur 4 : remplacement",
                 active
                     ? "Les données actuelles de la pharmacie vont être REMPLACÉES par celles de l'ancienne base. La base actuelle est d'abord sauvegardée (« avant-import ») dans le dossier des sauvegardes. Cliquez sur « Importer » pour confirmer, ou sur « Annuler »."
                     : "L'ancienne base va devenir la base de la pharmacie sur cet ordinateur. Cliquez sur « Importer » pour confirmer, ou sur « Annuler ».",
-                new List<Controle>());
+                lignes);
             _btnSuivant.Text = "Importer";
+            _btnSuivant.Enabled = !_chkComprends.Visible;   // base actuelle plus récente : « Importer » reste grisé tant que « Je comprends » n'est pas coché
         }
+
+        /// <summary>Résumé de l'étape 4 : base importée, base actuelle remplacée, contrôles, diagnostic prévu, emplacement de la sauvegarde.</summary>
+        private List<Controle> ResumeRemplacement()
+        {
+            var importee = _service!.ResumeImporte();
+            var actuelle = ResumeBase.Lire(CheminsApp.CheminBase);
+            _sauvegardePrevue = actuelle.Existe ? ImportBaseService.CheminSauvegardeAvantImport() : null;
+            var lignes = new List<Controle>
+            {
+                new("Base importée", true, $"fichier {importee.Fichier} ; dernière vente : {importee.DerniereVenteTexte} ; {Format.Compte(importee.Ventes, "vente")}, " +
+                                         $"{Format.Compte(importee.Produits, "produit")}, {Format.Compte(importee.Utilisateurs, "utilisateur")} ; chiffre d'affaires total : {Format.Montant(importee.ChiffreAffaires)}", false),
+                new("Base actuelle (sera remplacée)", true,
+                    !actuelle.Existe ? "aucune base sur cet ordinateur : vide"
+                    : !actuelle.Lisible ? "base illisible (sauvegardée avant d'être remplacée)"
+                    : actuelle.Vide ? "vide (aucune vente)"
+                    : $"{Format.Compte(actuelle.Ventes, "vente")} ; dernière vente : {actuelle.DerniereVenteTexte}", false),
+            };
+
+            var controles = Resultat.Controles;
+            int reussis = controles.Count(c => c.Ok);
+            lignes.Add(new Controle("Contrôles des étapes précédentes", reussis == controles.Count,
+                $"{reussis} sur {controles.Count} réussis (intégrité, tables, migrations, administrateur)", false));
+            var comparaison = Resultat.Comparaison;
+            lignes.Add(new Controle("Comparaison avant / après", comparaison.Count > 0 && !comparaison.Any(l => l.Perdue),
+                comparaison.Count == 0 ? "non effectuée" : $"{comparaison.Count} tables comparées, aucune ligne perdue", false));
+
+            try
+            {
+                var (corrections, averifier) = _service.ApercuDiagnostic();
+                lignes.Add(new Controle("Diagnostic de la base", true,
+                    $"{Format.Compte(corrections, "correction automatique")} prévue{(corrections > 1 ? "s" : "")} après l'import ; {averifier} élément{(averifier > 1 ? "s" : "")} « À vérifier »", false));
+            }
+            catch (Exception ex)
+            {
+                Journal.Erreur("Import : aperçu du diagnostic", ex);
+                lignes.Add(new Controle("Diagnostic de la base", false, "aperçu impossible : " + ex.Message, false));
+            }
+
+            lignes.Add(new Controle("Sauvegarde « avant-import »", true,
+                _sauvegardePrevue != null ? _sauvegardePrevue : "aucune (il n'y a pas de base actuelle à sauvegarder)", false));
+
+            // Base actuelle plus récente que la base importée : avertissement rouge, case « Je comprends » obligatoire
+            bool plusRecente = actuelle.DerniereVente.HasValue && (!importee.DerniereVente.HasValue || actuelle.DerniereVente > importee.DerniereVente);
+            _avertissement.Visible = _chkComprends.Visible = plusRecente;
+            _chkComprends.Checked = false;
+            _avertissement.Text = plusRecente ? "Attention : la base actuelle contient des ventes plus récentes que la base importée. Elles seront remplacées." : "";
+            _avertissement.ForeColor = Theme.UrgentTexte;
+            return lignes;
+        }
+
+        public Label Avertissement => _avertissement;
+        public CheckBox CaseComprends => _chkComprends;
+        public Button BoutonImporter => _btnSuivant;
 
         private void Remplacer()
         {
             try
             {
-                Resultat.SauvegardeAvantImport = _service!.Appliquer();
+                Resultat.SauvegardeAvantImport = _service!.Appliquer(_sauvegardePrevue);
                 Resultat.OriginalIntact = _service.OriginalIntact();
                 Resultat.Issue = IssueImport.Importee;
                 Courante = Etape.Termine;
